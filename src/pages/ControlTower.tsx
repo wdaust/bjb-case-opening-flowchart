@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { getControlTowerData, stageOrder, stageLabels } from '../data/mockData';
+import { getControlTowerData, stageLabels } from '../data/mockData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { StageBar } from '../components/dashboard/StageBar';
 import { DeadlineList } from '../components/dashboard/DeadlineList';
@@ -47,10 +47,6 @@ export default function ControlTower() {
           value="42 in / 38 out"
           delta="net +4"
           deltaType="positive"
-        />
-        <StatCard
-          label="Stage Mix"
-          value={`${stageOrder.length} stages`}
         />
         <StatCard
           label="Over-SLA %"
