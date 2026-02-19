@@ -11,6 +11,7 @@ const DATA_FILES = [
   'data/treatment-monitoring.json',
   'data/discovery.json',
   'data/expert-deposition.json',
+  'data/arbitration-mediation.json',
 ];
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
@@ -76,6 +77,23 @@ export default function App() {
     }, 500);
   }, [dbReady]);
 
+  const handleRenameSection = useCallback((id: string, newTitle: string) => {
+    setSections(sects => {
+      const updated = sects.map(s => s.id === id ? { ...s, title: newTitle } : s);
+      const target = updated.find(s => s.id === id);
+      if (target && dbReady) {
+        // Debounce save
+        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+        saveTimeoutRef.current = setTimeout(async () => {
+          setSaving(true);
+          await saveSection(target);
+          setSaving(false);
+        }, 500);
+      }
+      return updated;
+    });
+  }, [dbReady]);
+
   const handleReset = useCallback(async () => {
     if (!confirm('Reset all sections to defaults? Your edits will be lost.')) return;
     if (dbReady) await clearAllSections();
@@ -136,6 +154,7 @@ export default function App() {
         sections={sections}
         activeId={activeId}
         onSelect={setActiveId}
+        onRenameSection={handleRenameSection}
       />
 
       {activeSection && (

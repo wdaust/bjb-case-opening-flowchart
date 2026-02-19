@@ -1,445 +1,930 @@
 {
   "id": "case-opening",
   "title": "Lit / Case Opening",
-  "subtitle": "35 tasks — From Orientation Appointment through Filing & Service",
+  "subtitle": "53 tasks — Client Orientation through Court Filing Notice",
   "headerClass": "",
   "themeColor": "#1a237e",
   "thClass": "",
   "sectionClass": "",
-  "tableColumns": ["#", "Phase", "Quick Action Panel", "Assigned To", "Task", "SLA"],
+  "tableColumns": [
+    "#",
+    "Phase",
+    "Quick Action Panel",
+    "Assigned To",
+    "Task",
+    "SLA"
+  ],
   "legend": [
-    { "label": "Case Setup", "color": "#1565c0" },
-    { "label": "Automated Doc Requests", "color": "#2e7d32" },
-    { "label": "Doc Requests", "color": "#e65100" },
-    { "label": "Review", "color": "#6a1b9a" },
-    { "label": "Complaint Drafting & Approval", "color": "#c62828" },
-    { "label": "Service of Summons & Court", "color": "#00838f" },
-    { "label": "Follow Up", "color": "#f9a825" },
-    { "label": "Subpoena & Discovery", "color": "#4e342e" },
-    { "label": "Default & Filing", "color": "#37474f" },
-    { "label": "Supportive Doc Production", "color": "#ad1457" }
+    {
+      "label": "Client Orientation",
+      "color": "#1565c0"
+    },
+    {
+      "label": "Case Setup",
+      "color": "#1a237e"
+    },
+    {
+      "label": "Automated Doc Request",
+      "color": "#2e7d32"
+    },
+    {
+      "label": "Doc Request",
+      "color": "#e65100"
+    },
+    {
+      "label": "Review",
+      "color": "#6a1b9a"
+    },
+    {
+      "label": "Doc Production",
+      "color": "#e65100"
+    },
+    {
+      "label": "Approval",
+      "color": "#6a1b9a"
+    },
+    {
+      "label": "Filing",
+      "color": "#c62828"
+    },
+    {
+      "label": "Service of Summons & Complaint",
+      "color": "#00838f"
+    },
+    {
+      "label": "Court Notice",
+      "color": "#37474f"
+    },
+    {
+      "label": "Follow Up",
+      "color": "#f9a825"
+    },
+    {
+      "label": "Supportive Doc Production",
+      "color": "#ad1457"
+    },
+    {
+      "label": "Court Filing Notice",
+      "color": "#37474f"
+    }
   ],
   "tasks": [
     {
       "id": "A",
-      "label": "Orientation Appointment Completed",
-      "emoji": "\ud83c\udfc1",
-      "assignedTo": "",
-      "sla": "",
-      "phase": "Setup",
-      "phaseClass": "phase-setup",
-      "quickAction": "",
-      "style": "setup",
-      "connectsTo": ["B", "C1", "C2", "C3", "C4", "C5", "C6"],
+      "label": "Call Attempt 1",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "24 hours from being assigned",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "B"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V1, send SMS 1, send Email 1, mark \"Call Attempt 1 Complete\"",
+      "notes": "Orientation Appointment.",
       "isStartNode": true
     },
     {
       "id": "B",
-      "label": "Case Setup\nComprehensive Case Performance Index",
+      "label": "Call Attempt 2",
       "assignedTo": "Legal Asst / Para",
-      "sla": "1 hour from OA",
-      "phase": "Setup",
-      "phaseClass": "phase-setup",
-      "quickAction": "Case Setup",
-      "style": "setup",
-      "connectsTo": ["D1", "D2"]
+      "sla": "By 10am on the second day",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "C"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V2, send SMS 2, send Email 2, mark \"Call Attempt 2 Complete\"",
+      "notes": "Orientation Appointment"
     },
     {
-      "id": "C1",
-      "label": "Auto: Send letter to all medical providers",
-      "assignedTo": "System Automation",
-      "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-auto",
-      "quickAction": "Automated Doc Request",
-      "style": "auto",
-      "connectsTo": []
-    },
-    {
-      "id": "C2",
-      "label": "Auto: Send letter to prior counsel",
-      "assignedTo": "System Automation",
-      "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-auto",
-      "quickAction": "Automated Doc Request",
-      "style": "auto",
-      "connectsTo": []
-    },
-    {
-      "id": "C3",
-      "label": "Auto: Request ERISA/Medicaid/Medicare",
-      "assignedTo": "System Automation",
-      "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-auto",
-      "quickAction": "Automated Doc Request",
-      "style": "auto",
-      "connectsTo": []
-    },
-    {
-      "id": "C4",
-      "label": "Auto: Request PIP No Fault Ledger",
-      "assignedTo": "System Automation",
-      "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-auto",
-      "quickAction": "Automated Doc Request",
-      "style": "auto",
-      "connectsTo": []
-    },
-    {
-      "id": "C5",
-      "label": "Auto: Request Med Pay",
-      "assignedTo": "System Automation",
-      "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-auto",
-      "quickAction": "Automated Doc Request",
-      "style": "auto",
-      "connectsTo": []
-    },
-    {
-      "id": "C6",
-      "label": "Auto: Request evidence\nphotos, shoes, out of pocket",
-      "assignedTo": "System Automation",
-      "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-auto",
-      "quickAction": "Automated Doc Request",
-      "style": "auto",
-      "connectsTo": []
-    },
-    {
-      "id": "D1",
-      "label": "Doc Request: OPRA Submission",
+      "id": "C",
+      "label": "Call Attempt 3",
       "assignedTo": "Legal Asst / Para",
-      "sla": "20 min from OA",
-      "phase": "Doc Req",
-      "phaseClass": "phase-doc",
-      "quickAction": "Doc Request",
-      "style": "docreq",
-      "connectsTo": ["E"]
+      "sla": "By 4pm on the second day from being assigned",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "D"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V3, send SMS 3, send Email 3, mark \"Call Attempt 3 Complete\"",
+      "notes": "Orientation Appointment"
     },
     {
-      "id": "D2",
-      "label": "Doc Request: Missing Medical Records",
-      "assignedTo": "Legal Asst / Para",
-      "sla": "20 min from OA",
-      "phase": "Doc Req",
-      "phaseClass": "phase-doc",
-      "quickAction": "Doc Request",
-      "style": "docreq",
-      "connectsTo": ["E"]
+      "id": "D",
+      "label": "Send Introduction / Contact Letter",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "E"
+      ],
+      "function": "If no contact by the beginning of the 5th day, the letter is automatically sent by the system",
+      "notes": "Update the client"
     },
     {
       "id": "E",
-      "label": "Review: Verify file for accuracy",
+      "label": "Call Attempt 4",
       "assignedTo": "Legal Asst / Para",
-      "sla": "20 min from OA",
+      "sla": "Day 11 before 10am",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "F"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V4, send SMS 4, send Email 4, mark \"Call Attempt 4 Complete\"",
+      "notes": "Orientation Appointment"
+    },
+    {
+      "id": "F",
+      "label": "Call Attempt 5",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "Day 12 no later than 12:30 noon",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "G"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V5, send SMS 5, send Email 5, mark \"Call Attempt 5 Complete\"",
+      "notes": "Orientation Appointment"
+    },
+    {
+      "id": "G",
+      "label": "Call Attempt 6",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "Day no later than 4pm",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "H"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V6, send SMS 6, send Email 6, mark \"Call Attempt 6 Complete\"",
+      "notes": "Orientation Appointment"
+    },
+    {
+      "id": "H",
+      "label": "Send No Contact Letter",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "I"
+      ],
+      "function": "If no contact by the beginning of the 5th day, the letter is automatically sent by the system",
+      "notes": "Update the client"
+    },
+    {
+      "id": "I",
+      "label": "Call Attempt 7",
+      "assignedTo": "Attorney",
+      "sla": "Day 6 from the day the letter is sent",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "J"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V7, send SMS 7, send Email 7, mark \"Call Attempt 7 Complete\"",
+      "notes": "Orientation Appointment"
+    },
+    {
+      "id": "J",
+      "label": "Call Attempt 8",
+      "assignedTo": "Attorney",
+      "sla": "Day 7 from the day the letter is sent",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "K"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V8, send SMS 8, send Email 8, mark \"Call Attempt 8 Complete\"",
+      "notes": "Orientation Appointment"
+    },
+    {
+      "id": "K",
+      "label": "Back to Intake as MIA",
+      "assignedTo": "System Automation",
+      "sla": "Completion of the day 7 Atty call",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [],
+      "function": "Case is routed back to Intake to re-establish communications",
+      "notes": "To reset client communication"
+    },
+    {
+      "id": "L",
+      "label": "Send Cut Letter",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [],
+      "function": "If no contact after a full week of pursuit by the Intake team, the letter is automatically sent by the system",
+      "notes": "Update the client"
+    },
+    {
+      "id": "M",
+      "label": "Orientation Appointment",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "24 hours from being assigned but this also needs to be connected to linkage from pursuit",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
+      "quickAction": "Client Orientation",
+      "style": "client-orientation",
+      "connectsTo": [
+        "N"
+      ],
+      "function": "If completed, mark \"Complete\"",
+      "notes": "Agenda: \nLitigation Transfer Call Agenda\nClient Introduction & Case Validation Conference\nPurpose of the call:\nWelcome the client into the litigation phase, confirm the accuracy of core facts, identify risks or missing information, and ensure the legal team is positioned to move aggressively and efficiently.\n\n1) Welcome & Team Introduction\nIntroduce litigation attorney, paralegal, and any case support staff.\nProvide direct contact information and preferred communication methods.\nExplain each..."
+    },
+    {
+      "id": "N",
+      "label": "Clent Profile Scoring",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from when SOL is approved and BI Limites are obtained",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "O"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "It would be required that these scores be re-scored or a “No Change” score entered, every time a case manager progressed a case. Again, this is only for the case profile. These dials would be shown in a dashboard at the top of every matter panel view. \n\nAny thoughts? Additions? Revisions? \n\n“What...\n\nInput all needed info for below: \n\n“What to do” box: \n•        “If Demand-Ready % < X → add demand sprint + records chase”\n•        “If gaps > X → treatment monitoring protocol triggers”\n•        “If liability score low → early lit evaluation”\n\n“Top 10 Action List” widget\n•        A live list that updates daily:\no        Oldest demands not sent\no        Highest value cases missing records\no        Top cases with expiring deadlines\no        Top 10 stalled negotiations\no        Top 10 clients at..."
+    },
+    {
+      "id": "O",
+      "label": "Liability Profile Scoring System",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from when SOL is approved and BI Limites are obtained",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "P"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "Defense Pressure & Settlement Leverage Model\n\nPurpose\n\nThis model measures:\n\n1. How difficult it is for the defense to escape fault\n2. How predictable a jury outcome would be\n3. How expensive and risky it is for the carrier to fight\n\nWhen measured consistently, these scores become powerful...\n\nLiability setup and scoring"
+    },
+    {
+      "id": "P",
+      "label": "Policy & Collectability Scoring System",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from when SOL is approved and BI Limites are obtained",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "Q"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "Transportation \nNo insurance, auto or health - will it work to give a letter of protection (LOP)\n\nRecovery Power & Payment Predictability Model\n\nPurpose\n\nThis system measures:\n•        How much insurance money is realistically available\n•        How difficult it will be to access it\n•        How...\n\nPolicy setup and scoring"
+    },
+    {
+      "id": "Q",
+      "label": "Treatment Strength Index (TSI)",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from when SOL is approved and BI Limites are obtained",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "R"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "A structured way to rate the **quality, seriousness, credibility, and profitability** of medical treatment.\n\nYou can use 1–5 scales, color ratings, or weighted points.\n\nBody parts are experiencing pain\nPain levels\nNew injury or an excacerbated injury\nFracture or a scar\n\n\n\nThe 5 Master Treatment...\n\nTreatment setup and scoring"
+    },
+    {
+      "id": "R",
+      "label": "Comprehensive Case Performance Index (CPI)",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from when SOL is approved and BI Limites are obtained",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "S"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "“How strong is this file as a business asset?”\nThis index measures how efficiently, profitably, and strategically viable the case is — independent of liability, policy, treatment, or client personality.\n\nThe 7 Pillars of the Case Performance Index\nEach scored 0–20\nTotal = 0–140\nConverted to 0–100...\n\nCase scoring"
+    },
+    {
+      "id": "S",
+      "label": "Send letter to all medical providers with PIP/health ins info",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Automated Doc Request",
+      "phaseClass": "phase-automated-doc-request",
+      "quickAction": "Automated Doc Request",
+      "style": "automated-doc-request",
+      "connectsTo": [
+        "T"
+      ],
+      "function": "As soon as the orientation appt is done this gets sent",
+      "notes": "Letter to be sent"
+    },
+    {
+      "id": "T",
+      "label": "Send letter to prior counsel and prior medical providers for records and films",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Automated Doc Request",
+      "phaseClass": "phase-automated-doc-request",
+      "quickAction": "Automated Doc Request",
+      "style": "automated-doc-request",
+      "connectsTo": [
+        "U"
+      ],
+      "function": "As soon as the orientation appt is done this gets sent",
+      "notes": "Letter to be sent"
+    },
+    {
+      "id": "U",
+      "label": "Request ERISA/Medicaid/Medicare/MVA liens",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Automated Doc Request",
+      "phaseClass": "phase-automated-doc-request",
+      "quickAction": "Automated Doc Request",
+      "style": "automated-doc-request",
+      "connectsTo": [
+        "V"
+      ],
+      "function": "As soon as the orientation appt is done this gets sent",
+      "notes": "Request ERISA/Medicaid/Medicare/MVA liens"
+    },
+    {
+      "id": "V",
+      "label": "Request PIP No Fault Ledger",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Automated Doc Request",
+      "phaseClass": "phase-automated-doc-request",
+      "quickAction": "Automated Doc Request",
+      "style": "automated-doc-request",
+      "connectsTo": [
+        "W"
+      ],
+      "function": "As soon as the orientation appt is done this gets sent",
+      "notes": "Request PIP No Fault Ledger"
+    },
+    {
+      "id": "W",
+      "label": "Request Med Pay",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Automated Doc Request",
+      "phaseClass": "phase-automated-doc-request",
+      "quickAction": "Automated Doc Request",
+      "style": "automated-doc-request",
+      "connectsTo": [
+        "X"
+      ],
+      "function": "As soon as the orientation appt is done this gets sent",
+      "notes": "Request Med Pay"
+    },
+    {
+      "id": "X",
+      "label": "Requesting evidence: photos, shoes, out of pocket expenses",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Automated Doc Request",
+      "phaseClass": "phase-automated-doc-request",
+      "quickAction": "Automated Doc Request",
+      "style": "automated-doc-request",
+      "connectsTo": [
+        "Y"
+      ],
+      "function": "As soon as the orientation appt is done this gets sent",
+      "notes": "Requesting evidence: photos, shoes, out of pocket expenses"
+    },
+    {
+      "id": "Y",
+      "label": "Submission task",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "20 min from the completion of the OA",
+      "phase": "Doc Request",
+      "phaseClass": "phase-doc-request",
+      "quickAction": "Doc Request",
+      "style": "doc-request",
+      "connectsTo": [
+        "Z"
+      ],
+      "function": "Once completed, mark complete",
+      "notes": "OPRA request for supplemental police report, EMS report, body cam footage"
+    },
+    {
+      "id": "Z",
+      "label": "Request missing medical records, diag films, medical bills",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "20 min from the completion of the OA",
+      "phase": "Doc Request",
+      "phaseClass": "phase-doc-request",
+      "quickAction": "Doc Request",
+      "style": "doc-request",
+      "connectsTo": [
+        "AA"
+      ],
+      "function": "Submit as is currently established in Litify",
+      "notes": "Submit the request from the medical dept"
+    },
+    {
+      "id": "AA",
+      "label": "Review the file to verify all defendants are properly listed in Litify role object",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "20 min from the completion of the OA",
       "phase": "Review",
       "phaseClass": "phase-review",
       "quickAction": "Review",
       "style": "review",
-      "connectsTo": ["F"]
+      "connectsTo": [
+        "AB"
+      ],
+      "function": "Review for accuracy, mark complete",
+      "notes": "Review for accuracy"
     },
     {
-      "id": "F",
-      "label": "Doc Production: Draft Complaint",
+      "id": "AB",
+      "label": "Draft complaint",
       "assignedTo": "Paralegal",
-      "sla": "3 days after OA",
-      "phase": "Complaint",
-      "phaseClass": "phase-complaint",
+      "sla": "3 days after completioin of the OA",
+      "phase": "Doc Production",
+      "phaseClass": "phase-doc-production",
       "quickAction": "Doc Production",
-      "style": "complaint",
-      "connectsTo": ["G"]
+      "style": "doc-production",
+      "connectsTo": [
+        "AC"
+      ],
+      "function": "Complaint submission for review, mark complete",
+      "notes": "Draft complaint"
     },
     {
-      "id": "G",
-      "label": "Attorney Approval: Approve Complaint",
+      "id": "AC",
+      "label": "Approve Complaint",
       "assignedTo": "Attorney",
-      "sla": "6 days after OA",
-      "phase": "Complaint",
-      "phaseClass": "phase-complaint",
+      "sla": "6 days after completion of the OA",
+      "phase": "Approval",
+      "phaseClass": "phase-approval",
       "quickAction": "Approval",
-      "style": "complaint",
-      "connectsTo": ["H"]
+      "style": "approval",
+      "connectsTo": [
+        "AD"
+      ],
+      "function": "Review complaint, mark complete",
+      "notes": "Approve Complaint"
     },
     {
-      "id": "H",
-      "label": "Filing: File the Complaint",
+      "id": "AD",
+      "label": "Filing the complaint",
       "assignedTo": "Paralegal",
       "sla": "24 business hours from approval",
-      "phase": "Complaint",
-      "phaseClass": "phase-complaint",
+      "phase": "Filing",
+      "phaseClass": "phase-filing",
       "quickAction": "Filing",
-      "style": "complaint",
-      "connectsTo": ["I"]
+      "style": "filing",
+      "connectsTo": [
+        "AE"
+      ],
+      "function": "Compaint filed, mark complete",
+      "notes": "Filing the complaint"
     },
     {
-      "id": "I",
-      "label": "Service of Summons & Complaint\nSend summons & complaint to process server",
+      "id": "AE",
+      "label": "Service of Summons & Complaint",
       "assignedTo": "Paralegal",
-      "sla": "1 hour from filed complaint",
-      "phase": "Service",
-      "phaseClass": "phase-service",
+      "sla": "1 hour from recieving the filed complaint from the court",
+      "phase": "Service of Summons & Complaint",
+      "phaseClass": "phase-service-of-summons-complaint",
       "quickAction": "Service of Summons & Complaint",
-      "style": "service",
-      "connectsTo": ["J", "S"]
+      "style": "service-of-summons-complaint",
+      "connectsTo": [
+        "AF"
+      ],
+      "function": "Assigning summons & complaint to the process server for service, mark complete",
+      "notes": "Send the summons and complaint to the process server to effectuate service"
     },
     {
-      "id": "J",
-      "label": "Upload Affidavit of Service\nVerify & upload to court",
+      "id": "AF",
+      "label": "Uploading the affidavit of service to the court and then uploading the file copy from the court to Litify",
       "assignedTo": "Paralegal",
-      "sla": "1 hour from receiving affidavit",
-      "phase": "Service",
-      "phaseClass": "phase-service",
+      "sla": "1 hour from recieving the affidavit from the process server",
+      "phase": "Service of Summons & Complaint",
+      "phaseClass": "phase-service-of-summons-complaint",
       "quickAction": "Service of Summons & Complaint",
-      "style": "service",
-      "connectsTo": ["K", "T"]
+      "style": "service-of-summons-complaint",
+      "connectsTo": [
+        "AG"
+      ],
+      "function": "Uploading the affidavit of service to the court and then uploading the file copy from the court to Litify, mark complete",
+      "notes": "Verify affidavit of service"
     },
     {
-      "id": "K",
-      "label": "Court Notice: Initial Filing Notice",
-      "assignedTo": "Paralegal / Legal Asst",
-      "sla": "1 business day from receipt",
-      "phase": "Court",
-      "phaseClass": "phase-service",
+      "id": "AG",
+      "label": "Court initial filing notice from the court",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 business day from notice reciept",
+      "phase": "Court Notice",
+      "phaseClass": "phase-court-notice",
       "quickAction": "Court Notice",
-      "style": "service",
-      "connectsTo": ["L1"]
+      "style": "court-notice",
+      "connectsTo": [
+        "AH"
+      ],
+      "function": "Once recieved, mark complete",
+      "notes": "Court initial filing notice from the court"
     },
     {
-      "id": "L1",
+      "id": "AH",
       "label": "Follow Up Request 1",
       "assignedTo": "Legal Asst / Para",
-      "sla": "20 days from submission",
+      "sla": "20 days from the submission request",
       "phase": "Follow Up",
-      "phaseClass": "phase-followup",
+      "phaseClass": "phase-follow-up",
       "quickAction": "Follow Up",
-      "style": "followup",
-      "connectsTo": ["L2"]
+      "style": "follow-up",
+      "connectsTo": [
+        "AI"
+      ],
+      "function": "Submit Litify chatter, mark \"Follow Up Request 1\" as complete, if medical records recieved, mark \"Medical Records Recived\"",
+      "notes": "Follow up on the work getting done by medical records"
     },
     {
-      "id": "L2",
+      "id": "AI",
       "label": "Follow Up Request 2",
       "assignedTo": "Legal Asst / Para",
-      "sla": "27 days from submission",
+      "sla": "27 days from the submission request",
       "phase": "Follow Up",
-      "phaseClass": "phase-followup",
+      "phaseClass": "phase-follow-up",
       "quickAction": "Follow Up",
-      "style": "followup",
-      "connectsTo": ["L3"]
+      "style": "follow-up",
+      "connectsTo": [
+        "AJ"
+      ],
+      "function": "Submit Litify chatter, mark \"Follow Up Request 2\" as complete, if medical records recieved, mark \"Medical Records Recived\"",
+      "notes": "Follow up on the work getting done by medical records"
     },
     {
-      "id": "L3",
+      "id": "AJ",
       "label": "Follow Up Request 3",
       "assignedTo": "Legal Asst / Para",
-      "sla": "34 days from submission",
+      "sla": "34 days from the submission request",
       "phase": "Follow Up",
-      "phaseClass": "phase-followup",
+      "phaseClass": "phase-follow-up",
       "quickAction": "Follow Up",
-      "style": "followup",
-      "connectsTo": ["M1"]
+      "style": "follow-up",
+      "connectsTo": [
+        "AK"
+      ],
+      "function": "Submit Litify chatter, mark \"Follow Up Request 3\" as complete, if medical records recieved, mark \"Medical Records Recived\"",
+      "notes": "Follow up on the work getting done by medical records"
     },
     {
-      "id": "M1",
-      "label": "Mgmt Follow Up: Call/Chatter 1",
-      "assignedTo": "Paralegal Mgr / Team Lead",
-      "sla": "42 days from submission",
+      "id": "AK",
+      "label": "Call/Chatter Attempt 1",
+      "assignedTo": "Paralegal Manager / Team Lead",
+      "sla": "42 days from the submission request",
       "phase": "Follow Up",
-      "phaseClass": "phase-followup",
+      "phaseClass": "phase-follow-up",
       "quickAction": "Follow Up",
-      "style": "followup",
-      "connectsTo": ["M2"]
+      "style": "follow-up",
+      "connectsTo": [
+        "AL"
+      ],
+      "function": "Call or Submit Litify chatter, mark \"Management Follow Up Request 1\" as complete, if medical records recieved, mark \"Medical Records Recived\"",
+      "notes": "Follow up on the work getting done by medical records"
     },
     {
-      "id": "M2",
-      "label": "Mgmt Follow Up: Call/Chatter 2",
-      "assignedTo": "Paralegal Mgr / Team Lead",
-      "sla": "52 days from submission",
+      "id": "AL",
+      "label": "Call/Chatter Attempt 2",
+      "assignedTo": "Paralegal Manager / Team Lead",
+      "sla": "52 days from the submission request",
       "phase": "Follow Up",
-      "phaseClass": "phase-followup",
+      "phaseClass": "phase-follow-up",
       "quickAction": "Follow Up",
-      "style": "followup",
-      "connectsTo": ["M3"]
+      "style": "follow-up",
+      "connectsTo": [
+        "AM"
+      ],
+      "function": "Call or Submit Litify chatter, mark \"Management Follow Up Request 2\" as complete, if medical records recieved, mark \"Medical Records Recived\"",
+      "notes": "Follow up on the work getting done by medical records"
     },
     {
-      "id": "M3",
-      "label": "Mgmt Follow Up: Call/Chatter 3",
-      "assignedTo": "Paralegal Mgr / Team Lead",
-      "sla": "62 days from submission",
+      "id": "AM",
+      "label": "Call/Chatter Attempt 3",
+      "assignedTo": "Paralegal Manager / Team Lead",
+      "sla": "62 days from the submission request",
       "phase": "Follow Up",
-      "phaseClass": "phase-followup",
+      "phaseClass": "phase-follow-up",
       "quickAction": "Follow Up",
-      "style": "followup",
-      "connectsTo": ["N"]
+      "style": "follow-up",
+      "connectsTo": [
+        "AN"
+      ],
+      "function": "Call or Submit Litify chatter, mark \"Management Follow Up Request 3\" as complete, if medical records recieved, mark \"Medical Records Recived\"",
+      "notes": "Follow up on the work getting done by medical records"
     },
     {
-      "id": "N",
-      "label": "Doc Production: Subpoena\nMedical records, bills, films",
+      "id": "AN",
+      "label": "Draft a subpoena for medical records, bills, or films",
       "assignedTo": "Paralegal",
-      "sla": "67 days from submission",
-      "phase": "Subpoena",
-      "phaseClass": "phase-subpoena",
+      "sla": "67 days from the submission request",
+      "phase": "Doc Production",
+      "phaseClass": "phase-doc-production",
       "quickAction": "Doc Production",
-      "style": "subpoena",
-      "connectsTo": ["O"]
+      "style": "doc-production",
+      "connectsTo": [
+        "AO"
+      ],
+      "function": "Draft and mail/service subpeona to medical provider and cc defense counsel, mark complete",
+      "notes": "Subpoena for medical records, bills, or films"
     },
     {
-      "id": "O",
-      "label": "Doc Production: Proof of Service\nUpload to pleadings",
+      "id": "AO",
+      "label": "Uploading proof of service",
       "assignedTo": "Paralegal",
-      "sla": "77 days from submission",
-      "phase": "Subpoena",
-      "phaseClass": "phase-subpoena",
+      "sla": "77 days from the submission request",
+      "phase": "Doc Production",
+      "phaseClass": "phase-doc-production",
       "quickAction": "Doc Production",
-      "style": "subpoena",
-      "connectsTo": ["P"]
+      "style": "doc-production",
+      "connectsTo": [
+        "AP"
+      ],
+      "function": "Uploading proof of service and save to the pleadings folder in Litify, mark complete",
+      "notes": "Uploading proof of service"
     },
     {
-      "id": "P",
-      "label": "Follow Up: Verify Proof of Service",
+      "id": "AP",
+      "label": "File a motion to enforce litigants rights",
+      "assignedTo": "Paralegal",
+      "sla": "107 days from the submission request",
+      "phase": "Filing",
+      "phaseClass": "phase-filing",
+      "quickAction": "Filing",
+      "style": "filing",
+      "connectsTo": [
+        "AQ"
+      ],
+      "function": "File a motion to enforce litigants rights, upload copy to the motions folder, and calender the motion under the motions object in Litify, mark complete",
+      "notes": "File a motion to enforce litigants rights"
+    },
+    {
+      "id": "AQ",
+      "label": "Draft the summons and request service",
+      "assignedTo": "Paralegal",
+      "sla": "15 days from OA, unless longer than 20 days from assignment, then 1 day from OA",
+      "phase": "Doc Production",
+      "phaseClass": "phase-doc-production",
+      "quickAction": "Doc Production",
+      "style": "doc-production",
+      "connectsTo": [
+        "AR"
+      ],
+      "function": "Once drafted, and service initiated, mark complete",
+      "notes": "Draft the summons and request service"
+    },
+    {
+      "id": "AR",
+      "label": "Proof of service",
       "assignedTo": "Paralegal",
       "sla": "35 days from OA",
       "phase": "Follow Up",
-      "phaseClass": "phase-followup",
+      "phaseClass": "phase-follow-up",
       "quickAction": "Follow Up",
-      "style": "followup",
-      "connectsTo": ["Q"]
+      "style": "follow-up",
+      "connectsTo": [
+        "AS"
+      ],
+      "function": "Once verify, mark complete",
+      "notes": "Verify proof of service"
     },
     {
-      "id": "Q",
-      "label": "Doc Production: Resolve Non-Service\nPostal search, skip trace, DMV",
+      "id": "AS",
+      "label": "Resolving non-service",
       "assignedTo": "Paralegal",
       "sla": "36 days from OA",
-      "phase": "Resolve",
-      "phaseClass": "phase-subpoena",
+      "phase": "Doc Production",
+      "phaseClass": "phase-doc-production",
       "quickAction": "Doc Production",
-      "style": "subpoena",
-      "connectsTo": ["R"]
+      "style": "doc-production",
+      "connectsTo": [
+        "AT"
+      ],
+      "function": "Once verify, mark complete",
+      "notes": "Postal search, skip trace, court search, DMV search"
     },
     {
-      "id": "R",
-      "label": "Filing: Motion for Substitute Service",
+      "id": "AT",
+      "label": "Resolving non-service",
       "assignedTo": "Paralegal",
       "sla": "56 days from OA",
       "phase": "Filing",
-      "phaseClass": "phase-default",
+      "phaseClass": "phase-filing",
       "quickAction": "Filing",
-      "style": "defaultfil",
-      "connectsTo": ["W"]
+      "style": "filing",
+      "connectsTo": [
+        "AU"
+      ],
+      "function": "File a motion, upload copy to the motions folder, and calender the motion under the motions object in Litify, mark complete",
+      "notes": "Filing motion for substitute service"
     },
     {
-      "id": "S",
-      "label": "Doc Production: Draft Summons & Service",
-      "assignedTo": "Paralegal",
-      "sla": "15 days from OA",
-      "phase": "Service",
-      "phaseClass": "phase-service",
-      "quickAction": "Service of Summons & Complaint",
-      "style": "service",
-      "connectsTo": []
-    },
-    {
-      "id": "T",
-      "label": "Filing: File Affidavits of Service",
+      "id": "AU",
+      "label": "File afadavits of service",
       "assignedTo": "Paralegal",
       "sla": "40 days from OA",
       "phase": "Filing",
-      "phaseClass": "phase-default",
+      "phaseClass": "phase-filing",
       "quickAction": "Filing",
-      "style": "defaultfil",
-      "connectsTo": ["U"]
+      "style": "filing",
+      "connectsTo": [
+        "AV"
+      ],
+      "function": "File, save in pleadings folder, mark complete",
+      "notes": "File afadavits of service"
     },
     {
-      "id": "U",
-      "label": "Filing: Request to Enter Default",
+      "id": "AV",
+      "label": "File request to enter default",
       "assignedTo": "Paralegal",
       "sla": "35 days from date of service",
       "phase": "Filing",
-      "phaseClass": "phase-default",
+      "phaseClass": "phase-filing",
       "quickAction": "Filing",
-      "style": "defaultfil",
-      "connectsTo": ["V"]
+      "style": "filing",
+      "connectsTo": [
+        "AW"
+      ],
+      "function": "File, save in pleadings folder, mark complete",
+      "notes": "File request to enter default"
     },
     {
-      "id": "V",
-      "label": "Auto: Send Filed Default Request",
+      "id": "AW",
+      "label": "Sending the filed request to enter default to defendant and insurance carrier, via certified and regular mail",
       "assignedTo": "System Automation",
       "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-auto",
+      "phase": "Automated Doc Request",
+      "phaseClass": "phase-automated-doc-request",
       "quickAction": "Automated Doc Request",
-      "style": "auto",
-      "connectsTo": ["X1"]
+      "style": "automated-doc-request",
+      "connectsTo": [
+        "AX"
+      ],
+      "function": "As soon as the request to enter default is submitted this happens immediately",
+      "notes": "Sending the filed request to enter default to defendant and insurance carrier, via certified and regular mail"
     },
     {
-      "id": "W",
-      "label": "Filing: Motion to Enforce Litigants Rights",
-      "assignedTo": "Paralegal",
-      "sla": "107 days from submission",
-      "phase": "Filing",
-      "phaseClass": "phase-default",
-      "quickAction": "Filing",
-      "style": "defaultfil",
-      "connectsTo": []
-    },
-    {
-      "id": "X1",
+      "id": "AX",
       "label": "Supportive Doc Production 1",
       "assignedTo": "Legal Asst / Para",
-      "sla": "1 hour from Mgr approval",
-      "phase": "Supportive",
-      "phaseClass": "phase-supportive",
+      "sla": "1 hours from Manager approval",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
       "quickAction": "Supportive Doc Production",
-      "style": "supportive",
-      "connectsTo": ["X2"]
+      "style": "supportive-doc-production",
+      "connectsTo": [
+        "AY"
+      ],
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
     },
     {
-      "id": "X2",
+      "id": "AY",
       "label": "Supportive Doc Production 2",
       "assignedTo": "Legal Asst / Para",
-      "sla": "3 hours from Mgr approval",
-      "phase": "Supportive",
-      "phaseClass": "phase-supportive",
+      "sla": "3 hours from Manager approval",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
       "quickAction": "Supportive Doc Production",
-      "style": "supportive",
-      "connectsTo": ["X3"]
+      "style": "supportive-doc-production",
+      "connectsTo": [
+        "AZ"
+      ],
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
     },
     {
-      "id": "X3",
+      "id": "AZ",
       "label": "Supportive Doc Production 3",
       "assignedTo": "Legal Asst / Para",
-      "sla": "5 hours from Mgr approval",
-      "phase": "Supportive",
-      "phaseClass": "phase-supportive",
+      "sla": "5 hour from Manager approval",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
       "quickAction": "Supportive Doc Production",
-      "style": "supportive",
-      "connectsTo": ["Y"]
+      "style": "supportive-doc-production",
+      "connectsTo": [
+        "BA"
+      ],
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
     },
     {
-      "id": "Y",
-      "label": "Court Filing Notice",
-      "assignedTo": "Paralegal / Legal Asst",
-      "sla": "1 business day from receipt",
-      "phase": "Court",
-      "phaseClass": "phase-service",
+      "id": "BA",
+      "label": "Court filing notice",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 business day from notice reciept",
+      "phase": "Court Filing Notice",
+      "phaseClass": "phase-court-filing-notice",
       "quickAction": "Court Filing Notice",
-      "style": "service",
-      "connectsTo": []
+      "style": "court-filing-notice",
+      "connectsTo": [],
+      "function": "Once recieved, mark complete, upload to Litify, mark complete",
+      "notes": "Inputing filing notice has been recieved"
     }
   ],
   "styles": {
-    "setup": { "fill": "#1565c0", "stroke": "#0d47a1", "color": "#fff" },
-    "auto": { "fill": "#2e7d32", "stroke": "#1b5e20", "color": "#fff" },
-    "docreq": { "fill": "#e65100", "stroke": "#bf360c", "color": "#fff" },
-    "review": { "fill": "#6a1b9a", "stroke": "#4a148c", "color": "#fff" },
-    "complaint": { "fill": "#c62828", "stroke": "#b71c1c", "color": "#fff" },
-    "service": { "fill": "#00838f", "stroke": "#006064", "color": "#fff" },
-    "followup": { "fill": "#f9a825", "stroke": "#f57f17", "color": "#333" },
-    "subpoena": { "fill": "#4e342e", "stroke": "#3e2723", "color": "#fff" },
-    "defaultfil": { "fill": "#37474f", "stroke": "#263238", "color": "#fff" },
-    "supportive": { "fill": "#ad1457", "stroke": "#880e4f", "color": "#fff" }
+    "client-orientation": {
+      "fill": "#dbe7f5",
+      "stroke": "#1565c0",
+      "color": "#222"
+    },
+    "case-setup": {
+      "fill": "#dcdeeb",
+      "stroke": "#1a237e",
+      "color": "#222"
+    },
+    "automated-doc-request": {
+      "fill": "#dfebe0",
+      "stroke": "#2e7d32",
+      "color": "#222"
+    },
+    "doc-request": {
+      "fill": "#fbe4d8",
+      "stroke": "#e65100",
+      "color": "#222"
+    },
+    "review": {
+      "fill": "#e8dcef",
+      "stroke": "#6a1b9a",
+      "color": "#222"
+    },
+    "doc-production": {
+      "fill": "#fbe4d8",
+      "stroke": "#e65100",
+      "color": "#222"
+    },
+    "approval": {
+      "fill": "#e8dcef",
+      "stroke": "#6a1b9a",
+      "color": "#222"
+    },
+    "filing": {
+      "fill": "#f6dede",
+      "stroke": "#c62828",
+      "color": "#222"
+    },
+    "service-of-summons-complaint": {
+      "fill": "#d8ecee",
+      "stroke": "#00838f",
+      "color": "#222"
+    },
+    "court-notice": {
+      "fill": "#e1e3e4",
+      "stroke": "#37474f",
+      "color": "#222"
+    },
+    "follow-up": {
+      "fill": "#fef1de",
+      "stroke": "#f9a825",
+      "color": "#222"
+    },
+    "supportive-doc-production": {
+      "fill": "#f2dbe5",
+      "stroke": "#ad1457",
+      "color": "#222"
+    },
+    "court-filing-notice": {
+      "fill": "#e1e3e4",
+      "stroke": "#37474f",
+      "color": "#222"
+    }
   }
 }

@@ -1,160 +1,484 @@
 {
   "id": "discovery",
-  "title": "LIT: Discovery",
-  "subtitle": "12 tasks — Discovery Drafting, Client Appointment Scheduling & Finalization",
-  "headerClass": "discovery",
-  "themeColor": "#b71c1c",
-  "thClass": "discovery-section",
-  "sectionClass": "discovery-section",
-  "tableColumns": ["#", "Phase", "Quick Action Panel", "Assigned To", "Task", "SLA"],
+  "title": "Discovery",
+  "subtitle": "26 tasks — Discovery through Court Filing Notice",
+  "headerClass": "",
+  "themeColor": "#0d47a1",
+  "thClass": "",
+  "sectionClass": "",
+  "tableColumns": [
+    "#",
+    "Phase",
+    "Quick Action Panel",
+    "Assigned To",
+    "Task",
+    "SLA"
+  ],
   "legend": [
-    { "label": "Discovery Drafting", "color": "#1565c0" },
-    { "label": "Call Attempts", "color": "#c62828" },
-    { "label": "Auto Letters", "color": "#2e7d32" },
-    { "label": "Management Escalation", "color": "#ff6f00" },
-    { "label": "Attorney Tasks", "color": "#6a1b9a" }
+    {
+      "label": "Discovery",
+      "color": "#0d47a1"
+    },
+    {
+      "label": "Client Discovery Appt",
+      "color": "#0d47a1"
+    },
+    {
+      "label": "Client Orientation",
+      "color": "#1565c0"
+    },
+    {
+      "label": "Management Escalation",
+      "color": "#c62828"
+    },
+    {
+      "label": "Case Setup",
+      "color": "#1a237e"
+    },
+    {
+      "label": "Approval",
+      "color": "#6a1b9a"
+    },
+    {
+      "label": "Supportive Doc Production",
+      "color": "#ad1457"
+    },
+    {
+      "label": "Court Filing Notice",
+      "color": "#37474f"
+    }
   ],
   "tasks": [
     {
-      "id": "D1",
+      "id": "A",
       "label": "Draft Plaintiff's Discovery Responses",
-      "emoji": "\ud83d\udcdd",
       "assignedTo": "Legal Asst / Para",
       "sla": "30 days from complaint filed",
-      "phase": "Draft",
-      "phaseClass": "phase-setup",
+      "phase": "Discovery",
+      "phaseClass": "phase-discovery",
       "quickAction": "Discovery",
-      "style": "draft",
-      "connectsTo": ["CA1"],
+      "style": "discovery",
+      "connectsTo": [
+        "B"
+      ],
+      "function": "Once completed update discovery tracker in Litify, submit to attorney for review, mark complete",
+      "notes": "Draft and send to attroney for review, update discovery tracker",
       "isStartNode": true
     },
     {
-      "id": "CA1",
-      "label": "Client Discovery Appt\nCall Attempt 1",
+      "id": "B",
+      "label": "Call Disovery Appt Attempt 1",
       "assignedTo": "Legal Asst / Para",
-      "sla": "Day 31 after complaint filed",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "10am on the 31st day after complaint is filed",
+      "phase": "Client Discovery Appt",
+      "phaseClass": "phase-client-discovery-appt",
       "quickAction": "Client Discovery Appt",
-      "style": "callattempt",
-      "connectsTo": ["CA2"]
+      "style": "client-discovery-appt",
+      "connectsTo": [
+        "C"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V1, send SMS 1, send Email 1, mark \"Call Discovery Appointment Attempt 1 Complete\"",
+      "notes": "Discovery Appointment."
     },
     {
-      "id": "CA2",
-      "label": "Client Discovery Appt\nCall Attempt 2",
+      "id": "C",
+      "label": "Call Disovery Appt Attempt 2",
       "assignedTo": "Legal Asst / Para",
-      "sla": "Day 32 after complaint filed",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "1pm on the 32nd day after complaint is filed",
+      "phase": "Client Discovery Appt",
+      "phaseClass": "phase-client-discovery-appt",
       "quickAction": "Client Discovery Appt",
-      "style": "callattempt",
-      "connectsTo": ["CA3"]
+      "style": "client-discovery-appt",
+      "connectsTo": [
+        "D"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V2, send SMS 2, send Email 2, mark \"Call Discovery Appointment Attempt 2 Complete\"",
+      "notes": "Discovery Appointment."
     },
     {
-      "id": "CA3",
-      "label": "Client Discovery Appt\nCall Attempt 3",
+      "id": "D",
+      "label": "Call Disovery Appt Attempt 3",
       "assignedTo": "Legal Asst / Para",
-      "sla": "Day 33 after complaint filed",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "4pm on the 33rd day after complaint is filed",
+      "phase": "Client Discovery Appt",
+      "phaseClass": "phase-client-discovery-appt",
       "quickAction": "Client Discovery Appt",
-      "style": "callattempt",
-      "connectsTo": ["L1"]
+      "style": "client-discovery-appt",
+      "connectsTo": [
+        "E"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V3, send SMS 3, send Email 3, mark \"Call Discovery Appointment Attempt 3 Complete\"",
+      "notes": "Discovery Appointment."
     },
     {
-      "id": "L1",
-      "label": "Auto: Send Contact Letter 1",
+      "id": "E",
+      "label": "Send Discovery Appointment / Contact Letter",
       "assignedTo": "System Automation",
       "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-letter",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
       "quickAction": "Client Orientation",
-      "style": "autoletter",
-      "connectsTo": ["CA4"]
+      "style": "client-orientation",
+      "connectsTo": [
+        "F"
+      ],
+      "function": "If no contact by the beginning of the 16th day, the letter is automatically sent by the system",
+      "notes": "Update the client"
     },
     {
-      "id": "CA4",
-      "label": "Client Discovery Appt\nCall Attempt 4",
+      "id": "F",
+      "label": "Call Disovery Appt Attempt 4",
       "assignedTo": "Legal Asst / Para",
-      "sla": "Day 45 after complaint filed",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "10am on the 45 day after complaint is filed",
+      "phase": "Client Discovery Appt",
+      "phaseClass": "phase-client-discovery-appt",
       "quickAction": "Client Discovery Appt",
-      "style": "callattempt",
-      "connectsTo": ["CA5"]
+      "style": "client-discovery-appt",
+      "connectsTo": [
+        "G"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V4, send SMS 4, send Email 4, mark \"Call Discovery Appointment Attempt 4 Complete\"",
+      "notes": "Discovery Appointment."
     },
     {
-      "id": "CA5",
-      "label": "Client Discovery Appt\nCall Attempt 5",
+      "id": "G",
+      "label": "Call Disovery Appt Attempt 5",
       "assignedTo": "Legal Asst / Para",
-      "sla": "Day 46 after complaint filed",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "1pm on the 46 day after complaint is filed",
+      "phase": "Client Discovery Appt",
+      "phaseClass": "phase-client-discovery-appt",
       "quickAction": "Client Discovery Appt",
-      "style": "callattempt",
-      "connectsTo": ["CA6"]
+      "style": "client-discovery-appt",
+      "connectsTo": [
+        "H"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V5, send SMS 55, send Email 5, mark \"Call Discovery Appointment Attempt 5 Complete\"",
+      "notes": "Discovery Appointment."
     },
     {
-      "id": "CA6",
-      "label": "Client Discovery Appt\nCall Attempt 6",
+      "id": "H",
+      "label": "Call Disovery Appt Attempt 6",
       "assignedTo": "Legal Asst / Para",
-      "sla": "Day 47 after complaint filed",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "4pm on the 47 day after complaint is filed",
+      "phase": "Client Discovery Appt",
+      "phaseClass": "phase-client-discovery-appt",
       "quickAction": "Client Discovery Appt",
-      "style": "callattempt",
-      "connectsTo": ["L2"]
+      "style": "client-discovery-appt",
+      "connectsTo": [
+        "I"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V6, send SMS 6, send Email 6, mark \"Call Discovery Appointment Attempt 6 Complete\"",
+      "notes": "Discovery Appointment."
     },
     {
-      "id": "L2",
-      "label": "Auto: Send Contact Letter 2",
+      "id": "I",
+      "label": "Send Discovery Appointment / Contact Letter 2",
       "assignedTo": "System Automation",
       "sla": "Automation",
-      "phase": "Auto",
-      "phaseClass": "phase-letter",
+      "phase": "Client Orientation",
+      "phaseClass": "phase-client-orientation",
       "quickAction": "Client Orientation",
-      "style": "autoletter",
-      "connectsTo": ["ME"]
+      "style": "client-orientation",
+      "connectsTo": [
+        "J"
+      ],
+      "function": "If no contact by the beginning of the 47th day, the letter is automatically sent by the system",
+      "notes": "Update the client"
     },
     {
-      "id": "ME",
-      "label": "Management Escalation\nDiscovery Appointment",
+      "id": "J",
+      "label": "Discovery Appointment",
       "assignedTo": "System Automation",
-      "sla": "Day 49 after complaint filed",
-      "phase": "Escalation",
-      "phaseClass": "phase-milestone",
+      "sla": "On day 49 from after the complaint is filed",
+      "phase": "Management Escalation",
+      "phaseClass": "phase-management-escalation",
       "quickAction": "Management Escalation",
-      "style": "mgmt",
-      "connectsTo": ["DA"]
+      "style": "management-escalation",
+      "connectsTo": [
+        "K"
+      ],
+      "function": "If still no completed appointment, system automatically sends alert and notification to management that this is blocked",
+      "notes": "Discovery Appointment"
     },
     {
-      "id": "DA",
-      "label": "Client Discovery Appt\nDiscovery Appointment",
+      "id": "K",
+      "label": "Discovery Appointment",
       "assignedTo": "Attorney",
-      "sla": "No later than 5 days",
-      "phase": "Attorney",
-      "phaseClass": "phase-review",
+      "sla": "No later than 5 days from the day the conversation happens, or if needed, escalate to Management, mark complete",
+      "phase": "Client Discovery Appt",
+      "phaseClass": "phase-client-discovery-appt",
       "quickAction": "Client Discovery Appt",
-      "style": "attorney",
-      "connectsTo": ["FIN"]
+      "style": "client-discovery-appt",
+      "connectsTo": [
+        "L"
+      ],
+      "function": "If completed, mark \"Complete\"",
+      "notes": "Discovery Appointment Agenda (Client Meeting)\n\n0) Opening and expectations (2–3 min)\nIntroduce team + roles (who does what, how to reach you)\nPurpose of today: “Confirm facts, protect the claim, strengthen the case, and set expectations.”\nConfidentiality + honesty: remind them accuracy matters more than “sounding good”\nMeeting structure: “I’ll ask detailed questions, then we’ll confirm next steps.”\n\n1) Client goals + priorities (3–5 min)\n“What are your top concerns right now?”\n“What outcome..."
     },
     {
-      "id": "FIN",
+      "id": "L",
+      "label": "Clent Profile Scoring",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "M"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "It would be required that these scores be re-scored or a “No Change” score entered, every time a case manager progressed a case. Again, this is only for the case profile. These dials would be shown in a dashboard at the top of every matter panel view. \n\nAny thoughts? Additions? Revisions? \n\n“What...\n\nInput all needed info for below: \n\n“What to do” box: \n•        “If Demand-Ready % < X → add demand sprint + records chase”\n•        “If gaps > X → treatment monitoring protocol triggers”\n•        “If liability score low → early lit evaluation”\n\n“Top 10 Action List” widget\n•        A live list that updates daily:\no        Oldest demands not sent\no        Highest value cases missing records\no        Top cases with expiring deadlines\no        Top 10 stalled negotiations\no        Top 10 clients at..."
+    },
+    {
+      "id": "M",
+      "label": "Liability Profile Scoring System",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "N"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "Defense Pressure & Settlement Leverage Model\n\nPurpose\n\nThis model measures:\n\n1. How difficult it is for the defense to escape fault\n2. How predictable a jury outcome would be\n3. How expensive and risky it is for the carrier to fight\n\nWhen measured consistently, these scores become powerful...\n\nLiability setup and scoring"
+    },
+    {
+      "id": "N",
+      "label": "Policy & Collectability Scoring System",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "O"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "Transportation \nNo insurance, auto or health - will it work to give a letter of protection (LOP)\n\nRecovery Power & Payment Predictability Model\n\nPurpose\n\nThis system measures:\n•        How much insurance money is realistically available\n•        How difficult it will be to access it\n•        How...\n\nPolicy setup and scoring"
+    },
+    {
+      "id": "O",
+      "label": "Treatment Strength Index (TSI)",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "P"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "A structured way to rate the **quality, seriousness, credibility, and profitability** of medical treatment.\n\nYou can use 1–5 scales, color ratings, or weighted points.\n\nBody parts are experiencing pain\nPain levels\nNew injury or an excacerbated injury\nFracture or a scar\n\n\n\nThe 5 Master Treatment...\n\nTreatment setup and scoring"
+    },
+    {
+      "id": "P",
+      "label": "Comprehensive Case Performance Index (CPI)",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "Q"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "“How strong is this file as a business asset?”\nThis index measures how efficiently, profitably, and strategically viable the case is — independent of liability, policy, treatment, or client personality.\n\nThe 7 Pillars of the Case Performance Index\nEach scored 0–20\nTotal = 0–140\nConverted to 0–100...\n\nCase scoring"
+    },
+    {
+      "id": "Q",
       "label": "Finalize Discovery Responses",
       "assignedTo": "Attorney",
-      "sla": "2 days after appointment",
-      "phase": "Attorney",
-      "phaseClass": "phase-review",
+      "sla": "2 days after appointment with client",
+      "phase": "Discovery",
+      "phaseClass": "phase-discovery",
       "quickAction": "Discovery",
-      "style": "attorney",
-      "connectsTo": []
+      "style": "discovery",
+      "connectsTo": [
+        "R"
+      ],
+      "function": "Completing discovery responses, assigning to para with additional notes and instructions",
+      "notes": "Finalize Discovery Responses"
+    },
+    {
+      "id": "R",
+      "label": "Approve Discovery Responses",
+      "assignedTo": "Attorney",
+      "sla": "6 days after completion of the discovery appt",
+      "phase": "Approval",
+      "phaseClass": "phase-approval",
+      "quickAction": "Approval",
+      "style": "approval",
+      "connectsTo": [
+        "S"
+      ],
+      "function": "Review complaint, mark complete",
+      "notes": "Approve Discovery Responses"
+    },
+    {
+      "id": "S",
+      "label": "Finalize discovery responses serve upon defense counsel",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "10 days after defendant files answer",
+      "phase": "Discovery",
+      "phaseClass": "phase-discovery",
+      "quickAction": "Discovery",
+      "style": "discovery",
+      "connectsTo": [
+        "T"
+      ],
+      "function": "Finalize and service via email, save final copy in Plaintiff's Discovery, mark completed, update discovery tracker, add service date to Matter Dates",
+      "notes": "Letter/pleading"
+    },
+    {
+      "id": "T",
+      "label": "10 Day Good Faith Letter",
+      "assignedTo": "System Automation",
+      "sla": "60 days after answer is filed and plaintiff's discovery is served",
+      "phase": "Discovery",
+      "phaseClass": "phase-discovery",
+      "quickAction": "Discovery",
+      "style": "discovery",
+      "connectsTo": [
+        "U"
+      ],
+      "function": "Automated",
+      "notes": "Letter/pleading"
+    },
+    {
+      "id": "U",
+      "label": "Draft Motion to Compel Disc Responses",
+      "assignedTo": "Paralegal",
+      "sla": "70 days after answer is filed and plaintiff's discovery is served",
+      "phase": "Discovery",
+      "phaseClass": "phase-discovery",
+      "quickAction": "Discovery",
+      "style": "discovery",
+      "connectsTo": [
+        "V"
+      ],
+      "function": "Court Submission, Saved filed copy in Motions Folder, Calendar the Return date, mark completed",
+      "notes": "Pleading - File Motion"
+    },
+    {
+      "id": "V",
+      "label": "Report on outcome of the motion to compel. Choose if granted, denied, withdrawn",
+      "assignedTo": "Paralegal",
+      "sla": "3 hours from recieving the order",
+      "phase": "Discovery",
+      "phaseClass": "phase-discovery",
+      "quickAction": "Discovery",
+      "style": "discovery",
+      "connectsTo": [
+        "W"
+      ],
+      "function": "Report in Litify on outcome of the motion to compel. Choose if granted, denied, withdrawn, mark complete",
+      "notes": "Report on court order or motion outcome"
+    },
+    {
+      "id": "W",
+      "label": "Supportive Doc Production 1",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "1 hour from Manager approval",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
+      "quickAction": "Supportive Doc Production",
+      "style": "supportive-doc-production",
+      "connectsTo": [
+        "X"
+      ],
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
+    },
+    {
+      "id": "X",
+      "label": "Supportive Doc Production 2",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "3 hours from Manager approval",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
+      "quickAction": "Supportive Doc Production",
+      "style": "supportive-doc-production",
+      "connectsTo": [
+        "Y"
+      ],
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
+    },
+    {
+      "id": "Y",
+      "label": "Supportive Doc Production 3",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "5 hours from Manager approval",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
+      "quickAction": "Supportive Doc Production",
+      "style": "supportive-doc-production",
+      "connectsTo": [
+        "Z"
+      ],
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
+    },
+    {
+      "id": "Z",
+      "label": "Court discovery end date reminder notice, everytime we recieve one, each time we get one the upload and input needs t...",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 business day from notice reciept",
+      "phase": "Court Filing Notice",
+      "phaseClass": "phase-court-filing-notice",
+      "quickAction": "Court Filing Notice",
+      "style": "court-filing-notice",
+      "connectsTo": [],
+      "function": "Once recieved, mark complete, upload to Litify, mark complete, input the discovery end date, mark complete",
+      "notes": "Inputing discovery end date reminder notice"
     }
   ],
   "styles": {
-    "draft": { "fill": "#1565c0", "stroke": "#0d47a1", "color": "#fff" },
-    "callattempt": { "fill": "#c62828", "stroke": "#b71c1c", "color": "#fff" },
-    "autoletter": { "fill": "#2e7d32", "stroke": "#1b5e20", "color": "#fff" },
-    "mgmt": { "fill": "#ff6f00", "stroke": "#e65100", "color": "#fff" },
-    "attorney": { "fill": "#6a1b9a", "stroke": "#4a148c", "color": "#fff" }
+    "discovery": {
+      "fill": "#dae3f0",
+      "stroke": "#0d47a1",
+      "color": "#222"
+    },
+    "client-discovery-appt": {
+      "fill": "#dae3f0",
+      "stroke": "#0d47a1",
+      "color": "#222"
+    },
+    "client-orientation": {
+      "fill": "#dbe7f5",
+      "stroke": "#1565c0",
+      "color": "#222"
+    },
+    "management-escalation": {
+      "fill": "#f6dede",
+      "stroke": "#c62828",
+      "color": "#222"
+    },
+    "case-setup": {
+      "fill": "#dcdeeb",
+      "stroke": "#1a237e",
+      "color": "#222"
+    },
+    "approval": {
+      "fill": "#e8dcef",
+      "stroke": "#6a1b9a",
+      "color": "#222"
+    },
+    "supportive-doc-production": {
+      "fill": "#f2dbe5",
+      "stroke": "#ad1457",
+      "color": "#222"
+    },
+    "court-filing-notice": {
+      "fill": "#e1e3e4",
+      "stroke": "#37474f",
+      "color": "#222"
+    }
   }
 }

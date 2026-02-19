@@ -1,0 +1,287 @@
+{
+  "id": "arbitration-mediation",
+  "title": "Arbitration/Mediation",
+  "subtitle": "13 tasks — Court Notice through Documentation",
+  "headerClass": "",
+  "themeColor": "#5d4037",
+  "thClass": "",
+  "sectionClass": "",
+  "tableColumns": [
+    "#",
+    "Phase",
+    "Quick Action Panel",
+    "Assigned To",
+    "Task",
+    "SLA"
+  ],
+  "legend": [
+    {
+      "label": "Court Notice",
+      "color": "#37474f"
+    },
+    {
+      "label": "Client Notice",
+      "color": "#37474f"
+    },
+    {
+      "label": "Case Prep",
+      "color": "#5d4037"
+    },
+    {
+      "label": "Doc Production",
+      "color": "#e65100"
+    },
+    {
+      "label": "Court Filing",
+      "color": "#c62828"
+    },
+    {
+      "label": "Calendar",
+      "color": "#546e7a"
+    },
+    {
+      "label": "Automation",
+      "color": "#546e7a"
+    },
+    {
+      "label": "Preparartion",
+      "color": "#5d4037"
+    },
+    {
+      "label": "Documentation",
+      "color": "#0d47a1"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "A",
+      "label": "Calendar arbitration notice from the court",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 business day from notice reciept",
+      "phase": "Court Notice",
+      "phaseClass": "phase-court-notice",
+      "quickAction": "Court Notice",
+      "style": "court-notice",
+      "connectsTo": [
+        "B"
+      ],
+      "function": "Once recieved, mark complete",
+      "notes": "Calendar arbitration notice from the court",
+      "isStartNode": true
+    },
+    {
+      "id": "B",
+      "label": "Arbitration notice to the client",
+      "assignedTo": "System Automation",
+      "sla": "",
+      "phase": "Client Notice",
+      "phaseClass": "phase-client-notice",
+      "quickAction": "Client Notice",
+      "style": "client-notice",
+      "connectsTo": [
+        "C"
+      ],
+      "function": "System Automation",
+      "notes": "Send ltr/text and email to client with arbitration ntoice"
+    },
+    {
+      "id": "C",
+      "label": "Confirm all expert reports were served, medical bills balance and lien balance",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Case Prep",
+      "phaseClass": "phase-case-prep",
+      "quickAction": "Case Prep",
+      "style": "case-prep",
+      "connectsTo": [
+        "D"
+      ],
+      "notes": "File review, call/email obtain updated bill balance and updated lien information"
+    },
+    {
+      "id": "D",
+      "label": "Draft arbitration statement",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Case Prep",
+      "phaseClass": "phase-case-prep",
+      "quickAction": "Case Prep",
+      "style": "case-prep",
+      "connectsTo": [
+        "E"
+      ],
+      "notes": "Prepared arbitration statement and send to attorney for final edits and approval"
+    },
+    {
+      "id": "E",
+      "label": "Finalize arbitration statement",
+      "assignedTo": "Attorney",
+      "sla": "",
+      "phase": "Case Prep",
+      "phaseClass": "phase-case-prep",
+      "quickAction": "Case Prep",
+      "style": "case-prep",
+      "connectsTo": [
+        "F"
+      ],
+      "notes": "Finalized arb statement send to paralegal to send to arbitrator and def counsel"
+    },
+    {
+      "id": "F",
+      "label": "Arbitration Statement",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Doc Production",
+      "phaseClass": "phase-doc-production",
+      "quickAction": "Doc Production",
+      "style": "doc-production",
+      "connectsTo": [
+        "G"
+      ],
+      "notes": "Send arb statement to def counsel and arbitrator"
+    },
+    {
+      "id": "G",
+      "label": "Draft and file Demand for Trial De Novo",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Court Filing",
+      "phaseClass": "phase-court-filing",
+      "quickAction": "Court Filing",
+      "style": "court-filing",
+      "connectsTo": [
+        "H"
+      ],
+      "notes": "File Trial De Novo"
+    },
+    {
+      "id": "H",
+      "label": "Calendar mediation date",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Calendar",
+      "phaseClass": "phase-calendar",
+      "quickAction": "Calendar",
+      "style": "calendar",
+      "connectsTo": [
+        "I"
+      ],
+      "notes": "Calendar mediation"
+    },
+    {
+      "id": "I",
+      "label": "Mediation notice to the client",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Automation",
+      "phaseClass": "phase-automation",
+      "quickAction": "Automation",
+      "style": "automation",
+      "connectsTo": [
+        "J"
+      ],
+      "notes": "Send ltr/text and email to client with mediation ntoice"
+    },
+    {
+      "id": "J",
+      "label": "Confirm all expert reports were served, medical bills balance and lien balance",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Preparartion",
+      "phaseClass": "phase-preparartion",
+      "quickAction": "Preparartion",
+      "style": "preparartion",
+      "connectsTo": [
+        "K"
+      ],
+      "notes": "File review, call/email obtain updated bill balance and updated lien information"
+    },
+    {
+      "id": "K",
+      "label": "Draft mediation statement",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Preparartion",
+      "phaseClass": "phase-preparartion",
+      "quickAction": "Preparartion",
+      "style": "preparartion",
+      "connectsTo": [
+        "L"
+      ],
+      "notes": "Prepared mediation statement and send to attorney for final edits and approval"
+    },
+    {
+      "id": "L",
+      "label": "Finalize mediation statement",
+      "assignedTo": "Attorney",
+      "sla": "",
+      "phase": "Preparartion",
+      "phaseClass": "phase-preparartion",
+      "quickAction": "Preparartion",
+      "style": "preparartion",
+      "connectsTo": [
+        "M"
+      ],
+      "notes": "Finalized mediation statement send to paralegal to send to mediator"
+    },
+    {
+      "id": "M",
+      "label": "Mediation Statement",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "",
+      "phase": "Documentation",
+      "phaseClass": "phase-documentation",
+      "quickAction": "Documentation",
+      "style": "documentation",
+      "connectsTo": [],
+      "notes": "Send mediation statement to mediator"
+    }
+  ],
+  "styles": {
+    "court-notice": {
+      "fill": "#e1e3e4",
+      "stroke": "#37474f",
+      "color": "#222"
+    },
+    "client-notice": {
+      "fill": "#e1e3e4",
+      "stroke": "#37474f",
+      "color": "#222"
+    },
+    "case-prep": {
+      "fill": "#e6e2e1",
+      "stroke": "#5d4037",
+      "color": "#222"
+    },
+    "doc-production": {
+      "fill": "#fbe4d8",
+      "stroke": "#e65100",
+      "color": "#222"
+    },
+    "court-filing": {
+      "fill": "#f6dede",
+      "stroke": "#c62828",
+      "color": "#222"
+    },
+    "calendar": {
+      "fill": "#e5e9eb",
+      "stroke": "#546e7a",
+      "color": "#222"
+    },
+    "automation": {
+      "fill": "#e5e9eb",
+      "stroke": "#546e7a",
+      "color": "#222"
+    },
+    "preparartion": {
+      "fill": "#e6e2e1",
+      "stroke": "#5d4037",
+      "color": "#222"
+    },
+    "documentation": {
+      "fill": "#dae3f0",
+      "stroke": "#0d47a1",
+      "color": "#222"
+    }
+  }
+}

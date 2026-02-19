@@ -1,303 +1,467 @@
 {
   "id": "treatment-monitoring",
   "title": "Treatment Monitoring",
-  "subtitle": "21 tasks — Client Communication, Liens Audit, Discovery & Supportive Docs (repeats over 2 years)",
-  "headerClass": "treatment",
-  "themeColor": "#004d40",
-  "thClass": "treatment-section",
-  "sectionClass": "treatment-section",
-  "tableColumns": ["#", "Phase", "Quick Action Panel", "Assigned To", "Task", "Function", "SLA"],
+  "subtitle": "25 tasks — Treatment Monitoring or Client Communication through Supportive Doc Production",
+  "headerClass": "",
+  "themeColor": "#00695c",
+  "thClass": "",
+  "sectionClass": "",
+  "tableColumns": [
+    "#",
+    "Phase",
+    "Quick Action Panel",
+    "Assigned To",
+    "Task",
+    "SLA"
+  ],
   "legend": [
-    { "label": "Call Attempts", "color": "#1565c0" },
-    { "label": "Auto Letters", "color": "#2e7d32" },
-    { "label": "Back to Intake", "color": "#6a1b9a" },
-    { "label": "Appointment", "color": "#c62828" },
-    { "label": "Liens Audit", "color": "#00838f" },
-    { "label": "Amending Discovery", "color": "#e65100" },
-    { "label": "Admin Tasks", "color": "#37474f" },
-    { "label": "Supportive Doc Production", "color": "#ad1457" }
+    {
+      "label": "Treatment Monitoring or Client Communication",
+      "color": "#00695c"
+    },
+    {
+      "label": "Treatment Monitoring or Client Communication Appointment",
+      "color": "#00695c"
+    },
+    {
+      "label": "Case Setup",
+      "color": "#1a237e"
+    },
+    {
+      "label": "Liens Audit",
+      "color": "#4e342e"
+    },
+    {
+      "label": "Updated medical bills",
+      "color": "#e65100"
+    },
+    {
+      "label": "Amending Discovery Responses",
+      "color": "#0d47a1"
+    },
+    {
+      "label": "Supportive Administrative Taks",
+      "color": "#546e7a"
+    },
+    {
+      "label": "Supportive Doc Production",
+      "color": "#ad1457"
+    }
   ],
   "tasks": [
     {
-      "id": "START",
-      "label": "30 Days After Orientation Appointment\nBegin Treatment Monitoring",
-      "emoji": "\ud83d\udcc5",
-      "assignedTo": "",
-      "sla": "",
-      "phase": "Milestone",
-      "phaseClass": "phase-milestone",
-      "quickAction": "",
-      "style": "milestone",
-      "connectsTo": ["T1"],
-      "isStartNode": true,
-      "excludeFromTable": true
-    },
-    {
-      "id": "T1",
+      "id": "A",
       "label": "Call Attempt 1",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 10am, Day 30 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 10am on day 30 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T2"],
-      "function": "If connected, mark Complete; if not, drop V1, send SMS 1, send Email 1"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "B"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V1, send SMS 1, send Email 1, mark \"Call Attempt 1 Complete\"",
+      "notes": "Treatment Update or Client Contact/Update",
+      "isStartNode": true
     },
     {
-      "id": "T2",
+      "id": "B",
       "label": "Call Attempt 2",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 10am, Day 31 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 10am on day 31 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T3"],
-      "function": "If connected, mark Complete; if not, drop V2, send SMS 2, send Email 2"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "C"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V2, send SMS 2, send Email 2, mark \"Call Attempt 2 Complete\"",
+      "notes": "Treatment Update or Client Contact/Update"
     },
     {
-      "id": "T3",
+      "id": "C",
       "label": "Call Attempt 3",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 4pm, Day 32 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 4pm on day 32 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T4"],
-      "function": "If connected, mark Complete; if not, drop V3, send SMS 3, send Email 3"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "D"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V3, send SMS 3, send Email 3, mark \"Call Attempt 3 Complete\"",
+      "notes": "Treatment Update or Client Contact and offering case update to the client"
     },
     {
-      "id": "T4",
-      "label": "Auto: Send Contact Letter 1",
+      "id": "D",
+      "label": "Send Contact Letter 1",
       "assignedTo": "System Automation",
       "sla": "33rd day from OA",
-      "phase": "Auto",
-      "phaseClass": "phase-letter",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "autoletter",
-      "connectsTo": ["T5"],
-      "function": "If no contact by day 33, letter is automatically sent"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "E"
+      ],
+      "function": "If no contact by the beginning of the 33rd day from OA, the letter is automatically sent by the system",
+      "notes": "Re-establish Contact"
     },
     {
-      "id": "T5",
+      "id": "E",
       "label": "Call Attempt 4",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 10am, Day 37 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 10am on day 37 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T6"],
-      "function": "If connected, mark Complete; if not, drop V4, send SMS 4, send Email 4"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "F"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V4, send SMS 4, send Email 4, mark \"Call Attempt 4 Complete\"",
+      "notes": "Treatment Update or Client Contact/Update"
     },
     {
-      "id": "T6",
+      "id": "F",
       "label": "Call Attempt 5",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 4pm, Day 37 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 4pm on day 37 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T7"],
-      "function": "If connected, mark Complete; if not, drop V5, send SMS 5, send Email 5"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "G"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V5, send SMS 5, send Email 5, mark \"Call Attempt 5 Complete\"",
+      "notes": "Treatment Update or Client Contact/Update"
     },
     {
-      "id": "T7",
+      "id": "G",
       "label": "Call Attempt 6",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 10am, Day 38 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 10am on day 38 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T8"],
-      "function": "If connected, mark Complete; if not, drop V6, send SMS 6, send Email 6"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "H"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V6, send SMS 6, send Email 6, mark \"Call Attempt 3 Complete\"",
+      "notes": "Treatment Update or Client Contact/Update"
     },
     {
-      "id": "T8",
-      "label": "Auto: Send Contact Letter 2",
+      "id": "H",
+      "label": "Send Contact Letter 2",
       "assignedTo": "System Automation",
-      "sla": "By EOD, Day 38 from OA",
-      "phase": "Auto",
-      "phaseClass": "phase-letter",
+      "sla": "By EOD on day 38 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "autoletter",
-      "connectsTo": ["T9"],
-      "function": "If no contact by day 5, letter is automatically sent"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "I"
+      ],
+      "function": "If no contact by the beginning of the 5th day, the letter is automatically sent by the system",
+      "notes": "Re-establish Contact"
     },
     {
-      "id": "T9",
+      "id": "I",
       "label": "Call Attempt 7",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 10am, Day 37 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 10am on day 37 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T10"],
-      "function": "If connected, mark Complete; if not, drop V7, send SMS 7, send Email 7"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "J"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V7, send SMS 7, send Email 7, mark \"Call Attempt 7 Complete\"",
+      "notes": "Treatment Update or Client Contact/Update"
     },
     {
-      "id": "T10",
+      "id": "J",
       "label": "Call Attempt 8",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 4pm, Day 37 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 4pm on day 37 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T11"],
-      "function": "If connected, mark Complete; if not, drop V8, send SMS 8, send Email 8"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "K"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V8, send SMS 8, send Email 8, mark \"Call Attempt 8 Complete\"",
+      "notes": "Treatment Update or Client Contact/Update"
     },
     {
-      "id": "T11",
+      "id": "K",
       "label": "Call Attempt 9",
       "assignedTo": "Legal Asst / Para",
-      "sla": "By 10am, Day 38 from OA",
-      "phase": "Call",
-      "phaseClass": "phase-call",
+      "sla": "By 10am on day 38 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "callattempt",
-      "connectsTo": ["T12"],
-      "function": "If connected, mark Complete; if not, drop V9, send SMS 9, send Email 9"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [
+        "L"
+      ],
+      "function": "If connected, mark \"Complete\", if not connected, drop V9, send SMS 9, send Email 9, mark \"Call Attempt 9 Complete\"",
+      "notes": "Treatment Update or Client Contact/Update"
     },
     {
-      "id": "T12",
-      "label": "Auto: Back to Intake as MIA\nReset client communications",
+      "id": "L",
+      "label": "Back to Intake as MIA",
       "assignedTo": "System Automation",
-      "sla": "By EOD, Day 38 from OA",
-      "phase": "Intake",
-      "phaseClass": "phase-intake",
+      "sla": "By EOD on day 38 from OA",
+      "phase": "Treatment Monitoring or Client Communication",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication",
       "quickAction": "Treatment Monitoring or Client Communication",
-      "style": "intake",
-      "connectsTo": ["T13"],
-      "function": "Case is routed back to Intake to re-establish communications"
+      "style": "treatment-monitoring-or-client-communication",
+      "connectsTo": [],
+      "function": "Case is routed back to Intake to re-establish communications and set the Treatment Monitoring or Client Comm Appt",
+      "notes": "To reset client communication"
     },
     {
-      "id": "T13",
-      "label": "Appointment\nLitigation Client Communication",
+      "id": "M",
+      "label": "Treatment Monitoring or Client Communication Appointment",
       "assignedTo": "Legal Asst / Para",
       "sla": "No less than every 30 from OA",
-      "phase": "Appt",
-      "phaseClass": "phase-appt",
+      "phase": "Treatment Monitoring or Client Communication Appointment",
+      "phaseClass": "phase-treatment-monitoring-or-client-communication-appointment",
       "quickAction": "Treatment Monitoring or Client Communication Appointment",
-      "style": "appt",
-      "connectsTo": ["COMPLETE"],
-      "function": "Complete, mark complete"
+      "style": "treatment-monitoring-or-client-communication-appointment",
+      "connectsTo": [
+        "N"
+      ],
+      "function": "Complete, mark complete",
+      "notes": "Litigation Client Communication / Monitoring Agenda\n(Standard Operating Framework for LIT Paralegals)\nPurpose:\nMaintain readiness for deposition, discovery, medical exams, mediation, and trial while protecting the integrity of the claim.\n\nSECTION 1 — OPENING & EXPECTATION SETTING\n1. Introduce yourself + role\nExplain you are part of the litigation team supporting the attorney.\n2. Confirm call length\nTypically 10–15 minutes.\n3. State objective\nKeep the case moving, make sure information is..."
     },
     {
-      "id": "COMPLETE",
-      "label": "Appt 1 Complete\nRepeat above process for each appt\nover the course of 2 years",
-      "emoji": "\u2705",
-      "assignedTo": "",
-      "sla": "",
-      "phase": "Milestone",
-      "phaseClass": "phase-milestone",
-      "quickAction": "",
-      "style": "milestone",
-      "connectsTo": ["T14"],
-      "excludeFromTable": true,
-      "bannerAfter": "Appointment 1 Complete \u2014 Repeat the above process for each appointment over the course of 2 years",
-      "bannerColor": "#e65100",
-      "bannerBg": "#fff3e0"
+      "id": "N",
+      "label": "Clent Profile Scoring",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "O"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "It would be required that these scores be re-scored or a “No Change” score entered, every time a case manager progressed a case. Again, this is only for the case profile. These dials would be shown in a dashboard at the top of every matter panel view. \n\nAny thoughts? Additions? Revisions? \n\n“What...\n\nInput all needed info for below: \n\n“What to do” box: \n•        “If Demand-Ready % < X → add demand sprint + records chase”\n•        “If gaps > X → treatment monitoring protocol triggers”\n•        “If liability score low → early lit evaluation”\n\n“Top 10 Action List” widget\n•        A live list that updates daily:\no        Oldest demands not sent\no        Highest value cases missing records\no        Top cases with expiring deadlines\no        Top 10 stalled negotiations\no        Top 10 clients at..."
     },
     {
-      "id": "T14",
-      "label": "Auto: Liens Audit\nSend Medicare, Medicaid, VA, ERISA letters",
+      "id": "O",
+      "label": "Liability Profile Scoring System",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "P"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "Defense Pressure & Settlement Leverage Model\n\nPurpose\n\nThis model measures:\n\n1. How difficult it is for the defense to escape fault\n2. How predictable a jury outcome would be\n3. How expensive and risky it is for the carrier to fight\n\nWhen measured consistently, these scores become powerful...\n\nLiability setup and scoring"
+    },
+    {
+      "id": "P",
+      "label": "Policy & Collectability Scoring System",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "Q"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "Transportation \nNo insurance, auto or health - will it work to give a letter of protection (LOP)\n\nRecovery Power & Payment Predictability Model\n\nPurpose\n\nThis system measures:\n•        How much insurance money is realistically available\n•        How difficult it will be to access it\n•        How...\n\nPolicy setup and scoring"
+    },
+    {
+      "id": "Q",
+      "label": "Treatment Strength Index (TSI)",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "R"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "A structured way to rate the **quality, seriousness, credibility, and profitability** of medical treatment.\n\nYou can use 1–5 scales, color ratings, or weighted points.\n\nBody parts are experiencing pain\nPain levels\nNew injury or an excacerbated injury\nFracture or a scar\n\n\n\nThe 5 Master Treatment...\n\nTreatment setup and scoring"
+    },
+    {
+      "id": "R",
+      "label": "Comprehensive Case Performance Index (CPI)",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "To be completed 1 hour from most recent client communication",
+      "phase": "Case Setup",
+      "phaseClass": "phase-case-setup",
+      "quickAction": "Case Setup",
+      "style": "case-setup",
+      "connectsTo": [
+        "S"
+      ],
+      "function": "Complete and then mark complete",
+      "notes": "“How strong is this file as a business asset?”\nThis index measures how efficiently, profitably, and strategically viable the case is — independent of liability, policy, treatment, or client personality.\n\nThe 7 Pillars of the Case Performance Index\nEach scored 0–20\nTotal = 0–140\nConverted to 0–100...\n\nCase scoring"
+    },
+    {
+      "id": "S",
+      "label": "Send Medicare; Medical; VA; ERISA Liens Audit Letter",
       "assignedTo": "System Automation",
-      "sla": "By EOD, Day 60 from OA (Repeated)",
-      "phase": "Audit",
-      "phaseClass": "phase-audit",
+      "sla": "By EOD on day 60 from OA. (Repeated every 60 days) Unless they are done treating, then click treatment complete, then the system automatically processes medical bills to be ordered immediately. If treatment is completed then we call client every 45 days and not 30",
+      "phase": "Liens Audit",
+      "phaseClass": "phase-liens-audit",
       "quickAction": "Liens Audit",
-      "style": "audit",
-      "connectsTo": ["T15"],
-      "function": "Liens audit letters sent, mark complete; if Not Applicable, mark NA"
+      "style": "liens-audit",
+      "connectsTo": [
+        "T"
+      ],
+      "function": "Liens audit letters sent, mark complete, if Not Applicable, mark NA",
+      "notes": "Medicare; Medical; VA; ERISA Liens Audit"
     },
     {
-      "id": "T15",
-      "label": "Auto: Updated Medical Bills Letter",
+      "id": "T",
+      "label": "Send updated updated medical bills letter (email, efax ) to providers every 120 days excluding hopsital bills. (need ...",
       "assignedTo": "System Automation",
-      "sla": "By EOD, Day 90 from OA (Repeated)",
-      "phase": "Audit",
-      "phaseClass": "phase-audit",
-      "quickAction": "Updated Medical Bills",
-      "style": "audit",
-      "connectsTo": ["T16"],
-      "function": "Updated medical bills letter sent, mark complete; if Not Applicable, mark NA"
+      "sla": "By EOD on day 90 from OA. (Repeated every 90 days), if expert is required, notify management every 3 days until resolved",
+      "phase": "Updated medical bills",
+      "phaseClass": "phase-updated-medical-bills",
+      "quickAction": "Updated medical bills",
+      "style": "updated-medical-bills",
+      "connectsTo": [
+        "U"
+      ],
+      "function": "Updated updated medical bills letter sent, mark complete, if Not Applicable, mark NA, if expert is needed, mark  Expert Needed",
+      "notes": "Send updated updated medical bills letter"
     },
     {
-      "id": "T16",
-      "label": "Amending Discovery Responses\nSend letter to defendant",
+      "id": "U",
+      "label": "Sending letter to defendant amending disovery responses",
       "assignedTo": "Legal Asst / Para",
       "sla": "30 min from initiating task",
-      "phase": "Amend",
-      "phaseClass": "phase-amend",
+      "phase": "Amending Discovery Responses",
+      "phaseClass": "phase-amending-discovery-responses",
       "quickAction": "Amending Discovery Responses",
-      "style": "amend",
-      "connectsTo": ["T17"],
-      "function": "Send letter to defendant, mark complete"
+      "style": "amending-discovery-responses",
+      "connectsTo": [
+        "V"
+      ],
+      "function": "Sending letter to defendant amending disovery responses, mark complete",
+      "notes": "Sending letter to defendant amending disovery responses"
     },
     {
-      "id": "T17",
-      "label": "Supportive Admin Task 1",
+      "id": "V",
+      "label": "Supportive Admin 1",
       "assignedTo": "Legal Asst / Para",
       "sla": "30 min from initiating task",
-      "phase": "Admin",
-      "phaseClass": "phase-admin",
-      "quickAction": "Supportive Administrative Tasks",
-      "style": "admin",
-      "connectsTo": ["T18"],
-      "function": "Complete supportive administrative task, mark complete"
+      "phase": "Supportive Administrative Taks",
+      "phaseClass": "phase-supportive-administrative-taks",
+      "quickAction": "Supportive Administrative Taks",
+      "style": "supportive-administrative-taks",
+      "connectsTo": [
+        "W"
+      ],
+      "function": "Complete supportive administrative task, mark complete",
+      "notes": "Supportive Admin Task"
     },
     {
-      "id": "T18",
+      "id": "W",
       "label": "Supportive Doc Production 1",
       "assignedTo": "Legal Asst / Para",
       "sla": "4 hours from Manager approval",
-      "phase": "Supportive",
-      "phaseClass": "phase-supportive",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
       "quickAction": "Supportive Doc Production",
-      "style": "supportive",
-      "connectsTo": ["T19"],
-      "function": "Draft and process supportive doc production, mark complete"
+      "style": "supportive-doc-production",
+      "connectsTo": [
+        "X"
+      ],
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
     },
     {
-      "id": "T19",
+      "id": "X",
       "label": "Supportive Doc Production 2",
       "assignedTo": "Legal Asst / Para",
       "sla": "8 hours from Manager approval",
-      "phase": "Supportive",
-      "phaseClass": "phase-supportive",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
       "quickAction": "Supportive Doc Production",
-      "style": "supportive",
-      "connectsTo": ["T20"],
-      "function": "Draft and process supportive doc production, mark complete"
+      "style": "supportive-doc-production",
+      "connectsTo": [
+        "Y"
+      ],
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
     },
     {
-      "id": "T20",
+      "id": "Y",
       "label": "Supportive Doc Production 3",
       "assignedTo": "Legal Asst / Para",
       "sla": "2 days from Manager approval",
-      "phase": "Supportive",
-      "phaseClass": "phase-supportive",
+      "phase": "Supportive Doc Production",
+      "phaseClass": "phase-supportive-doc-production",
       "quickAction": "Supportive Doc Production",
-      "style": "supportive",
+      "style": "supportive-doc-production",
       "connectsTo": [],
-      "function": "Draft and process supportive doc production, mark complete"
+      "function": "Draft and process supportive doc production, mark complete",
+      "notes": "Supportive doc production work unit"
     }
   ],
   "styles": {
-    "callattempt": { "fill": "#1565c0", "stroke": "#0d47a1", "color": "#fff" },
-    "autoletter": { "fill": "#2e7d32", "stroke": "#1b5e20", "color": "#fff" },
-    "intake": { "fill": "#6a1b9a", "stroke": "#4a148c", "color": "#fff" },
-    "appt": { "fill": "#c62828", "stroke": "#b71c1c", "color": "#fff" },
-    "audit": { "fill": "#00838f", "stroke": "#006064", "color": "#fff" },
-    "amend": { "fill": "#e65100", "stroke": "#bf360c", "color": "#fff" },
-    "admin": { "fill": "#37474f", "stroke": "#263238", "color": "#fff" },
-    "supportive": { "fill": "#ad1457", "stroke": "#880e4f", "color": "#fff" },
-    "milestone": { "fill": "#ff6f00", "stroke": "#e65100", "color": "#fff" }
+    "treatment-monitoring-or-client-communication": {
+      "fill": "#d8e8e6",
+      "stroke": "#00695c",
+      "color": "#222"
+    },
+    "treatment-monitoring-or-client-communication-appointment": {
+      "fill": "#d8e8e6",
+      "stroke": "#00695c",
+      "color": "#222"
+    },
+    "case-setup": {
+      "fill": "#dcdeeb",
+      "stroke": "#1a237e",
+      "color": "#222"
+    },
+    "liens-audit": {
+      "fill": "#e4e0df",
+      "stroke": "#4e342e",
+      "color": "#222"
+    },
+    "updated-medical-bills": {
+      "fill": "#fbe4d8",
+      "stroke": "#e65100",
+      "color": "#222"
+    },
+    "amending-discovery-responses": {
+      "fill": "#dae3f0",
+      "stroke": "#0d47a1",
+      "color": "#222"
+    },
+    "supportive-administrative-taks": {
+      "fill": "#e5e9eb",
+      "stroke": "#546e7a",
+      "color": "#222"
+    },
+    "supportive-doc-production": {
+      "fill": "#f2dbe5",
+      "stroke": "#ad1457",
+      "color": "#222"
+    }
   }
 }
