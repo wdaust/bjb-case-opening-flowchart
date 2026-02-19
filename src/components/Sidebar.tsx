@@ -3,8 +3,18 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from './ui/button.tsx';
 import {
   GitBranch,
-  BarChart3,
-  ClipboardCheck,
+  LayoutDashboard,
+  Activity,
+  AlertTriangle,
+  TrendingUp,
+  FolderOpen,
+  Stethoscope,
+  Search,
+  Users,
+  Scale,
+  Gavel,
+  UserCircle,
+  CalendarCheck,
   ChevronLeft,
   ChevronRight,
   ChevronDown,
@@ -24,13 +34,19 @@ interface Props {
 
 export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }: Props) {
   const location = useLocation();
-  const [dashOpen, setDashOpen] = useState(() =>
-    location.pathname.startsWith('/dashboards'),
+  const [stagesOpen, setStagesOpen] = useState(() =>
+    location.pathname.startsWith('/stage'),
   );
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     setMobileOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/stage')) {
+      setStagesOpen(true);
+    }
   }, [location.pathname]);
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
@@ -60,45 +76,124 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
 
       {/* Nav */}
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
-        <NavLink to="/performance-infrastructure" className={linkClass} title="Performance Infrastructure">
-          <GitBranch size={18} className="shrink-0" />
-          {!collapsed && <span>Performance Infrastructure</span>}
+        {/* Control Tower */}
+        <NavLink to="/control-tower" className={linkClass} title="Control Tower">
+          <LayoutDashboard size={18} className="shrink-0" />
+          {!collapsed && <span>Control Tower</span>}
         </NavLink>
 
+        {/* Cross-stage pages */}
+        <NavLink to="/inventory-health" className={linkClass} title="Inventory Health Index">
+          <Activity size={18} className="shrink-0" />
+          {!collapsed && <span>Inventory Health</span>}
+        </NavLink>
+
+        <NavLink to="/risk-radar" className={linkClass} title="Risk & Deadline Radar">
+          <AlertTriangle size={18} className="shrink-0" />
+          {!collapsed && <span>Risk & Deadline Radar</span>}
+        </NavLink>
+
+        <NavLink to="/forecast" className={linkClass} title="Forecast & Yield">
+          <TrendingUp size={18} className="shrink-0" />
+          {!collapsed && <span>Forecast & Yield</span>}
+        </NavLink>
+
+        {/* Divider */}
+        {!collapsed && (
+          <div className="px-3 py-2">
+            <div className="border-t border-sidebar-border" />
+            <p className="text-[10px] uppercase tracking-wider text-muted-foreground mt-2">Stage Commands</p>
+          </div>
+        )}
+        {collapsed && <div className="border-t border-sidebar-border my-2" />}
+
+        {/* Stage Commands - collapsible on mobile/expanded */}
         <div>
-          <button
-            onClick={() => setDashOpen(o => !o)}
-            className={cn(
-              'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
-              location.pathname.startsWith('/dashboards')
-                ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-                : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
-            )}
-            title="Dashboards"
-          >
-            <BarChart3 size={18} className="shrink-0" />
-            {!collapsed && (
-              <>
-                <span className="flex-1 text-left">Dashboards</span>
+          {!collapsed ? (
+            <>
+              <button
+                onClick={() => setStagesOpen(o => !o)}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
+                  location.pathname.startsWith('/stage')
+                    ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+                    : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+                )}
+              >
+                <FolderOpen size={18} className="shrink-0" />
+                <span className="flex-1 text-left">Stages</span>
                 <ChevronDown
                   size={14}
-                  className={cn('transition-transform duration-200', dashOpen ? 'rotate-0' : '-rotate-90')}
+                  className={cn('transition-transform duration-200', stagesOpen ? 'rotate-0' : '-rotate-90')}
                 />
-              </>
-            )}
-          </button>
-          {dashOpen && !collapsed && (
-            <div className="ml-7 mt-1 space-y-1">
-              <NavLink to="/dashboards/client" className={linkClass}>Client</NavLink>
-              <NavLink to="/dashboards/pre-lit" className={linkClass}>Pre LIT</NavLink>
-              <NavLink to="/dashboards/lit" className={linkClass}>LIT</NavLink>
-            </div>
+              </button>
+              {stagesOpen && (
+                <div className="ml-4 mt-1 space-y-0.5">
+                  <NavLink to="/stage/opening" className={linkClass}>
+                    <FolderOpen size={14} className="shrink-0" />
+                    <span>Case Opening</span>
+                  </NavLink>
+                  <NavLink to="/stage/treatment" className={linkClass}>
+                    <Stethoscope size={14} className="shrink-0" />
+                    <span>Treatment Monitoring</span>
+                  </NavLink>
+                  <NavLink to="/stage/discovery" className={linkClass}>
+                    <Search size={14} className="shrink-0" />
+                    <span>Discovery</span>
+                  </NavLink>
+                  <NavLink to="/stage/expert-depo" className={linkClass}>
+                    <Users size={14} className="shrink-0" />
+                    <span>Expert & Deposition</span>
+                  </NavLink>
+                  <NavLink to="/stage/adr" className={linkClass}>
+                    <Scale size={14} className="shrink-0" />
+                    <span>ADR (Arb/Mediation)</span>
+                  </NavLink>
+                  <NavLink to="/stage/trial" className={linkClass}>
+                    <Gavel size={14} className="shrink-0" />
+                    <span>Trial</span>
+                  </NavLink>
+                </div>
+              )}
+            </>
+          ) : (
+            <NavLink to="/stage/opening" className={linkClass} title="Stage Commands">
+              <FolderOpen size={18} className="shrink-0" />
+            </NavLink>
           )}
         </div>
 
-        <NavLink to="/lit-scorecard" className={linkClass} title="LIT Scorecard">
-          <ClipboardCheck size={18} className="shrink-0" />
-          {!collapsed && <span>LIT Scorecard</span>}
+        {/* Divider */}
+        {!collapsed && (
+          <div className="px-3 py-2">
+            <div className="border-t border-sidebar-border" />
+          </div>
+        )}
+        {collapsed && <div className="border-t border-sidebar-border my-2" />}
+
+        {/* Accountability */}
+        <NavLink to="/attorney" className={linkClass} title="Attorney Cockpit">
+          <UserCircle size={18} className="shrink-0" />
+          {!collapsed && <span>Attorney Cockpit</span>}
+        </NavLink>
+
+        <NavLink to="/manager-rhythm" className={linkClass} title="Manager Rhythm">
+          <CalendarCheck size={18} className="shrink-0" />
+          {!collapsed && <span>Manager Rhythm</span>}
+        </NavLink>
+
+        {/* Divider */}
+        {!collapsed && (
+          <div className="px-3 py-2">
+            <div className="border-t border-sidebar-border" />
+          </div>
+        )}
+        {collapsed && <div className="border-t border-sidebar-border my-2" />}
+
+        {/* Performance Infrastructure */}
+        <NavLink to="/performance-infrastructure" className={linkClass} title="Performance Infrastructure">
+          <GitBranch size={18} className="shrink-0" />
+          {!collapsed && <span>Performance Infrastructure</span>}
         </NavLink>
       </nav>
 

@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { TooltipProvider } from './components/ui/tooltip.tsx';
+import { DashboardFilterProvider } from './contexts/DashboardFilterContext.tsx';
 import { Sidebar } from './components/Sidebar.tsx';
 import PerformanceInfrastructure from './pages/PerformanceInfrastructure.tsx';
-import DashboardClient from './pages/DashboardClient.tsx';
-import DashboardPreLit from './pages/DashboardPreLit.tsx';
-import DashboardLit from './pages/DashboardLit.tsx';
-import LitScorecard from './pages/LitScorecard.tsx';
+import ControlTower from './pages/ControlTower.tsx';
+import StageCommand from './pages/StageCommand.tsx';
+import InventoryHealth from './pages/InventoryHealth.tsx';
+import RiskRadar from './pages/RiskRadar.tsx';
+import Forecast from './pages/Forecast.tsx';
+import AttorneyCockpit from './pages/AttorneyCockpit.tsx';
+import ManagerRhythm from './pages/ManagerRhythm.tsx';
+import CaseExecution from './pages/CaseExecution.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 const SIDEBAR_KEY = 'bjb-sidebar-collapsed';
@@ -49,16 +54,23 @@ function Layout() {
 export default function App() {
   return (
     <TooltipProvider delayDuration={300}>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route index element={<Navigate to="/performance-infrastructure" replace />} />
-          <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
-          <Route path="dashboards/client" element={<DashboardClient />} />
-          <Route path="dashboards/pre-lit" element={<DashboardPreLit />} />
-          <Route path="dashboards/lit" element={<DashboardLit />} />
-          <Route path="lit-scorecard" element={<LitScorecard />} />
-        </Route>
-      </Routes>
+      <DashboardFilterProvider>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route index element={<Navigate to="/control-tower" replace />} />
+            <Route path="control-tower" element={<ControlTower />} />
+            <Route path="stage/:stageId" element={<StageCommand />} />
+            <Route path="inventory-health" element={<InventoryHealth />} />
+            <Route path="risk-radar" element={<RiskRadar />} />
+            <Route path="forecast" element={<Forecast />} />
+            <Route path="attorney/:attorneyId?" element={<AttorneyCockpit />} />
+            <Route path="attorney" element={<AttorneyCockpit />} />
+            <Route path="manager-rhythm" element={<ManagerRhythm />} />
+            <Route path="case/:caseId" element={<CaseExecution />} />
+            <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
+          </Route>
+        </Routes>
+      </DashboardFilterProvider>
     </TooltipProvider>
   );
 }
