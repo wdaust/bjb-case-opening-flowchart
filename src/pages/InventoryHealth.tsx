@@ -6,6 +6,7 @@ import { StatCard } from '../components/dashboard/StatCard';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { AgingHeatmap } from '../components/dashboard/AgingHeatmap';
 import { DataTable, type Column } from '../components/dashboard/DataTable';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import {
   getActiveCases,
   getOverSlaCases,
@@ -114,26 +115,40 @@ export default function InventoryHealth() {
         />
       </DashboardGrid>
 
-      <SectionHeader title="Aging Heatmap" subtitle="All stages x aging bands" />
-      <AgingHeatmap data={agingData} />
+      <Tabs defaultValue="aging-heatmap">
+        <TabsList>
+          <TabsTrigger value="aging-heatmap">Aging Heatmap</TabsTrigger>
+          <TabsTrigger value="silent-stalls">Silent Stalls</TabsTrigger>
+          <TabsTrigger value="over-sla-cases">Over-SLA Cases</TabsTrigger>
+        </TabsList>
 
-      <SectionHeader title="Silent Stall Cases" subtitle="No activity for 21+ days" />
-      <DataTable
-        data={stalledCases}
-        columns={stalledColumns}
-        keyField="id"
-        onRowClick={(row) => navigate(`/case/${row.id}`)}
-        maxRows={25}
-      />
+        <TabsContent value="aging-heatmap" className="space-y-4 pt-4">
+          <SectionHeader title="Aging Heatmap" subtitle="All stages x aging bands" />
+          <AgingHeatmap data={agingData} />
+        </TabsContent>
 
-      <SectionHeader title="Over-SLA Cases" subtitle="Cases exceeding stage time limits" />
-      <DataTable
-        data={overSlaCases}
-        columns={overSlaColumns}
-        keyField="id"
-        onRowClick={(row) => navigate(`/case/${row.id}`)}
-        maxRows={25}
-      />
+        <TabsContent value="silent-stalls" className="space-y-4 pt-4">
+          <SectionHeader title="Silent Stall Cases" subtitle="No activity for 21+ days" />
+          <DataTable
+            data={stalledCases}
+            columns={stalledColumns}
+            keyField="id"
+            onRowClick={(row) => navigate(`/case/${row.id}`)}
+            maxRows={25}
+          />
+        </TabsContent>
+
+        <TabsContent value="over-sla-cases" className="space-y-4 pt-4">
+          <SectionHeader title="Over-SLA Cases" subtitle="Cases exceeding stage time limits" />
+          <DataTable
+            data={overSlaCases}
+            columns={overSlaColumns}
+            keyField="id"
+            onRowClick={(row) => navigate(`/case/${row.id}`)}
+            maxRows={25}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

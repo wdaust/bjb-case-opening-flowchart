@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { StatCard } from '../components/dashboard/StatCard';
@@ -98,42 +99,56 @@ export default function Forecast() {
         />
       </DashboardGrid>
 
-      <SectionHeader title="Portfolio EV Trend" subtitle="Monthly expected value" />
-      <div className="rounded-lg border border-border bg-card p-4">
-        <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={forecastData.monthlyTrend}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis dataKey="month" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-            <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-            <Line type="monotone" dataKey="ev" stroke="#6366f1" strokeWidth={2} dot={false} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      <Tabs defaultValue="ev-trend">
+        <TabsList>
+          <TabsTrigger value="ev-trend">EV Trend</TabsTrigger>
+          <TabsTrigger value="close-accuracy">Close Accuracy</TabsTrigger>
+          <TabsTrigger value="high-value-cases">High-Value Cases</TabsTrigger>
+        </TabsList>
 
-      <SectionHeader title="Close Forecast Accuracy" subtitle="Predicted vs actual closures" />
-      <div className="rounded-lg border border-border bg-card p-4">
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart data={forecastData.historicalAccuracy}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis dataKey="month" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-            <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-            <Legend />
-            <Bar dataKey="predicted" fill="#6366f1" name="Predicted" />
-            <Bar dataKey="actual" fill="#10b981" name="Actual" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+        <TabsContent value="ev-trend" className="space-y-4">
+          <SectionHeader title="Portfolio EV Trend" subtitle="Monthly expected value" />
+          <div className="rounded-lg border border-border bg-card p-4">
+            <ResponsiveContainer width="100%" height={280}>
+              <LineChart data={forecastData.monthlyTrend}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
+                <Line type="monotone" dataKey="ev" stroke="#6366f1" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </TabsContent>
 
-      <SectionHeader title="High-Value Cases" subtitle="Top cases by expected value" />
-      <DataTable
-        data={highValueCases}
-        columns={highValueColumns}
-        keyField="id"
-        onRowClick={(row) => navigate(`/case/${row.id}`)}
-        maxRows={20}
-      />
+        <TabsContent value="close-accuracy" className="space-y-4">
+          <SectionHeader title="Close Forecast Accuracy" subtitle="Predicted vs actual closures" />
+          <div className="rounded-lg border border-border bg-card p-4">
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={forecastData.historicalAccuracy}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="month" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
+                <Legend />
+                <Bar dataKey="predicted" fill="#6366f1" name="Predicted" />
+                <Bar dataKey="actual" fill="#10b981" name="Actual" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="high-value-cases" className="space-y-4">
+          <SectionHeader title="High-Value Cases" subtitle="Top cases by expected value" />
+          <DataTable
+            data={highValueCases}
+            columns={highValueColumns}
+            keyField="id"
+            onRowClick={(row) => navigate(`/case/${row.id}`)}
+            maxRows={20}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

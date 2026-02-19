@@ -1,3 +1,4 @@
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ComposedChart,
@@ -10,17 +11,21 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { getControlTowerData, stageLabels } from '../data/mockData';
+import { ChevronDown } from 'lucide-react';
+import { getControlTowerData, getUpcomingDeadlines, stageLabels } from '../data/mockData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { StageBar } from '../components/dashboard/StageBar';
 import { DeadlineList } from '../components/dashboard/DeadlineList';
 import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
+import { DataTable, type Column } from '../components/dashboard/DataTable';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 
 export default function ControlTower() {
   const navigate = useNavigate();
   const controlTowerData = getControlTowerData();
+  const [exposureOpen, setExposureOpen] = useState(true);
 
   const formattedEV = `$${(controlTowerData.totalEV / 1_000_000).toFixed(1)}M`;
 
@@ -30,6 +35,60 @@ export default function ControlTower() {
     avgAge: sc.avgAge,
     throughput: throughputRates[i] ?? 1.0,
   }));
+
+  const allDeadlines = useMemo(() => getUpcomingDeadlines(90), []);
+  const today = "2026-02-19";
+
+  const solDeadlines = useMemo(() =>
+    allDeadlines
+      .filter(d => d.type === "SOL")
+      .map(d => {
+        const daysLeft = Math.ceil((new Date(d.date).getTime() - new Date(today).getTime()) / 86400000);
+        return { ...d, daysLeft };
+      }),
+    [allDeadlines]
+  );
+
+  const courtDeadlines = useMemo(() =>
+    allDeadlines
+      .filter(d => ["trial", "court", "depo"].includes(d.type))
+      .map(d => {
+        const daysUntil = Math.ceil((new Date(d.date).getTime() - new Date(today).getTime()) / 86400000);
+        return { ...d, daysUntil };
+      }),
+    [allDeadlines]
+  );
+
+  const solColumns: Column<(typeof solDeadlines)[0]>[] = [
+    { key: "caseId", label: "Case ID" },
+    { key: "caseTitle", label: "Case Title" },
+    { key: "attorney", label: "Attorney" },
+    { key: "date", label: "Deadline Date" },
+    {
+      key: "daysLeft",
+      label: "Days Left",
+      render: (row) => {
+        const color = row.daysLeft < 14 ? "text-red-500" : row.daysLeft < 30 ? "text-amber-500" : "text-green-500";
+        return <span className={`font-semibold ${color}`}>{row.daysLeft}d</span>;
+      },
+    },
+  ];
+
+  const courtColumns: Column<(typeof courtDeadlines)[0]>[] = [
+    { key: "caseId", label: "Case ID" },
+    { key: "caseTitle", label: "Case Title" },
+    { key: "attorney", label: "Attorney" },
+    { key: "type", label: "Type" },
+    { key: "date", label: "Date" },
+    {
+      key: "daysUntil",
+      label: "Days Until",
+      render: (row) => {
+        const color = row.daysUntil < 14 ? "text-red-500" : row.daysUntil < 30 ? "text-amber-500" : "text-green-500";
+        return <span className={`font-semibold ${color}`}>{row.daysUntil}d</span>;
+      },
+    },
+  ];
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
@@ -70,6 +129,33 @@ export default function ControlTower() {
           deltaType="positive"
         />
       </DashboardGrid>
+
+      <Tabs defaultValue="deadline-timeline">
+        <TabsList>
+          <TabsTrigger value="deadline-timeline">Deadline Timeline</TabsTrigger>
+          <TabsTrigger value="sol-countdown">SOL Countdown</TabsTrigger>
+          <TabsTrigger value="court-calendar">Court Date Calendar</TabsTrigger>
+        </TabsList>
+        <TabsContent value="deadline-timeline" className="pt-4">
+          <DeadlineList deadlines={allDeadlines} maxItems={30} />
+        </TabsContent>
+        <TabsContent value="sol-countdown" className="pt-4">
+          <DataTable
+            data={solDeadlines}
+            columns={solColumns}
+            keyField="caseId"
+            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
+          />
+        </TabsContent>
+        <TabsContent value="court-calendar" className="pt-4">
+          <DataTable
+            data={courtDeadlines}
+            columns={courtColumns}
+            keyField="caseId"
+            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
+          />
+        </TabsContent>
+      </Tabs>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -117,8 +203,19 @@ export default function ControlTower() {
         </div>
 
         <div className="space-y-6">
-          <SectionHeader title="Today's Exposure" />
-          <DeadlineList deadlines={controlTowerData.deadlines} />
+          <button
+            onClick={() => setExposureOpen(o => !o)}
+            className="flex items-center gap-2 w-full text-left"
+          >
+            <SectionHeader title="Today's Exposure" />
+            <ChevronDown
+              size={18}
+              className={`text-muted-foreground transition-transform ${exposureOpen ? "" : "-rotate-90"}`}
+            />
+          </button>
+          {exposureOpen && (
+            <DeadlineList deadlines={controlTowerData.deadlines} />
+          )}
         </div>
       </div>
     </div>

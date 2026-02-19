@@ -3,6 +3,7 @@ import { CheckCircle2, XCircle, CheckSquare, Square } from "lucide-react";
 import { cn } from "../utils/cn";
 import { Breadcrumbs } from "../components/dashboard/Breadcrumbs";
 import { SectionHeader } from "../components/dashboard/SectionHeader";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs";
 import { DataTable, type Column } from "../components/dashboard/DataTable";
 import { getWeeklyThroughput, type WeeklyMetric } from "../data/mockData";
 
@@ -122,64 +123,78 @@ export default function ManagerRhythm() {
         ]}
       />
 
-      <SectionHeader title="Weekly Operating Scorecard" subtitle="13-week trailing metrics" />
-      <div className="bg-card border border-border rounded-xl overflow-x-auto">
-        <table className="w-full text-xs">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="sticky left-0 z-10 bg-card px-3 py-2 text-left font-semibold text-foreground whitespace-nowrap">Metric</th>
-              <th className="sticky left-[100px] z-10 bg-card px-3 py-2 text-left font-semibold text-foreground whitespace-nowrap">Owner</th>
-              <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">Target</th>
-              {weeklyData.map((_, i) => (
-                <th key={i} className="px-2 py-2 text-center font-semibold text-muted-foreground whitespace-nowrap">W{i + 1}</th>
-              ))}
-              <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">On Track?</th>
-            </tr>
-          </thead>
-          <tbody>
-            {metricRows.map((row) => {
-              const onTrack = isOnTrack(weeklyData, row);
-              return (
-                <tr key={row.dataKey} className="border-b border-border/50 hover:bg-muted/30">
-                  <td className="sticky left-0 z-10 bg-card px-3 py-2 font-medium text-foreground whitespace-nowrap">{row.metric}</td>
-                  <td className="sticky left-[100px] z-10 bg-card px-3 py-2 text-muted-foreground whitespace-nowrap">{row.owner}</td>
-                  <td className="px-3 py-2 text-center text-muted-foreground whitespace-nowrap">{row.target}</td>
-                  {weeklyData.map((w, i) => {
-                    const val = (w as unknown as Record<string, number>)[row.dataKey] ?? 0;
-                    const meets = meetsTarget(val, row.targetNum, row.comparator);
-                    const formatted = row.format ? row.format(val) : val;
-                    return (
-                      <td key={i} className={cn("px-2 py-2 text-center whitespace-nowrap font-mono", meets ? "text-emerald-500" : "text-red-500")}>
-                        {formatted}
-                      </td>
-                    );
-                  })}
-                  <td className="px-3 py-2 text-center">
-                    {onTrack ? <CheckCircle2 className="inline-block h-4 w-4 text-emerald-500" /> : <XCircle className="inline-block h-4 w-4 text-red-500" />}
-                  </td>
+      <Tabs defaultValue="weekly-scorecard">
+        <TabsList>
+          <TabsTrigger value="weekly-scorecard">Weekly Scorecard</TabsTrigger>
+          <TabsTrigger value="issues">Issues</TabsTrigger>
+          <TabsTrigger value="todos">To-Dos</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="weekly-scorecard" className="space-y-4">
+          <SectionHeader title="Weekly Operating Scorecard" subtitle="13-week trailing metrics" />
+          <div className="bg-card border border-border rounded-xl overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="sticky left-0 z-10 bg-card px-3 py-2 text-left font-semibold text-foreground whitespace-nowrap">Metric</th>
+                  <th className="sticky left-[100px] z-10 bg-card px-3 py-2 text-left font-semibold text-foreground whitespace-nowrap">Owner</th>
+                  <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">Target</th>
+                  {weeklyData.map((_, i) => (
+                    <th key={i} className="px-2 py-2 text-center font-semibold text-muted-foreground whitespace-nowrap">W{i + 1}</th>
+                  ))}
+                  <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">On Track?</th>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <SectionHeader title="Issues List" subtitle="Open items requiring resolution" />
-      <DataTable columns={issueColumns} data={issues} keyField="id" />
-
-      <SectionHeader title="To-Do Tracking" />
-      <div className="bg-card border border-border rounded-xl divide-y divide-border/50">
-        {todos.map((todo, i) => (
-          <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 cursor-pointer" onClick={() => toggleTodo(i)}>
-            {todo.done ? <CheckSquare className="h-4 w-4 text-emerald-500 flex-shrink-0" /> : <Square className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
-            <div className="flex-1 min-w-0">
-              <span className={cn("text-sm", todo.done ? "line-through text-muted-foreground" : "text-foreground")}>{todo.task}</span>
-            </div>
-            <span className="text-xs text-muted-foreground whitespace-nowrap">{todo.owner}</span>
-            <span className={cn("text-xs whitespace-nowrap", todo.done ? "text-muted-foreground" : todo.due < "2026-02-19" ? "text-red-500" : "text-muted-foreground")}>{todo.due}</span>
+              </thead>
+              <tbody>
+                {metricRows.map((row) => {
+                  const onTrack = isOnTrack(weeklyData, row);
+                  return (
+                    <tr key={row.dataKey} className="border-b border-border/50 hover:bg-muted/30">
+                      <td className="sticky left-0 z-10 bg-card px-3 py-2 font-medium text-foreground whitespace-nowrap">{row.metric}</td>
+                      <td className="sticky left-[100px] z-10 bg-card px-3 py-2 text-muted-foreground whitespace-nowrap">{row.owner}</td>
+                      <td className="px-3 py-2 text-center text-muted-foreground whitespace-nowrap">{row.target}</td>
+                      {weeklyData.map((w, i) => {
+                        const val = (w as unknown as Record<string, number>)[row.dataKey] ?? 0;
+                        const meets = meetsTarget(val, row.targetNum, row.comparator);
+                        const formatted = row.format ? row.format(val) : val;
+                        return (
+                          <td key={i} className={cn("px-2 py-2 text-center whitespace-nowrap font-mono", meets ? "text-emerald-500" : "text-red-500")}>
+                            {formatted}
+                          </td>
+                        );
+                      })}
+                      <td className="px-3 py-2 text-center">
+                        {onTrack ? <CheckCircle2 className="inline-block h-4 w-4 text-emerald-500" /> : <XCircle className="inline-block h-4 w-4 text-red-500" />}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-        ))}
-      </div>
+        </TabsContent>
+
+        <TabsContent value="issues" className="space-y-4">
+          <SectionHeader title="Issues List" subtitle="Open items requiring resolution" />
+          <DataTable columns={issueColumns} data={issues} keyField="id" />
+        </TabsContent>
+
+        <TabsContent value="todos" className="space-y-4">
+          <SectionHeader title="To-Do Tracking" />
+          <div className="bg-card border border-border rounded-xl divide-y divide-border/50">
+            {todos.map((todo, i) => (
+              <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 cursor-pointer" onClick={() => toggleTodo(i)}>
+                {todo.done ? <CheckSquare className="h-4 w-4 text-emerald-500 flex-shrink-0" /> : <Square className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
+                <div className="flex-1 min-w-0">
+                  <span className={cn("text-sm", todo.done ? "line-through text-muted-foreground" : "text-foreground")}>{todo.task}</span>
+                </div>
+                <span className="text-xs text-muted-foreground whitespace-nowrap">{todo.owner}</span>
+                <span className={cn("text-xs whitespace-nowrap", todo.done ? "text-muted-foreground" : todo.due < "2026-02-19" ? "text-red-500" : "text-muted-foreground")}>{todo.due}</span>
+              </div>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

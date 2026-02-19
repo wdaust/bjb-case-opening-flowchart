@@ -17,6 +17,7 @@ import { DashboardGrid } from "../components/dashboard/DashboardGrid";
 import { StatCard } from "../components/dashboard/StatCard";
 import { SectionHeader } from "../components/dashboard/SectionHeader";
 import { DataTable, type Column } from "../components/dashboard/DataTable";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import {
   attorneys,
   getCasesByAttorney,
@@ -189,54 +190,74 @@ export default function AttorneyCockpit() {
         />
       </DashboardGrid>
 
-      <SectionHeader title="Portfolio by Stage" />
-      <div className="bg-card border border-border rounded-xl p-4">
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={stageData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis dataKey="label" stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-            <YAxis stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} allowDecimals={false} />
-            <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))" }} />
-            <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <Tabs defaultValue="overview">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="high-priority">High Priority Cases</TabsTrigger>
+          <TabsTrigger value="backlog">Task Backlog</TabsTrigger>
+        </TabsList>
 
-      <SectionHeader title="Throughput Trend" subtitle="Exits per week (13-week trailing)" />
-      <div className="bg-card border border-border rounded-xl p-4">
-        <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={weeklyData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis dataKey="week" stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-            <YAxis stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} allowDecimals={false} />
-            <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))" }} />
-            <Line type="monotone" dataKey="throughput" stroke="#10b981" strokeWidth={2} dot={false} />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+        <TabsContent value="overview">
+          <div className="space-y-6">
+            <SectionHeader title="Portfolio by Stage" />
+            <div className="bg-card border border-border rounded-xl p-4">
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={stageData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="label" stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                  <YAxis stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} allowDecimals={false} />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))" }} />
+                  <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
-      <SectionHeader title="High Priority Cases" subtitle="High EV or high risk cases" />
-      <DataTable
-        columns={caseColumns}
-        data={highPriorityCases}
-        keyField="id"
-        onRowClick={(row) => navigate(`/case/${row.id}`)}
-        maxRows={20}
-      />
+            <SectionHeader title="Throughput Trend" subtitle="Exits per week (13-week trailing)" />
+            <div className="bg-card border border-border rounded-xl p-4">
+              <ResponsiveContainer width="100%" height={200}>
+                <LineChart data={weeklyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="week" stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                  <YAxis stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} allowDecimals={false} />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))" }} />
+                  <Line type="monotone" dataKey="throughput" stroke="#10b981" strokeWidth={2} dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </TabsContent>
 
-      <SectionHeader title="Task Backlog" />
-      {overdueCases.length > 0 ? (
-        <DataTable
-          columns={backlogColumns}
-          data={overdueCases}
-          keyField="id"
-          onRowClick={(row) => navigate(`/case/${row.id}`)}
-        />
-      ) : (
-        <div className="bg-card border border-border rounded-xl p-6 text-center text-muted-foreground">
-          No overdue tasks. All caught up!
-        </div>
-      )}
+        <TabsContent value="high-priority">
+          <div className="space-y-4">
+            <SectionHeader title="High Priority Cases" subtitle="High EV or high risk cases" />
+            <DataTable
+              columns={caseColumns}
+              data={highPriorityCases}
+              keyField="id"
+              onRowClick={(row) => navigate(`/case/${row.id}`)}
+              maxRows={20}
+            />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="backlog">
+          <div className="space-y-4">
+            <SectionHeader title="Task Backlog" />
+            {overdueCases.length > 0 ? (
+              <DataTable
+                columns={backlogColumns}
+                data={overdueCases}
+                keyField="id"
+                onRowClick={(row) => navigate(`/case/${row.id}`)}
+              />
+            ) : (
+              <div className="bg-card border border-border rounded-xl p-6 text-center text-muted-foreground">
+                No overdue tasks. All caught up!
+              </div>
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

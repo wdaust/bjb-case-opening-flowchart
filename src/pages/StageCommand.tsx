@@ -27,6 +27,7 @@ import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { AgingHeatmap } from '../components/dashboard/AgingHeatmap';
 import { DataTable, type Column } from '../components/dashboard/DataTable';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 
 export default function StageCommand() {
   const { stageId } = useParams<{ stageId: string }>();
@@ -101,103 +102,118 @@ export default function StageCommand() {
       />
       <FilterBar />
 
-      {/* Section 1: Stage Inventory */}
-      <div className="space-y-4">
-        <SectionHeader title={`${stageLabels[stage]} Inventory`} />
-        <DashboardGrid cols={3}>
-          <StatCard label="Total Cases" value={stageData.total} />
-          <StatCard
-            label="Over SLA"
-            value={stageData.overSla}
-            delta={`${stageData.overSlaPct}% of stage`}
-            deltaType="negative"
-          />
-          <StatCard label="SLA Target" value={`${stageData.slaTarget} days`} />
-        </DashboardGrid>
+      <Tabs defaultValue="inventory">
+        <TabsList>
+          <TabsTrigger value="inventory">Inventory</TabsTrigger>
+          <TabsTrigger value="aging">Aging & SLA</TabsTrigger>
+          <TabsTrigger value="throughput">Throughput</TabsTrigger>
+          <TabsTrigger value="gates">Gates</TabsTrigger>
+          <TabsTrigger value="queue">Priority Queue</TabsTrigger>
+        </TabsList>
 
-        <div className="rounded-lg border border-border bg-card p-4">
-          <ResponsiveContainer
-            width="100%"
-            height={Math.max(200, stageData.attorneyDistribution.length * 32)}
-          >
-            <BarChart data={stageData.attorneyDistribution} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-              <YAxis type="category" dataKey="name" width={120} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-              <Bar dataKey="count" fill="#6366f1" radius={[0, 4, 4, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+        <TabsContent value="inventory">
+          <div className="space-y-4">
+            <SectionHeader title={`${stageLabels[stage]} Inventory`} />
+            <DashboardGrid cols={3}>
+              <StatCard label="Total Cases" value={stageData.total} />
+              <StatCard
+                label="Over SLA"
+                value={stageData.overSla}
+                delta={`${stageData.overSlaPct}% of stage`}
+                deltaType="negative"
+              />
+              <StatCard label="SLA Target" value={`${stageData.slaTarget} days`} />
+            </DashboardGrid>
 
-      {/* Section 2: Stage Aging & SLA */}
-      <div className="space-y-4">
-        <SectionHeader title="Stage Aging & SLA" />
-        <DashboardGrid cols={3}>
-          <StatCard label="Median Age" value={`${stageData.medianAge}d`} />
-          <StatCard label="90th Percentile" value={`${stageData.p90Age}d`} />
-          <StatCard
-            label="Over SLA %"
-            value={`${stageData.overSlaPct}%`}
-            deltaType={stageData.overSlaPct > 20 ? "negative" : "positive"}
-          />
-        </DashboardGrid>
-        <AgingHeatmap
-          data={{ [stage]: stageData.aging } as any}
-          stages={[stage]}
-        />
-      </div>
+            <div className="rounded-lg border border-border bg-card p-4">
+              <ResponsiveContainer
+                width="100%"
+                height={Math.max(200, stageData.attorneyDistribution.length * 32)}
+              >
+                <BarChart data={stageData.attorneyDistribution} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis type="number" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                  <YAxis type="category" dataKey="name" width={120} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                  <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
+                  <Bar dataKey="count" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </TabsContent>
 
-      {/* Section 3: Motion & Throughput */}
-      <div className="space-y-4">
-        <SectionHeader title="Motion & Throughput" subtitle="13-week trailing" />
-        <div className="rounded-lg border border-border bg-card p-4">
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={weeklyData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="week" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-              <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-              <Legend wrapperStyle={{ color: 'hsl(var(--muted-foreground))' }} />
-              <Area type="monotone" dataKey="newIn" fill="#6366f1" fillOpacity={0.3} stroke="#6366f1" strokeWidth={2} name="New In" />
-              <Area type="monotone" dataKey="closedOut" fill="#10b981" fillOpacity={0.3} stroke="#10b981" strokeWidth={2} name="Closed Out" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+        <TabsContent value="aging">
+          <div className="space-y-4">
+            <SectionHeader title="Stage Aging & SLA" />
+            <DashboardGrid cols={3}>
+              <StatCard label="Median Age" value={`${stageData.medianAge}d`} />
+              <StatCard label="90th Percentile" value={`${stageData.p90Age}d`} />
+              <StatCard
+                label="Over SLA %"
+                value={`${stageData.overSlaPct}%`}
+                deltaType={stageData.overSlaPct > 20 ? "negative" : "positive"}
+              />
+            </DashboardGrid>
+            <AgingHeatmap
+              data={{ [stage]: stageData.aging } as any}
+              stages={[stage]}
+            />
+          </div>
+        </TabsContent>
 
-      {/* Section 4: Readiness Gates */}
-      <div className="space-y-4">
-        <SectionHeader title="Readiness Gates" subtitle="Exit criteria completion across cases" />
-        <div className="rounded-lg border border-border bg-card p-4">
-          <ResponsiveContainer width="100%" height={Math.max(200, gateChartData.length * 40)}>
-            <BarChart data={gateChartData} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis type="number" domain={[0, 100]} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v: number) => `${v}%`} />
-              <YAxis type="category" dataKey="name" width={160} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-              <Bar dataKey="completion" radius={[0, 4, 4, 0]}>
-                {gateChartData.map((entry, index) => (
-                  <Cell key={`gate-cell-${index}`} fill={gateBarColor(entry.completion)} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+        <TabsContent value="throughput">
+          <div className="space-y-4">
+            <SectionHeader title="Motion & Throughput" subtitle="13-week trailing" />
+            <div className="rounded-lg border border-border bg-card p-4">
+              <ResponsiveContainer width="100%" height={250}>
+                <AreaChart data={weeklyData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="week" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                  <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                  <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
+                  <Legend wrapperStyle={{ color: 'hsl(var(--muted-foreground))' }} />
+                  <Area type="monotone" dataKey="newIn" fill="#6366f1" fillOpacity={0.3} stroke="#6366f1" strokeWidth={2} name="New In" />
+                  <Area type="monotone" dataKey="closedOut" fill="#10b981" fillOpacity={0.3} stroke="#10b981" strokeWidth={2} name="Closed Out" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </TabsContent>
 
-      {/* Section 5: Risk + Priority Queue */}
-      <div className="space-y-4">
-        <SectionHeader title="Priority Queue" subtitle="Cases needing attention, sorted by urgency" />
-        <DataTable
-          columns={columns}
-          data={stageData.priorityQueue}
-          keyField="id"
-          onRowClick={(row) => navigate(`/case/${row.id}`)}
-          maxRows={20}
-        />
-      </div>
+        <TabsContent value="gates">
+          <div className="space-y-4">
+            <SectionHeader title="Readiness Gates" subtitle="Exit criteria completion across cases" />
+            <div className="rounded-lg border border-border bg-card p-4">
+              <ResponsiveContainer width="100%" height={Math.max(200, gateChartData.length * 40)}>
+                <BarChart data={gateChartData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis type="number" domain={[0, 100]} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v: number) => `${v}%`} />
+                  <YAxis type="category" dataKey="name" width={160} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                  <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
+                  <Bar dataKey="completion" radius={[0, 4, 4, 0]}>
+                    {gateChartData.map((entry, index) => (
+                      <Cell key={`gate-cell-${index}`} fill={gateBarColor(entry.completion)} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="queue">
+          <div className="space-y-4">
+            <SectionHeader title="Priority Queue" subtitle="Cases needing attention, sorted by urgency" />
+            <DataTable
+              columns={columns}
+              data={stageData.priorityQueue}
+              keyField="id"
+              onRowClick={(row) => navigate(`/case/${row.id}`)}
+              maxRows={20}
+            />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

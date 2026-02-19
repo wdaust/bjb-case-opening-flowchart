@@ -6,6 +6,7 @@ import { StatCard } from '../components/dashboard/StatCard';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DeadlineList } from '../components/dashboard/DeadlineList';
 import { DataTable, type Column } from '../components/dashboard/DataTable';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 import { getUpcomingDeadlines } from '../data/mockData';
 
 type DeadlineRow = ReturnType<typeof getUpcomingDeadlines>[number];
@@ -64,24 +65,38 @@ export default function RiskRadar() {
         <StatCard label="Expert/Discovery" value={expertDiscoveryDeadlines.length} />
       </DashboardGrid>
 
-      <SectionHeader title="Deadline Timeline" subtitle="All deadlines in next 90 days" />
-      <DeadlineList deadlines={allDeadlines} maxItems={30} />
+      <Tabs defaultValue="deadline-timeline">
+        <TabsList>
+          <TabsTrigger value="deadline-timeline">Deadline Timeline</TabsTrigger>
+          <TabsTrigger value="sol-countdown">SOL Countdown</TabsTrigger>
+          <TabsTrigger value="court-date-calendar">Court Date Calendar</TabsTrigger>
+        </TabsList>
 
-      <SectionHeader title="SOL Countdown" subtitle="Statute of limitations approaching" />
-      <DataTable
-        data={solDeadlines}
-        columns={solColumns}
-        keyField="caseId"
-        onRowClick={(row) => navigate(`/case/${row.caseId}`)}
-      />
+        <TabsContent value="deadline-timeline" className="space-y-4 pt-4">
+          <SectionHeader title="Deadline Timeline" subtitle="All deadlines in next 90 days" />
+          <DeadlineList deadlines={allDeadlines} maxItems={30} />
+        </TabsContent>
 
-      <SectionHeader title="Court Date Calendar" subtitle="Upcoming trial and court dates" />
-      <DataTable
-        data={courtDeadlines}
-        columns={courtColumns}
-        keyField="caseId"
-        onRowClick={(row) => navigate(`/case/${row.caseId}`)}
-      />
+        <TabsContent value="sol-countdown" className="space-y-4 pt-4">
+          <SectionHeader title="SOL Countdown" subtitle="Statute of limitations approaching" />
+          <DataTable
+            data={solDeadlines}
+            columns={solColumns}
+            keyField="caseId"
+            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
+          />
+        </TabsContent>
+
+        <TabsContent value="court-date-calendar" className="space-y-4 pt-4">
+          <SectionHeader title="Court Date Calendar" subtitle="Upcoming trial and court dates" />
+          <DataTable
+            data={courtDeadlines}
+            columns={courtColumns}
+            keyField="caseId"
+            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
