@@ -44,7 +44,7 @@ export function Legend({ items }: { items: LegendItem[] }) {
                 height: 18,
                 borderRadius: 4,
                 background: item.color,
-                border: '1px solid rgba(0,0,0,0.1)',
+                border: '1px solid var(--border-color, rgba(0,0,0,0.1))',
                 flexShrink: 0,
               }} />
               {item.label}

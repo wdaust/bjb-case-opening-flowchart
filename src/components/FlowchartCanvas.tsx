@@ -170,7 +170,7 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
 
   const handleSaveTask = useCallback((task: Task) => {
     pushSnapshot(nodes, edges);
-    const style = section.styles[task.style] || { fill: '#666', stroke: '#444', color: '#fff' };
+    const style = section.styles[task.style] || { fill: 'var(--text-muted, #666)', stroke: '#444', color: '#fff' };
 
     if (isNewTask) {
       const newNode: Node = {
@@ -420,7 +420,7 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
             <Controls />
             <MiniMap
               nodeColor={(n) => {
-                if (n.type === 'subgraph') return '#e0e0e0';
+                if (n.type === 'subgraph') return 'var(--border-color, #e0e0e0)';
                 const data = n.data as TaskNodeData;
                 return data.fill;
               }}
@@ -490,7 +490,7 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
                   borderRadius: 6, padding: 4,
                 }}>
                   {availableForGrouping.length === 0 ? (
-                    <div style={{ padding: 12, color: '#999', fontSize: 13, textAlign: 'center' }}>
+                    <div style={{ padding: 12, color: 'var(--text-muted, #999)', fontSize: 13, textAlign: 'center' }}>
                       All tasks are already in groups
                     </div>
                   ) : (
@@ -502,7 +502,7 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
                           style={{
                             display: 'flex', alignItems: 'center', gap: 8,
                             padding: '6px 8px', borderRadius: 4, cursor: 'pointer',
-                            background: isChecked ? '#e3f2fd' : 'transparent',
+                            background: isChecked ? 'var(--input-bg, #e3f2fd)' : 'transparent',
                             fontSize: 13,
                           }}
                         >
@@ -526,7 +526,7 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
                     Existing Groups
                   </div>
                   {section.subgraphs.map(sg => (
-                    <div key={sg.id} style={{ color: '#666', padding: '2px 0' }}>
+                    <div key={sg.id} style={{ color: 'var(--text-muted, #666)', padding: '2px 0' }}>
                       {sg.title} ({sg.taskIds.length} tasks)
                     </div>
                   ))}

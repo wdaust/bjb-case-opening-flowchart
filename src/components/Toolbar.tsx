@@ -58,7 +58,7 @@ export function Toolbar({
     }}>
       {/* Actions */}
       <button onClick={onAddNode} style={primaryBtn}>+ Add Node</button>
-      <button onClick={onAddGroup} style={{ ...btnStyle, background: '#424242', color: '#fff', borderColor: '#424242' }}>
+      <button onClick={onAddGroup} style={{ ...btnStyle, background: 'var(--text-color, #424242)', color: 'var(--surface, #fff)', borderColor: 'var(--text-color, #424242)' }}>
         + Add Group
       </button>
 

@@ -56,10 +56,10 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
         type="target"
         position={Position.Top}
         style={{
-          background: hovered ? '#2196f3' : stroke,
+          background: hovered ? 'var(--handle-color, #2196f3)' : stroke,
           width: hovered ? 12 : 10,
           height: hovered ? 12 : 10,
-          border: '2px solid #fff',
+          border: '2px solid var(--surface, #fff)',
           transition: 'all 0.15s',
           boxShadow: hovered ? '0 0 6px rgba(33,150,243,0.5)' : 'none',
         }}
@@ -99,8 +99,8 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
           left: '50%',
           transform: 'translateX(-50%)',
           marginBottom: 8,
-          background: '#333',
-          color: '#fff',
+          background: 'var(--tooltip-bg, #333)',
+          color: 'var(--tooltip-color, #fff)',
           padding: '6px 10px',
           borderRadius: 6,
           fontSize: 11,
@@ -121,7 +121,7 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
             width: 0, height: 0,
             borderLeft: '5px solid transparent',
             borderRight: '5px solid transparent',
-            borderTop: '5px solid #333',
+            borderTop: '5px solid var(--tooltip-bg, #333)',
           }} />
         </div>
       )}
@@ -130,10 +130,10 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
         type="source"
         position={Position.Bottom}
         style={{
-          background: hovered ? '#2196f3' : stroke,
+          background: hovered ? 'var(--handle-color, #2196f3)' : stroke,
           width: hovered ? 12 : 10,
           height: hovered ? 12 : 10,
-          border: '2px solid #fff',
+          border: '2px solid var(--surface, #fff)',
           transition: 'all 0.15s',
           boxShadow: hovered ? '0 0 6px rgba(33,150,243,0.5)' : 'none',
         }}

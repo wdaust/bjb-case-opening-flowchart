@@ -40,7 +40,7 @@ export function DetailTable({ section, visible }: Props) {
               if (task.excludeFromTable) {
                 if (task.bannerAfter) {
                   rows.push(
-                    <tr key={`banner-${task.id}`} style={{ background: task.bannerBg || '#fff3e0' }}>
+                    <tr key={`banner-${task.id}`} style={{ background: task.bannerBg || 'var(--surface, #fff3e0)' }}>
                       <td colSpan={columns.length} style={{
                         textAlign: 'center', fontWeight: 700,
                         color: task.bannerColor || '#e65100', padding: '10px 12px',

@@ -82,12 +82,12 @@ export function CustomEdge(props: EdgeProps) {
                 style={{
                   padding: '2px 6px',
                   fontSize: 10,
-                  border: '1px solid #2196f3',
+                  border: '1px solid var(--handle-color, #2196f3)',
                   borderRadius: 4,
                   outline: 'none',
                   width: 80,
                   textAlign: 'center',
-                  background: '#fff',
+                  background: 'var(--input-bg, #fff)',
                 }}
               />
             </div>
@@ -134,12 +134,12 @@ export function CustomEdge(props: EdgeProps) {
             style={{
               position: 'absolute',
               transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-              background: '#fff',
+              background: 'var(--surface, #fff)',
               padding: '2px 6px',
               borderRadius: 4,
               fontSize: 10,
               fontWeight: 600,
-              border: '1px solid #ccc',
+              border: '1px solid var(--border-color, #ccc)',
               cursor: 'pointer',
               pointerEvents: 'all',
             }}

@@ -117,9 +117,9 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
                     style={{
                       display: 'flex', alignItems: 'center', gap: 6,
                       padding: '5px 10px', borderRadius: 6, cursor: 'pointer',
-                      border: isSelected ? `2px solid ${st.stroke}` : '1px solid #ddd',
-                      background: isSelected ? st.fill : '#fff',
-                      color: isSelected ? st.color : '#333',
+                      border: isSelected ? `2px solid ${st.stroke}` : '1px solid var(--border-color, #ddd)',
+                      background: isSelected ? st.fill : 'var(--btn-bg, #fff)',
+                      color: isSelected ? st.color : 'var(--text-color, #333)',
                       fontSize: 12, fontWeight: isSelected ? 600 : 400,
                       transition: 'all 0.15s',
                     }}
@@ -204,7 +204,7 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
           </Field>
 
           {/* Advanced section — collapsible */}
-          <div style={{ marginTop: 16, borderTop: '1px solid #e0e0e0', paddingTop: 12 }}>
+          <div style={{ marginTop: 16, borderTop: '1px solid var(--border-color, #e0e0e0)', paddingTop: 12 }}>
             <button
               onClick={() => setAdvancedOpen(!advancedOpen)}
               style={{
@@ -249,8 +249,8 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
               </button>
             )}
             <button onClick={onClose} style={{
-              padding: '8px 20px', background: '#fff', color: '#666',
-              border: '1px solid #ccc', borderRadius: 6, cursor: 'pointer',
+              padding: '8px 20px', background: 'var(--btn-bg, #fff)', color: 'var(--text-muted, #666)',
+              border: '1px solid var(--border-color, #ccc)', borderRadius: 6, cursor: 'pointer',
             }}>
               Cancel
             </button>
@@ -277,7 +277,7 @@ const inputStyle: React.CSSProperties = {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 14 }}>
-      <label style={{ fontSize: 11, fontWeight: 600, color: '#555', textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
+      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted, #555)', textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
         {label}
       </label>
       {children}

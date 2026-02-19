@@ -13,23 +13,35 @@
   --hint-bg: rgba(255, 255, 255, 0.85);
   --table-stripe: #f9f9f9;
   --shadow: rgba(0, 0, 0, 0.1);
+  --tooltip-bg: #333;
+  --tooltip-color: #fff;
+  --handle-color: #2196f3;
+  --subgraph-bg: rgba(245, 245, 245, 0.5);
+  --subgraph-border: #9e9e9e;
+  --subgraph-label: #424242;
 }
 
 /* Dark Theme */
 [data-theme="dark"] {
-  --bg: #1a1a2e;
-  --surface: #16213e;
-  --toolbar-bg: #1a1a2e;
-  --panel-bg: #16213e;
-  --input-bg: #0f3460;
-  --btn-bg: #0f3460;
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --toolbar-bg: #181818;
+  --panel-bg: #1e1e1e;
+  --input-bg: #2a2a2a;
+  --btn-bg: #2a2a2a;
   --text-color: #e0e0e0;
   --text-muted: #aaa;
-  --heading-color: #7c8dff;
-  --border-color: #2a2a4a;
-  --hint-bg: rgba(26, 26, 46, 0.9);
-  --table-stripe: #1a1a2e;
+  --heading-color: #e0e0e0;
+  --border-color: #333;
+  --hint-bg: rgba(18, 18, 18, 0.9);
+  --table-stripe: #1a1a1a;
   --shadow: rgba(0, 0, 0, 0.3);
+  --tooltip-bg: #e0e0e0;
+  --tooltip-color: #121212;
+  --handle-color: #64b5f6;
+  --subgraph-bg: rgba(255, 255, 255, 0.06);
+  --subgraph-border: #555;
+  --subgraph-label: #ccc;
 }
 
 * {
@@ -162,7 +174,7 @@ body {
 .phase-review { background: #6a1b9a; }
 .phase-complaint { background: #c62828; }
 .phase-service { background: #00838f; }
-.phase-followup { background: #f9a825; color: #333; }
+.phase-followup { background: #f9a825; color: #1a1a1a; }
 .phase-subpoena { background: #4e342e; }
 .phase-default { background: #37474f; }
 .phase-supportive { background: #ad1457; }
@@ -176,8 +188,8 @@ body {
 .phase-discovery { background: #b71c1c; }
 .phase-depo { background: #4a148c; }
 .phase-expert { background: #00695c; }
-.phase-mgmt { background: #ff6f00; color: #333; }
-.phase-milestone { background: #ff6f00; color: #333; }
+.phase-mgmt { background: #ff6f00; color: #1a1a1a; }
+.phase-milestone { background: #ff6f00; color: #1a1a1a; }
 
 /* React Flow overrides */
 .react-flow__node {
