@@ -146,6 +146,7 @@ export default function App() {
             >
               {darkMode ? '☀️' : '🌙'}
             </button>
+            <span style={{ fontSize: 11, color: 'var(--text-muted, #999)', alignSelf: 'center' }}>v1.1.0</span>
           </div>
         </div>
       </header>
