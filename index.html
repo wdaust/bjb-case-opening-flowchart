@@ -51,6 +51,18 @@
         .section-header.treatment:hover {
             background: linear-gradient(135deg, #00695c 0%, #00796b 100%);
         }
+        .section-header.discovery {
+            background: linear-gradient(135deg, #b71c1c 0%, #c62828 100%);
+        }
+        .section-header.discovery:hover {
+            background: linear-gradient(135deg, #c62828 0%, #d32f2f 100%);
+        }
+        .section-header.expert {
+            background: linear-gradient(135deg, #4a148c 0%, #6a1b9a 100%);
+        }
+        .section-header.expert:hover {
+            background: linear-gradient(135deg, #6a1b9a 0%, #7b1fa2 100%);
+        }
         .section-title {
             font-size: 22px;
             font-weight: 700;
@@ -79,14 +91,10 @@
         }
         .section-body {
             padding: 30px;
-            transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease;
-            overflow: hidden;
+            overflow-x: auto;
         }
         .section-body.collapsed {
-            max-height: 0 !important;
-            padding-top: 0;
-            padding-bottom: 0;
-            opacity: 0;
+            display: none;
         }
 
         /* Legend */
@@ -118,6 +126,19 @@
             display: flex;
             justify-content: center;
         }
+        /* Larger flowchart boxes */
+        .mermaid svg .node rect,
+        .mermaid svg .node polygon,
+        .mermaid svg .node circle {
+            rx: 8;
+            ry: 8;
+        }
+        .mermaid svg .nodeLabel {
+            font-size: 14px !important;
+        }
+        .mermaid svg .node {
+            min-width: 180px;
+        }
 
         /* Table */
         table {
@@ -135,6 +156,12 @@
         }
         .treatment-section th {
             background: #004d40;
+        }
+        .discovery-section th {
+            background: #b71c1c;
+        }
+        .expert-section th {
+            background: #4a148c;
         }
         td {
             padding: 8px 12px;
@@ -168,6 +195,11 @@
         .phase-audit { background: #00838f; }
         .phase-admin { background: #37474f; }
         .phase-amend { background: #e65100; }
+        .phase-discovery { background: #b71c1c; }
+        .phase-depo { background: #4a148c; }
+        .phase-expert { background: #00695c; }
+        .phase-mgmt { background: #ff6f00; color: #333; }
+        .phase-milestone { background: #ff6f00; color: #333; }
 
         .table-wrapper {
             overflow-x: auto;
@@ -432,8 +464,226 @@ flowchart TD
         </div>
     </div>
 
+    <!-- ==================== LIT: DISCOVERY ==================== -->
+    <div class="collapsible-section discovery-section">
+        <div class="section-header discovery" onclick="toggleSection(this)">
+            <div>
+                <div class="section-title">LIT: Discovery</div>
+                <div class="section-subtitle">12 tasks — Discovery Drafting, Client Appointment Scheduling & Finalization</div>
+            </div>
+            <div class="toggle-icon">&#9660;</div>
+        </div>
+        <div class="section-body">
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color" style="background:#1565c0"></div> Discovery Drafting</div>
+                <div class="legend-item"><div class="legend-color" style="background:#c62828"></div> Call Attempts</div>
+                <div class="legend-item"><div class="legend-color" style="background:#2e7d32"></div> Auto Letters</div>
+                <div class="legend-item"><div class="legend-color" style="background:#ff6f00"></div> Management Escalation</div>
+                <div class="legend-item"><div class="legend-color" style="background:#6a1b9a"></div> Attorney Tasks</div>
+            </div>
+            <div class="chart-container">
+                <div class="mermaid">
+flowchart TD
+    classDef draft fill:#1565c0,stroke:#0d47a1,color:#fff
+    classDef callattempt fill:#c62828,stroke:#b71c1c,color:#fff
+    classDef autoletter fill:#2e7d32,stroke:#1b5e20,color:#fff
+    classDef mgmt fill:#ff6f00,stroke:#e65100,color:#fff
+    classDef attorney fill:#6a1b9a,stroke:#4a148c,color:#fff
+
+    D1["📝 Draft Plaintiff's Discovery Responses\n📋 Legal Asst / Para\n⏱ 30 days from complaint filed"]:::draft
+
+    D1 --> CA1["Client Discovery Appt\nCall Attempt 1\n📋 Legal Asst / Para\n⏱ Day 31 after complaint filed"]:::callattempt
+    CA1 --> CA2["Client Discovery Appt\nCall Attempt 2\n📋 Legal Asst / Para\n⏱ Day 32 after complaint filed"]:::callattempt
+    CA2 --> CA3["Client Discovery Appt\nCall Attempt 3\n📋 Legal Asst / Para\n⏱ Day 33 after complaint filed"]:::callattempt
+
+    CA3 --> L1["Auto: Send Contact Letter 1\n🤖 System Automation"]:::autoletter
+
+    L1 --> CA4["Client Discovery Appt\nCall Attempt 4\n📋 Legal Asst / Para\n⏱ Day 45 after complaint filed"]:::callattempt
+    CA4 --> CA5["Client Discovery Appt\nCall Attempt 5\n📋 Legal Asst / Para\n⏱ Day 46 after complaint filed"]:::callattempt
+    CA5 --> CA6["Client Discovery Appt\nCall Attempt 6\n📋 Legal Asst / Para\n⏱ Day 47 after complaint filed"]:::callattempt
+
+    CA6 --> L2["Auto: Send Contact Letter 2\n🤖 System Automation"]:::autoletter
+
+    L2 --> ME["Management Escalation\nDiscovery Appointment\n🤖 System Automation\n⏱ Day 49 after complaint filed"]:::mgmt
+
+    ME --> DA["Client Discovery Appt\nDiscovery Appointment\n⚖️ Attorney\n⏱ No later than 5 days"]:::attorney
+
+    DA --> FIN["Finalize Discovery Responses\n⚖️ Attorney\n⏱ 2 days after appointment"]:::attorney
+                </div>
+            </div>
+
+            <h3>Detailed Task Reference</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Phase</th>
+                            <th>Quick Action Panel</th>
+                            <th>Assigned To</th>
+                            <th>Task</th>
+                            <th>SLA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><span class="phase-tag phase-setup">Draft</span></td><td>Discovery</td><td>Legal Asst / Para</td><td>Draft Plaintiff's Discovery Responses</td><td>30 days from complaint filed</td></tr>
+                        <tr><td>2</td><td><span class="phase-tag phase-call">Call</span></td><td>Client Discovery Appt</td><td>Legal Asst / Para</td><td>Call Attempt 1</td><td>Day 31 after complaint filed</td></tr>
+                        <tr><td>3</td><td><span class="phase-tag phase-call">Call</span></td><td>Client Discovery Appt</td><td>Legal Asst / Para</td><td>Call Attempt 2</td><td>Day 32 after complaint filed</td></tr>
+                        <tr><td>4</td><td><span class="phase-tag phase-call">Call</span></td><td>Client Discovery Appt</td><td>Legal Asst / Para</td><td>Call Attempt 3</td><td>Day 33 after complaint filed</td></tr>
+                        <tr><td>5</td><td><span class="phase-tag phase-letter">Auto</span></td><td>Client Orientation</td><td>System Automation</td><td>Send Contact Letter 1</td><td>Automation</td></tr>
+                        <tr><td>6</td><td><span class="phase-tag phase-call">Call</span></td><td>Client Discovery Appt</td><td>Legal Asst / Para</td><td>Call Attempt 4</td><td>Day 45 after complaint filed</td></tr>
+                        <tr><td>7</td><td><span class="phase-tag phase-call">Call</span></td><td>Client Discovery Appt</td><td>Legal Asst / Para</td><td>Call Attempt 5</td><td>Day 46 after complaint filed</td></tr>
+                        <tr><td>8</td><td><span class="phase-tag phase-call">Call</span></td><td>Client Discovery Appt</td><td>Legal Asst / Para</td><td>Call Attempt 6</td><td>Day 47 after complaint filed</td></tr>
+                        <tr><td>9</td><td><span class="phase-tag phase-letter">Auto</span></td><td>Client Orientation</td><td>System Automation</td><td>Send Contact Letter 2</td><td>Automation</td></tr>
+                        <tr><td>10</td><td><span class="phase-tag phase-milestone">Escalation</span></td><td>Management Escalation</td><td>System Automation</td><td>Discovery Appointment Escalation</td><td>Day 49 after complaint filed</td></tr>
+                        <tr><td>11</td><td><span class="phase-tag phase-review">Attorney</span></td><td>Client Discovery Appt</td><td>Attorney</td><td>Discovery Appointment</td><td>No later than 5 days</td></tr>
+                        <tr><td>12</td><td><span class="phase-tag phase-review">Attorney</span></td><td>Discovery</td><td>Attorney</td><td>Finalize Discovery Responses</td><td>2 days after appointment</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LIT: EXPERT & DEPOSITION ==================== -->
+    <div class="collapsible-section expert-section">
+        <div class="section-header expert" onclick="toggleSection(this)">
+            <div>
+                <div class="section-title">LIT: Expert & Deposition</div>
+                <div class="section-subtitle">27 tasks — Deposition Scheduling, Expert Retention & Reports, Amended Reports</div>
+            </div>
+            <div class="toggle-icon">&#9660;</div>
+        </div>
+        <div class="section-body">
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color" style="background:#4a148c"></div> Deposition Scheduling</div>
+                <div class="legend-item"><div class="legend-color" style="background:#00695c"></div> Expert Retention</div>
+                <div class="legend-item"><div class="legend-color" style="background:#1565c0"></div> Follow Up Attempts</div>
+                <div class="legend-item"><div class="legend-color" style="background:#ff6f00"></div> Milestones</div>
+                <div class="legend-item"><div class="legend-color" style="background:#6a1b9a"></div> Attorney Review</div>
+                <div class="legend-item"><div class="legend-color" style="background:#e65100"></div> Amended Reports</div>
+                <div class="legend-item"><div class="legend-color" style="background:#ad1457"></div> Supportive Tasks</div>
+            </div>
+            <div class="chart-container">
+                <div class="mermaid">
+flowchart TD
+    classDef depo fill:#4a148c,stroke:#311b92,color:#fff
+    classDef expert fill:#00695c,stroke:#004d40,color:#fff
+    classDef followup fill:#1565c0,stroke:#0d47a1,color:#fff
+    classDef milestone fill:#ff6f00,stroke:#e65100,color:#fff
+    classDef attorney fill:#6a1b9a,stroke:#4a148c,color:#fff
+    classDef amended fill:#e65100,stroke:#bf360c,color:#fff
+    classDef supportive fill:#ad1457,stroke:#880e4f,color:#fff
+
+    subgraph Phase1["Phase 1: Deposition Scheduling"]
+        NP["Assign Non-Party Depo Procedure\n📋 Paralegal / Legal Asst\n⏱ 75 days after complaint filed"]:::depo
+        NP --> NP2["Prepare Notice, Cover Letter & Send\n📋 Paralegal / Legal Asst\n⏱ 1 hour after approval"]:::depo
+        NP --> NP3["Schedule Court Reporter\n📋 Paralegal / Legal Asst\n⏱ 1 hour after approval"]:::depo
+        DP["Prepare Defendant Depo Notice\n📋 Paralegal / Legal Asst\n⏱ 75 days after complaint filed"]:::depo
+        DP --> DP2["Schedule Defendant Depo Court Reporter\n📋 Paralegal / Legal Asst\n⏱ 75 days after complaint filed"]:::depo
+        DP2 --> VER["Verify Depo Confirmed or Reschedule\n📋 Paralegal / Legal Asst\n⏱ 1 day before deposition"]:::depo
+    end
+
+    subgraph Phase1b["Phase 1: Expert Retention"]
+        CE["Confirm Expert Directive from Atty\n📋 Paralegal / Legal Asst\n⏱ 2 days after Discovery Appt"]:::expert
+        CE --> RE1["Retain Expert 1 - Attempt 1\n📋 Paralegal / Legal Asst\n⏱ Day 10 after Plaintiff discovery served"]:::expert
+        RE1 --> RE2["Retain Expert 1 - Attempt 2\n📋 Paralegal / Legal Asst\n⏱ Day 10 after Plaintiff discovery served"]:::expert
+        RE2 --> RE3["Retain Expert 1 - Attempt 3\n📋 Paralegal / Legal Asst\n⏱ Day 11 after Plaintiff discovery served"]:::expert
+        RE3 -->|"Expert Responds"| RS["Retain & Schedule Expert\n📋 Paralegal / Legal Asst\n⏱ 1 hour once IME/Report request"]:::expert
+        RE3 -->|"No Response by 5pm Day 11"| REP["Replace Expert\nBegin 3 attempts again\n📋 Paralegal / Legal Asst"]:::expert
+        RS --> IME["IME/Report Request to Expert\n📋 Legal Asst / Para\n⏱ 1 hour after confirm schedule"]:::expert
+        IME --> MILE["🔄 Repeat for All Experts"]:::milestone
+    end
+
+    subgraph Phase2["Phase 2: Expert Report Follow-up"]
+        FU1["Follow Up Expert 1 - Attempt 1\n📋 Paralegal / Legal Asst"]:::followup
+        FU1 --> FU2["Follow Up Expert 1 - Attempt 2\n📋 Paralegal / Legal Asst"]:::followup
+        FU2 --> FU3["Follow Up Expert 1 - Attempt 3\n📋 Paralegal / Legal Asst"]:::followup
+        FU3 -->|"No Response"| FU4["Follow Up Attempt 4\nFind New Expert\n📋 Paralegal / Legal Asst"]:::followup
+        FU3 -->|"Report Received"| UPL["Upload Expert Reporting\n📋 Paralegal / Legal Asst\n⏱ 1 hour from receipt"]:::followup
+        UPL --> AREV["Attorney Review Expert Report\n⚖️ Attorney\n⏱ 1 week from upload"]:::attorney
+        AREV --> SUP["Supportive Admin Task\n📋 Legal Asst / Para\n⏱ 3 hours"]:::supportive
+    end
+
+    subgraph Phase3["Phase 3: Amended Expert Report"]
+        AF1["Follow Up Amended Expert 1\nAttempt 1\n📋 Paralegal / Legal Asst"]:::amended
+        AF1 --> AF2["Follow Up Amended Expert 1\nAttempt 2\n📋 Paralegal / Legal Asst"]:::amended
+        AF2 --> AF3["Follow Up Amended Expert 1\nAttempt 3\n📋 Paralegal / Legal Asst"]:::amended
+        AF3 --> AUPL["Upload Amended Expert Reporting\n📋 Paralegal / Legal Asst\n⏱ 1 hour from receipt"]:::amended
+        AUPL --> AAREV["Attorney Review Amended\nExpert Report\n⚖️ Attorney\n⏱ 1 week from upload"]:::attorney
+    end
+
+    MILE --> FU1
+    SUP --> AF1
+                </div>
+            </div>
+
+            <h3>Detailed Task Reference</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Phase</th>
+                            <th>Quick Action Panel</th>
+                            <th>Assigned To</th>
+                            <th>Task</th>
+                            <th>SLA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background:#f3e5f5;"><td colspan="6" style="text-align:center;font-weight:bold;color:#4a148c;">Phase 1: Deposition Scheduling</td></tr>
+                        <tr><td>1</td><td><span class="phase-tag phase-depo">Depo</span></td><td>Deposition Scheduling</td><td>Paralegal / Legal Asst</td><td>Assign non-party depo procedure</td><td>75 days after complaint filed</td></tr>
+                        <tr><td>2</td><td><span class="phase-tag phase-depo">Depo</span></td><td>Deposition Scheduling</td><td>Paralegal / Legal Asst</td><td>Prepare notice, cover letter, and send</td><td>1 hour after approval</td></tr>
+                        <tr><td>3</td><td><span class="phase-tag phase-depo">Depo</span></td><td>Deposition Scheduling</td><td>Paralegal / Legal Asst</td><td>Schedule court reporter</td><td>1 hour after approval</td></tr>
+                        <tr><td>4</td><td><span class="phase-tag phase-depo">Depo</span></td><td>Deposition Scheduling</td><td>Paralegal / Legal Asst</td><td>Prepare defendant depo notice</td><td>75 days after complaint filed</td></tr>
+                        <tr><td>5</td><td><span class="phase-tag phase-depo">Depo</span></td><td>Deposition Scheduling</td><td>Paralegal / Legal Asst</td><td>Schedule defendant depo court reporter</td><td>75 days after complaint filed</td></tr>
+                        <tr><td>6</td><td><span class="phase-tag phase-depo">Depo</span></td><td>Deposition Scheduling</td><td>Paralegal / Legal Asst</td><td>Verify depo confirmed or reschedule</td><td>1 day before deposition</td></tr>
+                        <tr style="background:#e0f2f1;"><td colspan="6" style="text-align:center;font-weight:bold;color:#00695c;">Phase 1: Expert Retention</td></tr>
+                        <tr><td>7</td><td><span class="phase-tag phase-expert">Expert</span></td><td>Expert Retention</td><td>Paralegal / Legal Asst</td><td>Confirm expert directive from Attorney</td><td>2 days after Discovery Appt</td></tr>
+                        <tr><td>8</td><td><span class="phase-tag phase-expert">Expert</span></td><td>Expert Retention</td><td>Paralegal / Legal Asst</td><td>Retain Expert 1 - Attempt 1</td><td>Day 10 after Plaintiff discovery served</td></tr>
+                        <tr><td>9</td><td><span class="phase-tag phase-expert">Expert</span></td><td>Expert Retention</td><td>Paralegal / Legal Asst</td><td>Retain Expert 1 - Attempt 2</td><td>Day 10 after Plaintiff discovery served</td></tr>
+                        <tr><td>10</td><td><span class="phase-tag phase-expert">Expert</span></td><td>Expert Retention</td><td>Paralegal / Legal Asst</td><td>Retain Expert 1 - Attempt 3</td><td>Day 11 after Plaintiff discovery served</td></tr>
+                        <tr><td>11</td><td><span class="phase-tag phase-expert">Expert</span></td><td>Expert Retention</td><td>Paralegal / Legal Asst</td><td>Retain and schedule Expert</td><td>1 hour once IME/Report request</td></tr>
+                        <tr><td>12</td><td><span class="phase-tag phase-expert">Expert</span></td><td>Expert Retention</td><td>Paralegal / Legal Asst</td><td>Replace Expert, begin 3 attempts again</td><td>By 5pm on Day 11</td></tr>
+                        <tr><td>13</td><td><span class="phase-tag phase-expert">Expert</span></td><td>Expert Retention</td><td>Legal Asst / Para</td><td>IME/Report request to Expert</td><td>1 hour after confirm schedule</td></tr>
+                        <tr style="background:#fff3e0;"><td colspan="6" style="text-align:center;font-weight:bold;color:#ff6f00;">Repeat for all Experts</td></tr>
+                        <tr style="background:#e3f2fd;"><td colspan="6" style="text-align:center;font-weight:bold;color:#1565c0;">Phase 2: Expert Report Follow-up</td></tr>
+                        <tr><td>14</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Expert Report Follow-up</td><td>Paralegal / Legal Asst</td><td>Follow up Expert 1 - Attempt 1</td><td>Per schedule</td></tr>
+                        <tr><td>15</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Expert Report Follow-up</td><td>Paralegal / Legal Asst</td><td>Follow up Expert 1 - Attempt 2</td><td>Per schedule</td></tr>
+                        <tr><td>16</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Expert Report Follow-up</td><td>Paralegal / Legal Asst</td><td>Follow up Expert 1 - Attempt 3</td><td>Per schedule</td></tr>
+                        <tr><td>17</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Expert Report Follow-up</td><td>Paralegal / Legal Asst</td><td>Follow up Attempt 4 - Find new expert</td><td>Per schedule</td></tr>
+                        <tr><td>18</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Expert Report Follow-up</td><td>Paralegal / Legal Asst</td><td>Upload expert reporting</td><td>1 hour from receipt</td></tr>
+                        <tr><td>19</td><td><span class="phase-tag phase-review">Attorney</span></td><td>Expert Report Review</td><td>Attorney</td><td>Attorney Review Expert Report</td><td>1 week from upload</td></tr>
+                        <tr><td>20</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Admin</td><td>Legal Asst / Para</td><td>Supportive Admin Task</td><td>3 hours</td></tr>
+                        <tr style="background:#fbe9e7;"><td colspan="6" style="text-align:center;font-weight:bold;color:#e65100;">Phase 3: Amended Expert Report</td></tr>
+                        <tr><td>21</td><td><span class="phase-tag phase-amend">Amended</span></td><td>Amended Expert Report</td><td>Paralegal / Legal Asst</td><td>Follow up amended Expert 1 - Attempt 1</td><td>Per schedule</td></tr>
+                        <tr><td>22</td><td><span class="phase-tag phase-amend">Amended</span></td><td>Amended Expert Report</td><td>Paralegal / Legal Asst</td><td>Follow up amended Expert 1 - Attempt 2</td><td>Per schedule</td></tr>
+                        <tr><td>23</td><td><span class="phase-tag phase-amend">Amended</span></td><td>Amended Expert Report</td><td>Paralegal / Legal Asst</td><td>Follow up amended Expert 1 - Attempt 3</td><td>Per schedule</td></tr>
+                        <tr><td>24</td><td><span class="phase-tag phase-amend">Amended</span></td><td>Amended Expert Report</td><td>Paralegal / Legal Asst</td><td>Upload amended expert reporting</td><td>1 hour from receipt</td></tr>
+                        <tr><td>25</td><td><span class="phase-tag phase-review">Attorney</span></td><td>Amended Expert Report Review</td><td>Attorney</td><td>Attorney Review Amended Expert Report</td><td>1 week from upload</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script>
-        mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+        // Initialize Mermaid with larger font size for readability
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                nodeSpacing: 30,
+                rankSpacing: 40,
+                padding: 15,
+                htmlLabels: true,
+                useMaxWidth: false
+            },
+            themeVariables: {
+                fontSize: '14px'
+            }
+        });
 
         function toggleSection(header) {
             const body = header.nextElementSibling;
@@ -441,22 +691,26 @@ flowchart TD
 
             if (isCollapsed) {
                 body.classList.remove('collapsed');
-                body.style.maxHeight = body.scrollHeight + 'px';
                 header.classList.remove('collapsed');
-                // After transition, remove max-height so content can grow
-                setTimeout(() => { body.style.maxHeight = 'none'; }, 400);
             } else {
-                body.style.maxHeight = body.scrollHeight + 'px';
-                // Force reflow
-                body.offsetHeight;
                 body.classList.add('collapsed');
                 header.classList.add('collapsed');
             }
         }
 
-        // Initialize all sections as expanded
-        document.querySelectorAll('.section-body').forEach(body => {
-            body.style.maxHeight = 'none';
+        // Render Mermaid after DOM is ready, then collapse sections
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Render all mermaid charts while sections are visible
+            await mermaid.run();
+
+            // After rendering, collapse all sections except the first
+            const sections = document.querySelectorAll('.section-body');
+            sections.forEach((body, index) => {
+                if (index > 0) {
+                    body.classList.add('collapsed');
+                    body.previousElementSibling.classList.add('collapsed');
+                }
+            });
         });
     </script>
 </body>
