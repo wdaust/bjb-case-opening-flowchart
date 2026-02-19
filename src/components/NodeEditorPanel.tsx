@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { Task, SectionData } from '../types/flowchart.ts';
+import { Button } from './ui/button.tsx';
+import { Input } from './ui/input.tsx';
+import { X, ChevronRight, Trash2 } from 'lucide-react';
 
 interface Props {
   task: Task | null;
@@ -9,6 +12,17 @@ interface Props {
   onDelete: (id: string) => void;
   onClose: () => void;
   isNew?: boolean;
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="mb-4">
+      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
 }
 
 export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClose, isNew }: Props) {
@@ -47,66 +61,46 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
 
   return (
     <>
-      <div
-        onClick={onClose}
-        style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0,0,0,0.3)', zIndex: 999,
-        }}
-      />
-      <div style={{
-        position: 'fixed', top: 0, right: 0, width: 480, maxWidth: '90vw',
-        height: '100vh', background: 'var(--panel-bg, #fff)', zIndex: 1000,
-        boxShadow: '-4px 0 20px var(--shadow, rgba(0,0,0,0.2))', display: 'flex',
-        flexDirection: 'column', overflow: 'hidden',
-      }}>
-        {/* Header with Task ID */}
-        <div style={{
-          padding: '16px 20px', background: section.themeColor, color: '#fff',
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <h3 style={{ margin: 0, fontSize: 16 }}>
-                {isNew ? 'Add New Task' : 'Edit Task'}
-              </h3>
-              {!isNew && form.id && (
-                <span style={{ fontSize: 12, opacity: 0.85 }}>ID: {form.id}</span>
-              )}
-            </div>
-            <button onClick={onClose} style={{
-              background: 'none', border: 'none', color: '#fff',
-              fontSize: 24, cursor: 'pointer',
-            }}>&times;</button>
+      <div onClick={onClose} className="fixed inset-0 bg-black/60 z-50" />
+      <div className="fixed top-0 right-0 w-[480px] max-w-[90vw] h-screen bg-background z-50 shadow-2xl flex flex-col overflow-hidden border-l border-border">
+        {/* Header */}
+        <div className="px-5 py-4 border-b border-border flex items-center justify-between shrink-0">
+          <div>
+            <h3 className="text-base font-semibold text-foreground m-0">
+              {isNew ? 'Add New Task' : 'Edit Task'}
+            </h3>
+            {!isNew && form.id && (
+              <span className="text-xs text-muted-foreground">ID: {form.id}</span>
+            )}
           </div>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
         </div>
 
-        <div style={{ flex: 1, overflow: 'auto', padding: '16px 20px', color: 'var(--text-color, #333)' }}>
-          {/* Task ID — only for new tasks */}
+        <div className="flex-1 overflow-auto px-5 py-5">
           {isNew && (
             <Field label="Task ID">
-              <input
+              <Input
                 value={form.id}
                 onChange={e => update('id', e.target.value)}
                 placeholder="e.g. T1, NP2"
-                style={inputStyle}
               />
             </Field>
           )}
 
-          {/* Description — full width textarea */}
           <Field label="Description">
             <textarea
               value={form.label}
               onChange={e => update('label', e.target.value)}
               rows={3}
               placeholder="Task description (use Enter for line breaks)"
-              style={{ ...inputStyle, resize: 'vertical', fontFamily: 'inherit', minHeight: 70 }}
+              className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-y min-h-[70px]"
             />
           </Field>
 
-          {/* Color Category with swatches */}
           <Field label="Color Category">
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            <div className="flex flex-wrap gap-1.5">
               {styles.map(s => {
                 const st = section.styles[s];
                 const isSelected = form.style === s;
@@ -114,21 +108,19 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
                   <button
                     key={s}
                     onClick={() => update('style', s)}
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md cursor-pointer text-xs transition-all border"
                     style={{
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      padding: '5px 10px', borderRadius: 6, cursor: 'pointer',
-                      border: isSelected ? `2px solid ${st.stroke}` : '1px solid var(--border-color, #ddd)',
-                      background: isSelected ? st.fill : 'var(--btn-bg, #fff)',
-                      color: isSelected ? st.color : 'var(--text-color, #333)',
-                      fontSize: 12, fontWeight: isSelected ? 600 : 400,
-                      transition: 'all 0.15s',
+                      borderColor: isSelected ? st.stroke : 'hsl(var(--border))',
+                      borderWidth: isSelected ? 2 : 1,
+                      background: isSelected ? st.fill : 'hsl(var(--secondary))',
+                      color: isSelected ? st.color : 'hsl(var(--foreground))',
+                      fontWeight: isSelected ? 600 : 400,
                     }}
                   >
-                    <span style={{
-                      width: 12, height: 12, borderRadius: 3,
-                      background: st.fill, border: `1px solid ${st.stroke}`,
-                      flexShrink: 0,
-                    }} />
+                    <span
+                      className="w-3 h-3 rounded-sm shrink-0"
+                      style={{ background: st.fill, border: `1px solid ${st.stroke}` }}
+                    />
                     {s}
                   </button>
                 );
@@ -136,151 +128,76 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
             </div>
           </Field>
 
-          {/* Primary fields — single column with spacing */}
           <Field label="Assigned To">
-            <input
-              value={form.assignedTo}
-              onChange={e => update('assignedTo', e.target.value)}
-              placeholder="e.g. Paralegal / Legal Asst"
-              style={inputStyle}
-            />
+            <Input value={form.assignedTo} onChange={e => update('assignedTo', e.target.value)} placeholder="e.g. Paralegal / Legal Asst" />
           </Field>
 
           <Field label="Deadline / SLA">
-            <input
-              value={form.sla}
-              onChange={e => update('sla', e.target.value)}
-              placeholder="e.g. 1 hour from OA"
-              style={inputStyle}
-            />
+            <Input value={form.sla} onChange={e => update('sla', e.target.value)} placeholder="e.g. 1 hour from OA" />
           </Field>
 
           <Field label="Phase">
-            <input
-              value={form.phase}
-              onChange={e => update('phase', e.target.value)}
-              placeholder="e.g. Setup, Review"
-              style={inputStyle}
-            />
+            <Input value={form.phase} onChange={e => update('phase', e.target.value)} placeholder="e.g. Setup, Review" />
           </Field>
 
           <Field label="Quick Action">
-            <input
-              value={form.quickAction}
-              onChange={e => update('quickAction', e.target.value)}
-              placeholder="Quick action panel name"
-              style={inputStyle}
-            />
+            <Input value={form.quickAction} onChange={e => update('quickAction', e.target.value)} placeholder="Quick action panel name" />
           </Field>
 
           <Field label="Icon (emoji)">
-            <input
-              value={form.emoji || ''}
-              onChange={e => update('emoji', e.target.value)}
-              placeholder="e.g. 📋 📞 ✅"
-              style={{ ...inputStyle, width: 120 }}
-            />
+            <Input value={form.emoji || ''} onChange={e => update('emoji', e.target.value)} placeholder="e.g. 📋 📞 ✅" className="w-28" />
           </Field>
 
           {hasFunction && (
             <Field label="Function">
-              <input
-                value={form.function || ''}
-                onChange={e => update('function', e.target.value)}
-                style={inputStyle}
-              />
+              <Input value={form.function || ''} onChange={e => update('function', e.target.value)} />
             </Field>
           )}
 
-          {/* Notes */}
           <Field label="Notes">
             <textarea
               value={form.notes || ''}
               onChange={e => update('notes', e.target.value)}
               rows={3}
               placeholder="Internal notes about this task..."
-              style={{ ...inputStyle, resize: 'vertical', fontFamily: 'inherit', minHeight: 60 }}
+              className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-y min-h-[60px]"
             />
           </Field>
 
-          {/* Advanced section — collapsible */}
-          <div style={{ marginTop: 16, borderTop: '1px solid var(--border-color, #e0e0e0)', paddingTop: 12 }}>
+          {/* Advanced section */}
+          <div className="border-t border-border pt-3">
             <button
               onClick={() => setAdvancedOpen(!advancedOpen)}
-              style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                fontSize: 12, fontWeight: 600, color: '#888', textTransform: 'uppercase',
-                display: 'flex', alignItems: 'center', gap: 4, padding: 0,
-              }}
+              className="bg-transparent border-none cursor-pointer text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1 p-0 hover:text-foreground transition-colors"
             >
-              <span style={{ transform: advancedOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.15s', display: 'inline-block' }}>
-                ▶
-              </span>
+              <ChevronRight className={`h-3 w-3 transition-transform ${advancedOpen ? 'rotate-90' : ''}`} />
               Advanced
             </button>
             {advancedOpen && (
-              <div style={{ marginTop: 10 }}>
+              <div className="mt-3">
                 <Field label="Phase Tag Style">
-                  <input
-                    value={form.phaseClass}
-                    onChange={e => update('phaseClass', e.target.value)}
-                    placeholder="e.g. phase-setup"
-                    style={inputStyle}
-                  />
+                  <Input value={form.phaseClass} onChange={e => update('phaseClass', e.target.value)} placeholder="e.g. phase-setup" />
                 </Field>
               </div>
             )}
           </div>
+        </div>
 
-          {/* Action buttons */}
-          <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
-            <button onClick={handleSave} style={{
-              padding: '8px 20px', background: section.themeColor, color: '#fff',
-              border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600,
-            }}>
-              {isNew ? 'Add Task' : 'Save Changes'}
-            </button>
-            {!isNew && (
-              <button onClick={() => onDelete(form.id)} style={{
-                padding: '8px 20px', background: '#c62828', color: '#fff',
-                border: 'none', borderRadius: 6, cursor: 'pointer',
-              }}>
-                Delete
-              </button>
-            )}
-            <button onClick={onClose} style={{
-              padding: '8px 20px', background: 'var(--btn-bg, #fff)', color: 'var(--text-muted, #666)',
-              border: '1px solid var(--border-color, #ccc)', borderRadius: 6, cursor: 'pointer',
-            }}>
-              Cancel
-            </button>
-          </div>
+        {/* Footer */}
+        <div className="flex items-center gap-2 px-5 py-4 border-t border-border shrink-0">
+          <Button onClick={handleSave}>
+            {isNew ? 'Add Task' : 'Save Changes'}
+          </Button>
+          {!isNew && (
+            <Button variant="destructive" onClick={() => onDelete(form.id)}>
+              <Trash2 className="h-4 w-4" /> Delete
+            </Button>
+          )}
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
         </div>
       </div>
     </>
-  );
-}
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '8px 10px',
-  border: '1px solid var(--border-color, #ddd)',
-  borderRadius: 6,
-  fontSize: 13,
-  fontFamily: 'inherit',
-  outline: 'none',
-  transition: 'border-color 0.15s',
-  background: 'var(--input-bg, #fff)',
-  color: 'var(--text-color, #333)',
-};
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginBottom: 14 }}>
-      <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted, #555)', textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
-        {label}
-      </label>
-      {children}
-    </div>
   );
 }

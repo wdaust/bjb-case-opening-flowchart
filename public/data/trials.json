@@ -1,0 +1,13 @@
+{
+  "id": "trials",
+  "title": "LIT: Trials",
+  "subtitle": "Trial preparation and execution workflow",
+  "headerClass": "",
+  "themeColor": "#7c3aed",
+  "thClass": "",
+  "sectionClass": "",
+  "tableColumns": ["#", "Phase", "Quick Action Panel", "Assigned To", "Task", "SLA"],
+  "legend": [],
+  "styles": {},
+  "tasks": []
+}

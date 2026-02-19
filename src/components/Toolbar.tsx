@@ -1,3 +1,12 @@
+import { Button } from './ui/button.tsx';
+import { Input } from './ui/input.tsx';
+import { Separator } from './ui/separator.tsx';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip.tsx';
+import {
+  Plus, Group, Undo2, Redo2, LayoutDashboard, Maximize2,
+  FileDown, FileUp, Image, Table2, GitBranch,
+} from 'lucide-react';
+
 interface Props {
   onAddNode: () => void;
   onAutoLayout: () => void;
@@ -5,9 +14,8 @@ interface Props {
   onImport: () => void;
   onExport: () => void;
   onExportPng: () => void;
-  onToggleTable: () => void;
-  tableVisible: boolean;
-  themeColor: string;
+  view: 'chart' | 'table';
+  onToggleView: () => void;
   onAddGroup: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
@@ -18,114 +26,100 @@ interface Props {
   onRedo: () => void;
   canUndo: boolean;
   canRedo: boolean;
+  legendContent?: React.ReactNode;
+}
+
+function ToolbarButton({ onClick, disabled, tooltip, children, variant = 'ghost', size = 'sm' }: {
+  onClick: () => void;
+  disabled?: boolean;
+  tooltip: string;
+  children: React.ReactNode;
+  variant?: 'ghost' | 'default' | 'outline' | 'secondary';
+  size?: 'sm' | 'default' | 'icon';
+}) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button variant={variant} size={size} onClick={onClick} disabled={disabled}>
+          {children}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>{tooltip}</TooltipContent>
+    </Tooltip>
+  );
 }
 
 export function Toolbar({
   onAddNode, onAutoLayout, onFitView,
-  onImport, onExport, onExportPng, onToggleTable,
-  tableVisible, themeColor, onAddGroup,
+  onImport, onExport, onExportPng,
+  view, onToggleView, onAddGroup,
   searchQuery, onSearchChange,
   assigneeFilter, onAssigneeFilterChange, assignees,
   onUndo, onRedo, canUndo, canRedo,
+  legendContent,
 }: Props) {
-  const btnStyle: React.CSSProperties = {
-    padding: '6px 14px',
-    border: '1px solid var(--border-color, #ccc)',
-    borderRadius: 6,
-    background: 'var(--btn-bg, #fff)',
-    color: 'var(--text-color, #333)',
-    cursor: 'pointer',
-    fontSize: 13,
-    fontFamily: 'inherit',
-  };
-
-  const primaryBtn: React.CSSProperties = {
-    ...btnStyle,
-    background: themeColor,
-    color: '#fff',
-    borderColor: themeColor,
-  };
-
   return (
-    <div style={{
-      display: 'flex',
-      gap: 8,
-      padding: '10px 16px',
-      background: 'var(--toolbar-bg, #fafafa)',
-      borderBottom: '1px solid var(--border-color, #e0e0e0)',
-      flexWrap: 'wrap',
-      alignItems: 'center',
-    }}>
-      {/* Actions */}
-      <button onClick={onAddNode} style={primaryBtn}>+ Add Node</button>
-      <button onClick={onAddGroup} style={{ ...btnStyle, background: 'var(--text-color, #424242)', color: 'var(--surface, #fff)', borderColor: 'var(--text-color, #424242)' }}>
-        + Add Group
-      </button>
+    <div className="flex items-center gap-1.5 px-3 py-2 bg-muted/50 border-b border-border flex-wrap shrink-0">
+      <ToolbarButton onClick={onAddNode} tooltip="Add new node" variant="default" size="sm">
+        <Plus className="h-4 w-4" /> Add Node
+      </ToolbarButton>
+      <ToolbarButton onClick={onAddGroup} tooltip="Group tasks" variant="outline" size="sm">
+        <Group className="h-4 w-4" /> Group
+      </ToolbarButton>
 
-      <div style={{ width: 1, height: 24, background: 'var(--border-color, #ddd)' }} />
+      <Separator orientation="vertical" className="h-6 mx-1" />
 
-      {/* Undo/Redo */}
-      <button onClick={onUndo} disabled={!canUndo} style={{ ...btnStyle, opacity: canUndo ? 1 : 0.4 }} title="Undo (Ctrl+Z)">
-        ↩ Undo
-      </button>
-      <button onClick={onRedo} disabled={!canRedo} style={{ ...btnStyle, opacity: canRedo ? 1 : 0.4 }} title="Redo (Ctrl+Shift+Z)">
-        ↪ Redo
-      </button>
+      <ToolbarButton onClick={onUndo} disabled={!canUndo} tooltip="Undo (Ctrl+Z)">
+        <Undo2 className="h-4 w-4" />
+      </ToolbarButton>
+      <ToolbarButton onClick={onRedo} disabled={!canRedo} tooltip="Redo (Ctrl+Shift+Z)">
+        <Redo2 className="h-4 w-4" />
+      </ToolbarButton>
 
-      <div style={{ width: 1, height: 24, background: 'var(--border-color, #ddd)' }} />
+      <Separator orientation="vertical" className="h-6 mx-1" />
 
-      {/* Layout/View */}
-      <button onClick={onAutoLayout} style={btnStyle}>Auto Layout</button>
-      <button onClick={onFitView} style={btnStyle}>Fit View</button>
+      <ToolbarButton onClick={onAutoLayout} tooltip="Auto layout nodes">
+        <LayoutDashboard className="h-4 w-4" />
+      </ToolbarButton>
+      <ToolbarButton onClick={onFitView} tooltip="Fit to view">
+        <Maximize2 className="h-4 w-4" />
+      </ToolbarButton>
 
-      <div style={{ width: 1, height: 24, background: 'var(--border-color, #ddd)' }} />
+      <Separator orientation="vertical" className="h-6 mx-1" />
 
-      {/* Import/Export */}
-      <button onClick={onImport} style={btnStyle}>Import JSON</button>
-      <button onClick={onExport} style={primaryBtn}>Export JSON</button>
-      <button onClick={onExportPng} style={btnStyle}>Export PNG</button>
+      <ToolbarButton onClick={onImport} tooltip="Import JSON" variant="outline">
+        <FileUp className="h-4 w-4" />
+      </ToolbarButton>
+      <ToolbarButton onClick={onExport} tooltip="Export JSON" variant="outline">
+        <FileDown className="h-4 w-4" />
+      </ToolbarButton>
+      <ToolbarButton onClick={onExportPng} tooltip="Export PNG" variant="outline">
+        <Image className="h-4 w-4" />
+      </ToolbarButton>
 
-      <div style={{ width: 1, height: 24, background: 'var(--border-color, #ddd)' }} />
+      <Separator orientation="vertical" className="h-6 mx-1" />
 
-      <button onClick={onToggleTable} style={btnStyle}>
-        {tableVisible ? 'Hide Table' : 'Show Table'}
-      </button>
+      <ToolbarButton onClick={onToggleView} tooltip={view === 'chart' ? 'Switch to table view' : 'Switch to chart view'} variant={view === 'table' ? 'secondary' : 'ghost'}>
+        {view === 'chart' ? <Table2 className="h-4 w-4" /> : <GitBranch className="h-4 w-4" />}
+        {view === 'chart' ? 'Table' : 'Chart'}
+      </ToolbarButton>
 
-      {/* Spacer pushes search/filter to the right on wide screens */}
-      <div style={{ flex: 1, minWidth: 8 }} />
+      {legendContent}
 
-      {/* Search */}
-      <input
+      <div className="flex-1 min-w-2" />
+
+      <Input
         type="text"
         value={searchQuery}
         onChange={e => onSearchChange(e.target.value)}
         placeholder="Search nodes..."
-        style={{
-          padding: '6px 10px',
-          border: '1px solid var(--border-color, #ccc)',
-          borderRadius: 6,
-          fontSize: 13,
-          width: 160,
-          background: 'var(--input-bg, #fff)',
-          color: 'var(--text-color, #333)',
-          fontFamily: 'inherit',
-        }}
+        className="w-40 h-8 text-xs"
       />
 
-      {/* Assignee filter */}
       <select
         value={assigneeFilter}
         onChange={e => onAssigneeFilterChange(e.target.value)}
-        style={{
-          padding: '6px 10px',
-          border: '1px solid var(--border-color, #ccc)',
-          borderRadius: 6,
-          fontSize: 13,
-          background: 'var(--input-bg, #fff)',
-          color: 'var(--text-color, #333)',
-          fontFamily: 'inherit',
-          cursor: 'pointer',
-        }}
+        className="h-8 rounded-md border border-input bg-transparent px-2 text-xs text-foreground cursor-pointer focus:outline-none focus:ring-1 focus:ring-ring"
       >
         <option value="">All Assignees</option>
         {assignees.map(a => (

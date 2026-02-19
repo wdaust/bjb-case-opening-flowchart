@@ -39,6 +39,25 @@ export function CustomEdge(props: EdgeProps) {
     if (e.key === 'Escape') setEditing(false);
   }, [handleSave]);
 
+  const editorInput = (
+    <EdgeLabelRenderer>
+      <div
+        className="absolute pointer-events-auto z-10"
+        style={{ transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)` }}
+      >
+        <input
+          autoFocus
+          value={labelValue}
+          onChange={e => setLabelValue(e.target.value)}
+          onBlur={handleSave}
+          onKeyDown={handleKeyDown}
+          placeholder="Edge label"
+          className="px-1.5 py-0.5 text-[10px] border border-ring rounded outline-none w-20 text-center bg-input"
+        />
+      </div>
+    </EdgeLabelRenderer>
+  );
+
   // No label — render plain edge with double-click to add label
   if (!props.label && !editing) {
     return (
@@ -51,48 +70,12 @@ export function CustomEdge(props: EdgeProps) {
               setLabelValue('');
               setEditing(true);
             }}
-            style={{
-              position: 'absolute',
-              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-              width: 20,
-              height: 20,
-              cursor: 'pointer',
-              pointerEvents: 'all',
-            }}
+            className="absolute w-5 h-5 cursor-pointer pointer-events-auto"
+            style={{ transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)` }}
             title="Double-click to add label"
           />
         </EdgeLabelRenderer>
-        {editing && (
-          <EdgeLabelRenderer>
-            <div
-              style={{
-                position: 'absolute',
-                transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-                pointerEvents: 'all',
-                zIndex: 10,
-              }}
-            >
-              <input
-                autoFocus
-                value={labelValue}
-                onChange={e => setLabelValue(e.target.value)}
-                onBlur={handleSave}
-                onKeyDown={handleKeyDown}
-                placeholder="Edge label"
-                style={{
-                  padding: '2px 6px',
-                  fontSize: 10,
-                  border: '1px solid var(--handle-color, #2196f3)',
-                  borderRadius: 4,
-                  outline: 'none',
-                  width: 80,
-                  textAlign: 'center',
-                  background: 'var(--input-bg, #fff)',
-                }}
-              />
-            </div>
-          </EdgeLabelRenderer>
-        )}
+        {editing && editorInput}
       </>
     );
   }
@@ -103,12 +86,8 @@ export function CustomEdge(props: EdgeProps) {
       <EdgeLabelRenderer>
         {editing ? (
           <div
-            style={{
-              position: 'absolute',
-              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-              pointerEvents: 'all',
-              zIndex: 10,
-            }}
+            className="absolute pointer-events-auto z-10"
+            style={{ transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)` }}
           >
             <input
               autoFocus
@@ -116,33 +95,14 @@ export function CustomEdge(props: EdgeProps) {
               onChange={e => setLabelValue(e.target.value)}
               onBlur={handleSave}
               onKeyDown={handleKeyDown}
-              style={{
-                padding: '2px 6px',
-                fontSize: 10,
-                border: '1px solid #2196f3',
-                borderRadius: 4,
-                outline: 'none',
-                width: 80,
-                textAlign: 'center',
-                background: '#fff',
-              }}
+              className="px-1.5 py-0.5 text-[10px] border border-ring rounded outline-none w-20 text-center bg-input"
             />
           </div>
         ) : (
           <div
             onClick={handleLabelClick}
-            style={{
-              position: 'absolute',
-              transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-              background: 'var(--surface, #fff)',
-              padding: '2px 6px',
-              borderRadius: 4,
-              fontSize: 10,
-              fontWeight: 600,
-              border: '1px solid var(--border-color, #ccc)',
-              cursor: 'pointer',
-              pointerEvents: 'all',
-            }}
+            className="absolute bg-card px-1.5 py-0.5 rounded text-[10px] font-semibold border border-border cursor-pointer pointer-events-auto"
+            style={{ transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)` }}
             title="Click to edit label"
           >
             {props.label}

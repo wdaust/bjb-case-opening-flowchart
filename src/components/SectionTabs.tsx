@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import type { SectionData } from '../types/flowchart.ts';
+import { Tabs, TabsList, TabsTrigger } from './ui/tabs.tsx';
 
 interface Props {
   sections: SectionData[];
@@ -38,66 +39,38 @@ export function SectionTabs({ sections, activeId, onSelect, onRenameSection }: P
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      gap: 0,
-      borderBottom: '2px solid var(--border-color, #e0e0e0)',
-      marginBottom: 0,
-      overflow: 'auto',
-    }}>
-      {sections.map(s => {
-        const isActive = s.id === activeId;
-        const isEditing = editingId === s.id;
+    <Tabs value={activeId} onValueChange={onSelect} className="shrink-0">
+      <TabsList className="w-full justify-start overflow-x-auto">
+        {sections.map(s => {
+          const isEditing = editingId === s.id;
 
-        return (
-          <button
-            key={s.id}
-            onClick={() => onSelect(s.id)}
-            onDoubleClick={() => startEdit(s.id, s.title)}
-            style={{
-              padding: '12px 24px',
-              border: 'none',
-              borderBottom: isActive ? `3px solid ${s.themeColor}` : '3px solid transparent',
-              background: isActive ? 'var(--surface, #fff)' : 'var(--toolbar-bg, #f5f5f5)',
-              color: isActive ? s.themeColor : 'var(--text-muted, #666)',
-              fontWeight: isActive ? 700 : 500,
-              fontSize: 14,
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              transition: 'all 0.2s',
-              fontFamily: 'inherit',
-            }}
-          >
-            {isEditing ? (
-              <input
-                ref={inputRef}
-                value={editValue}
-                onChange={e => setEditValue(e.target.value)}
-                onBlur={commitEdit}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') commitEdit();
-                  if (e.key === 'Escape') cancelEdit();
-                }}
-                onClick={e => e.stopPropagation()}
-                style={{
-                  border: '1px solid var(--border-color, #ccc)',
-                  borderRadius: 3,
-                  padding: '2px 6px',
-                  fontSize: 14,
-                  fontWeight: isActive ? 700 : 500,
-                  fontFamily: 'inherit',
-                  color: 'inherit',
-                  background: 'var(--surface, #fff)',
-                  outline: 'none',
-                  width: Math.max(80, editValue.length * 8 + 20),
-                }}
-              />
-            ) : (
-              s.title
-            )}
-          </button>
-        );
-      })}
-    </div>
+          return (
+            <TabsTrigger
+              key={s.id}
+              value={s.id}
+              onDoubleClick={() => startEdit(s.id, s.title)}
+            >
+              {isEditing ? (
+                <input
+                  ref={inputRef}
+                  value={editValue}
+                  onChange={e => setEditValue(e.target.value)}
+                  onBlur={commitEdit}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') commitEdit();
+                    if (e.key === 'Escape') cancelEdit();
+                  }}
+                  onClick={e => e.stopPropagation()}
+                  className="border border-border rounded px-1.5 py-0.5 text-sm bg-background text-foreground outline-none focus:ring-1 focus:ring-ring"
+                  style={{ width: Math.max(80, editValue.length * 8 + 20) }}
+                />
+              ) : (
+                s.title
+              )}
+            </TabsTrigger>
+          );
+        })}
+      </TabsList>
+    </Tabs>
   );
 }

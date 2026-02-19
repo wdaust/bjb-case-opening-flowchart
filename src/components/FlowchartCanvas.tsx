@@ -22,10 +22,20 @@ import { FilterContext } from '../contexts/FilterContext.ts';
 import { CustomNode } from './CustomNode.tsx';
 import { SubgraphNode } from './SubgraphNode.tsx';
 import { CustomEdge } from './CustomEdge.tsx';
-import { Legend } from './Legend.tsx';
+import { LegendDropdown } from './Legend.tsx';
 import { Toolbar } from './Toolbar.tsx';
 import { DetailTable } from './DetailTable.tsx';
 import { NodeEditorPanel } from './NodeEditorPanel.tsx';
+import { Button } from './ui/button.tsx';
+import { Input } from './ui/input.tsx';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from './ui/dialog.tsx';
 
 const nodeTypes = { custom: CustomNode, subgraph: SubgraphNode };
 const edgeTypes = { custom: CustomEdge };
@@ -63,7 +73,7 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
   const { fitView } = useReactFlow();
   const { pushSnapshot, undo, redo, canUndo, canRedo, clear: clearHistory } = useUndoRedo();
 
-  const [tableVisible, setTableVisible] = useState(true);
+  const [view, setView] = useState<'chart' | 'table'>('chart');
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isNewTask, setIsNewTask] = useState(false);
@@ -79,20 +89,17 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
   const currentSectionRef = useRef(section);
   currentSectionRef.current = section;
 
-  // Get unique assignees for filter dropdown
   const assignees = useMemo(() => {
     const set = new Set<string>();
     section.tasks.forEach(t => { if (t.assignedTo) set.add(t.assignedTo); });
     return Array.from(set).sort();
   }, [section.tasks]);
 
-  // Filter context value
   const filterValue = useMemo(() => ({
     searchQuery,
     assigneeFilter,
   }), [searchQuery, assigneeFilter]);
 
-  // Reset filter when section changes
   useEffect(() => {
     setSearchQuery('');
     setAssigneeFilter('');
@@ -121,7 +128,6 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
     onSectionUpdate(updated);
   }, [nodes, edges, onSectionUpdate]);
 
-  // Keyboard shortcuts for undo/redo
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey;
@@ -170,7 +176,7 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
 
   const handleSaveTask = useCallback((task: Task) => {
     pushSnapshot(nodes, edges);
-    const style = section.styles[task.style] || { fill: 'var(--text-muted, #666)', stroke: '#444', color: '#fff' };
+    const style = section.styles[task.style] || { fill: 'hsl(var(--muted-foreground))', stroke: '#444', color: '#fff' };
 
     if (isNewTask) {
       const newNode: Node = {
@@ -324,14 +330,12 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
     }
   }, [nodes, edges, redo, setNodes, setEdges, onSectionUpdate]);
 
-  // Custom onConnect that saves undo snapshot
   const handleConnect = useCallback((connection: Parameters<typeof onConnect>[0]) => {
     pushSnapshot(nodes, edges);
     onConnect(connection);
     setTimeout(syncSection, 0);
   }, [onConnect, nodes, edges, pushSnapshot, syncSection]);
 
-  // Group (subgraph) creation
   const handleAddGroup = useCallback(() => {
     setGroupName('');
     setGroupSelectedTasks([]);
@@ -380,8 +384,7 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
 
   return (
     <FilterContext.Provider value={filterValue}>
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Legend items={section.legend} />
+      <div className="flex flex-col flex-1 min-h-0">
         <Toolbar
           onAddNode={handleAddNode}
           onAutoLayout={handleAutoLayout}
@@ -389,9 +392,8 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
           onImport={handleImport}
           onExport={handleExport}
           onExportPng={handleExportPng}
-          onToggleTable={() => setTableVisible(v => !v)}
-          tableVisible={tableVisible}
-          themeColor={section.themeColor}
+          view={view}
+          onToggleView={() => setView(v => v === 'chart' ? 'table' : 'chart')}
           onAddGroup={handleAddGroup}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -402,42 +404,45 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
           onRedo={handleRedo}
           canUndo={canUndo}
           canRedo={canRedo}
+          legendContent={<LegendDropdown items={section.legend} />}
         />
-        <div ref={canvasRef} className="canvas-wrapper" style={{ height: 'calc(100vh - 280px)', minHeight: 400, position: 'relative' }}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={handleConnect}
-            onNodeClick={handleNodeClick}
-            onInit={handleInit}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            deleteKeyCode="Delete"
-          >
-            <Background />
-            <Controls />
-            <MiniMap
-              nodeColor={(n) => {
-                if (n.type === 'subgraph') return 'var(--border-color, #e0e0e0)';
-                const data = n.data as TaskNodeData;
-                return data.fill;
-              }}
-              style={{ borderRadius: 8 }}
-            />
-          </ReactFlow>
 
-          {/* Connection hint */}
-          <div style={{
-            position: 'absolute', bottom: 8, left: '50%', transform: 'translateX(-50%)',
-            fontSize: 11, color: 'var(--text-muted, #999)', background: 'var(--hint-bg, rgba(255,255,255,0.85))',
-            padding: '3px 10px', borderRadius: 4, pointerEvents: 'none',
-          }}>
-            Drag from handle to connect · Double-click edge midpoint to add label
+        {view === 'chart' ? (
+          <div ref={canvasRef} className="flex-1 min-h-0 relative">
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={handleConnect}
+              onNodeClick={handleNodeClick}
+              onInit={handleInit}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              deleteKeyCode="Delete"
+            >
+              <Background />
+              <Controls />
+              <MiniMap
+                nodeColor={(n) => {
+                  if (n.type === 'subgraph') return 'hsl(var(--border))';
+                  const data = n.data as TaskNodeData;
+                  return data.fill;
+                }}
+                style={{ borderRadius: 8 }}
+              />
+            </ReactFlow>
+
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[11px] text-muted-foreground bg-background/80 backdrop-blur-sm border border-border px-3 py-1.5 rounded-full pointer-events-none">
+              Drag from handle to connect · Double-click edge midpoint to add label
+            </div>
           </div>
-        </div>
-        <DetailTable section={section} visible={tableVisible} />
+        ) : (
+          <div className="flex-1 overflow-auto min-h-0">
+            <DetailTable section={section} />
+          </div>
+        )}
+
         <NodeEditorPanel
           task={editingTask}
           section={section}
@@ -449,48 +454,34 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
         />
 
         {/* Group creation dialog */}
-        {groupDialogOpen && (
-          <>
-            <div
-              onClick={() => setGroupDialogOpen(false)}
-              style={{
-                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                background: 'rgba(0,0,0,0.3)', zIndex: 999,
-              }}
-            />
-            <div style={{
-              position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-              background: 'var(--panel-bg, #fff)', borderRadius: 12, padding: 24, zIndex: 1000,
-              boxShadow: '0 8px 32px rgba(0,0,0,0.2)', width: 420, maxWidth: '90vw',
-              maxHeight: '80vh', overflow: 'auto', color: 'var(--text-color, #333)',
-            }}>
-              <h3 style={{ margin: '0 0 16px', fontSize: 16 }}>Create Group</h3>
+        <Dialog open={groupDialogOpen} onOpenChange={setGroupDialogOpen}>
+          <DialogContent className="sm:max-w-[480px]">
+            <DialogHeader>
+              <DialogTitle>Create Group</DialogTitle>
+              <DialogDescription>
+                Group related tasks together to visually organize the flowchart.
+              </DialogDescription>
+            </DialogHeader>
 
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted, #555)', textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
+            <div className="space-y-4 py-2">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">
                   Group Name
                 </label>
-                <input
+                <Input
                   value={groupName}
                   onChange={e => setGroupName(e.target.value)}
                   placeholder="e.g. Phase 1: Deposition Scheduling"
-                  style={{
-                    width: '100%', padding: '8px 10px', border: '1px solid var(--border-color, #ddd)',
-                    borderRadius: 6, fontSize: 13, background: 'var(--input-bg, #fff)', color: 'var(--text-color, #333)',
-                  }}
                 />
               </div>
 
-              <div style={{ marginBottom: 14 }}>
-                <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted, #555)', textTransform: 'uppercase', display: 'block', marginBottom: 5 }}>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1.5">
                   Select Tasks ({groupSelectedTasks.length} selected)
                 </label>
-                <div style={{
-                  maxHeight: 240, overflow: 'auto', border: '1px solid var(--border-color, #e0e0e0)',
-                  borderRadius: 6, padding: 4,
-                }}>
+                <div className="max-h-60 overflow-auto border border-border rounded-md p-1">
                   {availableForGrouping.length === 0 ? (
-                    <div style={{ padding: 12, color: 'var(--text-muted, #999)', fontSize: 13, textAlign: 'center' }}>
+                    <div className="p-4 text-muted-foreground text-sm text-center">
                       All tasks are already in groups
                     </div>
                   ) : (
@@ -499,20 +490,18 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
                       return (
                         <label
                           key={t.id}
-                          style={{
-                            display: 'flex', alignItems: 'center', gap: 8,
-                            padding: '6px 8px', borderRadius: 4, cursor: 'pointer',
-                            background: isChecked ? 'var(--input-bg, #e3f2fd)' : 'transparent',
-                            fontSize: 13,
-                          }}
+                          className={`flex items-center gap-2 px-2.5 py-2 rounded-md cursor-pointer text-sm transition-colors ${
+                            isChecked ? 'bg-accent text-accent-foreground' : 'hover:bg-muted'
+                          }`}
                         >
                           <input
                             type="checkbox"
                             checked={isChecked}
                             onChange={() => toggleGroupTask(t.id)}
+                            className="rounded border-input"
                           />
-                          <span style={{ fontWeight: 600, minWidth: 40 }}>{t.id}</span>
-                          <span style={{ color: 'var(--text-muted, #555)' }}>{t.label.split('\n')[0]}</span>
+                          <span className="font-medium min-w-10 text-xs text-muted-foreground">{t.id}</span>
+                          <span>{t.label.split('\n')[0]}</span>
                         </label>
                       );
                     })
@@ -521,43 +510,32 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
               </div>
 
               {section.subgraphs && section.subgraphs.length > 0 && (
-                <div style={{ marginBottom: 14, padding: 10, background: 'var(--toolbar-bg, #f9f9f9)', borderRadius: 6, fontSize: 12 }}>
-                  <div style={{ fontWeight: 600, marginBottom: 4, color: 'var(--text-muted, #555)', textTransform: 'uppercase', fontSize: 11 }}>
+                <div className="p-3 bg-muted rounded-lg text-sm">
+                  <div className="font-medium mb-1.5 text-xs text-muted-foreground uppercase tracking-wider">
                     Existing Groups
                   </div>
                   {section.subgraphs.map(sg => (
-                    <div key={sg.id} style={{ color: 'var(--text-muted, #666)', padding: '2px 0' }}>
+                    <div key={sg.id} className="text-muted-foreground py-0.5">
                       {sg.title} ({sg.taskIds.length} tasks)
                     </div>
                   ))}
                 </div>
               )}
-
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button
-                  onClick={handleSaveGroup}
-                  disabled={!groupName.trim() || groupSelectedTasks.length === 0}
-                  style={{
-                    padding: '8px 20px', background: section.themeColor, color: '#fff',
-                    border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600,
-                    opacity: (!groupName.trim() || groupSelectedTasks.length === 0) ? 0.5 : 1,
-                  }}
-                >
-                  Create Group
-                </button>
-                <button
-                  onClick={() => setGroupDialogOpen(false)}
-                  style={{
-                    padding: '8px 20px', background: 'var(--btn-bg, #fff)', color: 'var(--text-muted, #666)',
-                    border: '1px solid var(--border-color, #ccc)', borderRadius: 6, cursor: 'pointer',
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
             </div>
-          </>
-        )}
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setGroupDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveGroup}
+                disabled={!groupName.trim() || groupSelectedTasks.length === 0}
+              >
+                Create Group
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </FilterContext.Provider>
   );

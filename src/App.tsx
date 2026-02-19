@@ -1,177 +1,64 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { ReactFlowProvider } from '@xyflow/react';
-import type { SectionData } from './types/flowchart.ts';
-import { SectionTabs } from './components/SectionTabs.tsx';
-import { FlowchartCanvas } from './components/FlowchartCanvas.tsx';
-import { initDb, loadAllSections, saveSection, clearAllSections } from './utils/db.ts';
-import './App.css';
-
-const DATA_FILES = [
-  'data/case-opening.json',
-  'data/treatment-monitoring.json',
-  'data/discovery.json',
-  'data/expert-deposition.json',
-  'data/arbitration-mediation.json',
-];
+import { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { TooltipProvider } from './components/ui/tooltip.tsx';
+import { Sidebar } from './components/Sidebar.tsx';
+import PerformanceInfrastructure from './pages/PerformanceInfrastructure.tsx';
+import DashboardClient from './pages/DashboardClient.tsx';
+import DashboardPreLit from './pages/DashboardPreLit.tsx';
+import DashboardLit from './pages/DashboardLit.tsx';
+import LitScorecard from './pages/LitScorecard.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
+const SIDEBAR_KEY = 'bjb-sidebar-collapsed';
 
-export default function App() {
-  const [sections, setSections] = useState<SectionData[]>([]);
-  const [activeId, setActiveId] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [dbReady, setDbReady] = useState(false);
+function Layout() {
   const [darkMode, setDarkMode] = useState(() => {
-    try { return localStorage.getItem(DARK_MODE_KEY) === 'true'; } catch { return false; }
+    try {
+      const stored = localStorage.getItem(DARK_MODE_KEY);
+      return stored === null ? true : stored === 'true';
+    } catch { return true; }
   });
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch { return false; }
+  });
 
-  // Apply dark mode class
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', darkMode);
     try { localStorage.setItem(DARK_MODE_KEY, String(darkMode)); } catch { /* ignore */ }
   }, [darkMode]);
 
-  // Initialize DB + load data
   useEffect(() => {
-    async function load() {
-      // Init Neon table
-      const ready = await initDb();
-      setDbReady(ready);
-
-      // Load saved sections from Neon
-      const saved = ready ? await loadAllSections() : {};
-
-      // Load static JSON files, prefer saved versions
-      const results: SectionData[] = [];
-      for (const file of DATA_FILES) {
-        try {
-          const base = import.meta.env.BASE_URL;
-          const resp = await fetch(`${base}${file}`);
-          if (!resp.ok) throw new Error(`Failed to load ${file}`);
-          const data: SectionData = await resp.json();
-          results.push(saved[data.id] || data);
-        } catch (err) {
-          console.error(`Error loading ${file}:`, err);
-        }
-      }
-      setSections(results);
-      if (results.length > 0) setActiveId(results[0].id);
-      setLoading(false);
-    }
-    load();
-  }, []);
-
-  // Debounced save to Neon
-  const handleSectionUpdate = useCallback((updated: SectionData) => {
-    setSections(sects => sects.map(s => s.id === updated.id ? updated : s));
-
-    // Debounce save — wait 500ms after last edit
-    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-    saveTimeoutRef.current = setTimeout(async () => {
-      if (!dbReady) return;
-      setSaving(true);
-      await saveSection(updated);
-      setSaving(false);
-    }, 500);
-  }, [dbReady]);
-
-  const handleRenameSection = useCallback((id: string, newTitle: string) => {
-    setSections(sects => {
-      const updated = sects.map(s => s.id === id ? { ...s, title: newTitle } : s);
-      const target = updated.find(s => s.id === id);
-      if (target && dbReady) {
-        // Debounce save
-        if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
-        saveTimeoutRef.current = setTimeout(async () => {
-          setSaving(true);
-          await saveSection(target);
-          setSaving(false);
-        }, 500);
-      }
-      return updated;
-    });
-  }, [dbReady]);
-
-  const handleReset = useCallback(async () => {
-    if (!confirm('Reset all sections to defaults? Your edits will be lost.')) return;
-    if (dbReady) await clearAllSections();
-    const results: SectionData[] = [];
-    for (const file of DATA_FILES) {
-      try {
-        const base = import.meta.env.BASE_URL;
-        const resp = await fetch(`${base}${file}`);
-        if (!resp.ok) continue;
-        results.push(await resp.json());
-      } catch { /* ignore */ }
-    }
-    setSections(results);
-    if (results.length > 0) setActiveId(results[0].id);
-  }, [dbReady]);
-
-  const activeSection = sections.find(s => s.id === activeId);
-
-  if (loading) {
-    return (
-      <div className="app-loading">
-        <div className="spinner" />
-        Loading flowcharts...
-      </div>
-    );
-  }
+    try { localStorage.setItem(SIDEBAR_KEY, String(collapsed)); } catch { /* ignore */ }
+  }, [collapsed]);
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <div className="header-content">
-          <div>
-            <h1>BJB Performance Infrastructure</h1>
-            <p className="app-subtitle">Litigation Process Flowcharts</p>
-          </div>
-          <div className="header-actions">
-            {saving && (
-              <span className="save-indicator">Saving...</span>
-            )}
-            {dbReady && !saving && (
-              <span className="save-indicator saved">Saved to cloud</span>
-            )}
-            <button onClick={handleReset} className="header-btn" title="Reset all sections to defaults">
-              Reset
-            </button>
-            <button
-              onClick={() => setDarkMode(d => !d)}
-              className="header-btn"
-              title="Toggle dark mode"
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-            <span style={{ fontSize: 11, color: 'var(--text-muted, #999)', alignSelf: 'center' }}>v1.1.0</span>
-          </div>
-        </div>
-      </header>
-
-      <SectionTabs
-        sections={sections}
-        activeId={activeId}
-        onSelect={setActiveId}
-        onRenameSection={handleRenameSection}
+    <div className="h-screen flex overflow-hidden">
+      <Sidebar
+        darkMode={darkMode}
+        onToggleDark={() => setDarkMode(d => !d)}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed(c => !c)}
       />
-
-      {activeSection && (
-        <div className="section-container">
-          <div className="section-info">
-            <h2 style={{ color: activeSection.themeColor, margin: 0 }}>{activeSection.title}</h2>
-            <p style={{ color: 'var(--text-muted, #666)', margin: '4px 0 0', fontSize: 13 }}>{activeSection.subtitle}</p>
-          </div>
-          <ReactFlowProvider key={activeSection.id}>
-            <FlowchartCanvas
-              section={activeSection}
-              onSectionUpdate={handleSectionUpdate}
-            />
-          </ReactFlowProvider>
-        </div>
-      )}
+      <main className="flex-1 flex flex-col min-w-0 min-h-0">
+        <Outlet />
+      </main>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <TooltipProvider delayDuration={300}>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<Navigate to="/performance-infrastructure" replace />} />
+          <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
+          <Route path="dashboards/client" element={<DashboardClient />} />
+          <Route path="dashboards/pre-lit" element={<DashboardPreLit />} />
+          <Route path="dashboards/lit" element={<DashboardLit />} />
+          <Route path="lit-scorecard" element={<LitScorecard />} />
+        </Route>
+      </Routes>
+    </TooltipProvider>
   );
 }

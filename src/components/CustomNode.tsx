@@ -33,21 +33,13 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
 
   return (
     <div
+      className="rounded-lg px-3 py-2 text-xs min-w-[180px] max-w-[240px] text-center cursor-pointer relative transition-opacity"
       style={{
         background: fill,
         border: `2px solid ${selected ? '#ff0' : stroke}`,
-        borderRadius: 8,
-        padding: '8px 12px',
         color,
-        fontSize: 12,
-        minWidth: 180,
-        maxWidth: 240,
-        textAlign: 'center',
         boxShadow: selected ? '0 0 0 2px #ff0' : '0 1px 4px rgba(0,0,0,0.2)',
-        cursor: 'pointer',
-        position: 'relative',
         opacity: dimmed ? 0.2 : 1,
-        transition: 'opacity 0.2s',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -56,73 +48,42 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
         type="target"
         position={Position.Top}
         style={{
-          background: hovered ? 'var(--handle-color, #2196f3)' : stroke,
+          background: hovered ? 'hsl(var(--ring))' : stroke,
           width: hovered ? 12 : 10,
           height: hovered ? 12 : 10,
-          border: '2px solid var(--surface, #fff)',
+          border: '2px solid hsl(var(--card))',
           transition: 'all 0.15s',
           boxShadow: hovered ? '0 0 6px rgba(33,150,243,0.5)' : 'none',
         }}
       />
 
       {hasNotes && (
-        <div style={{
-          position: 'absolute', top: 4, right: 6,
-          fontSize: 11, lineHeight: 1,
-          opacity: 0.8,
-        }} title="Has notes">
+        <div className="absolute top-1 right-1.5 text-[11px] leading-none opacity-80" title="Has notes">
           📝
         </div>
       )}
 
-      <div style={{ fontWeight: 700, marginBottom: 2 }}>
+      <div className="font-bold mb-0.5">
         {task.emoji ? `${task.emoji} ` : ''}{lines[0]}
       </div>
       {lines.slice(1).map((line, i) => (
-        <div key={i} style={{ fontSize: 11, opacity: 0.9 }}>{line}</div>
+        <div key={i} className="text-[11px] opacity-90">{line}</div>
       ))}
       {task.assignedTo && (
-        <div style={{ fontSize: 10, marginTop: 4, opacity: 0.85 }}>
+        <div className="text-[10px] mt-1 opacity-85">
           {assignedIcon} {task.assignedTo}
         </div>
       )}
       {task.sla && (
-        <div style={{ fontSize: 10, marginTop: 2, opacity: 0.75 }}>
+        <div className="text-[10px] mt-0.5 opacity-75">
           ⏱ {task.sla}
         </div>
       )}
 
       {hasNotes && hovered && (
-        <div style={{
-          position: 'absolute',
-          bottom: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          marginBottom: 8,
-          background: 'var(--tooltip-bg, #333)',
-          color: 'var(--tooltip-color, #fff)',
-          padding: '6px 10px',
-          borderRadius: 6,
-          fontSize: 11,
-          lineHeight: 1.4,
-          maxWidth: 220,
-          whiteSpace: 'pre-wrap',
-          textAlign: 'left',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-          zIndex: 10,
-          pointerEvents: 'none',
-        }}>
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-tooltip-bg text-tooltip-color px-2.5 py-1.5 rounded-md text-[11px] leading-snug max-w-[220px] whitespace-pre-wrap text-left shadow-lg z-10 pointer-events-none">
           {task.notes!.length > 120 ? task.notes!.slice(0, 120) + '…' : task.notes}
-          <div style={{
-            position: 'absolute',
-            bottom: -4,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 0, height: 0,
-            borderLeft: '5px solid transparent',
-            borderRight: '5px solid transparent',
-            borderTop: '5px solid var(--tooltip-bg, #333)',
-          }} />
+          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[5px] border-l-transparent border-r-[5px] border-r-transparent border-t-[5px] border-t-tooltip-bg" />
         </div>
       )}
 
@@ -130,10 +91,10 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
         type="source"
         position={Position.Bottom}
         style={{
-          background: hovered ? 'var(--handle-color, #2196f3)' : stroke,
+          background: hovered ? 'hsl(var(--ring))' : stroke,
           width: hovered ? 12 : 10,
           height: hovered ? 12 : 10,
-          border: '2px solid var(--surface, #fff)',
+          border: '2px solid hsl(var(--card))',
           transition: 'all 0.15s',
           boxShadow: hovered ? '0 0 6px rgba(33,150,243,0.5)' : 'none',
         }}
