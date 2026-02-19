@@ -126,18 +126,13 @@
             display: flex;
             justify-content: center;
         }
-        /* Larger flowchart boxes */
-        .mermaid svg .node rect,
-        .mermaid svg .node polygon,
-        .mermaid svg .node circle {
-            rx: 8;
-            ry: 8;
+        .mermaid svg {
+            max-width: 100%;
+            height: auto !important;
         }
+        /* Larger flowchart boxes */
         .mermaid svg .nodeLabel {
             font-size: 14px !important;
-        }
-        .mermaid svg .node {
-            min-width: 180px;
         }
 
         /* Table */
@@ -678,7 +673,7 @@ flowchart TD
                 rankSpacing: 40,
                 padding: 15,
                 htmlLabels: true,
-                useMaxWidth: false
+                useMaxWidth: true
             },
             themeVariables: {
                 fontSize: '14px'
