@@ -374,7 +374,7 @@ flowchart TD
             <div class="chart-container">
                 <div class="mermaid">
 flowchart TD
-    classDef call fill:#1565c0,stroke:#0d47a1,color:#fff
+    classDef callattempt fill:#1565c0,stroke:#0d47a1,color:#fff
     classDef autoletter fill:#2e7d32,stroke:#1b5e20,color:#fff
     classDef intake fill:#6a1b9a,stroke:#4a148c,color:#fff
     classDef appt fill:#c62828,stroke:#b71c1c,color:#fff
@@ -386,21 +386,21 @@ flowchart TD
 
     START["📅 30 Days After Orientation Appointment\nBegin Treatment Monitoring"]:::milestone
 
-    START --> T1["Call Attempt 1\n📋 Legal Asst / Para\n⏱ By 10am, Day 30 from OA"]:::call
-    T1 --> T2["Call Attempt 2\n📋 Legal Asst / Para\n⏱ By 10am, Day 31 from OA"]:::call
-    T2 --> T3["Call Attempt 3\n📋 Legal Asst / Para\n⏱ By 4pm, Day 32 from OA"]:::call
+    START --> T1["Call Attempt 1\n📋 Legal Asst / Para\n⏱ By 10am, Day 30 from OA"]:::callattempt
+    T1 --> T2["Call Attempt 2\n📋 Legal Asst / Para\n⏱ By 10am, Day 31 from OA"]:::callattempt
+    T2 --> T3["Call Attempt 3\n📋 Legal Asst / Para\n⏱ By 4pm, Day 32 from OA"]:::callattempt
 
     T3 --> T4["Auto: Send Contact Letter 1\n🤖 System Automation\n⏱ Day 33 from OA"]:::autoletter
 
-    T4 --> T5["Call Attempt 4\n📋 Legal Asst / Para\n⏱ By 10am, Day 37 from OA"]:::call
-    T5 --> T6["Call Attempt 5\n📋 Legal Asst / Para\n⏱ By 4pm, Day 37 from OA"]:::call
-    T6 --> T7["Call Attempt 6\n📋 Legal Asst / Para\n⏱ By 10am, Day 38 from OA"]:::call
+    T4 --> T5["Call Attempt 4\n📋 Legal Asst / Para\n⏱ By 10am, Day 37 from OA"]:::callattempt
+    T5 --> T6["Call Attempt 5\n📋 Legal Asst / Para\n⏱ By 4pm, Day 37 from OA"]:::callattempt
+    T6 --> T7["Call Attempt 6\n📋 Legal Asst / Para\n⏱ By 10am, Day 38 from OA"]:::callattempt
 
     T7 --> T8["Auto: Send Contact Letter 2\n🤖 System Automation\n⏱ By EOD, Day 38 from OA"]:::autoletter
 
-    T8 --> T9["Call Attempt 7\n📋 Legal Asst / Para\n⏱ By 10am, Day 37 from OA"]:::call
-    T9 --> T10["Call Attempt 8\n📋 Legal Asst / Para\n⏱ By 4pm, Day 37 from OA"]:::call
-    T10 --> T11["Call Attempt 9\n📋 Legal Asst / Para\n⏱ By 10am, Day 38 from OA"]:::call
+    T8 --> T9["Call Attempt 7\n📋 Legal Asst / Para\n⏱ By 10am, Day 37 from OA"]:::callattempt
+    T9 --> T10["Call Attempt 8\n📋 Legal Asst / Para\n⏱ By 4pm, Day 37 from OA"]:::callattempt
+    T10 --> T11["Call Attempt 9\n📋 Legal Asst / Para\n⏱ By 10am, Day 38 from OA"]:::callattempt
 
     T11 --> T12["Auto: Back to Intake as MIA\nReset client communications\n🤖 System Automation\n⏱ By EOD, Day 38 from OA"]:::intake
 
