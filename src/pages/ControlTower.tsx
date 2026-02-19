@@ -35,7 +35,7 @@ export default function ControlTower() {
     <div className="flex-1 overflow-auto p-6 space-y-6">
       <FilterBar />
 
-      <DashboardGrid cols={6}>
+      <DashboardGrid cols={5}>
         <StatCard
           label="Total Active Inventory"
           value={controlTowerData.totalActive}

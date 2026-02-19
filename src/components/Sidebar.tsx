@@ -64,9 +64,7 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
         <img
           src={
             collapsed
-              ? darkMode
-                ? `${import.meta.env.BASE_URL}favicon-dark.png`
-                : `${import.meta.env.BASE_URL}favicon.png`
+              ? `${import.meta.env.BASE_URL}favicon-dark.png`
               : darkMode
                 ? `${import.meta.env.BASE_URL}logo.png`
                 : `${import.meta.env.BASE_URL}logo-dark.png`
