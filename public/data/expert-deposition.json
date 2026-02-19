@@ -1,0 +1,349 @@
+{
+  "id": "expert-deposition",
+  "title": "LIT: Expert & Deposition",
+  "subtitle": "27 tasks — Deposition Scheduling, Expert Retention & Reports, Amended Reports",
+  "headerClass": "expert",
+  "themeColor": "#4a148c",
+  "thClass": "expert-section",
+  "sectionClass": "expert-section",
+  "tableColumns": ["#", "Phase", "Quick Action Panel", "Assigned To", "Task", "SLA"],
+  "legend": [
+    { "label": "Deposition Scheduling", "color": "#4a148c" },
+    { "label": "Expert Retention", "color": "#00695c" },
+    { "label": "Follow Up Attempts", "color": "#1565c0" },
+    { "label": "Milestones", "color": "#ff6f00" },
+    { "label": "Attorney Review", "color": "#6a1b9a" },
+    { "label": "Amended Reports", "color": "#e65100" },
+    { "label": "Supportive Tasks", "color": "#ad1457" }
+  ],
+  "subgraphs": [
+    {
+      "id": "Phase1",
+      "title": "Phase 1: Deposition Scheduling",
+      "taskIds": ["NP", "NP2", "NP3", "DP", "DP2", "VER"]
+    },
+    {
+      "id": "Phase1b",
+      "title": "Phase 1: Expert Retention",
+      "taskIds": ["CE", "RE1", "RE2", "RE3", "RS", "REP", "IME", "MILE"]
+    },
+    {
+      "id": "Phase2",
+      "title": "Phase 2: Expert Report Follow-up",
+      "taskIds": ["FU1", "FU2", "FU3", "FU4", "UPL", "AREV", "SUP"]
+    },
+    {
+      "id": "Phase3",
+      "title": "Phase 3: Amended Expert Report",
+      "taskIds": ["AF1", "AF2", "AF3", "AUPL", "AAREV"]
+    }
+  ],
+  "tableBanners": [
+    { "before": "NP", "text": "Phase 1: Deposition Scheduling", "color": "#4a148c", "bg": "#f3e5f5" },
+    { "before": "CE", "text": "Phase 1: Expert Retention", "color": "#00695c", "bg": "#e0f2f1" },
+    { "after": "IME", "text": "Repeat for all Experts", "color": "#ff6f00", "bg": "#fff3e0" },
+    { "before": "FU1", "text": "Phase 2: Expert Report Follow-up", "color": "#1565c0", "bg": "#e3f2fd" },
+    { "before": "AF1", "text": "Phase 3: Amended Expert Report", "color": "#e65100", "bg": "#fbe9e7" }
+  ],
+  "tasks": [
+    {
+      "id": "NP",
+      "label": "Assign Non-Party Depo Procedure",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "75 days after complaint filed",
+      "phase": "Depo",
+      "phaseClass": "phase-depo",
+      "quickAction": "Deposition Scheduling",
+      "style": "depo",
+      "connectsTo": ["NP2", "NP3"]
+    },
+    {
+      "id": "NP2",
+      "label": "Prepare Notice, Cover Letter & Send",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "1 hour after approval",
+      "phase": "Depo",
+      "phaseClass": "phase-depo",
+      "quickAction": "Deposition Scheduling",
+      "style": "depo",
+      "connectsTo": []
+    },
+    {
+      "id": "NP3",
+      "label": "Schedule Court Reporter",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "1 hour after approval",
+      "phase": "Depo",
+      "phaseClass": "phase-depo",
+      "quickAction": "Deposition Scheduling",
+      "style": "depo",
+      "connectsTo": []
+    },
+    {
+      "id": "DP",
+      "label": "Prepare Defendant Depo Notice",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "75 days after complaint filed",
+      "phase": "Depo",
+      "phaseClass": "phase-depo",
+      "quickAction": "Deposition Scheduling",
+      "style": "depo",
+      "connectsTo": ["DP2"]
+    },
+    {
+      "id": "DP2",
+      "label": "Schedule Defendant Depo Court Reporter",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "75 days after complaint filed",
+      "phase": "Depo",
+      "phaseClass": "phase-depo",
+      "quickAction": "Deposition Scheduling",
+      "style": "depo",
+      "connectsTo": ["VER"]
+    },
+    {
+      "id": "VER",
+      "label": "Verify Depo Confirmed or Reschedule",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "1 day before deposition",
+      "phase": "Depo",
+      "phaseClass": "phase-depo",
+      "quickAction": "Deposition Scheduling",
+      "style": "depo",
+      "connectsTo": []
+    },
+    {
+      "id": "CE",
+      "label": "Confirm Expert Directive from Atty",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "2 days after Discovery Appt",
+      "phase": "Expert",
+      "phaseClass": "phase-expert",
+      "quickAction": "Expert Retention",
+      "style": "expert",
+      "connectsTo": ["RE1"]
+    },
+    {
+      "id": "RE1",
+      "label": "Retain Expert 1 - Attempt 1",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Day 10 after Plaintiff discovery served",
+      "phase": "Expert",
+      "phaseClass": "phase-expert",
+      "quickAction": "Expert Retention",
+      "style": "expert",
+      "connectsTo": ["RE2"]
+    },
+    {
+      "id": "RE2",
+      "label": "Retain Expert 1 - Attempt 2",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Day 10 after Plaintiff discovery served",
+      "phase": "Expert",
+      "phaseClass": "phase-expert",
+      "quickAction": "Expert Retention",
+      "style": "expert",
+      "connectsTo": ["RE3"]
+    },
+    {
+      "id": "RE3",
+      "label": "Retain Expert 1 - Attempt 3",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Day 11 after Plaintiff discovery served",
+      "phase": "Expert",
+      "phaseClass": "phase-expert",
+      "quickAction": "Expert Retention",
+      "style": "expert",
+      "connectsTo": ["RS", "REP"],
+      "edgeLabels": { "RS": "Expert Responds", "REP": "No Response by 5pm Day 11" }
+    },
+    {
+      "id": "RS",
+      "label": "Retain & Schedule Expert",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "1 hour once IME/Report request",
+      "phase": "Expert",
+      "phaseClass": "phase-expert",
+      "quickAction": "Expert Retention",
+      "style": "expert",
+      "connectsTo": ["IME"]
+    },
+    {
+      "id": "REP",
+      "label": "Replace Expert\nBegin 3 attempts again",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "By 5pm on Day 11",
+      "phase": "Expert",
+      "phaseClass": "phase-expert",
+      "quickAction": "Expert Retention",
+      "style": "expert",
+      "connectsTo": []
+    },
+    {
+      "id": "IME",
+      "label": "IME/Report Request to Expert",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "1 hour after confirm schedule",
+      "phase": "Expert",
+      "phaseClass": "phase-expert",
+      "quickAction": "Expert Retention",
+      "style": "expert",
+      "connectsTo": ["MILE"]
+    },
+    {
+      "id": "MILE",
+      "label": "Repeat for All Experts",
+      "emoji": "\ud83d\udd04",
+      "assignedTo": "",
+      "sla": "",
+      "phase": "Milestone",
+      "phaseClass": "phase-milestone",
+      "quickAction": "",
+      "style": "milestone",
+      "connectsTo": ["FU1"],
+      "excludeFromTable": true
+    },
+    {
+      "id": "FU1",
+      "label": "Follow Up Expert 1 - Attempt 1",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Per schedule",
+      "phase": "Follow Up",
+      "phaseClass": "phase-followup",
+      "quickAction": "Expert Report Follow-up",
+      "style": "followup",
+      "connectsTo": ["FU2"]
+    },
+    {
+      "id": "FU2",
+      "label": "Follow Up Expert 1 - Attempt 2",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Per schedule",
+      "phase": "Follow Up",
+      "phaseClass": "phase-followup",
+      "quickAction": "Expert Report Follow-up",
+      "style": "followup",
+      "connectsTo": ["FU3"]
+    },
+    {
+      "id": "FU3",
+      "label": "Follow Up Expert 1 - Attempt 3",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Per schedule",
+      "phase": "Follow Up",
+      "phaseClass": "phase-followup",
+      "quickAction": "Expert Report Follow-up",
+      "style": "followup",
+      "connectsTo": ["FU4", "UPL"],
+      "edgeLabels": { "FU4": "No Response", "UPL": "Report Received" }
+    },
+    {
+      "id": "FU4",
+      "label": "Follow Up Attempt 4\nFind New Expert",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Per schedule",
+      "phase": "Follow Up",
+      "phaseClass": "phase-followup",
+      "quickAction": "Expert Report Follow-up",
+      "style": "followup",
+      "connectsTo": []
+    },
+    {
+      "id": "UPL",
+      "label": "Upload Expert Reporting",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "1 hour from receipt",
+      "phase": "Follow Up",
+      "phaseClass": "phase-followup",
+      "quickAction": "Expert Report Follow-up",
+      "style": "followup",
+      "connectsTo": ["AREV"]
+    },
+    {
+      "id": "AREV",
+      "label": "Attorney Review Expert Report",
+      "assignedTo": "Attorney",
+      "sla": "1 week from upload",
+      "phase": "Attorney",
+      "phaseClass": "phase-review",
+      "quickAction": "Expert Report Review",
+      "style": "attorney",
+      "connectsTo": ["SUP"]
+    },
+    {
+      "id": "SUP",
+      "label": "Supportive Admin Task",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "3 hours",
+      "phase": "Supportive",
+      "phaseClass": "phase-supportive",
+      "quickAction": "Supportive Admin",
+      "style": "supportive",
+      "connectsTo": ["AF1"]
+    },
+    {
+      "id": "AF1",
+      "label": "Follow Up Amended Expert 1\nAttempt 1",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Per schedule",
+      "phase": "Amended",
+      "phaseClass": "phase-amend",
+      "quickAction": "Amended Expert Report",
+      "style": "amended",
+      "connectsTo": ["AF2"]
+    },
+    {
+      "id": "AF2",
+      "label": "Follow Up Amended Expert 1\nAttempt 2",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Per schedule",
+      "phase": "Amended",
+      "phaseClass": "phase-amend",
+      "quickAction": "Amended Expert Report",
+      "style": "amended",
+      "connectsTo": ["AF3"]
+    },
+    {
+      "id": "AF3",
+      "label": "Follow Up Amended Expert 1\nAttempt 3",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "Per schedule",
+      "phase": "Amended",
+      "phaseClass": "phase-amend",
+      "quickAction": "Amended Expert Report",
+      "style": "amended",
+      "connectsTo": ["AUPL"]
+    },
+    {
+      "id": "AUPL",
+      "label": "Upload Amended Expert Reporting",
+      "assignedTo": "Paralegal / Legal Asst",
+      "sla": "1 hour from receipt",
+      "phase": "Amended",
+      "phaseClass": "phase-amend",
+      "quickAction": "Amended Expert Report",
+      "style": "amended",
+      "connectsTo": ["AAREV"]
+    },
+    {
+      "id": "AAREV",
+      "label": "Attorney Review Amended\nExpert Report",
+      "assignedTo": "Attorney",
+      "sla": "1 week from upload",
+      "phase": "Attorney",
+      "phaseClass": "phase-review",
+      "quickAction": "Amended Expert Report Review",
+      "style": "attorney",
+      "connectsTo": []
+    }
+  ],
+  "styles": {
+    "depo": { "fill": "#4a148c", "stroke": "#311b92", "color": "#fff" },
+    "expert": { "fill": "#00695c", "stroke": "#004d40", "color": "#fff" },
+    "followup": { "fill": "#1565c0", "stroke": "#0d47a1", "color": "#fff" },
+    "milestone": { "fill": "#ff6f00", "stroke": "#e65100", "color": "#fff" },
+    "attorney": { "fill": "#6a1b9a", "stroke": "#4a148c", "color": "#fff" },
+    "amended": { "fill": "#e65100", "stroke": "#bf360c", "color": "#fff" },
+    "supportive": { "fill": "#ad1457", "stroke": "#880e4f", "color": "#fff" }
+  }
+}

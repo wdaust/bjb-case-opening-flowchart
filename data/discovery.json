@@ -1,0 +1,160 @@
+{
+  "id": "discovery",
+  "title": "LIT: Discovery",
+  "subtitle": "12 tasks — Discovery Drafting, Client Appointment Scheduling & Finalization",
+  "headerClass": "discovery",
+  "themeColor": "#b71c1c",
+  "thClass": "discovery-section",
+  "sectionClass": "discovery-section",
+  "tableColumns": ["#", "Phase", "Quick Action Panel", "Assigned To", "Task", "SLA"],
+  "legend": [
+    { "label": "Discovery Drafting", "color": "#1565c0" },
+    { "label": "Call Attempts", "color": "#c62828" },
+    { "label": "Auto Letters", "color": "#2e7d32" },
+    { "label": "Management Escalation", "color": "#ff6f00" },
+    { "label": "Attorney Tasks", "color": "#6a1b9a" }
+  ],
+  "tasks": [
+    {
+      "id": "D1",
+      "label": "Draft Plaintiff's Discovery Responses",
+      "emoji": "\ud83d\udcdd",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "30 days from complaint filed",
+      "phase": "Draft",
+      "phaseClass": "phase-setup",
+      "quickAction": "Discovery",
+      "style": "draft",
+      "connectsTo": ["CA1"],
+      "isStartNode": true
+    },
+    {
+      "id": "CA1",
+      "label": "Client Discovery Appt\nCall Attempt 1",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "Day 31 after complaint filed",
+      "phase": "Call",
+      "phaseClass": "phase-call",
+      "quickAction": "Client Discovery Appt",
+      "style": "callattempt",
+      "connectsTo": ["CA2"]
+    },
+    {
+      "id": "CA2",
+      "label": "Client Discovery Appt\nCall Attempt 2",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "Day 32 after complaint filed",
+      "phase": "Call",
+      "phaseClass": "phase-call",
+      "quickAction": "Client Discovery Appt",
+      "style": "callattempt",
+      "connectsTo": ["CA3"]
+    },
+    {
+      "id": "CA3",
+      "label": "Client Discovery Appt\nCall Attempt 3",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "Day 33 after complaint filed",
+      "phase": "Call",
+      "phaseClass": "phase-call",
+      "quickAction": "Client Discovery Appt",
+      "style": "callattempt",
+      "connectsTo": ["L1"]
+    },
+    {
+      "id": "L1",
+      "label": "Auto: Send Contact Letter 1",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Auto",
+      "phaseClass": "phase-letter",
+      "quickAction": "Client Orientation",
+      "style": "autoletter",
+      "connectsTo": ["CA4"]
+    },
+    {
+      "id": "CA4",
+      "label": "Client Discovery Appt\nCall Attempt 4",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "Day 45 after complaint filed",
+      "phase": "Call",
+      "phaseClass": "phase-call",
+      "quickAction": "Client Discovery Appt",
+      "style": "callattempt",
+      "connectsTo": ["CA5"]
+    },
+    {
+      "id": "CA5",
+      "label": "Client Discovery Appt\nCall Attempt 5",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "Day 46 after complaint filed",
+      "phase": "Call",
+      "phaseClass": "phase-call",
+      "quickAction": "Client Discovery Appt",
+      "style": "callattempt",
+      "connectsTo": ["CA6"]
+    },
+    {
+      "id": "CA6",
+      "label": "Client Discovery Appt\nCall Attempt 6",
+      "assignedTo": "Legal Asst / Para",
+      "sla": "Day 47 after complaint filed",
+      "phase": "Call",
+      "phaseClass": "phase-call",
+      "quickAction": "Client Discovery Appt",
+      "style": "callattempt",
+      "connectsTo": ["L2"]
+    },
+    {
+      "id": "L2",
+      "label": "Auto: Send Contact Letter 2",
+      "assignedTo": "System Automation",
+      "sla": "Automation",
+      "phase": "Auto",
+      "phaseClass": "phase-letter",
+      "quickAction": "Client Orientation",
+      "style": "autoletter",
+      "connectsTo": ["ME"]
+    },
+    {
+      "id": "ME",
+      "label": "Management Escalation\nDiscovery Appointment",
+      "assignedTo": "System Automation",
+      "sla": "Day 49 after complaint filed",
+      "phase": "Escalation",
+      "phaseClass": "phase-milestone",
+      "quickAction": "Management Escalation",
+      "style": "mgmt",
+      "connectsTo": ["DA"]
+    },
+    {
+      "id": "DA",
+      "label": "Client Discovery Appt\nDiscovery Appointment",
+      "assignedTo": "Attorney",
+      "sla": "No later than 5 days",
+      "phase": "Attorney",
+      "phaseClass": "phase-review",
+      "quickAction": "Client Discovery Appt",
+      "style": "attorney",
+      "connectsTo": ["FIN"]
+    },
+    {
+      "id": "FIN",
+      "label": "Finalize Discovery Responses",
+      "assignedTo": "Attorney",
+      "sla": "2 days after appointment",
+      "phase": "Attorney",
+      "phaseClass": "phase-review",
+      "quickAction": "Discovery",
+      "style": "attorney",
+      "connectsTo": []
+    }
+  ],
+  "styles": {
+    "draft": { "fill": "#1565c0", "stroke": "#0d47a1", "color": "#fff" },
+    "callattempt": { "fill": "#c62828", "stroke": "#b71c1c", "color": "#fff" },
+    "autoletter": { "fill": "#2e7d32", "stroke": "#1b5e20", "color": "#fff" },
+    "mgmt": { "fill": "#ff6f00", "stroke": "#e65100", "color": "#fff" },
+    "attorney": { "fill": "#6a1b9a", "stroke": "#4a148c", "color": "#fff" }
+  }
+}
