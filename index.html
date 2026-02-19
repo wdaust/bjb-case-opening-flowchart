@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BJB Lit / Case Opening - Process Flowchart</title>
+    <title>BJB Performance Infrastructure - Process Flowcharts</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <style>
         body {
@@ -17,15 +17,83 @@
             color: #1a237e;
             margin-bottom: 5px;
         }
-        .subtitle {
+        .page-subtitle {
             text-align: center;
             color: #666;
             margin-bottom: 30px;
         }
+
+        /* Collapsible Sections */
+        .collapsible-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            cursor: pointer;
+            user-select: none;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            transition: background 0.3s;
+        }
+        .section-header:hover {
+            background: linear-gradient(135deg, #283593 0%, #3949ab 100%);
+        }
+        .section-header.treatment {
+            background: linear-gradient(135deg, #004d40 0%, #00695c 100%);
+        }
+        .section-header.treatment:hover {
+            background: linear-gradient(135deg, #00695c 0%, #00796b 100%);
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .section-subtitle {
+            font-size: 13px;
+            opacity: 0.85;
+            margin-top: 4px;
+        }
+        .toggle-icon {
+            font-size: 28px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+            margin-left: 20px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+        }
+        .section-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+        .section-body {
+            padding: 30px;
+            transition: max-height 0.4s ease, padding 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+        .section-body.collapsed {
+            max-height: 0 !important;
+            padding-top: 0;
+            padding-bottom: 0;
+            opacity: 0;
+        }
+
+        /* Legend */
         .legend {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
@@ -33,29 +101,28 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 14px;
+            font-size: 13px;
         }
         .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
         }
+
+        /* Chart */
         .chart-container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             overflow-x: auto;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .mermaid {
             display: flex;
             justify-content: center;
         }
+
+        /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
             font-size: 13px;
         }
         th {
@@ -63,6 +130,11 @@
             color: white;
             padding: 10px 12px;
             text-align: left;
+            position: sticky;
+            top: 0;
+        }
+        .treatment-section th {
+            background: #004d40;
         }
         td {
             padding: 8px 12px;
@@ -77,6 +149,7 @@
             font-size: 11px;
             font-weight: 600;
             color: white;
+            white-space: nowrap;
         }
         .phase-setup { background: #1565c0; }
         .phase-auto { background: #2e7d32; }
@@ -88,27 +161,56 @@
         .phase-subpoena { background: #4e342e; }
         .phase-default { background: #37474f; }
         .phase-supportive { background: #ad1457; }
+        .phase-call { background: #1565c0; }
+        .phase-letter { background: #2e7d32; }
+        .phase-intake { background: #6a1b9a; }
+        .phase-appt { background: #c62828; }
+        .phase-audit { background: #00838f; }
+        .phase-admin { background: #37474f; }
+        .phase-amend { background: #e65100; }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        h3 {
+            color: #1a237e;
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>BJB Lit / Case Opening Process Flow</h1>
-    <p class="subtitle">Litigation Case Opening Workflow — Quick Action Panels, Assignments & SLAs</p>
+    <h1>BJB Performance Infrastructure</h1>
+    <p class="page-subtitle">Litigation Process Flowcharts — Click a section to expand or collapse</p>
 
-    <div class="legend">
-        <div class="legend-item"><div class="legend-color" style="background:#1565c0"></div> Case Setup</div>
-        <div class="legend-item"><div class="legend-color" style="background:#2e7d32"></div> Automated Doc Requests</div>
-        <div class="legend-item"><div class="legend-color" style="background:#e65100"></div> Doc Requests</div>
-        <div class="legend-item"><div class="legend-color" style="background:#6a1b9a"></div> Review</div>
-        <div class="legend-item"><div class="legend-color" style="background:#c62828"></div> Complaint Drafting & Approval</div>
-        <div class="legend-item"><div class="legend-color" style="background:#00838f"></div> Service of Summons & Court</div>
-        <div class="legend-item"><div class="legend-color" style="background:#f9a825"></div> Follow Up</div>
-        <div class="legend-item"><div class="legend-color" style="background:#4e342e"></div> Subpoena & Discovery</div>
-        <div class="legend-item"><div class="legend-color" style="background:#37474f"></div> Default & Filing</div>
-        <div class="legend-item"><div class="legend-color" style="background:#ad1457"></div> Supportive Doc Production</div>
-    </div>
-
-    <div class="chart-container">
-        <div class="mermaid">
+    <!-- ==================== CASE OPENING ==================== -->
+    <div class="collapsible-section">
+        <div class="section-header" onclick="toggleSection(this)">
+            <div>
+                <div class="section-title">Lit / Case Opening</div>
+                <div class="section-subtitle">35 tasks — From Orientation Appointment through Filing & Service</div>
+            </div>
+            <div class="toggle-icon">&#9660;</div>
+        </div>
+        <div class="section-body">
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color" style="background:#1565c0"></div> Case Setup</div>
+                <div class="legend-item"><div class="legend-color" style="background:#2e7d32"></div> Automated Doc Requests</div>
+                <div class="legend-item"><div class="legend-color" style="background:#e65100"></div> Doc Requests</div>
+                <div class="legend-item"><div class="legend-color" style="background:#6a1b9a"></div> Review</div>
+                <div class="legend-item"><div class="legend-color" style="background:#c62828"></div> Complaint Drafting & Approval</div>
+                <div class="legend-item"><div class="legend-color" style="background:#00838f"></div> Service of Summons & Court</div>
+                <div class="legend-item"><div class="legend-color" style="background:#f9a825"></div> Follow Up</div>
+                <div class="legend-item"><div class="legend-color" style="background:#4e342e"></div> Subpoena & Discovery</div>
+                <div class="legend-item"><div class="legend-color" style="background:#37474f"></div> Default & Filing</div>
+                <div class="legend-item"><div class="legend-color" style="background:#ad1457"></div> Supportive Doc Production</div>
+            </div>
+            <div class="chart-container">
+                <div class="mermaid">
 flowchart TD
     classDef setup fill:#1565c0,stroke:#0d47a1,color:#fff
     classDef auto fill:#2e7d32,stroke:#1b5e20,color:#fff
@@ -122,121 +224,240 @@ flowchart TD
     classDef supportive fill:#ad1457,stroke:#880e4f,color:#fff
 
     A["🏁 Orientation Appointment Completed"]:::setup
-
     A --> B["Case Setup\nComprehensive Case Performance Index\n📋 Legal Asst / Para\n⏱ 1 hour from OA"]:::setup
-
     A --> C1["Auto: Send letter to all medical providers\n🤖 System Automation"]:::auto
     A --> C2["Auto: Send letter to prior counsel\n🤖 System Automation"]:::auto
     A --> C3["Auto: Request ERISA/Medicaid/Medicare\n🤖 System Automation"]:::auto
     A --> C4["Auto: Request PIP No Fault Ledger\n🤖 System Automation"]:::auto
     A --> C5["Auto: Request Med Pay\n🤖 System Automation"]:::auto
     A --> C6["Auto: Request evidence\nphotos, shoes, out of pocket\n🤖 System Automation"]:::auto
-
     B --> D1["Doc Request: OPRA Submission\n📋 Legal Asst / Para\n⏱ 20 min from OA"]:::docreq
     B --> D2["Doc Request: Missing Medical Records\n📋 Legal Asst / Para\n⏱ 20 min from OA"]:::docreq
-
     D1 --> E["Review: Verify file for accuracy\n📋 Legal Asst / Para\n⏱ 20 min from OA"]:::review
     D2 --> E
-
     E --> F["Doc Production: Draft Complaint\n📋 Paralegal\n⏱ 3 days after OA"]:::complaint
-
     F --> G["Attorney Approval: Approve Complaint\n⚖️ Attorney\n⏱ 6 days after OA"]:::complaint
-
     G --> H["Filing: File the Complaint\n📋 Paralegal\n⏱ 24 business hours from approval"]:::complaint
-
     H --> I["Service of Summons & Complaint\nSend summons & complaint to process server\n📋 Paralegal\n⏱ 1 hour from filed complaint"]:::service
-
     I --> J["Upload Affidavit of Service\nVerify & upload to court\n📋 Paralegal\n⏱ 1 hour from receiving affidavit"]:::service
-
     J --> K["Court Notice: Initial Filing Notice\n📋 Paralegal / Legal Asst\n⏱ 1 business day from receipt"]:::service
-
     K --> L1["Follow Up Request 1\n📋 Legal Asst / Para\n⏱ 20 days from submission"]:::followup
     L1 --> L2["Follow Up Request 2\n📋 Legal Asst / Para\n⏱ 27 days from submission"]:::followup
     L2 --> L3["Follow Up Request 3\n📋 Legal Asst / Para\n⏱ 34 days from submission"]:::followup
-
     L3 --> M1["Mgmt Follow Up: Call/Chatter 1\n📋 Paralegal Mgr / Team Lead\n⏱ 42 days from submission"]:::followup
     M1 --> M2["Mgmt Follow Up: Call/Chatter 2\n📋 Paralegal Mgr / Team Lead\n⏱ 52 days from submission"]:::followup
     M2 --> M3["Mgmt Follow Up: Call/Chatter 3\n📋 Paralegal Mgr / Team Lead\n⏱ 62 days from submission"]:::followup
-
     M3 --> N["Doc Production: Subpoena\nMedical records, bills, films\n📋 Paralegal\n⏱ 67 days from submission"]:::subpoena
-
     N --> O["Doc Production: Proof of Service\nUpload to pleadings\n📋 Paralegal\n⏱ 77 days from submission"]:::subpoena
-
     O --> P["Follow Up: Verify Proof of Service\n📋 Paralegal\n⏱ 35 days from OA"]:::followup
-
     P --> Q["Doc Production: Resolve Non-Service\nPostal search, skip trace, DMV\n📋 Paralegal\n⏱ 36 days from OA"]:::subpoena
-
     Q --> R["Filing: Motion for Substitute Service\n📋 Paralegal\n⏱ 56 days from OA"]:::defaultfil
-
     I --> S["Doc Production: Draft Summons & Service\n📋 Paralegal\n⏱ 15 days from OA"]:::service
-
     J --> T["Filing: File Affidavits of Service\n📋 Paralegal\n⏱ 40 days from OA"]:::defaultfil
-
     T --> U["Filing: Request to Enter Default\n📋 Paralegal\n⏱ 35 days from date of service"]:::defaultfil
-
     U --> V["Auto: Send Filed Default Request\n🤖 System Automation"]:::auto
-
     R --> W["Filing: Motion to Enforce Litigants Rights\n📋 Paralegal\n⏱ 107 days from submission"]:::defaultfil
-
     V --> X1["Supportive Doc Production 1\n📋 Legal Asst / Para\n⏱ 1 hour from Mgr approval"]:::supportive
     X1 --> X2["Supportive Doc Production 2\n📋 Legal Asst / Para\n⏱ 3 hours from Mgr approval"]:::supportive
     X2 --> X3["Supportive Doc Production 3\n📋 Legal Asst / Para\n⏱ 5 hours from Mgr approval"]:::supportive
-
     X3 --> Y["Court Filing Notice\n📋 Paralegal / Legal Asst\n⏱ 1 business day from receipt"]:::service
+                </div>
+            </div>
+
+            <h3>Detailed Task Reference</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Phase</th>
+                            <th>Quick Action Panel</th>
+                            <th>Assigned To</th>
+                            <th>Task</th>
+                            <th>SLA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><span class="phase-tag phase-setup">Setup</span></td><td>Case Setup</td><td>Legal Asst / Para</td><td>Comprehensive Case Performance Index</td><td>1 hour from OA</td></tr>
+                        <tr><td>2</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Send letter to all medical providers</td><td>Automation</td></tr>
+                        <tr><td>3</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Send letter to prior counsel</td><td>Automation</td></tr>
+                        <tr><td>4</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Request ERISA/Medicaid/Medicare</td><td>Automation</td></tr>
+                        <tr><td>5</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Request PIP No Fault Ledger</td><td>Automation</td></tr>
+                        <tr><td>6</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Request Med Pay</td><td>Automation</td></tr>
+                        <tr><td>7</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Request evidence: photos, shoes, out of pocket</td><td>Automation</td></tr>
+                        <tr><td>8</td><td><span class="phase-tag phase-doc">Doc Req</span></td><td>Doc Request</td><td>Legal Asst / Para</td><td>OPRA request for supplemental records</td><td>20 min from OA</td></tr>
+                        <tr><td>9</td><td><span class="phase-tag phase-doc">Doc Req</span></td><td>Doc Request</td><td>Legal Asst / Para</td><td>Request missing medical records</td><td>20 min from OA</td></tr>
+                        <tr><td>10</td><td><span class="phase-tag phase-review">Review</span></td><td>Review</td><td>Legal Asst / Para</td><td>Review file to verify accuracy</td><td>20 min from OA</td></tr>
+                        <tr><td>11</td><td><span class="phase-tag phase-complaint">Complaint</span></td><td>Doc Production</td><td>Paralegal</td><td>Draft complaint</td><td>3 days after OA</td></tr>
+                        <tr><td>12</td><td><span class="phase-tag phase-complaint">Complaint</span></td><td>Approval</td><td>Attorney</td><td>Approve Complaint</td><td>6 days after OA</td></tr>
+                        <tr><td>13</td><td><span class="phase-tag phase-complaint">Complaint</span></td><td>Filing</td><td>Paralegal</td><td>Filing the complaint</td><td>24 business hours from approval</td></tr>
+                        <tr><td>14</td><td><span class="phase-tag phase-service">Service</span></td><td>Service of Summons & Complaint</td><td>Paralegal</td><td>Send summons & complaint to process server</td><td>1 hour from filed complaint</td></tr>
+                        <tr><td>15</td><td><span class="phase-tag phase-service">Service</span></td><td>Service of Summons & Complaint</td><td>Paralegal</td><td>Upload affidavit of service</td><td>1 hour from receiving affidavit</td></tr>
+                        <tr><td>16</td><td><span class="phase-tag phase-service">Court</span></td><td>Court Notice</td><td>Paralegal / Legal Asst</td><td>Court initial filing notice</td><td>1 business day from receipt</td></tr>
+                        <tr><td>17</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Legal Asst / Para</td><td>Follow Up Request 1</td><td>20 days from submission</td></tr>
+                        <tr><td>18</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Legal Asst / Para</td><td>Follow Up Request 2</td><td>27 days from submission</td></tr>
+                        <tr><td>19</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Legal Asst / Para</td><td>Follow Up Request 3</td><td>34 days from submission</td></tr>
+                        <tr><td>20</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Paralegal Mgr / Team Lead</td><td>Call/Chatter Attempt 1</td><td>42 days from submission</td></tr>
+                        <tr><td>21</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Paralegal Mgr / Team Lead</td><td>Call/Chatter Attempt 2</td><td>52 days from submission</td></tr>
+                        <tr><td>22</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Paralegal Mgr / Team Lead</td><td>Call/Chatter Attempt 3</td><td>62 days from submission</td></tr>
+                        <tr><td>23</td><td><span class="phase-tag phase-subpoena">Subpoena</span></td><td>Doc Production</td><td>Paralegal</td><td>Draft subpoena for medical records, bills, films</td><td>67 days from submission</td></tr>
+                        <tr><td>24</td><td><span class="phase-tag phase-subpoena">Subpoena</span></td><td>Doc Production</td><td>Paralegal</td><td>Upload proof of service</td><td>77 days from submission</td></tr>
+                        <tr><td>25</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Paralegal</td><td>Verify proof of service</td><td>35 days from OA</td></tr>
+                        <tr><td>26</td><td><span class="phase-tag phase-subpoena">Resolve</span></td><td>Doc Production</td><td>Paralegal</td><td>Resolve non-service (postal search, skip trace, DMV)</td><td>36 days from OA</td></tr>
+                        <tr><td>27</td><td><span class="phase-tag phase-default">Filing</span></td><td>Filing</td><td>Paralegal</td><td>Motion for substitute service</td><td>56 days from OA</td></tr>
+                        <tr><td>28</td><td><span class="phase-tag phase-default">Filing</span></td><td>Filing</td><td>Paralegal</td><td>File affidavits of service</td><td>40 days from OA</td></tr>
+                        <tr><td>29</td><td><span class="phase-tag phase-default">Filing</span></td><td>Filing</td><td>Paralegal</td><td>File request to enter default</td><td>35 days from date of service</td></tr>
+                        <tr><td>30</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Send filed default request to enter default</td><td>Automation</td></tr>
+                        <tr><td>31</td><td><span class="phase-tag phase-default">Filing</span></td><td>Filing</td><td>Paralegal</td><td>Motion to enforce litigants rights</td><td>107 days from submission</td></tr>
+                        <tr><td>32</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 1</td><td>1 hour from Mgr approval</td></tr>
+                        <tr><td>33</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 2</td><td>3 hours from Mgr approval</td></tr>
+                        <tr><td>34</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 3</td><td>5 hours from Mgr approval</td></tr>
+                        <tr><td>35</td><td><span class="phase-tag phase-service">Court</span></td><td>Court Filing Notice</td><td>Paralegal / Legal Asst</td><td>Court filing notice</td><td>1 business day from receipt</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <h2 style="color:#1a237e;">Detailed Task Reference</h2>
-    <div class="chart-container" style="padding:15px;">
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Phase</th>
-                    <th>Quick Action Panel</th>
-                    <th>Assigned To</th>
-                    <th>Task</th>
-                    <th>SLA</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>1</td><td><span class="phase-tag phase-setup">Setup</span></td><td>Case Setup</td><td>Legal Asst / Para</td><td>Comprehensive Case Performance Index</td><td>1 hour from OA</td></tr>
-                <tr><td>2</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Send letter to all medical providers</td><td>Automation</td></tr>
-                <tr><td>3</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Send letter to prior counsel</td><td>Automation</td></tr>
-                <tr><td>4</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Request ERISA/Medicaid/Medicare</td><td>Automation</td></tr>
-                <tr><td>5</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Request PIP No Fault Ledger</td><td>Automation</td></tr>
-                <tr><td>6</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Request Med Pay</td><td>Automation</td></tr>
-                <tr><td>7</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Request evidence: photos, shoes, out of pocket</td><td>Automation</td></tr>
-                <tr><td>8</td><td><span class="phase-tag phase-doc">Doc Req</span></td><td>Doc Request</td><td>Legal Asst / Para</td><td>OPRA request for supplemental records</td><td>20 min from OA</td></tr>
-                <tr><td>9</td><td><span class="phase-tag phase-doc">Doc Req</span></td><td>Doc Request</td><td>Legal Asst / Para</td><td>Request missing medical records</td><td>20 min from OA</td></tr>
-                <tr><td>10</td><td><span class="phase-tag phase-review">Review</span></td><td>Review</td><td>Legal Asst / Para</td><td>Review file to verify accuracy</td><td>20 min from OA</td></tr>
-                <tr><td>11</td><td><span class="phase-tag phase-complaint">Complaint</span></td><td>Doc Production</td><td>Paralegal</td><td>Draft complaint</td><td>3 days after OA</td></tr>
-                <tr><td>12</td><td><span class="phase-tag phase-complaint">Complaint</span></td><td>Approval</td><td>Attorney</td><td>Approve Complaint</td><td>6 days after OA</td></tr>
-                <tr><td>13</td><td><span class="phase-tag phase-complaint">Complaint</span></td><td>Filing</td><td>Paralegal</td><td>Filing the complaint</td><td>24 business hours from approval</td></tr>
-                <tr><td>14</td><td><span class="phase-tag phase-service">Service</span></td><td>Service of Summons & Complaint</td><td>Paralegal</td><td>Send summons & complaint to process server</td><td>1 hour from filed complaint</td></tr>
-                <tr><td>15</td><td><span class="phase-tag phase-service">Service</span></td><td>Service of Summons & Complaint</td><td>Paralegal</td><td>Upload affidavit of service</td><td>1 hour from receiving affidavit</td></tr>
-                <tr><td>16</td><td><span class="phase-tag phase-service">Court</span></td><td>Court Notice</td><td>Paralegal / Legal Asst</td><td>Court initial filing notice</td><td>1 business day from receipt</td></tr>
-                <tr><td>17</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Legal Asst / Para</td><td>Follow Up Request 1</td><td>20 days from submission</td></tr>
-                <tr><td>18</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Legal Asst / Para</td><td>Follow Up Request 2</td><td>27 days from submission</td></tr>
-                <tr><td>19</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Legal Asst / Para</td><td>Follow Up Request 3</td><td>34 days from submission</td></tr>
-                <tr><td>20</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Paralegal Mgr / Team Lead</td><td>Call/Chatter Attempt 1</td><td>42 days from submission</td></tr>
-                <tr><td>21</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Paralegal Mgr / Team Lead</td><td>Call/Chatter Attempt 2</td><td>52 days from submission</td></tr>
-                <tr><td>22</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Paralegal Mgr / Team Lead</td><td>Call/Chatter Attempt 3</td><td>62 days from submission</td></tr>
-                <tr><td>23</td><td><span class="phase-tag phase-subpoena">Subpoena</span></td><td>Doc Production</td><td>Paralegal</td><td>Draft subpoena for medical records, bills, films</td><td>67 days from submission</td></tr>
-                <tr><td>24</td><td><span class="phase-tag phase-subpoena">Subpoena</span></td><td>Doc Production</td><td>Paralegal</td><td>Upload proof of service</td><td>77 days from submission</td></tr>
-                <tr><td>25</td><td><span class="phase-tag phase-followup">Follow Up</span></td><td>Follow Up</td><td>Paralegal</td><td>Verify proof of service</td><td>35 days from OA</td></tr>
-                <tr><td>26</td><td><span class="phase-tag phase-subpoena">Resolve</span></td><td>Doc Production</td><td>Paralegal</td><td>Resolve non-service (postal search, skip trace, DMV)</td><td>36 days from OA</td></tr>
-                <tr><td>27</td><td><span class="phase-tag phase-default">Filing</span></td><td>Filing</td><td>Paralegal</td><td>Motion for substitute service</td><td>56 days from OA</td></tr>
-                <tr><td>28</td><td><span class="phase-tag phase-default">Filing</span></td><td>Filing</td><td>Paralegal</td><td>File affidavits of service</td><td>40 days from OA</td></tr>
-                <tr><td>29</td><td><span class="phase-tag phase-default">Filing</span></td><td>Filing</td><td>Paralegal</td><td>File request to enter default</td><td>35 days from date of service</td></tr>
-                <tr><td>30</td><td><span class="phase-tag phase-auto">Auto</span></td><td>Automated Doc Request</td><td>System Automation</td><td>Send filed default request to enter default</td><td>Automation</td></tr>
-                <tr><td>31</td><td><span class="phase-tag phase-default">Filing</span></td><td>Filing</td><td>Paralegal</td><td>Motion to enforce litigants rights</td><td>107 days from submission</td></tr>
-                <tr><td>32</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 1</td><td>1 hour from Mgr approval</td></tr>
-                <tr><td>33</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 2</td><td>3 hours from Mgr approval</td></tr>
-                <tr><td>34</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 3</td><td>5 hours from Mgr approval</td></tr>
-                <tr><td>35</td><td><span class="phase-tag phase-service">Court</span></td><td>Court Filing Notice</td><td>Paralegal / Legal Asst</td><td>Court filing notice</td><td>1 business day from receipt</td></tr>
-            </tbody>
-        </table>
+    <!-- ==================== TREATMENT MONITORING ==================== -->
+    <div class="collapsible-section treatment-section">
+        <div class="section-header treatment" onclick="toggleSection(this)">
+            <div>
+                <div class="section-title">Treatment Monitoring</div>
+                <div class="section-subtitle">21 tasks — Client Communication, Liens Audit, Discovery & Supportive Docs (repeats over 2 years)</div>
+            </div>
+            <div class="toggle-icon">&#9660;</div>
+        </div>
+        <div class="section-body">
+            <div class="legend">
+                <div class="legend-item"><div class="legend-color" style="background:#1565c0"></div> Call Attempts</div>
+                <div class="legend-item"><div class="legend-color" style="background:#2e7d32"></div> Auto Letters</div>
+                <div class="legend-item"><div class="legend-color" style="background:#6a1b9a"></div> Back to Intake</div>
+                <div class="legend-item"><div class="legend-color" style="background:#c62828"></div> Appointment</div>
+                <div class="legend-item"><div class="legend-color" style="background:#00838f"></div> Liens Audit</div>
+                <div class="legend-item"><div class="legend-color" style="background:#e65100"></div> Amending Discovery</div>
+                <div class="legend-item"><div class="legend-color" style="background:#37474f"></div> Admin Tasks</div>
+                <div class="legend-item"><div class="legend-color" style="background:#ad1457"></div> Supportive Doc Production</div>
+            </div>
+            <div class="chart-container">
+                <div class="mermaid">
+flowchart TD
+    classDef call fill:#1565c0,stroke:#0d47a1,color:#fff
+    classDef autoletter fill:#2e7d32,stroke:#1b5e20,color:#fff
+    classDef intake fill:#6a1b9a,stroke:#4a148c,color:#fff
+    classDef appt fill:#c62828,stroke:#b71c1c,color:#fff
+    classDef audit fill:#00838f,stroke:#006064,color:#fff
+    classDef amend fill:#e65100,stroke:#bf360c,color:#fff
+    classDef admin fill:#37474f,stroke:#263238,color:#fff
+    classDef supportive fill:#ad1457,stroke:#880e4f,color:#fff
+    classDef milestone fill:#ff6f00,stroke:#e65100,color:#fff
+
+    START["📅 30 Days After Orientation Appointment\nBegin Treatment Monitoring"]:::milestone
+
+    START --> T1["Call Attempt 1\n📋 Legal Asst / Para\n⏱ By 10am, Day 30 from OA"]:::call
+    T1 --> T2["Call Attempt 2\n📋 Legal Asst / Para\n⏱ By 10am, Day 31 from OA"]:::call
+    T2 --> T3["Call Attempt 3\n📋 Legal Asst / Para\n⏱ By 4pm, Day 32 from OA"]:::call
+
+    T3 --> T4["Auto: Send Contact Letter 1\n🤖 System Automation\n⏱ Day 33 from OA"]:::autoletter
+
+    T4 --> T5["Call Attempt 4\n📋 Legal Asst / Para\n⏱ By 10am, Day 37 from OA"]:::call
+    T5 --> T6["Call Attempt 5\n📋 Legal Asst / Para\n⏱ By 4pm, Day 37 from OA"]:::call
+    T6 --> T7["Call Attempt 6\n📋 Legal Asst / Para\n⏱ By 10am, Day 38 from OA"]:::call
+
+    T7 --> T8["Auto: Send Contact Letter 2\n🤖 System Automation\n⏱ By EOD, Day 38 from OA"]:::autoletter
+
+    T8 --> T9["Call Attempt 7\n📋 Legal Asst / Para\n⏱ By 10am, Day 37 from OA"]:::call
+    T9 --> T10["Call Attempt 8\n📋 Legal Asst / Para\n⏱ By 4pm, Day 37 from OA"]:::call
+    T10 --> T11["Call Attempt 9\n📋 Legal Asst / Para\n⏱ By 10am, Day 38 from OA"]:::call
+
+    T11 --> T12["Auto: Back to Intake as MIA\nReset client communications\n🤖 System Automation\n⏱ By EOD, Day 38 from OA"]:::intake
+
+    T12 --> T13["Appointment\nLitigation Client Communication\n📋 Legal Asst / Para\n⏱ No less than every 30 from OA"]:::appt
+
+    T13 --> COMPLETE["✅ Appt 1 Complete\nRepeat above process for each appt\nover the course of 2 years"]:::milestone
+
+    COMPLETE --> T14["Auto: Liens Audit\nSend Medicare, Medicaid, VA, ERISA letters\n🤖 System Automation\n⏱ By EOD, Day 60 from OA\n🔄 Repeated"]:::audit
+
+    T14 --> T15["Auto: Updated Medical Bills Letter\n🤖 System Automation\n⏱ By EOD, Day 90 from OA\n🔄 Repeated"]:::audit
+
+    T15 --> T16["Amending Discovery Responses\nSend letter to defendant\n📋 Legal Asst / Para\n⏱ 30 min from initiating task"]:::amend
+
+    T16 --> T17["Supportive Admin Task 1\n📋 Legal Asst / Para\n⏱ 30 min from initiating task"]:::admin
+
+    T17 --> T18["Supportive Doc Production 1\n📋 Legal Asst / Para\n⏱ 4 hours from Manager approval"]:::supportive
+    T18 --> T19["Supportive Doc Production 2\n📋 Legal Asst / Para\n⏱ 8 hours from Manager approval"]:::supportive
+    T19 --> T20["Supportive Doc Production 3\n📋 Legal Asst / Para\n⏱ 2 days from Manager approval"]:::supportive
+                </div>
+            </div>
+
+            <h3>Detailed Task Reference</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Phase</th>
+                            <th>Quick Action Panel</th>
+                            <th>Assigned To</th>
+                            <th>Task</th>
+                            <th>Function</th>
+                            <th>SLA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 1</td><td>If connected, mark Complete; if not, drop V1, send SMS 1, send Email 1</td><td>By 10am on day 30 from OA</td></tr>
+                        <tr><td>2</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 2</td><td>If connected, mark Complete; if not, drop V2, send SMS 2, send Email 2</td><td>By 10am on day 31 from OA</td></tr>
+                        <tr><td>3</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 3</td><td>If connected, mark Complete; if not, drop V3, send SMS 3, send Email 3</td><td>By 4pm on day 32 from OA</td></tr>
+                        <tr><td>4</td><td><span class="phase-tag phase-letter">Auto</span></td><td>Treatment Monitoring or Client Communication</td><td>System Automation</td><td>Send Contact Letter 1</td><td>If no contact by day 33, letter is automatically sent</td><td>33rd day from OA</td></tr>
+                        <tr><td>5</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 4</td><td>If connected, mark Complete; if not, drop V4, send SMS 4, send Email 4</td><td>By 10am on day 37 from OA</td></tr>
+                        <tr><td>6</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 5</td><td>If connected, mark Complete; if not, drop V5, send SMS 5, send Email 5</td><td>By 4pm on day 37 from OA</td></tr>
+                        <tr><td>7</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 6</td><td>If connected, mark Complete; if not, drop V6, send SMS 6, send Email 6</td><td>By 10am on day 38 from OA</td></tr>
+                        <tr><td>8</td><td><span class="phase-tag phase-letter">Auto</span></td><td>Treatment Monitoring or Client Communication</td><td>System Automation</td><td>Send Contact Letter 2</td><td>If no contact by day 5, letter is automatically sent</td><td>By EOD on day 38 from OA</td></tr>
+                        <tr><td>9</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 7</td><td>If connected, mark Complete; if not, drop V7, send SMS 7, send Email 7</td><td>By 10am on day 37 from OA</td></tr>
+                        <tr><td>10</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 8</td><td>If connected, mark Complete; if not, drop V8, send SMS 8, send Email 8</td><td>By 4pm on day 37 from OA</td></tr>
+                        <tr><td>11</td><td><span class="phase-tag phase-call">Call</span></td><td>Treatment Monitoring or Client Communication</td><td>Legal Asst / Para</td><td>Call Attempt 9</td><td>If connected, mark Complete; if not, drop V9, send SMS 9, send Email 9</td><td>By 10am on day 38 from OA</td></tr>
+                        <tr><td>12</td><td><span class="phase-tag phase-intake">Intake</span></td><td>Treatment Monitoring or Client Communication</td><td>System Automation</td><td>Back to Intake as MIA</td><td>Case is routed back to Intake to re-establish communications</td><td>By EOD on day 38 from OA</td></tr>
+                        <tr><td>13</td><td><span class="phase-tag phase-appt">Appt</span></td><td>Treatment Monitoring or Client Communication Appointment</td><td>Legal Asst / Para</td><td>Appointment</td><td>Complete, mark complete</td><td>No less than every 30 from OA</td></tr>
+                        <tr style="background:#fff3e0;"><td colspan="7" style="text-align:center;font-weight:bold;color:#e65100;">Appointment 1 Complete — Repeat the above process for each appointment over the course of 2 years</td></tr>
+                        <tr><td>14</td><td><span class="phase-tag phase-audit">Audit</span></td><td>Liens Audit</td><td>System Automation</td><td>Send Medicare, Medicaid, Medical, VA, ERISA letters</td><td>Liens audit letters sent, mark complete; if Not Applicable, mark NA</td><td>By EOD on day 60 from OA (Repeated)</td></tr>
+                        <tr><td>15</td><td><span class="phase-tag phase-audit">Audit</span></td><td>Updated Medical Bills</td><td>System Automation</td><td>Send updated medical bills letter</td><td>Updated medical bills letter sent, mark complete; if Not Applicable, mark NA</td><td>By EOD on day 90 from OA (Repeated)</td></tr>
+                        <tr><td>16</td><td><span class="phase-tag phase-amend">Amend</span></td><td>Amending Discovery Responses</td><td>Legal Asst / Para</td><td>Sending letter to defendant amending discovery responses</td><td>Send letter to defendant, mark complete</td><td>30 min from initiating task</td></tr>
+                        <tr><td>17</td><td><span class="phase-tag phase-admin">Admin</span></td><td>Supportive Administrative Tasks</td><td>Legal Asst / Para</td><td>Supportive Admin 1</td><td>Complete supportive administrative task, mark complete</td><td>30 min from initiating task</td></tr>
+                        <tr><td>18</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 1</td><td>Draft and process supportive doc production, mark complete</td><td>4 hours from Manager approval</td></tr>
+                        <tr><td>19</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 2</td><td>Draft and process supportive doc production, mark complete</td><td>8 hours from Manager approval</td></tr>
+                        <tr><td>20</td><td><span class="phase-tag phase-supportive">Supportive</span></td><td>Supportive Doc Production</td><td>Legal Asst / Para</td><td>Supportive Doc Production 3</td><td>Draft and process supportive doc production, mark complete</td><td>2 days from Manager approval</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+
+        function toggleSection(header) {
+            const body = header.nextElementSibling;
+            const isCollapsed = body.classList.contains('collapsed');
+
+            if (isCollapsed) {
+                body.classList.remove('collapsed');
+                body.style.maxHeight = body.scrollHeight + 'px';
+                header.classList.remove('collapsed');
+                // After transition, remove max-height so content can grow
+                setTimeout(() => { body.style.maxHeight = 'none'; }, 400);
+            } else {
+                body.style.maxHeight = body.scrollHeight + 'px';
+                // Force reflow
+                body.offsetHeight;
+                body.classList.add('collapsed');
+                header.classList.add('collapsed');
+            }
+        }
+
+        // Initialize all sections as expanded
+        document.querySelectorAll('.section-body').forEach(body => {
+            body.style.maxHeight = 'none';
+        });
+    </script>
 </body>
 </html>
