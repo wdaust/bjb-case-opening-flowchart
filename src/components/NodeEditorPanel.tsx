@@ -56,8 +56,8 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
       />
       <div style={{
         position: 'fixed', top: 0, right: 0, width: 480, maxWidth: '90vw',
-        height: '100vh', background: '#fff', zIndex: 1000,
-        boxShadow: '-4px 0 20px rgba(0,0,0,0.2)', display: 'flex',
+        height: '100vh', background: 'var(--panel-bg, #fff)', zIndex: 1000,
+        boxShadow: '-4px 0 20px var(--shadow, rgba(0,0,0,0.2))', display: 'flex',
         flexDirection: 'column', overflow: 'hidden',
       }}>
         {/* Header with Task ID */}
@@ -80,7 +80,7 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
           </div>
         </div>
 
-        <div style={{ flex: 1, overflow: 'auto', padding: '16px 20px' }}>
+        <div style={{ flex: 1, overflow: 'auto', padding: '16px 20px', color: 'var(--text-color, #333)' }}>
           {/* Task ID — only for new tasks */}
           {isNew && (
             <Field label="Task ID">
@@ -264,12 +264,14 @@ export function NodeEditorPanel({ task, section, isOpen, onSave, onDelete, onClo
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '8px 10px',
-  border: '1px solid #ddd',
+  border: '1px solid var(--border-color, #ddd)',
   borderRadius: 6,
   fontSize: 13,
   fontFamily: 'inherit',
   outline: 'none',
   transition: 'border-color 0.15s',
+  background: 'var(--input-bg, #fff)',
+  color: 'var(--text-color, #333)',
 };
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {

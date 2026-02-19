@@ -11,7 +11,7 @@ export function SectionTabs({ sections, activeId, onSelect }: Props) {
     <div style={{
       display: 'flex',
       gap: 0,
-      borderBottom: '2px solid #e0e0e0',
+      borderBottom: '2px solid var(--border-color, #e0e0e0)',
       marginBottom: 0,
       overflow: 'auto',
     }}>
@@ -25,8 +25,8 @@ export function SectionTabs({ sections, activeId, onSelect }: Props) {
               padding: '12px 24px',
               border: 'none',
               borderBottom: isActive ? `3px solid ${s.themeColor}` : '3px solid transparent',
-              background: isActive ? '#fff' : '#f5f5f5',
-              color: isActive ? s.themeColor : '#666',
+              background: isActive ? 'var(--surface, #fff)' : 'var(--toolbar-bg, #f5f5f5)',
+              color: isActive ? s.themeColor : 'var(--text-muted, #666)',
               fontWeight: isActive ? 700 : 500,
               fontSize: 14,
               cursor: 'pointer',

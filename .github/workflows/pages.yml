@@ -28,6 +28,8 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+        env:
+          VITE_NEON_DATABASE_URL: ${{ secrets.VITE_NEON_DATABASE_URL }}
       - name: Copy data to dist
         run: cp -r data/ dist/data/
       - name: Setup Pages

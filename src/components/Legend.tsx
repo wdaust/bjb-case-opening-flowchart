@@ -6,8 +6,8 @@ export function Legend({ items }: { items: LegendItem[] }) {
 
   return (
     <div style={{
-      background: '#fafafa',
-      borderBottom: '1px solid #e0e0e0',
+      background: 'var(--toolbar-bg, #fafafa)',
+      borderBottom: '1px solid var(--border-color, #e0e0e0)',
       padding: collapsed ? '6px 16px' : '10px 16px',
       transition: 'padding 0.15s',
     }}>
@@ -15,7 +15,7 @@ export function Legend({ items }: { items: LegendItem[] }) {
         onClick={() => setCollapsed(!collapsed)}
         style={{
           background: 'none', border: 'none', cursor: 'pointer',
-          fontSize: 11, fontWeight: 600, color: '#888', textTransform: 'uppercase',
+          fontSize: 11, fontWeight: 600, color: 'var(--text-muted, #888)', textTransform: 'uppercase',
           display: 'flex', alignItems: 'center', gap: 4, padding: 0,
           marginBottom: collapsed ? 0 : 8,
         }}

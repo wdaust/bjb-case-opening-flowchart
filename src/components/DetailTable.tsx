@@ -17,7 +17,7 @@ export function DetailTable({ section, visible }: Props) {
   return (
     <div style={{ padding: '0 16px 16px', overflow: 'auto' }}>
       <h3 style={{ color: section.themeColor, margin: '16px 0 10px' }}>Detailed Task Reference</h3>
-      <div style={{ borderRadius: 8, border: '1px solid #e0e0e0', overflow: 'auto' }}>
+      <div style={{ borderRadius: 8, border: '1px solid var(--border-color, #e0e0e0)', overflow: 'auto' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
           <thead>
             <tr>
@@ -72,9 +72,9 @@ export function DetailTable({ section, visible }: Props) {
               const taskLabel = task.label.split('\n')[0];
 
               rows.push(
-                <tr key={task.id} style={{ background: currentNum % 2 === 0 ? '#f9f9f9' : '#fff' }}>
-                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #e0e0e0' }}>{currentNum}</td>
-                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #e0e0e0' }}>
+                <tr key={task.id} style={{ background: currentNum % 2 === 0 ? 'var(--table-stripe, #f9f9f9)' : 'var(--surface, #fff)' }}>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-color, #e0e0e0)' }}>{currentNum}</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-color, #e0e0e0)' }}>
                     <span className={`phase-tag ${task.phaseClass}`} style={{
                       display: 'inline-block', padding: '2px 8px', borderRadius: 10,
                       fontSize: 11, fontWeight: 600, color: '#fff', whiteSpace: 'nowrap',
@@ -82,13 +82,13 @@ export function DetailTable({ section, visible }: Props) {
                       {task.phase}
                     </span>
                   </td>
-                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #e0e0e0' }}>{task.quickAction}</td>
-                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #e0e0e0' }}>{task.assignedTo}</td>
-                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #e0e0e0' }}>{taskLabel}</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-color, #e0e0e0)' }}>{task.quickAction}</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-color, #e0e0e0)' }}>{task.assignedTo}</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-color, #e0e0e0)' }}>{taskLabel}</td>
                   {hasFunction && (
-                    <td style={{ padding: '8px 12px', borderBottom: '1px solid #e0e0e0' }}>{task.function || ''}</td>
+                    <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-color, #e0e0e0)' }}>{task.function || ''}</td>
                   )}
-                  <td style={{ padding: '8px 12px', borderBottom: '1px solid #e0e0e0' }}>{task.sla}</td>
+                  <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-color, #e0e0e0)' }}>{task.sla}</td>
                 </tr>
               );
 

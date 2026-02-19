@@ -1,11 +1,27 @@
-import { memo, useState } from 'react';
+import { memo, useState, useContext } from 'react';
 import { Handle, Position, type NodeProps } from '@xyflow/react';
 import type { TaskNodeData } from '../utils/jsonTransform.ts';
+import { FilterContext } from '../contexts/FilterContext.ts';
+
+function matchesFilter(task: TaskNodeData['task'], query: string, assignee: string): boolean {
+  if (query) {
+    const q = query.toLowerCase();
+    const text = `${task.id} ${task.label} ${task.assignedTo} ${task.phase} ${task.notes || ''}`.toLowerCase();
+    if (!text.includes(q)) return false;
+  }
+  if (assignee && task.assignedTo !== assignee) return false;
+  return true;
+}
 
 function CustomNodeComponent({ data, selected }: NodeProps) {
   const { task, fill, stroke, color } = data as TaskNodeData;
   const lines = task.label.split('\n');
   const [hovered, setHovered] = useState(false);
+  const { searchQuery, assigneeFilter } = useContext(FilterContext);
+
+  const isFiltering = !!(searchQuery || assigneeFilter);
+  const matches = matchesFilter(task, searchQuery, assigneeFilter);
+  const dimmed = isFiltering && !matches;
 
   const assignedIcon = task.assignedTo
     ? task.assignedTo.includes('System') ? '\u{1F916}'
@@ -30,6 +46,8 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
         boxShadow: selected ? '0 0 0 2px #ff0' : '0 1px 4px rgba(0,0,0,0.2)',
         cursor: 'pointer',
         position: 'relative',
+        opacity: dimmed ? 0.2 : 1,
+        transition: 'opacity 0.2s',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -47,7 +65,6 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
         }}
       />
 
-      {/* Notes icon */}
       {hasNotes && (
         <div style={{
           position: 'absolute', top: 4, right: 6,
@@ -75,7 +92,6 @@ function CustomNodeComponent({ data, selected }: NodeProps) {
         </div>
       )}
 
-      {/* Notes tooltip on hover */}
       {hasNotes && hovered && (
         <div style={{
           position: 'absolute',
