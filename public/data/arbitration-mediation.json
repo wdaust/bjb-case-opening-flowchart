@@ -1,7 +1,7 @@
 {
   "id": "arbitration-mediation",
   "title": "Arbitration/Mediation",
-  "subtitle": "13 tasks — Court Notice through Documentation",
+  "subtitle": "18 tasks — Court Notice through Mediation Doc Production",
   "headerClass": "",
   "themeColor": "#5d4037",
   "thClass": "",
@@ -32,8 +32,12 @@
       "color": "#e65100"
     },
     {
-      "label": "Court Filing",
+      "label": "De Novo",
       "color": "#c62828"
+    },
+    {
+      "label": "Mediation Prep",
+      "color": "#6a1b9a"
     },
     {
       "label": "Calendar",
@@ -44,12 +48,8 @@
       "color": "#546e7a"
     },
     {
-      "label": "Preparartion",
-      "color": "#5d4037"
-    },
-    {
-      "label": "Documentation",
-      "color": "#0d47a1"
+      "label": "Mediation Doc Production",
+      "color": "#00695c"
     }
   ],
   "tasks": [
@@ -57,7 +57,7 @@
       "id": "A",
       "label": "Calendar arbitration notice from the court",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "1 business day from notice reciept",
+      "sla": "1 business day from notice receipt",
       "phase": "Court Notice",
       "phaseClass": "phase-court-notice",
       "quickAction": "Court Notice",
@@ -65,15 +65,15 @@
       "connectsTo": [
         "B"
       ],
-      "function": "Once recieved, mark complete",
+      "function": "Once received, mark complete",
       "notes": "Calendar arbitration notice from the court",
       "isStartNode": true
     },
     {
       "id": "B",
-      "label": "Arbitration notice to the client",
+      "label": "Arbitration notice to the client (automation)",
       "assignedTo": "System Automation",
-      "sla": "",
+      "sla": "Immediate upon court notice calendared",
       "phase": "Client Notice",
       "phaseClass": "phase-client-notice",
       "quickAction": "Client Notice",
@@ -82,13 +82,13 @@
         "C"
       ],
       "function": "System Automation",
-      "notes": "Send ltr/text and email to client with arbitration ntoice"
+      "notes": "Send ltr/text and email to client with arbitration notice"
     },
     {
       "id": "C",
-      "label": "Confirm all expert reports were served, medical bills balance and lien balance",
+      "label": "Confirm all expert reports served, medical bills balance and lien balance",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
+      "sla": "3 business days from notice",
       "phase": "Case Prep",
       "phaseClass": "phase-case-prep",
       "quickAction": "Case Prep",
@@ -102,7 +102,7 @@
       "id": "D",
       "label": "Draft arbitration statement",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
+      "sla": "5 business days from confirmation",
       "phase": "Case Prep",
       "phaseClass": "phase-case-prep",
       "quickAction": "Case Prep",
@@ -110,13 +110,13 @@
       "connectsTo": [
         "E"
       ],
-      "notes": "Prepared arbitration statement and send to attorney for final edits and approval"
+      "notes": "Prepare arbitration statement and send to attorney for final edits and approval"
     },
     {
       "id": "E",
-      "label": "Finalize arbitration statement",
+      "label": "Attorney review and finalize arbitration statement",
       "assignedTo": "Attorney",
-      "sla": "",
+      "sla": "2 business days from draft",
       "phase": "Case Prep",
       "phaseClass": "phase-case-prep",
       "quickAction": "Case Prep",
@@ -124,13 +124,13 @@
       "connectsTo": [
         "F"
       ],
-      "notes": "Finalized arb statement send to paralegal to send to arbitrator and def counsel"
+      "notes": "Finalized arb statement sent to paralegal to send to arbitrator and defense counsel"
     },
     {
       "id": "F",
-      "label": "Arbitration Statement",
+      "label": "Compile arbitration packet and send to arbitrator/defense counsel",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
+      "sla": "1 business day from attorney approval",
       "phase": "Doc Production",
       "phaseClass": "phase-doc-production",
       "quickAction": "Doc Production",
@@ -138,103 +138,173 @@
       "connectsTo": [
         "G"
       ],
-      "notes": "Send arb statement to def counsel and arbitrator"
+      "notes": "Send arb statement to defense counsel and arbitrator"
     },
     {
       "id": "G",
-      "label": "Draft and file Demand for Trial De Novo",
+      "label": "Get De Novo direction from Attorney — Attempt 1",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
-      "phase": "Court Filing",
-      "phaseClass": "phase-court-filing",
-      "quickAction": "Court Filing",
-      "style": "court-filing",
+      "sla": "1 business day from arbitration result",
+      "phase": "De Novo",
+      "phaseClass": "phase-de-novo",
+      "quickAction": "De Novo",
+      "style": "de-novo",
       "connectsTo": [
         "H"
       ],
-      "notes": "File Trial De Novo"
+      "notes": "First attempt to obtain De Novo direction from attorney after arbitration result"
     },
     {
       "id": "H",
-      "label": "Calendar mediation date",
+      "label": "Get De Novo direction from Attorney — Attempt 2",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
-      "phase": "Calendar",
-      "phaseClass": "phase-calendar",
-      "quickAction": "Calendar",
-      "style": "calendar",
+      "sla": "1 business day after Attempt 1",
+      "phase": "De Novo",
+      "phaseClass": "phase-de-novo",
+      "quickAction": "De Novo",
+      "style": "de-novo",
       "connectsTo": [
         "I"
       ],
-      "notes": "Calendar mediation"
+      "notes": "Second attempt to obtain De Novo direction from attorney"
     },
     {
       "id": "I",
-      "label": "Mediation notice to the client",
+      "label": "Get De Novo direction from Attorney — Attempt 3",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
+      "sla": "1 business day after Attempt 2",
+      "phase": "De Novo",
+      "phaseClass": "phase-de-novo",
+      "quickAction": "De Novo",
+      "style": "de-novo",
+      "connectsTo": [
+        "J"
+      ],
+      "notes": "Third and final attempt to obtain De Novo direction from attorney"
+    },
+    {
+      "id": "J",
+      "label": "Escalate to Management for De Novo direction",
+      "assignedTo": "Manager",
+      "sla": "Day 7 auto-escalation",
+      "phase": "De Novo",
+      "phaseClass": "phase-de-novo",
+      "quickAction": "De Novo",
+      "style": "de-novo",
+      "connectsTo": [
+        "K"
+      ],
+      "notes": "Auto-escalation to management when attorney direction not received after 3 attempts"
+    },
+    {
+      "id": "K",
+      "label": "Attorney provides De Novo direction",
+      "assignedTo": "Attorney",
+      "sla": "Day 9 breach deadline",
+      "phase": "De Novo",
+      "phaseClass": "phase-de-novo",
+      "quickAction": "De Novo",
+      "style": "de-novo",
+      "connectsTo": [
+        "L"
+      ],
+      "notes": "Attorney provides final De Novo direction; Day 9 is breach deadline"
+    },
+    {
+      "id": "L",
+      "label": "Draft and file Demand for Trial De Novo",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 business day from direction",
+      "phase": "De Novo",
+      "phaseClass": "phase-de-novo",
+      "quickAction": "De Novo",
+      "style": "de-novo",
+      "connectsTo": [
+        "M"
+      ],
+      "notes": "File Trial De Novo demand with the court"
+    },
+    {
+      "id": "M",
+      "label": "Get mediation prep direction from Attorney",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 business day from De Novo filed",
+      "phase": "Mediation Prep",
+      "phaseClass": "phase-mediation-prep",
+      "quickAction": "Mediation Prep",
+      "style": "mediation-prep",
+      "connectsTo": [
+        "N"
+      ],
+      "notes": "Obtain attorney direction on mediation preparation approach"
+    },
+    {
+      "id": "N",
+      "label": "Calendar mediation date",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 business day from direction",
+      "phase": "Mediation Prep",
+      "phaseClass": "phase-mediation-prep",
+      "quickAction": "Mediation Prep",
+      "style": "mediation-prep",
+      "connectsTo": [
+        "O"
+      ],
+      "notes": "Calendar mediation date and coordinate with all parties"
+    },
+    {
+      "id": "O",
+      "label": "Mediation notice to the client (automation)",
+      "assignedTo": "System Automation",
+      "sla": "Immediate upon mediation calendared",
       "phase": "Automation",
       "phaseClass": "phase-automation",
       "quickAction": "Automation",
       "style": "automation",
       "connectsTo": [
-        "J"
+        "P"
       ],
-      "notes": "Send ltr/text and email to client with mediation ntoice"
+      "notes": "Send ltr/text and email to client with mediation notice"
     },
     {
-      "id": "J",
-      "label": "Confirm all expert reports were served, medical bills balance and lien balance",
-      "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
-      "phase": "Preparartion",
-      "phaseClass": "phase-preparartion",
-      "quickAction": "Preparartion",
-      "style": "preparartion",
-      "connectsTo": [
-        "K"
-      ],
-      "notes": "File review, call/email obtain updated bill balance and updated lien information"
-    },
-    {
-      "id": "K",
+      "id": "P",
       "label": "Draft mediation statement",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
-      "phase": "Preparartion",
-      "phaseClass": "phase-preparartion",
-      "quickAction": "Preparartion",
-      "style": "preparartion",
+      "sla": "5 business days from calendared",
+      "phase": "Mediation Prep",
+      "phaseClass": "phase-mediation-prep",
+      "quickAction": "Mediation Prep",
+      "style": "mediation-prep",
       "connectsTo": [
-        "L"
+        "Q"
       ],
-      "notes": "Prepared mediation statement and send to attorney for final edits and approval"
+      "notes": "Prepare mediation statement and send to attorney for final edits and approval"
     },
     {
-      "id": "L",
-      "label": "Finalize mediation statement",
+      "id": "Q",
+      "label": "Attorney review and finalize mediation statement",
       "assignedTo": "Attorney",
-      "sla": "",
-      "phase": "Preparartion",
-      "phaseClass": "phase-preparartion",
-      "quickAction": "Preparartion",
-      "style": "preparartion",
+      "sla": "2 business days from draft",
+      "phase": "Mediation Prep",
+      "phaseClass": "phase-mediation-prep",
+      "quickAction": "Mediation Prep",
+      "style": "mediation-prep",
       "connectsTo": [
-        "M"
+        "R"
       ],
-      "notes": "Finalized mediation statement send to paralegal to send to mediator"
+      "notes": "Finalized mediation statement sent to paralegal to send to mediator"
     },
     {
-      "id": "M",
-      "label": "Mediation Statement",
+      "id": "R",
+      "label": "Compile mediation packet and send to mediator",
       "assignedTo": "Paralegal/Legal Asst",
-      "sla": "",
-      "phase": "Documentation",
-      "phaseClass": "phase-documentation",
-      "quickAction": "Documentation",
-      "style": "documentation",
+      "sla": "1 business day from attorney approval",
+      "phase": "Mediation Doc Production",
+      "phaseClass": "phase-mediation-doc-production",
+      "quickAction": "Mediation Doc Production",
+      "style": "mediation-doc-production",
       "connectsTo": [],
-      "notes": "Send mediation statement to mediator"
+      "notes": "Send mediation statement and supporting documents to mediator"
     }
   ],
   "styles": {
@@ -258,9 +328,14 @@
       "stroke": "#e65100",
       "color": "#222"
     },
-    "court-filing": {
+    "de-novo": {
       "fill": "#f6dede",
       "stroke": "#c62828",
+      "color": "#222"
+    },
+    "mediation-prep": {
+      "fill": "#ede1f0",
+      "stroke": "#6a1b9a",
       "color": "#222"
     },
     "calendar": {
@@ -273,14 +348,9 @@
       "stroke": "#546e7a",
       "color": "#222"
     },
-    "preparartion": {
-      "fill": "#e6e2e1",
-      "stroke": "#5d4037",
-      "color": "#222"
-    },
-    "documentation": {
-      "fill": "#dae3f0",
-      "stroke": "#0d47a1",
+    "mediation-doc-production": {
+      "fill": "#ddf0ec",
+      "stroke": "#00695c",
       "color": "#222"
     }
   }

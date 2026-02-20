@@ -28,6 +28,10 @@ import CaseOpeningMatter from './pages/mockups/CaseOpeningMatter.tsx';
 import TMMatter from './pages/mockups/TMMatter.tsx';
 import DiscMatter from './pages/mockups/DiscMatter.tsx';
 import ExpMatter from './pages/mockups/ExpMatter.tsx';
+import ArbMedTracker from './pages/mockups/ArbMedTracker.tsx';
+import ArbMedScoring from './pages/mockups/ArbMedScoring.tsx';
+import ArbMedMetrics from './pages/mockups/ArbMedMetrics.tsx';
+import ArbMedMatter from './pages/mockups/ArbMedMatter.tsx';
 import ControlTower from './pages/ControlTower.tsx';
 import StageCommand from './pages/StageCommand.tsx';
 import InventoryHealth from './pages/InventoryHealth.tsx';
@@ -116,6 +120,10 @@ export default function App() {
             <Route path="performance-infrastructure/mockups/tm-matter" element={<TMMatter />} />
             <Route path="performance-infrastructure/mockups/disc-matter" element={<DiscMatter />} />
             <Route path="performance-infrastructure/mockups/exp-matter" element={<ExpMatter />} />
+            <Route path="performance-infrastructure/mockups/arbmed-tracker" element={<ArbMedTracker />} />
+            <Route path="performance-infrastructure/mockups/arbmed-scoring" element={<ArbMedScoring />} />
+            <Route path="performance-infrastructure/mockups/arbmed-metrics" element={<ArbMedMetrics />} />
+            <Route path="performance-infrastructure/mockups/arbmed-matter" element={<ArbMedMatter />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>

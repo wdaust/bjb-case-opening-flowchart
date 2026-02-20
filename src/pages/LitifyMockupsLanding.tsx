@@ -35,6 +35,14 @@ const cards = [
     color: 'text-stone-600 bg-stone-600/10',
     to: '/performance-infrastructure/mockups/exp-matter',
   },
+  {
+    id: 'arbmed-matter',
+    title: 'Arbitration/Mediation Matter Record',
+    description:
+      'Consolidated Litify-style matter record combining all 18 tasks, scoring systems, and metrics into a single tabbed view with shared state and path bar navigation.',
+    color: 'text-amber-700 bg-amber-700/10',
+    to: '/performance-infrastructure/mockups/arbmed-matter',
+  },
 ];
 
 export default function LitifyMockupsLanding() {

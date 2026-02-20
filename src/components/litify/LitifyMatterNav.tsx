@@ -6,6 +6,7 @@ const matterTabs = [
   { id: 'tm-matter', label: 'Treatment Monitoring', to: '/performance-infrastructure/mockups/tm-matter' },
   { id: 'disc-matter', label: 'Discovery', to: '/performance-infrastructure/mockups/disc-matter' },
   { id: 'exp-matter', label: 'Expert & Deposition', to: '/performance-infrastructure/mockups/exp-matter' },
+  { id: 'arbmed-matter', label: 'Arb/Med', to: '/performance-infrastructure/mockups/arbmed-matter' },
 ] as const;
 
 export type MatterId = (typeof matterTabs)[number]['id'];

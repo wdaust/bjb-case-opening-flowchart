@@ -10,7 +10,7 @@ import { cn } from '../utils/cn.ts';
 
 interface MockupNavProps {
   active?: string;
-  group?: 'case-opening' | 'treatment-monitoring' | 'discovery' | 'expert-deposition';
+  group?: 'case-opening' | 'treatment-monitoring' | 'discovery' | 'expert-deposition' | 'arbitration-mediation';
 }
 
 const caseOpeningTabs = [
@@ -47,8 +47,15 @@ const expertDepoTabs = [
   { id: 'exp-matter', label: 'Matter Record', to: '/performance-infrastructure/mockups/exp-matter' },
 ];
 
+const arbMedTabs = [
+  { id: 'arbmed-tracker', label: '18-Task Tracker', to: '/performance-infrastructure/mockups/arbmed-tracker' },
+  { id: 'arbmed-scoring', label: 'Scoring Dashboard', to: '/performance-infrastructure/mockups/arbmed-scoring' },
+  { id: 'arbmed-metrics', label: 'Scorecard & KPIs', to: '/performance-infrastructure/mockups/arbmed-metrics' },
+  { id: 'arbmed-matter', label: 'Matter Record', to: '/performance-infrastructure/mockups/arbmed-matter' },
+];
+
 export function MockupNav({ active, group = 'case-opening' }: MockupNavProps) {
-  const tabs = group === 'expert-deposition' ? expertDepoTabs : group === 'discovery' ? discoveryTabs : group === 'treatment-monitoring' ? treatmentMonitoringTabs : caseOpeningTabs;
+  const tabs = group === 'arbitration-mediation' ? arbMedTabs : group === 'expert-deposition' ? expertDepoTabs : group === 'discovery' ? discoveryTabs : group === 'treatment-monitoring' ? treatmentMonitoringTabs : caseOpeningTabs;
 
   return (
     <nav className="flex items-center gap-1 rounded-lg bg-muted p-1 flex-wrap">
@@ -282,6 +289,45 @@ const expertDepoCards = [
   },
 ];
 
+const arbMedCards = [
+  {
+    id: 'arbmed-tracker',
+    title: '18-Task Tracker',
+    description:
+      '18 tasks across 6 phases from court notice through mediation doc production. Phase-colored sections with filters, progress tracking, and SLA compliance indicators.',
+    icon: ListChecks,
+    color: 'text-amber-700 bg-amber-700/10',
+    to: '/performance-infrastructure/mockups/arbmed-tracker',
+  },
+  {
+    id: 'arbmed-scoring',
+    title: 'Scoring Dashboard',
+    description:
+      'Five scoring systems re-scored or confirmed "No Change" after each communication. Arbitration/mediation context with gauge visualizations and governance rules.',
+    icon: Scale,
+    color: 'text-amber-800 bg-amber-800/10',
+    to: '/performance-infrastructure/mockups/arbmed-scoring',
+  },
+  {
+    id: 'arbmed-metrics',
+    title: 'Scorecard & KPIs',
+    description:
+      '15 scorecard metrics with RAG indicators, KPI library by role, SLA enforcement ladder, Stage Health Index, and escalation triggers across 4-category weighted scoring.',
+    icon: BarChart3,
+    color: 'text-amber-600 bg-amber-600/10',
+    to: '/performance-infrastructure/mockups/arbmed-metrics',
+  },
+  {
+    id: 'arbmed-matter',
+    title: 'Matter Record',
+    description:
+      'Consolidated Litify-style matter record page combining all 18 tasks, scoring systems, and metrics into a single tabbed view with shared state and path bar navigation.',
+    icon: ClipboardList,
+    color: 'text-purple-500 bg-purple-500/10',
+    to: '/performance-infrastructure/mockups/arbmed-matter',
+  },
+];
+
 // ── Card Component ────────────────────────────────────────────────────────
 
 function CardGrid({ cards }: { cards: typeof caseOpeningCards }) {
@@ -374,7 +420,7 @@ export default function MockupsLanding() {
       </div>
 
       {/* Expert & Deposition Section */}
-      <div>
+      <div className="mb-10">
         <div className="mb-4">
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold text-foreground">Expert &amp; Deposition</h2>
@@ -387,6 +433,22 @@ export default function MockupsLanding() {
           </p>
         </div>
         <CardGrid cards={expertDepoCards} />
+      </div>
+
+      {/* Arbitration/Mediation Section */}
+      <div>
+        <div className="mb-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-foreground">Arbitration/Mediation</h2>
+            <span className="rounded-full bg-amber-700/10 px-2 py-0.5 text-xs font-medium text-amber-700">
+              New
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            18-task workflow covering court notice, case prep, De Novo direction, mediation prep, and document production.
+          </p>
+        </div>
+        <CardGrid cards={arbMedCards} />
       </div>
     </div>
   );
