@@ -43,6 +43,14 @@ const cards = [
     color: 'text-amber-700 bg-amber-700/10',
     to: '/performance-infrastructure/mockups/arbmed-matter',
   },
+  {
+    id: 'trial-matter',
+    title: 'Trial Matter Record',
+    description:
+      'Consolidated Litify-style matter record combining all 10 tasks, scoring systems, and metrics into a single tabbed view with shared state and path bar navigation.',
+    color: 'text-violet-700 bg-violet-700/10',
+    to: '/performance-infrastructure/mockups/trial-matter',
+  },
 ];
 
 export default function LitifyMockupsLanding() {

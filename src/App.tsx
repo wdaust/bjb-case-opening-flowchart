@@ -32,6 +32,10 @@ import ArbMedTracker from './pages/mockups/ArbMedTracker.tsx';
 import ArbMedScoring from './pages/mockups/ArbMedScoring.tsx';
 import ArbMedMetrics from './pages/mockups/ArbMedMetrics.tsx';
 import ArbMedMatter from './pages/mockups/ArbMedMatter.tsx';
+import TrialTracker from './pages/mockups/TrialTracker.tsx';
+import TrialScoring from './pages/mockups/TrialScoring.tsx';
+import TrialMetrics from './pages/mockups/TrialMetrics.tsx';
+import TrialMatter from './pages/mockups/TrialMatter.tsx';
 import ControlTower from './pages/ControlTower.tsx';
 import StageCommand from './pages/StageCommand.tsx';
 import InventoryHealth from './pages/InventoryHealth.tsx';
@@ -124,6 +128,10 @@ export default function App() {
             <Route path="performance-infrastructure/mockups/arbmed-scoring" element={<ArbMedScoring />} />
             <Route path="performance-infrastructure/mockups/arbmed-metrics" element={<ArbMedMetrics />} />
             <Route path="performance-infrastructure/mockups/arbmed-matter" element={<ArbMedMatter />} />
+            <Route path="performance-infrastructure/mockups/trial-tracker" element={<TrialTracker />} />
+            <Route path="performance-infrastructure/mockups/trial-scoring" element={<TrialScoring />} />
+            <Route path="performance-infrastructure/mockups/trial-metrics" element={<TrialMetrics />} />
+            <Route path="performance-infrastructure/mockups/trial-matter" element={<TrialMatter />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>

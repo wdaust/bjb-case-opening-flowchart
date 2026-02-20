@@ -1,13 +1,101 @@
 {
   "id": "trials",
-  "title": "LIT: Trials",
-  "subtitle": "Trial preparation and execution workflow",
+  "title": "LIT: Trial",
+  "subtitle": "10 tasks — Court Notice through Trial Readiness",
   "headerClass": "",
   "themeColor": "#7c3aed",
   "thClass": "",
   "sectionClass": "",
   "tableColumns": ["#", "Phase", "Quick Action Panel", "Assigned To", "Task", "SLA"],
-  "legend": [],
+  "legend": [
+    { "label": "Court Notice", "color": "#7c3aed" },
+    { "label": "Calendar", "color": "#7c3aed" },
+    { "label": "Client Notice", "color": "#0284c7" },
+    { "label": "Expert Notice", "color": "#0284c7" },
+    { "label": "Trial Prep", "color": "#a21caf" },
+    { "label": "Readiness Verification", "color": "#b91c1c" }
+  ],
   "styles": {},
-  "tasks": []
+  "tasks": [
+    {
+      "id": "A",
+      "label": "Calendar trial notice from the court",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 business day from notice receipt",
+      "phase": "Court Notice & Calendar",
+      "quick_action": ""
+    },
+    {
+      "id": "B",
+      "label": "Calendar trial date in Litify",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "1 hour from receiving trial notice",
+      "phase": "Court Notice & Calendar",
+      "quick_action": ""
+    },
+    {
+      "id": "C",
+      "label": "Trial notice to the client (automation)",
+      "assignedTo": "System Automation",
+      "sla": "1 hour from notice receipt",
+      "phase": "Client & Expert Notice",
+      "quick_action": ""
+    },
+    {
+      "id": "D",
+      "label": "Trial notice to all experts (automation)",
+      "assignedTo": "System Automation",
+      "sla": "1 hour from notice receipt",
+      "phase": "Client & Expert Notice",
+      "quick_action": ""
+    },
+    {
+      "id": "E",
+      "label": "Pre-trial exchange & notebook — 30% complete",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "6 weeks before trial",
+      "phase": "Trial Prep",
+      "quick_action": ""
+    },
+    {
+      "id": "F",
+      "label": "Pre-trial exchange & notebook — 60% complete",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "4 weeks before trial",
+      "phase": "Trial Prep",
+      "quick_action": ""
+    },
+    {
+      "id": "G",
+      "label": "Pre-trial exchange & notebook — 100% complete",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "3 weeks before trial",
+      "phase": "Trial Prep",
+      "quick_action": ""
+    },
+    {
+      "id": "H",
+      "label": "Confirm expert availability and testimony fee",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "2 weeks before trial",
+      "phase": "Trial Prep",
+      "quick_action": ""
+    },
+    {
+      "id": "I",
+      "label": "Confirm with Attorney we are ready for trial",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "3 business days before trial",
+      "phase": "Trial Readiness Verification",
+      "quick_action": ""
+    },
+    {
+      "id": "J",
+      "label": "Pay expert testimony fees",
+      "assignedTo": "Paralegal/Legal Asst",
+      "sla": "3 business days before trial",
+      "phase": "Trial Prep",
+      "quick_action": ""
+    }
+  ]
 }
