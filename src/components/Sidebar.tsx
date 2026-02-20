@@ -4,7 +4,7 @@ import { Button } from './ui/button.tsx';
 import {
   GitBranch, LayoutDashboard, Activity, AlertTriangle, TrendingUp,
   FolderOpen, ChevronLeft, ChevronRight, ChevronDown, Sun, Moon, Menu, X,
-  UserCircle, CalendarCheck, Inbox, FileText, Scale,
+  UserCircle, CalendarCheck, Inbox, FileText, Scale, Layers,
 } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
 import {
@@ -32,9 +32,18 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
   );
   const [expandedParent, setExpandedParent] = useState<ParentStage | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [perfOpen, setPerfOpen] = useState(() =>
+    location.pathname.startsWith('/performance-infrastructure'),
+  );
 
   useEffect(() => {
     setMobileOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/performance-infrastructure')) {
+      setPerfOpen(true);
+    }
   }, [location.pathname]);
 
   useEffect(() => {
@@ -211,10 +220,43 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
         )}
         {collapsed && <div className="border-t border-sidebar-border my-2" />}
 
-        <NavLink to="/performance-infrastructure" className={linkClass} title="Performance Infrastructure">
-          <GitBranch size={18} className="shrink-0" />
-          {!collapsed && <span>Performance Infrastructure</span>}
-        </NavLink>
+        {/* Performance Infrastructure — collapsible */}
+        {!collapsed ? (
+          <div>
+            <button
+              onClick={() => setPerfOpen(o => !o)}
+              className={cn(
+                'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
+                location.pathname.startsWith('/performance-infrastructure')
+                  ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
+                  : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+              )}
+            >
+              <GitBranch size={18} className="shrink-0" />
+              <span className="flex-1 text-left">Development</span>
+              <ChevronDown
+                size={14}
+                className={cn('transition-transform duration-200', perfOpen ? 'rotate-0' : '-rotate-90')}
+              />
+            </button>
+            {perfOpen && (
+              <div className="ml-4 mt-0.5 space-y-0.5">
+                <NavLink to="/performance-infrastructure" end className={linkClass}>
+                  <GitBranch size={14} className="shrink-0" />
+                  <span className="text-xs">Flowcharts</span>
+                </NavLink>
+                <NavLink to="/performance-infrastructure/mockups" className={linkClass}>
+                  <Layers size={14} className="shrink-0" />
+                  <span className="text-xs">Mockups</span>
+                </NavLink>
+              </div>
+            )}
+          </div>
+        ) : (
+          <NavLink to="/performance-infrastructure" className={linkClass} title="Performance Infrastructure">
+            <GitBranch size={18} className="shrink-0" />
+          </NavLink>
+        )}
       </nav>
 
       {/* Bottom controls */}

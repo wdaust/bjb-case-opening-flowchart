@@ -89,6 +89,11 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
   const currentSectionRef = useRef(section);
   currentSectionRef.current = section;
 
+  const nodesRef = useRef(nodes);
+  nodesRef.current = nodes;
+  const edgesRef = useRef(edges);
+  edgesRef.current = edges;
+
   const assignees = useMemo(() => {
     const set = new Set<string>();
     section.tasks.forEach(t => { if (t.assignedTo) set.add(t.assignedTo); });
@@ -124,9 +129,19 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
   }, []);
 
   const syncSection = useCallback(() => {
-    const updated = flowToSection(currentSectionRef.current, nodes, edges);
+    const updated = flowToSection(currentSectionRef.current, nodesRef.current, edgesRef.current);
     onSectionUpdate(updated);
-  }, [nodes, edges, onSectionUpdate]);
+  }, [onSectionUpdate]);
+
+  const handleNodesDelete = useCallback(() => {
+    pushSnapshot(nodes, edges);
+    setTimeout(syncSection, 0);
+  }, [nodes, edges, pushSnapshot, syncSection]);
+
+  const handleEdgesDelete = useCallback(() => {
+    pushSnapshot(nodes, edges);
+    setTimeout(syncSection, 0);
+  }, [nodes, edges, pushSnapshot, syncSection]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -415,6 +430,8 @@ export function FlowchartCanvas({ section, onSectionUpdate }: Props) {
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onConnect={handleConnect}
+              onNodesDelete={handleNodesDelete}
+              onEdgesDelete={handleEdgesDelete}
               onNodeClick={handleNodeClick}
               onInit={handleInit}
               nodeTypes={nodeTypes}

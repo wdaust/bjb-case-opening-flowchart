@@ -4,6 +4,25 @@ import { TooltipProvider } from './components/ui/tooltip.tsx';
 import { DashboardFilterProvider } from './contexts/DashboardFilterContext.tsx';
 import { Sidebar } from './components/Sidebar.tsx';
 import PerformanceInfrastructure from './pages/PerformanceInfrastructure.tsx';
+import MockupsLanding from './pages/MockupsLanding.tsx';
+import ClientContact from './pages/mockups/ClientContact.tsx';
+import CaseSetup from './pages/mockups/CaseSetup.tsx';
+import TaskTracker from './pages/mockups/TaskTracker.tsx';
+import TMContact from './pages/mockups/TMContact.tsx';
+import TMAppointment from './pages/mockups/TMAppointment.tsx';
+import TMScoring from './pages/mockups/TMScoring.tsx';
+import TMTracker from './pages/mockups/TMTracker.tsx';
+import TMMetrics from './pages/mockups/TMMetrics.tsx';
+import DiscContact from './pages/mockups/DiscContact.tsx';
+import DiscAppointment from './pages/mockups/DiscAppointment.tsx';
+import DiscScoring from './pages/mockups/DiscScoring.tsx';
+import DiscTracker from './pages/mockups/DiscTracker.tsx';
+import DiscMetrics from './pages/mockups/DiscMetrics.tsx';
+import ExpContact from './pages/mockups/ExpContact.tsx';
+import ExpAppointment from './pages/mockups/ExpAppointment.tsx';
+import ExpScoring from './pages/mockups/ExpScoring.tsx';
+import ExpTracker from './pages/mockups/ExpTracker.tsx';
+import ExpMetrics from './pages/mockups/ExpMetrics.tsx';
 import ControlTower from './pages/ControlTower.tsx';
 import StageCommand from './pages/StageCommand.tsx';
 import InventoryHealth from './pages/InventoryHealth.tsx';
@@ -68,6 +87,25 @@ export default function App() {
             <Route path="manager-rhythm" element={<ManagerRhythm />} />
             <Route path="case/:caseId" element={<CaseExecution />} />
             <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
+            <Route path="performance-infrastructure/mockups" element={<MockupsLanding />} />
+            <Route path="performance-infrastructure/mockups/client-contact" element={<ClientContact />} />
+            <Route path="performance-infrastructure/mockups/case-setup" element={<CaseSetup />} />
+            <Route path="performance-infrastructure/mockups/task-tracker" element={<TaskTracker />} />
+            <Route path="performance-infrastructure/mockups/tm-contact" element={<TMContact />} />
+            <Route path="performance-infrastructure/mockups/tm-appointment" element={<TMAppointment />} />
+            <Route path="performance-infrastructure/mockups/tm-scoring" element={<TMScoring />} />
+            <Route path="performance-infrastructure/mockups/tm-tracker" element={<TMTracker />} />
+            <Route path="performance-infrastructure/mockups/tm-metrics" element={<TMMetrics />} />
+            <Route path="performance-infrastructure/mockups/disc-contact" element={<DiscContact />} />
+            <Route path="performance-infrastructure/mockups/disc-appointment" element={<DiscAppointment />} />
+            <Route path="performance-infrastructure/mockups/disc-scoring" element={<DiscScoring />} />
+            <Route path="performance-infrastructure/mockups/disc-tracker" element={<DiscTracker />} />
+            <Route path="performance-infrastructure/mockups/disc-metrics" element={<DiscMetrics />} />
+            <Route path="performance-infrastructure/mockups/exp-contact" element={<ExpContact />} />
+            <Route path="performance-infrastructure/mockups/exp-appointment" element={<ExpAppointment />} />
+            <Route path="performance-infrastructure/mockups/exp-scoring" element={<ExpScoring />} />
+            <Route path="performance-infrastructure/mockups/exp-tracker" element={<ExpTracker />} />
+            <Route path="performance-infrastructure/mockups/exp-metrics" element={<ExpMetrics />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>
