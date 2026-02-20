@@ -130,33 +130,6 @@ export default function ControlTower() {
         />
       </DashboardGrid>
 
-      <Tabs defaultValue="deadline-timeline">
-        <TabsList>
-          <TabsTrigger value="deadline-timeline">Deadline Timeline</TabsTrigger>
-          <TabsTrigger value="sol-countdown">SOL Countdown</TabsTrigger>
-          <TabsTrigger value="court-calendar">Court Date Calendar</TabsTrigger>
-        </TabsList>
-        <TabsContent value="deadline-timeline" className="pt-4">
-          <DeadlineList deadlines={allDeadlines} maxItems={30} />
-        </TabsContent>
-        <TabsContent value="sol-countdown" className="pt-4">
-          <DataTable
-            data={solDeadlines}
-            columns={solColumns}
-            keyField="caseId"
-            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
-          />
-        </TabsContent>
-        <TabsContent value="court-calendar" className="pt-4">
-          <DataTable
-            data={courtDeadlines}
-            columns={courtColumns}
-            keyField="caseId"
-            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
-          />
-        </TabsContent>
-      </Tabs>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <SectionHeader title="Inventory by Stage" />
@@ -214,10 +187,44 @@ export default function ControlTower() {
             />
           </button>
           {exposureOpen && (
-            <DeadlineList deadlines={controlTowerData.deadlines} />
+            <DeadlineList
+              deadlines={controlTowerData.deadlines.filter(d => {
+                const sevenDaysOut = new Date(today);
+                sevenDaysOut.setDate(sevenDaysOut.getDate() + 7);
+                return d.date <= sevenDaysOut.toISOString().split('T')[0];
+              })}
+              maxItems={7}
+            />
           )}
         </div>
       </div>
+
+      <Tabs defaultValue="deadline-timeline">
+        <TabsList>
+          <TabsTrigger value="deadline-timeline">Deadline Timeline</TabsTrigger>
+          <TabsTrigger value="sol-countdown">SOL Countdown</TabsTrigger>
+          <TabsTrigger value="court-calendar">Court Date Calendar</TabsTrigger>
+        </TabsList>
+        <TabsContent value="deadline-timeline" className="pt-4">
+          <DeadlineList deadlines={allDeadlines} maxItems={30} />
+        </TabsContent>
+        <TabsContent value="sol-countdown" className="pt-4">
+          <DataTable
+            data={solDeadlines}
+            columns={solColumns}
+            keyField="caseId"
+            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
+          />
+        </TabsContent>
+        <TabsContent value="court-calendar" className="pt-4">
+          <DataTable
+            data={courtDeadlines}
+            columns={courtColumns}
+            keyField="caseId"
+            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -3,7 +3,6 @@ import { CheckCircle2, XCircle, CheckSquare, Square } from "lucide-react";
 import { cn } from "../utils/cn";
 import { Breadcrumbs } from "../components/dashboard/Breadcrumbs";
 import { SectionHeader } from "../components/dashboard/SectionHeader";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs";
 import { DataTable, type Column } from "../components/dashboard/DataTable";
 import { getWeeklyThroughput, type WeeklyMetric } from "../data/mockData";
 
@@ -123,14 +122,8 @@ export default function ManagerRhythm() {
         ]}
       />
 
-      <Tabs defaultValue="weekly-scorecard">
-        <TabsList>
-          <TabsTrigger value="weekly-scorecard">Weekly Scorecard</TabsTrigger>
-          <TabsTrigger value="issues">Issues</TabsTrigger>
-          <TabsTrigger value="todos">To-Dos</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="weekly-scorecard" className="space-y-4">
+      <div className="space-y-6">
+        <div className="space-y-4">
           <SectionHeader title="Weekly Operating Scorecard" subtitle="13-week trailing metrics" />
           <div className="bg-card border border-border rounded-xl overflow-x-auto">
             <table className="w-full text-xs">
@@ -172,14 +165,14 @@ export default function ManagerRhythm() {
               </tbody>
             </table>
           </div>
-        </TabsContent>
+        </div>
 
-        <TabsContent value="issues" className="space-y-4">
+        <div className="space-y-4">
           <SectionHeader title="Issues List" subtitle="Open items requiring resolution" />
           <DataTable columns={issueColumns} data={issues} keyField="id" />
-        </TabsContent>
+        </div>
 
-        <TabsContent value="todos" className="space-y-4">
+        <div className="space-y-4">
           <SectionHeader title="To-Do Tracking" />
           <div className="bg-card border border-border rounded-xl divide-y divide-border/50">
             {todos.map((todo, i) => (
@@ -193,8 +186,8 @@ export default function ManagerRhythm() {
               </div>
             ))}
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   );
 }
