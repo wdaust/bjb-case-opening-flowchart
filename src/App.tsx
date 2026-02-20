@@ -6,6 +6,7 @@ import { Sidebar } from './components/Sidebar.tsx';
 import PerformanceInfrastructure from './pages/PerformanceInfrastructure.tsx';
 import MockupsLanding from './pages/MockupsLanding.tsx';
 import ClientContact from './pages/mockups/ClientContact.tsx';
+import ClientContact2 from './pages/mockups/ClientContact2.tsx';
 import CaseSetup from './pages/mockups/CaseSetup.tsx';
 import TaskTracker from './pages/mockups/TaskTracker.tsx';
 import TMContact from './pages/mockups/TMContact.tsx';
@@ -23,6 +24,10 @@ import ExpAppointment from './pages/mockups/ExpAppointment.tsx';
 import ExpScoring from './pages/mockups/ExpScoring.tsx';
 import ExpTracker from './pages/mockups/ExpTracker.tsx';
 import ExpMetrics from './pages/mockups/ExpMetrics.tsx';
+import CaseOpeningMatter from './pages/mockups/CaseOpeningMatter.tsx';
+import TMMatter from './pages/mockups/TMMatter.tsx';
+import DiscMatter from './pages/mockups/DiscMatter.tsx';
+import ExpMatter from './pages/mockups/ExpMatter.tsx';
 import ControlTower from './pages/ControlTower.tsx';
 import StageCommand from './pages/StageCommand.tsx';
 import InventoryHealth from './pages/InventoryHealth.tsx';
@@ -89,6 +94,7 @@ export default function App() {
             <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
             <Route path="performance-infrastructure/mockups" element={<MockupsLanding />} />
             <Route path="performance-infrastructure/mockups/client-contact" element={<ClientContact />} />
+            <Route path="performance-infrastructure/mockups/client-contact-2" element={<ClientContact2 />} />
             <Route path="performance-infrastructure/mockups/case-setup" element={<CaseSetup />} />
             <Route path="performance-infrastructure/mockups/task-tracker" element={<TaskTracker />} />
             <Route path="performance-infrastructure/mockups/tm-contact" element={<TMContact />} />
@@ -106,6 +112,10 @@ export default function App() {
             <Route path="performance-infrastructure/mockups/exp-scoring" element={<ExpScoring />} />
             <Route path="performance-infrastructure/mockups/exp-tracker" element={<ExpTracker />} />
             <Route path="performance-infrastructure/mockups/exp-metrics" element={<ExpMetrics />} />
+            <Route path="performance-infrastructure/mockups/co-matter" element={<CaseOpeningMatter />} />
+            <Route path="performance-infrastructure/mockups/tm-matter" element={<TMMatter />} />
+            <Route path="performance-infrastructure/mockups/disc-matter" element={<DiscMatter />} />
+            <Route path="performance-infrastructure/mockups/exp-matter" element={<ExpMatter />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>

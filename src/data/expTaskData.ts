@@ -1,4 +1,6 @@
 import type { Phase, TrackerTask } from "./taskTrackerData";
+import type { PathStage } from "./caseOpeningContactData";
+export type { PathStage };
 
 export const expPhases: Phase[] = [
   {
@@ -280,3 +282,20 @@ export const expTasks: TrackerTask[] = [
     phaseOrder: 2,
   },
 ];
+
+// ── Path stages (consolidated 5 stages for the top-level path bar) ──────
+
+export const EXP_PATH_STAGES: PathStage[] = [
+  { label: "Non-Party Depo", firstTaskId: "EXP-A", lastTaskId: "EXP-E" },
+  { label: "Expert Retention", firstTaskId: "EXP-F", lastTaskId: "EXP-L" },
+  { label: "Report & Review", firstTaskId: "EXP-M", lastTaskId: "EXP-R" },
+  { label: "Amended Report", firstTaskId: "EXP-S", lastTaskId: "EXP-X" },
+  { label: "Depo & Automation", firstTaskId: "EXP-Y", lastTaskId: "EXP-AD" },
+];
+
+export function getExpTasksForStage(stage: PathStage): TrackerTask[] {
+  const startIdx = expTasks.findIndex((t) => t.id === stage.firstTaskId);
+  const endIdx = expTasks.findIndex((t) => t.id === stage.lastTaskId);
+  if (startIdx === -1 || endIdx === -1) return [];
+  return expTasks.slice(startIdx, endIdx + 1);
+}

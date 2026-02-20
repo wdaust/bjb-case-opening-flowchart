@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import {
-  Phone, ClipboardCheck, ListChecks, ArrowLeft,
+  Phone, ClipboardCheck, ListChecks, ArrowLeft, ClipboardList,
   CalendarCheck, BarChart3, Stethoscope, PhoneCall,
   Scale, Gavel, Microscope, FileSearch, BookOpen, Activity,
 } from 'lucide-react';
@@ -17,6 +17,8 @@ const caseOpeningTabs = [
   { id: 'client-contact', label: 'Client Contact Pursuit', to: '/performance-infrastructure/mockups/client-contact' },
   { id: 'case-setup', label: 'Case Setup Scoring', to: '/performance-infrastructure/mockups/case-setup' },
   { id: 'task-tracker', label: '53-Task Tracker', to: '/performance-infrastructure/mockups/task-tracker' },
+  { id: 'client-contact-2', label: 'Contact Pursuit 2.0', to: '/performance-infrastructure/mockups/client-contact-2' },
+  { id: 'co-matter', label: 'Matter Record', to: '/performance-infrastructure/mockups/co-matter' },
 ];
 
 const treatmentMonitoringTabs = [
@@ -25,6 +27,7 @@ const treatmentMonitoringTabs = [
   { id: 'tm-scoring', label: 'Scoring Dashboard', to: '/performance-infrastructure/mockups/tm-scoring' },
   { id: 'tm-tracker', label: '25-Task Tracker', to: '/performance-infrastructure/mockups/tm-tracker' },
   { id: 'tm-metrics', label: 'Scorecard & KPIs', to: '/performance-infrastructure/mockups/tm-metrics' },
+  { id: 'tm-matter', label: 'Matter Record', to: '/performance-infrastructure/mockups/tm-matter' },
 ];
 
 const discoveryTabs = [
@@ -33,6 +36,7 @@ const discoveryTabs = [
   { id: 'disc-scoring', label: 'Scoring Dashboard', to: '/performance-infrastructure/mockups/disc-scoring' },
   { id: 'disc-tracker', label: '26-Task Tracker', to: '/performance-infrastructure/mockups/disc-tracker' },
   { id: 'disc-metrics', label: 'Scorecard & KPIs', to: '/performance-infrastructure/mockups/disc-metrics' },
+  { id: 'disc-matter', label: 'Matter Record', to: '/performance-infrastructure/mockups/disc-matter' },
 ];
 
 const expertDepoTabs = [
@@ -41,6 +45,7 @@ const expertDepoTabs = [
   { id: 'exp-scoring', label: 'Scoring Dashboard', to: '/performance-infrastructure/mockups/exp-scoring' },
   { id: 'exp-tracker', label: '30-Task Tracker', to: '/performance-infrastructure/mockups/exp-tracker' },
   { id: 'exp-metrics', label: 'Scorecard & Intelligence', to: '/performance-infrastructure/mockups/exp-metrics' },
+  { id: 'exp-matter', label: 'Matter Record', to: '/performance-infrastructure/mockups/exp-matter' },
 ];
 
 export function MockupNav({ active, group = 'case-opening' }: MockupNavProps) {
@@ -96,6 +101,15 @@ const caseOpeningCards = [
     color: 'text-violet-500 bg-violet-500/10',
     to: '/performance-infrastructure/mockups/task-tracker',
   },
+  {
+    id: 'co-matter',
+    title: 'Matter Record',
+    description:
+      'Consolidated Litify-style matter record page combining all 53 tasks, scoring systems, contact pursuit, and metrics into a single tabbed view with shared state and path bar navigation.',
+    icon: ClipboardList,
+    color: 'text-purple-500 bg-purple-500/10',
+    to: '/performance-infrastructure/mockups/co-matter',
+  },
 ];
 
 const treatmentMonitoringCards = [
@@ -143,6 +157,15 @@ const treatmentMonitoringCards = [
     icon: BarChart3,
     color: 'text-amber-500 bg-amber-500/10',
     to: '/performance-infrastructure/mockups/tm-metrics',
+  },
+  {
+    id: 'tm-matter',
+    title: 'Matter Record',
+    description:
+      'Consolidated Litify-style matter record page combining all 25 tasks, scoring systems, contact pursuit, and metrics into a single tabbed view with shared state.',
+    icon: ClipboardList,
+    color: 'text-purple-500 bg-purple-500/10',
+    to: '/performance-infrastructure/mockups/tm-matter',
   },
 ];
 
@@ -192,6 +215,15 @@ const discoveryCards = [
     color: 'text-blue-500 bg-blue-500/10',
     to: '/performance-infrastructure/mockups/disc-metrics',
   },
+  {
+    id: 'disc-matter',
+    title: 'Matter Record',
+    description:
+      'Consolidated Litify-style matter record page combining all 26 tasks, scoring systems, contact pursuit, and metrics into a single tabbed view with shared state.',
+    icon: ClipboardList,
+    color: 'text-purple-500 bg-purple-500/10',
+    to: '/performance-infrastructure/mockups/disc-matter',
+  },
 ];
 
 const expertDepoCards = [
@@ -239,6 +271,15 @@ const expertDepoCards = [
     icon: FileSearch,
     color: 'text-amber-700 bg-amber-700/10',
     to: '/performance-infrastructure/mockups/exp-metrics',
+  },
+  {
+    id: 'exp-matter',
+    title: 'Matter Record',
+    description:
+      'Consolidated Litify-style matter record page combining all 30 tasks, scoring systems, expert pursuit, and metrics into a single tabbed view with shared state.',
+    icon: ClipboardList,
+    color: 'text-purple-500 bg-purple-500/10',
+    to: '/performance-infrastructure/mockups/exp-matter',
   },
 ];
 

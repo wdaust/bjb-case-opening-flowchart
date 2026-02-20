@@ -1,4 +1,6 @@
 import type { Phase, TrackerTask } from "./taskTrackerData";
+import type { PathStage } from "./caseOpeningContactData";
+export type { PathStage };
 
 export const discPhases: Phase[] = [
   { id: "discovery", label: "Discovery", color: "blue-800", order: 1 },
@@ -271,3 +273,20 @@ export const discTasks: TrackerTask[] = [
     phaseOrder: 1,
   },
 ];
+
+// ── Path stages (consolidated 5 stages for the top-level path bar) ──────
+
+export const DISC_PATH_STAGES: PathStage[] = [
+  { label: "Discovery Prep", firstTaskId: "DISC-A", lastTaskId: "DISC-A" },
+  { label: "Client Pursuit", firstTaskId: "DISC-B", lastTaskId: "DISC-K" },
+  { label: "Scoring & Setup", firstTaskId: "DISC-L", lastTaskId: "DISC-P" },
+  { label: "Approval & Docs", firstTaskId: "DISC-Q", lastTaskId: "DISC-Y" },
+  { label: "Court Filing", firstTaskId: "DISC-Z", lastTaskId: "DISC-Z" },
+];
+
+export function getDiscTasksForStage(stage: PathStage): TrackerTask[] {
+  const startIdx = discTasks.findIndex((t) => t.id === stage.firstTaskId);
+  const endIdx = discTasks.findIndex((t) => t.id === stage.lastTaskId);
+  if (startIdx === -1 || endIdx === -1) return [];
+  return discTasks.slice(startIdx, endIdx + 1);
+}

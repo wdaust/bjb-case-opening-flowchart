@@ -1,4 +1,6 @@
 import type { Phase, TrackerTask } from "./taskTrackerData";
+import type { PathStage } from "./caseOpeningContactData";
+export type { PathStage };
 
 export const tmPhases: Phase[] = [
   { id: "client-contact", label: "Client Contact", color: "teal", order: 1 },
@@ -240,3 +242,20 @@ export const tmTasks: TrackerTask[] = [
     phaseOrder: 4,
   },
 ];
+
+// ── Path stages (consolidated 5 stages for the top-level path bar) ──────
+
+export const TM_PATH_STAGES: PathStage[] = [
+  { label: "Client Contact", firstTaskId: "TM-A", lastTaskId: "TM-L" },
+  { label: "Appointment", firstTaskId: "TM-M", lastTaskId: "TM-M" },
+  { label: "Scoring & Setup", firstTaskId: "TM-N", lastTaskId: "TM-R" },
+  { label: "Liens & Bills", firstTaskId: "TM-S", lastTaskId: "TM-T" },
+  { label: "Discovery & Admin", firstTaskId: "TM-U", lastTaskId: "TM-Y" },
+];
+
+export function getTmTasksForStage(stage: PathStage): TrackerTask[] {
+  const startIdx = tmTasks.findIndex((t) => t.id === stage.firstTaskId);
+  const endIdx = tmTasks.findIndex((t) => t.id === stage.lastTaskId);
+  if (startIdx === -1 || endIdx === -1) return [];
+  return tmTasks.slice(startIdx, endIdx + 1);
+}
