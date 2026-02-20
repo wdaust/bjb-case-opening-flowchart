@@ -22,7 +22,8 @@ import {
   attorneys,
   getCasesByAttorney,
   stageLabels,
-  stageOrder,
+  parentStageOrder,
+  parentStageLabels,
   getDaysInStage,
   getSlaStatus,
   getWeeklyThroughput,
@@ -52,13 +53,13 @@ export default function AttorneyCockpit() {
 
   const stageData = useMemo(() => {
     const counts: Record<string, { stage: string; label: string; count: number }> = {};
-    for (const s of stageOrder) {
-      counts[s] = { stage: s, label: stageLabels[s], count: 0 };
+    for (const ps of parentStageOrder) {
+      counts[ps] = { stage: ps, label: parentStageLabels[ps], count: 0 };
     }
     for (const c of attCases) {
-      if (counts[c.stage]) counts[c.stage].count++;
+      if (counts[c.parentStage]) counts[c.parentStage].count++;
     }
-    return stageOrder.map((s) => counts[s]);
+    return parentStageOrder.map((ps) => counts[ps]);
   }, [attCases]);
 
   const weeklyData = useMemo(() => getWeeklyThroughput(), []);

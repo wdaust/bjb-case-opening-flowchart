@@ -2,28 +2,15 @@ import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from './ui/button.tsx';
 import {
-  GitBranch,
-  LayoutDashboard,
-  Activity,
-  AlertTriangle,
-  TrendingUp,
-  FolderOpen,
-  Stethoscope,
-  Search,
-  Users,
-  Scale,
-  Gavel,
-  UserCircle,
-  CalendarCheck,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  Sun,
-  Moon,
-  Menu,
-  X,
+  GitBranch, LayoutDashboard, Activity, AlertTriangle, TrendingUp,
+  FolderOpen, ChevronLeft, ChevronRight, ChevronDown, Sun, Moon, Menu, X,
+  UserCircle, CalendarCheck, Inbox, FileText, Scale,
 } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
+import {
+  parentStageOrder, substagesOf, parentStageLabels, subStageLabels,
+  type ParentStage, type SubStage,
+} from '../data/mockData.ts';
 
 interface Props {
   darkMode: boolean;
@@ -32,11 +19,18 @@ interface Props {
   onToggleCollapse: () => void;
 }
 
+const parentStageIcons: Record<ParentStage, typeof Inbox> = {
+  intake: Inbox,
+  "pre-lit": FileText,
+  lit: Scale,
+};
+
 export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }: Props) {
   const location = useLocation();
   const [stagesOpen, setStagesOpen] = useState(() =>
     location.pathname.startsWith('/stage'),
   );
+  const [expandedParent, setExpandedParent] = useState<ParentStage | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -46,6 +40,13 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
   useEffect(() => {
     if (location.pathname.startsWith('/stage')) {
       setStagesOpen(true);
+      // Auto-expand the correct parent group
+      const stageId = location.pathname.split('/stage/')[1];
+      for (const ps of parentStageOrder) {
+        if (stageId === ps) { setExpandedParent(ps); break; }
+        const subs = substagesOf[ps];
+        if (subs && subs.includes(stageId as SubStage)) { setExpandedParent(ps); break; }
+      }
     }
   }, [location.pathname]);
 
@@ -76,13 +77,11 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
 
       {/* Nav */}
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
-        {/* Control Tower */}
         <NavLink to="/control-tower" className={linkClass} title="Control Tower">
           <LayoutDashboard size={18} className="shrink-0" />
           {!collapsed && <span>Control Tower</span>}
         </NavLink>
 
-        {/* Cross-stage pages */}
         <NavLink to="/inventory-health" className={linkClass} title="Inventory Health Index">
           <Activity size={18} className="shrink-0" />
           {!collapsed && <span>Inventory Health</span>}
@@ -107,7 +106,7 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
         )}
         {collapsed && <div className="border-t border-sidebar-border my-2" />}
 
-        {/* Stage Commands - collapsible on mobile/expanded */}
+        {/* Stage Commands — 3 collapsible parent groups */}
         <div>
           {!collapsed ? (
             <>
@@ -129,35 +128,58 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
               </button>
               {stagesOpen && (
                 <div className="ml-4 mt-1 space-y-0.5">
-                  <NavLink to="/stage/opening" className={linkClass}>
-                    <FolderOpen size={14} className="shrink-0" />
-                    <span>Case Opening</span>
-                  </NavLink>
-                  <NavLink to="/stage/treatment" className={linkClass}>
-                    <Stethoscope size={14} className="shrink-0" />
-                    <span>Treatment Monitoring</span>
-                  </NavLink>
-                  <NavLink to="/stage/discovery" className={linkClass}>
-                    <Search size={14} className="shrink-0" />
-                    <span>Discovery</span>
-                  </NavLink>
-                  <NavLink to="/stage/expert-depo" className={linkClass}>
-                    <Users size={14} className="shrink-0" />
-                    <span>Expert & Deposition</span>
-                  </NavLink>
-                  <NavLink to="/stage/adr" className={linkClass}>
-                    <Scale size={14} className="shrink-0" />
-                    <span>ADR (Arb/Mediation)</span>
-                  </NavLink>
-                  <NavLink to="/stage/trial" className={linkClass}>
-                    <Gavel size={14} className="shrink-0" />
-                    <span>Trial</span>
-                  </NavLink>
+                  {parentStageOrder.map(ps => {
+                    const Icon = parentStageIcons[ps];
+                    const subs = substagesOf[ps];
+                    const isExpanded = expandedParent === ps;
+
+                    return (
+                      <div key={ps}>
+                        {subs ? (
+                          <button
+                            onClick={() => setExpandedParent(prev => prev === ps ? null : ps)}
+                            className={cn(
+                              'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
+                              location.pathname === `/stage/${ps}` || (isExpanded && location.pathname.startsWith('/stage/'))
+                                ? 'text-sidebar-accent-foreground font-medium'
+                                : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+                            )}
+                          >
+                            <Icon size={14} className="shrink-0" />
+                            <span className="flex-1 text-left">{parentStageLabels[ps]}</span>
+                            <ChevronDown
+                              size={12}
+                              className={cn('transition-transform duration-200', isExpanded ? 'rotate-0' : '-rotate-90')}
+                            />
+                          </button>
+                        ) : (
+                          <NavLink to={`/stage/${ps}`} className={linkClass}>
+                            <Icon size={14} className="shrink-0" />
+                            <span>{parentStageLabels[ps]}</span>
+                          </NavLink>
+                        )}
+                        {subs && isExpanded && (
+                          <div className="ml-4 mt-0.5 space-y-0.5">
+                            <NavLink to={`/stage/${ps}`} className={linkClass}>
+                              <FolderOpen size={12} className="shrink-0" />
+                              <span className="text-xs">Overview</span>
+                            </NavLink>
+                            {subs.map(sub => (
+                              <NavLink key={sub} to={`/stage/${sub}`} className={linkClass}>
+                                <FolderOpen size={12} className="shrink-0" />
+                                <span className="text-xs">{subStageLabels[sub]}</span>
+                              </NavLink>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </>
           ) : (
-            <NavLink to="/stage/opening" className={linkClass} title="Stage Commands">
+            <NavLink to="/stage/intake" className={linkClass} title="Stage Commands">
               <FolderOpen size={18} className="shrink-0" />
             </NavLink>
           )}
@@ -171,7 +193,6 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
         )}
         {collapsed && <div className="border-t border-sidebar-border my-2" />}
 
-        {/* Accountability */}
         <NavLink to="/attorney" className={linkClass} title="Attorney Cockpit">
           <UserCircle size={18} className="shrink-0" />
           {!collapsed && <span>Attorney Cockpit</span>}
@@ -190,7 +211,6 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
         )}
         {collapsed && <div className="border-t border-sidebar-border my-2" />}
 
-        {/* Performance Infrastructure */}
         <NavLink to="/performance-infrastructure" className={linkClass} title="Performance Infrastructure">
           <GitBranch size={18} className="shrink-0" />
           {!collapsed && <span>Performance Infrastructure</span>}
@@ -199,20 +219,14 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
 
       {/* Bottom controls */}
       <div className="p-2 border-t border-sidebar-border space-y-1">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onToggleDark}
+        <Button variant="ghost" size="sm" onClick={onToggleDark}
           className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
           title="Toggle dark mode"
         >
           {darkMode ? <Sun size={18} className="shrink-0" /> : <Moon size={18} className="shrink-0" />}
           {!collapsed && <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>}
         </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onToggleCollapse}
+        <Button variant="ghost" size="sm" onClick={onToggleCollapse}
           className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground max-md:hidden"
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
@@ -225,35 +239,23 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
 
   return (
     <>
-      {/* Mobile hamburger */}
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => setMobileOpen(o => !o)}
-        className="fixed top-3 left-3 z-50 md:hidden"
-        aria-label="Toggle menu"
+      <Button variant="outline" size="icon" onClick={() => setMobileOpen(o => !o)}
+        className="fixed top-3 left-3 z-50 md:hidden" aria-label="Toggle menu"
       >
         {mobileOpen ? <X size={20} /> : <Menu size={20} />}
       </Button>
 
-      {/* Mobile backdrop */}
       {mobileOpen && (
-        <div
-          className="sidebar-backdrop md:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
+        <div className="sidebar-backdrop md:hidden" onClick={() => setMobileOpen(false)} />
       )}
 
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          'bg-sidebar-background text-sidebar-foreground border-r border-sidebar-border',
-          'transition-all duration-200 shrink-0',
-          'max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:w-64',
-          mobileOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full',
-          collapsed ? 'md:w-16' : 'md:w-64',
-        )}
-      >
+      <aside className={cn(
+        'bg-sidebar-background text-sidebar-foreground border-r border-sidebar-border',
+        'transition-all duration-200 shrink-0',
+        'max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-40 max-md:w-64',
+        mobileOpen ? 'max-md:translate-x-0' : 'max-md:-translate-x-full',
+        collapsed ? 'md:w-16' : 'md:w-64',
+      )}>
         {sidebarContent}
       </aside>
     </>

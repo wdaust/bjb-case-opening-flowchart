@@ -1,13 +1,28 @@
 // ── Mock Data for Litigation Dashboard System ──────────────────────────
-// ~200 cases reflecting a 20-30 attorney PI/med-mal firm
+// ~6,518 cases reflecting a 20-30 attorney PI/med-mal firm
+// 3-tier hierarchy: Intake → Pre-Litigation → Litigation
 
-export type Stage = "opening" | "treatment" | "discovery" | "expert-depo" | "adr" | "trial";
+// ── Type definitions ────────────────────────────────────────────────────
+export type ParentStage = "intake" | "pre-lit" | "lit";
+export type PreLitSubStage =
+  | "pre-account-opening"
+  | "pre-treatment-monitoring"
+  | "pre-value-development"
+  | "pre-demand-readiness"
+  | "pre-negotiation"
+  | "pre-resolution-pending";
+export type LitSubStage =
+  | "lit-case-opening"
+  | "lit-treatment-monitoring"
+  | "lit-discovery"
+  | "lit-expert-depo"
+  | "lit-arb-mediation"
+  | "lit-trial";
+export type SubStage = PreLitSubStage | LitSubStage;
+export type Stage = ParentStage | SubStage;
 
-export interface GateItem {
-  name: string;
-  completed: boolean;
-}
-
+// ── Interfaces ──────────────────────────────────────────────────────────
+export interface GateItem { name: string; completed: boolean; }
 export interface Deadline {
   type: "SOL" | "trial" | "expert" | "discovery" | "court" | "motion" | "depo";
   date: string;
@@ -18,6 +33,8 @@ export interface LitCase {
   id: string;
   title: string;
   caseType: string;
+  parentStage: ParentStage;
+  subStage: SubStage | null;
   stage: Stage;
   stageEntryDate: string;
   openDate: string;
@@ -41,90 +58,140 @@ export interface LitCase {
 }
 
 export interface Attorney {
-  id: string;
-  name: string;
-  pod: string;
-  office: string;
-  role: string;
-  caseCount: number;
-  overSlaCount: number;
-  stallCount: number;
-  nextActionCoverage: number;
-  throughputWeekly: number;
+  id: string; name: string; pod: string; office: string; role: string;
+  caseCount: number; overSlaCount: number; stallCount: number;
+  nextActionCoverage: number; throughputWeekly: number;
 }
 
 export interface WeeklyMetric {
-  week: string;
-  newIn: number;
-  closedOut: number;
-  overSla: number;
-  stallCount: number;
-  nextActionPct: number;
-  ev: number;
-  throughput: number;
+  week: string; newIn: number; closedOut: number; overSla: number;
+  stallCount: number; nextActionPct: number; ev: number; throughput: number;
+}
+
+export interface SubStageCount {
+  stage: Stage; label: string; count: number; overSla: number; avgAge: number;
+}
+
+export interface ParentStageCount {
+  parentStage: ParentStage; label: string; count: number;
+  overSla: number; avgAge: number; substages: SubStageCount[];
 }
 
 // ── Stage metadata ──────────────────────────────────────────────────────
-export const stageLabels: Record<Stage, string> = {
-  opening: "Case Opening",
-  treatment: "Treatment Monitoring",
-  discovery: "Discovery",
-  "expert-depo": "Expert & Deposition",
-  adr: "ADR (Arb/Mediation)",
-  trial: "Trial",
+export const parentStageOrder: ParentStage[] = ["intake", "pre-lit", "lit"];
+
+export const preLitSubStageOrder: PreLitSubStage[] = [
+  "pre-account-opening", "pre-treatment-monitoring", "pre-value-development",
+  "pre-demand-readiness", "pre-negotiation", "pre-resolution-pending",
+];
+
+export const litSubStageOrder: LitSubStage[] = [
+  "lit-case-opening", "lit-treatment-monitoring", "lit-discovery",
+  "lit-expert-depo", "lit-arb-mediation", "lit-trial",
+];
+
+export const stageOrder: Stage[] = ["intake", ...preLitSubStageOrder, ...litSubStageOrder];
+
+export const allValidStageRoutes: Stage[] = [...parentStageOrder, ...preLitSubStageOrder, ...litSubStageOrder];
+
+export const substagesOf: Record<ParentStage, SubStage[] | null> = {
+  intake: null,
+  "pre-lit": [...preLitSubStageOrder],
+  lit: [...litSubStageOrder],
 };
 
-export const stageOrder: Stage[] = ["opening", "treatment", "discovery", "expert-depo", "adr", "trial"];
+export const parentStageLabels: Record<ParentStage, string> = {
+  intake: "Intake",
+  "pre-lit": "Pre-Litigation",
+  lit: "Litigation",
+};
+
+export const subStageLabels: Record<SubStage, string> = {
+  "pre-account-opening": "Account Opening",
+  "pre-treatment-monitoring": "Treatment Monitoring",
+  "pre-value-development": "Value Development",
+  "pre-demand-readiness": "Demand Readiness",
+  "pre-negotiation": "Negotiation",
+  "pre-resolution-pending": "Resolution Pending",
+  "lit-case-opening": "Case Opening",
+  "lit-treatment-monitoring": "Treatment Monitoring",
+  "lit-discovery": "Discovery",
+  "lit-expert-depo": "Expert & Deposition",
+  "lit-arb-mediation": "Arbitration/Mediation",
+  "lit-trial": "Trial",
+};
+
+export const stageLabels: Record<Stage, string> = {
+  ...parentStageLabels,
+  ...subStageLabels,
+};
 
 export const stageSlaTargets: Record<Stage, number> = {
-  opening: 30,
-  treatment: 180,
-  discovery: 120,
-  "expert-depo": 90,
-  adr: 60,
-  trial: 45,
+  intake: 14, "pre-lit": 365, lit: 525,
+  "pre-account-opening": 14, "pre-treatment-monitoring": 180, "pre-value-development": 60,
+  "pre-demand-readiness": 45, "pre-negotiation": 45, "pre-resolution-pending": 21,
+  "lit-case-opening": 30, "lit-treatment-monitoring": 180, "lit-discovery": 120,
+  "lit-expert-depo": 90, "lit-arb-mediation": 60, "lit-trial": 45,
+};
+
+export const stageColors: Record<Stage, string> = {
+  intake: "bg-blue-500", "pre-lit": "bg-emerald-500", lit: "bg-red-500",
+  "pre-account-opening": "bg-emerald-300", "pre-treatment-monitoring": "bg-emerald-400",
+  "pre-value-development": "bg-emerald-500", "pre-demand-readiness": "bg-emerald-600",
+  "pre-negotiation": "bg-emerald-700", "pre-resolution-pending": "bg-emerald-800",
+  "lit-case-opening": "bg-red-300", "lit-treatment-monitoring": "bg-red-400",
+  "lit-discovery": "bg-red-500", "lit-expert-depo": "bg-red-600",
+  "lit-arb-mediation": "bg-red-700", "lit-trial": "bg-red-800",
 };
 
 // ── Gate checklists per stage ───────────────────────────────────────────
 const gateTemplates: Record<Stage, string[]> = {
-  opening: ["Client signed retainer", "Insurance info obtained", "Medical records requested", "Police report ordered", "LOP sent to providers", "Intake memo completed"],
-  treatment: ["All providers identified", "Treatment plan documented", "PIP/MedPay exhausted", "Records collected >80%", "Max medical improvement reached", "Treatment summary drafted"],
-  discovery: ["Interrogatories served", "Document requests served", "Depositions noticed", "Expert disclosure deadline set", "IME scheduled or waived", "Discovery responses reviewed"],
-  "expert-depo": ["Expert retained", "Expert report received", "Deposition of plaintiff taken", "Deposition of defendant taken", "IME report received", "Expert deposition completed"],
-  adr: ["Mediation brief filed", "Settlement demand sent", "Mediator selected", "Mediation date confirmed", "Authority obtained", "Settlement evaluation completed"],
-  trial: ["Trial brief filed", "Witness list finalized", "Exhibit list submitted", "Jury instructions drafted", "Motions in limine filed", "Trial preparation complete"],
+  intake: ["Client signed retainer", "Insurance info obtained", "Medical records requested", "Police report ordered", "LOP sent to providers", "Intake memo completed"],
+  "pre-lit": [], lit: [],
+  "pre-account-opening": ["Retainer executed and filed", "Insurance coverage verified", "Initial records requested", "Case classification completed", "Conflict check cleared", "Account opening memo filed"],
+  "pre-treatment-monitoring": ["All providers identified", "Treatment plan documented", "PIP/MedPay status tracked", "Records collected >80%", "MMI assessment scheduled", "Treatment summary drafted"],
+  "pre-value-development": ["All records obtained", "Medical chronology prepared", "Damages summary drafted", "Life care plan ordered", "Lost wages documented", "Case valuation completed"],
+  "pre-demand-readiness": ["Demand package assembled", "Medical summary finalized", "Supporting documents compiled", "Settlement range approved", "Attorney review completed", "Demand letter drafted"],
+  "pre-negotiation": ["Demand sent to carrier", "Initial response received", "Counter-offer analyzed", "Authority updated", "Negotiation log maintained", "Resolution timeline set"],
+  "pre-resolution-pending": ["Settlement terms agreed", "Release drafted", "Lien checks completed", "Client approval obtained", "Payment timeline confirmed", "Closing checklist started"],
+  "lit-case-opening": ["Complaint drafted and filed", "Filing fee arranged", "Service of process initiated", "Answer deadline tracked", "Initial disclosures prepared", "Case management order filed"],
+  "lit-treatment-monitoring": ["Treating physicians identified", "IME scheduled or waived", "Updated records requested", "Treatment status reviewed", "Provider depositions planned", "Medical summary updated"],
+  "lit-discovery": ["Interrogatories served", "Document requests served", "Depositions noticed", "Expert disclosure deadline set", "IME scheduled or waived", "Discovery responses reviewed"],
+  "lit-expert-depo": ["Expert retained", "Expert report received", "Plaintiff deposition taken", "Defendant deposition taken", "IME report received", "Expert deposition completed"],
+  "lit-arb-mediation": ["Mediation brief filed", "Settlement demand updated", "Mediator selected", "Mediation date confirmed", "Authority obtained", "Settlement evaluation completed"],
+  "lit-trial": ["Trial brief filed", "Witness list finalized", "Exhibit list submitted", "Jury instructions drafted", "Motions in limine filed", "Trial preparation complete"],
 };
 
-// ── Attorneys ───────────────────────────────────────────────────────────
+// ── Attorneys (scaled for ~6,518 cases) ─────────────────────────────────
 export const attorneys: Attorney[] = [
-  { id: "att-01", name: "Sarah Chen", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 42, overSlaCount: 3, stallCount: 1, nextActionCoverage: 0.95, throughputWeekly: 2.1 },
-  { id: "att-02", name: "Marcus Rivera", pod: "Hartford Lit Team", office: "Hartford", role: "Partner", caseCount: 28, overSlaCount: 1, stallCount: 0, nextActionCoverage: 0.98, throughputWeekly: 1.8 },
-  { id: "att-03", name: "Jennifer Walsh", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 38, overSlaCount: 5, stallCount: 2, nextActionCoverage: 0.87, throughputWeekly: 1.5 },
-  { id: "att-04", name: "David Kim", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 45, overSlaCount: 4, stallCount: 1, nextActionCoverage: 0.92, throughputWeekly: 2.3 },
-  { id: "att-05", name: "Rachel Thompson", pod: "NYC Lit Team", office: "NYC", role: "Partner", caseCount: 22, overSlaCount: 0, stallCount: 0, nextActionCoverage: 1.0, throughputWeekly: 1.2 },
-  { id: "att-06", name: "James O'Brien", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 35, overSlaCount: 6, stallCount: 3, nextActionCoverage: 0.82, throughputWeekly: 1.4 },
-  { id: "att-07", name: "Maria Santos", pod: "Chicago Lit Team", office: "Chicago", role: "Senior Associate", caseCount: 40, overSlaCount: 2, stallCount: 1, nextActionCoverage: 0.93, throughputWeekly: 2.0 },
-  { id: "att-08", name: "Robert Chen", pod: "Chicago Lit Team", office: "Chicago", role: "Partner", caseCount: 25, overSlaCount: 1, stallCount: 0, nextActionCoverage: 0.97, throughputWeekly: 1.6 },
-  { id: "att-09", name: "Emily Watson", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 36, overSlaCount: 4, stallCount: 2, nextActionCoverage: 0.88, throughputWeekly: 1.3 },
-  { id: "att-10", name: "Michael Torres", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 33, overSlaCount: 3, stallCount: 1, nextActionCoverage: 0.90, throughputWeekly: 1.7 },
-  { id: "att-11", name: "Lisa Park", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 30, overSlaCount: 2, stallCount: 0, nextActionCoverage: 0.94, throughputWeekly: 1.9 },
-  { id: "att-12", name: "Andrew Miller", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 34, overSlaCount: 5, stallCount: 2, nextActionCoverage: 0.85, throughputWeekly: 1.1 },
-  { id: "att-13", name: "Nicole Foster", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 29, overSlaCount: 1, stallCount: 0, nextActionCoverage: 0.96, throughputWeekly: 2.2 },
-  { id: "att-14", name: "Christopher Lee", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 37, overSlaCount: 4, stallCount: 1, nextActionCoverage: 0.89, throughputWeekly: 1.6 },
-  { id: "att-15", name: "Amanda Hughes", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 31, overSlaCount: 3, stallCount: 1, nextActionCoverage: 0.91, throughputWeekly: 1.5 },
-  { id: "att-16", name: "Daniel Brooks", pod: "Hartford Lit Team", office: "Hartford", role: "Partner", caseCount: 20, overSlaCount: 0, stallCount: 0, nextActionCoverage: 0.99, throughputWeekly: 1.0 },
-  { id: "att-17", name: "Stephanie Nguyen", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 32, overSlaCount: 2, stallCount: 1, nextActionCoverage: 0.93, throughputWeekly: 1.8 },
-  { id: "att-18", name: "Kevin Martinez", pod: "Chicago Lit Team", office: "Chicago", role: "Senior Associate", caseCount: 27, overSlaCount: 1, stallCount: 0, nextActionCoverage: 0.95, throughputWeekly: 2.0 },
-  { id: "att-19", name: "Patricia Adams", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 39, overSlaCount: 5, stallCount: 2, nextActionCoverage: 0.86, throughputWeekly: 1.4 },
-  { id: "att-20", name: "Brian Wilson", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 26, overSlaCount: 2, stallCount: 1, nextActionCoverage: 0.92, throughputWeekly: 1.3 },
-  { id: "att-21", name: "Laura Garcia", pod: "Chicago Lit Team", office: "Chicago", role: "Partner", caseCount: 18, overSlaCount: 0, stallCount: 0, nextActionCoverage: 1.0, throughputWeekly: 0.9 },
-  { id: "att-22", name: "Thomas Wright", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 41, overSlaCount: 6, stallCount: 3, nextActionCoverage: 0.83, throughputWeekly: 1.2 },
-  { id: "att-23", name: "Jessica Patel", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 24, overSlaCount: 1, stallCount: 0, nextActionCoverage: 0.94, throughputWeekly: 1.7 },
-  { id: "att-24", name: "Ryan Cooper", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 35, overSlaCount: 3, stallCount: 1, nextActionCoverage: 0.90, throughputWeekly: 1.5 },
-  { id: "att-25", name: "Megan Hall", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 28, overSlaCount: 1, stallCount: 0, nextActionCoverage: 0.96, throughputWeekly: 2.1 },
+  { id: "att-01", name: "Sarah Chen", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 344, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.95, throughputWeekly: 2.1 },
+  { id: "att-02", name: "Marcus Rivera", pod: "Hartford Lit Team", office: "Hartford", role: "Partner", caseCount: 230, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.98, throughputWeekly: 1.8 },
+  { id: "att-03", name: "Jennifer Walsh", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 312, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.87, throughputWeekly: 1.5 },
+  { id: "att-04", name: "David Kim", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 369, overSlaCount: 33, stallCount: 8, nextActionCoverage: 0.92, throughputWeekly: 2.3 },
+  { id: "att-05", name: "Rachel Thompson", pod: "NYC Lit Team", office: "NYC", role: "Partner", caseCount: 180, overSlaCount: 0, stallCount: 0, nextActionCoverage: 1.0, throughputWeekly: 1.2 },
+  { id: "att-06", name: "James O'Brien", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 287, overSlaCount: 49, stallCount: 25, nextActionCoverage: 0.82, throughputWeekly: 1.4 },
+  { id: "att-07", name: "Maria Santos", pod: "Chicago Lit Team", office: "Chicago", role: "Senior Associate", caseCount: 328, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.93, throughputWeekly: 2.0 },
+  { id: "att-08", name: "Robert Chen", pod: "Chicago Lit Team", office: "Chicago", role: "Partner", caseCount: 205, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.97, throughputWeekly: 1.6 },
+  { id: "att-09", name: "Emily Watson", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 295, overSlaCount: 33, stallCount: 16, nextActionCoverage: 0.88, throughputWeekly: 1.3 },
+  { id: "att-10", name: "Michael Torres", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 271, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.90, throughputWeekly: 1.7 },
+  { id: "att-11", name: "Lisa Park", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 246, overSlaCount: 16, stallCount: 0, nextActionCoverage: 0.94, throughputWeekly: 1.9 },
+  { id: "att-12", name: "Andrew Miller", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 279, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.85, throughputWeekly: 1.1 },
+  { id: "att-13", name: "Nicole Foster", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 238, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.96, throughputWeekly: 2.2 },
+  { id: "att-14", name: "Christopher Lee", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 303, overSlaCount: 33, stallCount: 8, nextActionCoverage: 0.89, throughputWeekly: 1.6 },
+  { id: "att-15", name: "Amanda Hughes", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 254, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.91, throughputWeekly: 1.5 },
+  { id: "att-16", name: "Daniel Brooks", pod: "Hartford Lit Team", office: "Hartford", role: "Partner", caseCount: 164, overSlaCount: 0, stallCount: 0, nextActionCoverage: 0.99, throughputWeekly: 1.0 },
+  { id: "att-17", name: "Stephanie Nguyen", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 262, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.93, throughputWeekly: 1.8 },
+  { id: "att-18", name: "Kevin Martinez", pod: "Chicago Lit Team", office: "Chicago", role: "Senior Associate", caseCount: 221, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.95, throughputWeekly: 2.0 },
+  { id: "att-19", name: "Patricia Adams", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 320, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.86, throughputWeekly: 1.4 },
+  { id: "att-20", name: "Brian Wilson", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 213, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.92, throughputWeekly: 1.3 },
+  { id: "att-21", name: "Laura Garcia", pod: "Chicago Lit Team", office: "Chicago", role: "Partner", caseCount: 148, overSlaCount: 0, stallCount: 0, nextActionCoverage: 1.0, throughputWeekly: 0.9 },
+  { id: "att-22", name: "Thomas Wright", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 336, overSlaCount: 49, stallCount: 25, nextActionCoverage: 0.83, throughputWeekly: 1.2 },
+  { id: "att-23", name: "Jessica Patel", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 197, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.94, throughputWeekly: 1.7 },
+  { id: "att-24", name: "Ryan Cooper", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 287, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.90, throughputWeekly: 1.5 },
+  { id: "att-25", name: "Megan Hall", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 230, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.96, throughputWeekly: 2.1 },
 ];
 
-// ── Helper to generate dates ────────────────────────────────────────────
+// ── Helpers ─────────────────────────────────────────────────────────────
 function daysAgo(n: number): string {
   const d = new Date("2026-02-19");
   d.setDate(d.getDate() - n);
@@ -138,10 +205,11 @@ function daysFromNow(n: number): string {
 }
 
 function makeGates(stage: Stage, completedCount: number): GateItem[] {
-  return gateTemplates[stage].map((name, i) => ({ name, completed: i < completedCount }));
+  const templates = gateTemplates[stage] || [];
+  return templates.map((name, i) => ({ name, completed: i < completedCount }));
 }
 
-// ── Generate ~200 cases ─────────────────────────────────────────────────
+// ── Generate ~6,518 cases ───────────────────────────────────────────────
 const caseNames = [
   "Martinez v. ABC Corp", "Johnson v. City Hospital", "Williams v. Metro Transit",
   "Brown v. National Insurance", "Davis v. Premier Auto", "Garcia v. Westside Medical",
@@ -228,76 +296,90 @@ const nextActions = [
   "Arrange interpreter for depo", "Review opposing expert report", "Prepare case status memo",
 ];
 
+const stageDistributionTable: { parentStage: ParentStage; subStage: SubStage | null; count: number }[] = [
+  { parentStage: "intake", subStage: null, count: 183 },
+  { parentStage: "pre-lit", subStage: "pre-account-opening", count: 1050 },
+  { parentStage: "pre-lit", subStage: "pre-treatment-monitoring", count: 1200 },
+  { parentStage: "pre-lit", subStage: "pre-value-development", count: 850 },
+  { parentStage: "pre-lit", subStage: "pre-demand-readiness", count: 520 },
+  { parentStage: "pre-lit", subStage: "pre-negotiation", count: 380 },
+  { parentStage: "pre-lit", subStage: "pre-resolution-pending", count: 203 },
+  { parentStage: "lit", subStage: "lit-case-opening", count: 530 },
+  { parentStage: "lit", subStage: "lit-treatment-monitoring", count: 580 },
+  { parentStage: "lit", subStage: "lit-discovery", count: 450 },
+  { parentStage: "lit", subStage: "lit-expert-depo", count: 300 },
+  { parentStage: "lit", subStage: "lit-arb-mediation", count: 170 },
+  { parentStage: "lit", subStage: "lit-trial", count: 102 },
+];
+
 function buildCases(): LitCase[] {
   const result: LitCase[] = [];
-  const stageDistribution: Stage[] = [];
-  // Weighted: more cases in treatment/discovery
-  for (let i = 0; i < 25; i++) stageDistribution.push("opening");
-  for (let i = 0; i < 55; i++) stageDistribution.push("treatment");
-  for (let i = 0; i < 50; i++) stageDistribution.push("discovery");
-  for (let i = 0; i < 35; i++) stageDistribution.push("expert-depo");
-  for (let i = 0; i < 20; i++) stageDistribution.push("adr");
-  for (let i = 0; i < 15; i++) stageDistribution.push("trial");
+  let i = 0;
 
-  for (let i = 0; i < 200; i++) {
-    const stage = stageDistribution[i % stageDistribution.length];
-    const attIdx = i % attorneys.length;
-    const att = attorneys[attIdx];
-    const officeIdx = offices.indexOf(att.office);
-    const caseTypeIdx = i % caseTypes.length;
-    const venueIdx = (i + officeIdx) % venues.length;
-    const openDaysAgo = 60 + (i * 7) % 600;
-    const stageDaysAgo = 5 + (i * 3) % (stageSlaTargets[stage] + 40);
-    const lastActivityDaysAgo = (i * 2) % 35;
-    const nextActionDays = 3 + (i * 5) % 30;
-    const completedGates = Math.min(Math.floor((i % 7)), gateTemplates[stage].length);
-    const isOverSla = stageDaysAgo > stageSlaTargets[stage];
-    const isStale = lastActivityDaysAgo > 21;
-    const riskFlags: string[] = [];
-    if (isOverSla) riskFlags.push("Over SLA");
-    if (isStale) riskFlags.push("Silent stall");
-    if (i % 12 === 0) riskFlags.push("SOL < 60 days");
-    if (i % 15 === 0) riskFlags.push("Expert deadline");
-    if (i % 20 === 0) riskFlags.push("Coverage issue");
-    if (i % 18 === 0) riskFlags.push("Lien dispute");
+  for (const entry of stageDistributionTable) {
+    for (let j = 0; j < entry.count; j++, i++) {
+      const stage: Stage = entry.subStage ?? entry.parentStage;
+      const sla = stageSlaTargets[stage];
+      const attIdx = i % attorneys.length;
+      const att = attorneys[attIdx];
+      const officeIdx = offices.indexOf(att.office);
+      const caseTypeIdx = i % caseTypes.length;
+      const venueIdx = (i + officeIdx) % venues.length;
+      const openDaysAgo = 60 + (i * 7) % 900;
+      const stageDaysAgo = 5 + (i * 3) % (sla + 40);
+      const lastActivityDaysAgo = (i * 2) % 35;
+      const nextActionDays = 3 + (i * 5) % 30;
+      const completedGates = Math.min(Math.floor(i % 7), (gateTemplates[stage] || []).length);
+      const isOverSla = stageDaysAgo > sla;
+      const isStale = lastActivityDaysAgo > 21;
+      const riskFlags: string[] = [];
+      if (isOverSla) riskFlags.push("Over SLA");
+      if (isStale) riskFlags.push("Silent stall");
+      if (i % 12 === 0) riskFlags.push("SOL < 60 days");
+      if (i % 15 === 0) riskFlags.push("Expert deadline");
+      if (i % 20 === 0) riskFlags.push("Coverage issue");
+      if (i % 18 === 0) riskFlags.push("Lien dispute");
 
-    const exposureAmount = 100000 + ((i * 47) % 900000);
-    const evConfidence = 0.4 + ((i * 13) % 55) / 100;
-    const deadlines: Deadline[] = [];
-    if (i % 8 === 0) deadlines.push({ type: "SOL", date: daysFromNow(15 + (i % 45)), description: "Statute of limitations expiry" });
-    if (i % 10 === 0) deadlines.push({ type: "trial", date: daysFromNow(30 + (i % 90)), description: "Trial date" });
-    if (i % 6 === 0) deadlines.push({ type: "expert", date: daysFromNow(10 + (i % 60)), description: "Expert disclosure deadline" });
-    if (i % 7 === 0) deadlines.push({ type: "discovery", date: daysFromNow(5 + (i % 40)), description: "Discovery close date" });
-    if (i % 9 === 0) deadlines.push({ type: "depo", date: daysFromNow(7 + (i % 30)), description: "Deposition scheduled" });
+      const exposureAmount = 100000 + ((i * 47) % 900000);
+      const evConfidence = 0.4 + ((i * 13) % 55) / 100;
+      const deadlines: Deadline[] = [];
+      if (i % 8 === 0) deadlines.push({ type: "SOL", date: daysFromNow(15 + (i % 45)), description: "Statute of limitations expiry" });
+      if (i % 10 === 0) deadlines.push({ type: "trial", date: daysFromNow(30 + (i % 90)), description: "Trial date" });
+      if (i % 6 === 0) deadlines.push({ type: "expert", date: daysFromNow(10 + (i % 60)), description: "Expert disclosure deadline" });
+      if (i % 7 === 0) deadlines.push({ type: "discovery", date: daysFromNow(5 + (i % 40)), description: "Discovery close date" });
+      if (i % 9 === 0) deadlines.push({ type: "depo", date: daysFromNow(7 + (i % 30)), description: "Deposition scheduled" });
 
-    const year = 2024 + Math.floor(i / 100);
-    const caseNum = String(i + 1).padStart(4, "0");
+      const year = 2020 + Math.floor(i / 932);
+      const caseInYear = (i % 932) + 1;
 
-    result.push({
-      id: `C-${year}-${caseNum}`,
-      title: caseNames[i % caseNames.length],
-      caseType: caseTypes[caseTypeIdx],
-      stage,
-      stageEntryDate: daysAgo(stageDaysAgo),
-      openDate: daysAgo(openDaysAgo),
-      attorney: att.name,
-      pod: pods[officeIdx],
-      office: att.office,
-      venue: venues[venueIdx],
-      status: i < 185 ? "active" : i < 195 ? "settled" : "closed",
-      slaTarget: stageSlaTargets[stage],
-      lastActivityDate: daysAgo(lastActivityDaysAgo),
-      nextAction: nextActions[i % nextActions.length],
-      nextActionDue: daysFromNow(nextActionDays),
-      nextActionOwner: att.name,
-      exposureAmount,
-      expectedValue: Math.round(exposureAmount * evConfidence),
-      evConfidence,
-      riskFlags,
-      gateChecklist: makeGates(stage, completedGates),
-      deadlines,
-      hardCostsRemaining: 5000 + ((i * 31) % 80000),
-    });
+      result.push({
+        id: `C-${year}-${String(caseInYear).padStart(4, "0")}`,
+        title: caseNames[i % caseNames.length],
+        caseType: caseTypes[caseTypeIdx],
+        parentStage: entry.parentStage,
+        subStage: entry.subStage,
+        stage,
+        stageEntryDate: daysAgo(stageDaysAgo),
+        openDate: daysAgo(openDaysAgo),
+        attorney: att.name,
+        pod: pods[officeIdx],
+        office: att.office,
+        venue: venues[venueIdx],
+        status: i < 6300 ? "active" : i < 6430 ? "settled" : "closed",
+        slaTarget: sla,
+        lastActivityDate: daysAgo(lastActivityDaysAgo),
+        nextAction: nextActions[i % nextActions.length],
+        nextActionDue: daysFromNow(nextActionDays),
+        nextActionOwner: att.name,
+        exposureAmount,
+        expectedValue: Math.round(exposureAmount * evConfidence),
+        evConfidence,
+        riskFlags,
+        gateChecklist: makeGates(stage, completedGates),
+        deadlines,
+        hardCostsRemaining: 5000 + ((i * 31) % 80000),
+      });
+    }
   }
   return result;
 }
@@ -311,6 +393,10 @@ export function getActiveCases(allCases: LitCase[] = cases) {
 
 export function getCasesByStage(stage: Stage, allCases: LitCase[] = cases) {
   return allCases.filter(c => c.stage === stage && c.status === "active");
+}
+
+export function getCasesByParentStage(parentStage: ParentStage, allCases: LitCase[] = cases) {
+  return allCases.filter(c => c.parentStage === parentStage && c.status === "active");
 }
 
 export function getCasesByAttorney(attorneyName: string, allCases: LitCase[] = cases) {
@@ -377,18 +463,36 @@ export function getControlTowerData() {
   const stalled = getStalledCases();
   const totalEV = active.reduce((sum, c) => sum + c.expectedValue, 0);
 
-  const stageCounts = stageOrder.map(s => ({
-    stage: s,
-    label: stageLabels[s],
-    count: getCasesByStage(s).length,
-    overSla: getCasesByStage(s).filter(c => c.riskFlags.includes("Over SLA")).length,
-    avgAge: Math.round(getCasesByStage(s).reduce((sum, c) => sum + getDaysInStage(c), 0) / Math.max(getCasesByStage(s).length, 1)),
-  }));
+  const stageCounts: ParentStageCount[] = parentStageOrder.map(ps => {
+    const parentCases = active.filter(c => c.parentStage === ps);
+    const subs = substagesOf[ps];
+    const substages: SubStageCount[] = subs
+      ? subs.map(sub => {
+          const subCases = parentCases.filter(c => c.stage === sub);
+          return {
+            stage: sub,
+            label: stageLabels[sub],
+            count: subCases.length,
+            overSla: subCases.filter(c => c.riskFlags.includes("Over SLA")).length,
+            avgAge: Math.round(subCases.reduce((s, c) => s + getDaysInStage(c), 0) / Math.max(subCases.length, 1)),
+          };
+        })
+      : [];
+
+    return {
+      parentStage: ps,
+      label: parentStageLabels[ps],
+      count: parentCases.length,
+      overSla: parentCases.filter(c => c.riskFlags.includes("Over SLA")).length,
+      avgAge: Math.round(parentCases.reduce((s, c) => s + getDaysInStage(c), 0) / Math.max(parentCases.length, 1)),
+      substages,
+    };
+  });
 
   return {
     totalActive,
-    newIn30d: 42,
-    closedOut30d: 38,
+    newIn30d: 340,
+    closedOut30d: 310,
     overSlaPct: Math.round((overSla.length / totalActive) * 1000) / 10,
     stallPct: Math.round((stalled.length / totalActive) * 1000) / 10,
     totalEV,
@@ -399,7 +503,10 @@ export function getControlTowerData() {
 
 // ── Stage Command aggregates ────────────────────────────────────────────
 export function getStageCommandData(stage: Stage) {
-  const stageCases = getCasesByStage(stage);
+  const isParent = (parentStageOrder as Stage[]).includes(stage) && stage !== "intake";
+  const stageCases = isParent
+    ? getCasesByParentStage(stage as ParentStage)
+    : getCasesByStage(stage);
   const total = stageCases.length;
   const ages = stageCases.map(getDaysInStage).sort((a, b) => a - b);
   const medianAge = ages.length > 0 ? ages[Math.floor(ages.length / 2)] : 0;
@@ -411,7 +518,7 @@ export function getStageCommandData(stage: Stage) {
   stageCases.forEach(c => attorneyDist.set(c.attorney, (attorneyDist.get(c.attorney) || 0) + 1));
 
   const gateCompletion: Record<string, number> = {};
-  const template = gateTemplates[stage];
+  const template = gateTemplates[stage] || [];
   template.forEach((gateName, idx) => {
     const completed = stageCases.filter(c => c.gateChecklist[idx]?.completed).length;
     gateCompletion[gateName] = total > 0 ? Math.round((completed / total) * 100) : 0;
@@ -443,13 +550,13 @@ export function getWeeklyThroughput(): WeeklyMetric[] {
   for (let w = 12; w >= 0; w--) {
     weeks.push({
       week: `W${13 - w}`,
-      newIn: 8 + (w % 5),
-      closedOut: 6 + ((w + 2) % 6),
-      overSla: 15 + (w % 8),
-      stallCount: 5 + (w % 4),
+      newIn: 65 + (w % 5) * 8,
+      closedOut: 50 + ((w + 2) % 6) * 7,
+      overSla: 200 + (w % 8) * 8,
+      stallCount: 40 + (w % 4) * 6,
       nextActionPct: 88 + (w % 7),
-      ev: 120 + (w * 2),
-      throughput: 5 + ((w + 1) % 4),
+      ev: 2100 + (w * 15),
+      throughput: 45 + ((w + 1) % 4) * 5,
     });
   }
   return weeks;
@@ -459,23 +566,27 @@ export function getWeeklyThroughput(): WeeklyMetric[] {
 export function getForecastData() {
   const active = getActiveCases();
   const totalEV = active.reduce((sum, c) => sum + c.expectedValue, 0);
+  const evM = Math.round(totalEV / 1_000_000);
   const monthlyTrend = [
-    { month: "Sep 25", ev: 115.2 }, { month: "Oct 25", ev: 118.5 },
-    { month: "Nov 25", ev: 117.8 }, { month: "Dec 25", ev: 120.1 },
-    { month: "Jan 26", ev: 122.3 }, { month: "Feb 26", ev: totalEV / 1000000 },
+    { month: "Sep 25", ev: Math.round(evM * 0.94) },
+    { month: "Oct 25", ev: Math.round(evM * 0.96) },
+    { month: "Nov 25", ev: Math.round(evM * 0.97) },
+    { month: "Dec 25", ev: Math.round(evM * 0.98) },
+    { month: "Jan 26", ev: Math.round(evM * 0.99) },
+    { month: "Feb 26", ev: evM },
   ];
 
   return {
     totalEV,
     monthlyTrend,
     expectedFees: Math.round(totalEV * 0.33),
-    closeMonthForecast: 12,
+    closeMonthForecast: 85,
     historicalAccuracy: [
-      { month: "Sep 25", predicted: 14, actual: 12 },
-      { month: "Oct 25", predicted: 11, actual: 13 },
-      { month: "Nov 25", predicted: 15, actual: 14 },
-      { month: "Dec 25", predicted: 10, actual: 9 },
-      { month: "Jan 26", predicted: 13, actual: 12 },
+      { month: "Sep 25", predicted: 95, actual: 82 },
+      { month: "Oct 25", predicted: 78, actual: 88 },
+      { month: "Nov 25", predicted: 102, actual: 95 },
+      { month: "Dec 25", predicted: 70, actual: 65 },
+      { month: "Jan 26", predicted: 88, actual: 82 },
     ],
   };
 }

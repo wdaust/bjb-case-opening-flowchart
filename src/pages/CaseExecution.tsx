@@ -8,9 +8,10 @@ import { GateChecklist } from "../components/dashboard/GateChecklist";
 import {
   cases,
   stageLabels,
+  stageColors,
+  parentStageLabels,
   getDaysInStage,
   getSlaStatus,
-  type Stage,
 } from "../data/mockData";
 
 const fmtCurrency = (n: number) =>
@@ -19,15 +20,6 @@ const fmtCurrency = (n: number) =>
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(n);
-
-const stageColors: Record<Stage, string> = {
-  opening: "bg-blue-500",
-  treatment: "bg-emerald-500",
-  discovery: "bg-amber-500",
-  "expert-depo": "bg-purple-500",
-  adr: "bg-cyan-500",
-  trial: "bg-red-500",
-};
 
 function daysAgo(n: number): string {
   const d = new Date("2026-02-19");
@@ -97,7 +89,12 @@ export default function CaseExecution() {
       <Breadcrumbs
         crumbs={[
           { label: "Control Tower", path: "/control-tower" },
-          { label: stageLabels[theCase.stage], path: `/stage/${theCase.stage}` },
+          ...(theCase.subStage
+            ? [
+                { label: parentStageLabels[theCase.parentStage], path: `/stage/${theCase.parentStage}` },
+                { label: stageLabels[theCase.stage], path: `/stage/${theCase.stage}` },
+              ]
+            : [{ label: stageLabels[theCase.stage], path: `/stage/${theCase.stage}` }]),
           { label: theCase.id },
         ]}
       />

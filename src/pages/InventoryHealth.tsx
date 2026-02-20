@@ -11,10 +11,10 @@ import {
   getActiveCases,
   getOverSlaCases,
   getStalledCases,
-  stageOrder,
+  parentStageOrder,
+  substagesOf,
   stageLabels,
   getAgingDistribution,
-  getCasesByStage,
   getDaysInStage,
   type Stage,
   type AgingBand,
@@ -32,11 +32,23 @@ export default function InventoryHealth() {
     ? `${((overSlaCases.length / activeCases.length) * 100).toFixed(1)}%`
     : '0%';
 
-  const agingData = stageOrder.reduce((acc, stage) => {
-    const casesInStage = getCasesByStage(stage);
-    acc[stage] = getAgingDistribution(casesInStage);
-    return acc;
-  }, {} as Record<Stage, Record<AgingBand, number>>);
+  // Build aging data grouped by parent → substage
+  const agingStages: Stage[] = [];
+  const agingData = {} as Record<Stage, Record<AgingBand, number>>;
+  for (const ps of parentStageOrder) {
+    const subs = substagesOf[ps];
+    if (subs) {
+      for (const sub of subs) {
+        const subCases = activeCases.filter(c => c.stage === sub);
+        agingData[sub] = getAgingDistribution(subCases);
+        agingStages.push(sub);
+      }
+    } else {
+      const psCases = activeCases.filter(c => c.parentStage === ps);
+      agingData[ps] = getAgingDistribution(psCases);
+      agingStages.push(ps);
+    }
+  }
 
   const stalledColumns: Column<LitCase>[] = [
     { key: 'id', label: 'Case ID' },
@@ -124,7 +136,7 @@ export default function InventoryHealth() {
 
         <TabsContent value="aging-heatmap" className="space-y-4 pt-4">
           <SectionHeader title="Aging Heatmap" subtitle="All stages x aging bands" />
-          <AgingHeatmap data={agingData} />
+          <AgingHeatmap data={agingData} stages={agingStages} />
         </TabsContent>
 
         <TabsContent value="silent-stalls" className="space-y-4 pt-4">

@@ -2,7 +2,7 @@ import { cn } from '../../utils/cn';
 import { agingBands, stageLabels, type Stage, type AgingBand } from '../../data/mockData';
 
 interface Props {
-  data: Record<Stage, Record<AgingBand, number>>;
+  data: Record<string, Record<AgingBand, number>>;
   stages?: Stage[];
   className?: string;
 }

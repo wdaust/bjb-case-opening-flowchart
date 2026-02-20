@@ -1,18 +1,10 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ComposedChart,
-  Bar,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
+  ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts';
 import { ChevronDown } from 'lucide-react';
-import { getControlTowerData, getUpcomingDeadlines, stageLabels } from '../data/mockData';
+import { getControlTowerData, getUpcomingDeadlines, parentStageLabels } from '../data/mockData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { StageBar } from '../components/dashboard/StageBar';
 import { DeadlineList } from '../components/dashboard/DeadlineList';
@@ -29,9 +21,9 @@ export default function ControlTower() {
 
   const formattedEV = `$${(controlTowerData.totalEV / 1_000_000).toFixed(1)}M`;
 
-  const throughputRates = [3.2, 2.1, 1.8, 1.5, 2.4, 0.8];
+  const throughputRates = [4.2, 3.1, 2.4];
   const bottleneckData = controlTowerData.stageCounts.map((sc, i) => ({
-    stage: stageLabels[sc.stage],
+    stage: parentStageLabels[sc.parentStage],
     avgAge: sc.avgAge,
     throughput: throughputRates[i] ?? 1.0,
   }));
@@ -98,13 +90,13 @@ export default function ControlTower() {
         <StatCard
           label="Total Active Inventory"
           value={controlTowerData.totalActive}
-          delta="+12 vs 30d ago"
+          delta="+30 vs 30d ago"
           deltaType="positive"
         />
         <StatCard
           label="New In / Closed Out (30d)"
-          value="42 in / 38 out"
-          delta="net +4"
+          value="340 in / 310 out"
+          delta="net +30"
           deltaType="positive"
         />
         <StatCard
@@ -133,40 +125,20 @@ export default function ControlTower() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <SectionHeader title="Inventory by Stage" />
-          <StageBar stages={controlTowerData.stageCounts} />
+          <StageBar parentStages={controlTowerData.stageCounts} />
 
           <SectionHeader
             title="Bottleneck Detector"
-            subtitle="Avg age vs throughput by stage"
+            subtitle="Avg age vs throughput by stage track"
           />
           <div className="rounded-lg border border-border bg-card p-4">
             <ResponsiveContainer width="100%" height={280}>
               <ComposedChart data={bottleneckData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis
-                  dataKey="stage"
-                  stroke="hsl(var(--foreground))"
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                />
-                <YAxis
-                  yAxisId="left"
-                  stroke="hsl(var(--foreground))"
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                />
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  stroke="hsl(var(--foreground))"
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '0.5rem',
-                    color: 'hsl(var(--foreground))',
-                  }}
-                />
+                <XAxis dataKey="stage" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                <YAxis yAxisId="left" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
                 <Legend wrapperStyle={{ color: 'hsl(var(--muted-foreground))' }} />
                 <Bar yAxisId="left" dataKey="avgAge" fill="#6366f1" name="Avg Age (days)" radius={[4, 4, 0, 0]} />
                 <Line yAxisId="right" type="monotone" dataKey="throughput" stroke="#10b981" strokeWidth={2} name="Throughput" dot={{ fill: '#10b981', r: 4 }} />
