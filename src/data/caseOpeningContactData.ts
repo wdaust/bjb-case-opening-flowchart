@@ -2,8 +2,6 @@ import {
   Phone,
   Mail,
   CheckCircle2,
-  Clock,
-  PhoneOff,
   Send,
   AlertTriangle,
   Calendar,
