@@ -372,20 +372,6 @@ export default function TMMatter() {
     </div>
   );
 
-  const contactPursuitContent = (
-    <div className="py-4">
-      <div className="rounded-lg border border-border bg-card p-6 text-center">
-        <p className="text-sm text-muted-foreground mb-2">
-          Contact Pursuit workflow with call timeline, SLA countdown, and connected/not-connected flow.
-        </p>
-        <p className="text-xs text-muted-foreground">
-          For the full interactive experience, visit the dedicated{' '}
-          <a href="/performance-infrastructure/mockups/tm-contact" className="text-blue-600 hover:underline">TM Contact Pursuit</a> page.
-        </p>
-      </div>
-    </div>
-  );
-
   const metricsContent = (
     <div className="py-4">
       <div className="grid gap-4 md:grid-cols-3">
@@ -416,8 +402,7 @@ export default function TMMatter() {
     <div className="flex-1 overflow-auto">
       <LitifyMatterLayout
         title="Lit / Treatment Monitoring &mdash; Matter Record"
-        group="treatment-monitoring"
-        activeNavId="tm-matter"
+        activeMatterId="tm-matter"
         recordHeaderProps={{
           title: 'Martinez, Roberto | MVA Rear-End | 2024-0847',
           icon: ClipboardList,
@@ -441,7 +426,6 @@ export default function TMMatter() {
           { id: 'overview', label: 'Overview', content: overviewContent },
           { id: 'matter-plan', label: 'Matter Plan', content: matterPlanContent },
           { id: 'scoring', label: 'Scoring', content: scoringContent },
-          { id: 'contact-pursuit', label: 'Contact Pursuit', content: contactPursuitContent },
           { id: 'metrics', label: 'Metrics', content: metricsContent },
         ]}
         utilityBarItems={[

@@ -1,5 +1,5 @@
 import { RotateCcw } from 'lucide-react';
-import { MockupNav } from '../../pages/MockupsLanding.tsx';
+import { LitifyMatterNav, type MatterId } from './LitifyMatterNav.tsx';
 import { Button } from '../ui/button.tsx';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs.tsx';
 import { LitifyRecordHeader, type RecordHeaderField, type StatusBadge } from './LitifyRecordHeader.tsx';
@@ -16,8 +16,7 @@ export interface MatterTab {
 
 interface LitifyMatterLayoutProps {
   title: string;
-  group: 'case-opening' | 'treatment-monitoring' | 'discovery' | 'expert-deposition';
-  activeNavId: string;
+  activeMatterId: MatterId;
   recordHeaderProps: {
     title: string;
     icon?: React.ComponentType<{ className?: string }>;
@@ -38,8 +37,7 @@ interface LitifyMatterLayoutProps {
 
 export function LitifyMatterLayout({
   title,
-  group,
-  activeNavId,
+  activeMatterId,
   recordHeaderProps,
   pathBarProps,
   tabs,
@@ -61,7 +59,7 @@ export function LitifyMatterLayout({
             </Button>
           )}
         </div>
-        <MockupNav active={activeNavId} group={group} />
+        <LitifyMatterNav active={activeMatterId} />
       </div>
 
       {/* Record header */}

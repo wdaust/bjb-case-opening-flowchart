@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
-import { ClipboardList, Search, Timer, BarChart3, ChevronDown, ChevronRight, RotateCcw } from 'lucide-react';
+import { ClipboardList, Search, BarChart3, ChevronDown, ChevronRight, RotateCcw } from 'lucide-react';
 import { Badge } from '../../components/ui/badge.tsx';
 import { Button } from '../../components/ui/button.tsx';
 import { cn } from '../../utils/cn.ts';
@@ -15,36 +15,37 @@ import {
   TASKS as CO_CONTACT_TASKS,
   PATH_STAGES,
   getTasksForStage,
-  PHASE_ORDER,
-  PHASE_STYLES,
-  formatCountdown,
-  type TaskStatus,
 } from '../../data/caseOpeningContactData.ts';
 
-// Use phases/tasks from caseOpeningContactData for path bar, but define tracker-compatible phases
+// 7 consolidated phases matching PATH_STAGES
 const CO_PHASES: Phase[] = [
-  { id: 'Client Orientation', label: 'Client Orientation', color: 'blue', order: 1 },
+  { id: 'Contact & Orientation', label: 'Contact & Orientation', color: 'blue', order: 1 },
   { id: 'Case Setup', label: 'Case Setup', color: 'indigo', order: 2 },
-  { id: 'Automated Doc Request', label: 'Automated Doc Request', color: 'green', order: 3 },
-  { id: 'Doc Request', label: 'Doc Request', color: 'orange', order: 4 },
-  { id: 'Review', label: 'Review', color: 'purple', order: 5 },
-  { id: 'Doc Production', label: 'Doc Production', color: 'orange', order: 6 },
-  { id: 'Approval', label: 'Approval', color: 'purple', order: 7 },
-  { id: 'Filing', label: 'Filing', color: 'rose', order: 8 },
-  { id: 'Service of Summons & Complaint', label: 'Service of Summons & Complaint', color: 'teal', order: 9 },
-  { id: 'Court Notice', label: 'Court Notice', color: 'slate', order: 10 },
-  { id: 'Follow Up', label: 'Follow Up', color: 'amber', order: 11 },
-  { id: 'Supportive Doc Production', label: 'Supportive Doc Production', color: 'pink', order: 12 },
-  { id: 'Court Filing Notice', label: 'Court Filing Notice', color: 'slate', order: 13 },
+  { id: 'Doc Requests', label: 'Doc Requests', color: 'green', order: 3 },
+  { id: 'Review & Drafting', label: 'Review & Drafting', color: 'purple', order: 4 },
+  { id: 'Filing & Service', label: 'Filing & Service', color: 'rose', order: 5 },
+  { id: 'Follow Up', label: 'Follow Up', color: 'amber', order: 6 },
+  { id: 'Final Actions', label: 'Final Actions', color: 'slate', order: 7 },
 ];
 
-// Convert contact tasks to TrackerTask-compatible format
+// Map each task to its consolidated phase using PATH_STAGES index ranges
+function getConsolidatedPhase(taskId: string): string {
+  const taskIdx = CO_CONTACT_TASKS.findIndex((t) => t.id === taskId);
+  for (const stage of PATH_STAGES) {
+    const startIdx = CO_CONTACT_TASKS.findIndex((t) => t.id === stage.firstTaskId);
+    const endIdx = CO_CONTACT_TASKS.findIndex((t) => t.id === stage.lastTaskId);
+    if (taskIdx >= startIdx && taskIdx <= endIdx) return stage.label;
+  }
+  return 'Unknown';
+}
+
+// Convert contact tasks to TrackerTask-compatible format with consolidated phases
 const CO_TRACKER_TASKS: TrackerTask[] = CO_CONTACT_TASKS.map((t, i) => ({
   id: t.id,
   label: t.label,
   assignedTo: t.assignedTo,
   sla: t.sla,
-  phase: t.phase,
+  phase: getConsolidatedPhase(t.id),
   phaseOrder: i + 1,
 }));
 
@@ -398,20 +399,6 @@ export default function CaseOpeningMatter() {
     </div>
   );
 
-  const contactPursuitContent = (
-    <div className="py-4">
-      <div className="rounded-lg border border-border bg-card p-6 text-center">
-        <p className="text-sm text-muted-foreground mb-2">
-          Contact Pursuit workflow with call timeline, SLA countdown, and connected/not-connected flow.
-        </p>
-        <p className="text-xs text-muted-foreground">
-          For the full interactive experience, visit the dedicated{' '}
-          <a href="/performance-infrastructure/mockups/client-contact-2" className="text-blue-600 hover:underline">Contact Pursuit 2.0</a> page.
-        </p>
-      </div>
-    </div>
-  );
-
   const metricsContent = (
     <div className="py-4">
       <div className="grid gap-4 md:grid-cols-3">
@@ -442,8 +429,7 @@ export default function CaseOpeningMatter() {
     <div className="flex-1 overflow-auto">
       <LitifyMatterLayout
         title="Lit / Case Opening &mdash; Matter Record"
-        group="case-opening"
-        activeNavId="co-matter"
+        activeMatterId="co-matter"
         recordHeaderProps={{
           title: 'Martinez, Roberto | MVA Rear-End | 2024-0847',
           icon: ClipboardList,
@@ -467,7 +453,6 @@ export default function CaseOpeningMatter() {
           { id: 'overview', label: 'Overview', content: overviewContent },
           { id: 'matter-plan', label: 'Matter Plan', content: matterPlanContent },
           { id: 'scoring', label: 'Scoring', content: scoringContent },
-          { id: 'contact-pursuit', label: 'Contact Pursuit', content: contactPursuitContent },
           { id: 'metrics', label: 'Metrics', content: metricsContent },
         ]}
         utilityBarItems={[

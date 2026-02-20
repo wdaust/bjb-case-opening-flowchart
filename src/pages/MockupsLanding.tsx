@@ -17,8 +17,7 @@ const caseOpeningTabs = [
   { id: 'client-contact', label: 'Client Contact Pursuit', to: '/performance-infrastructure/mockups/client-contact' },
   { id: 'case-setup', label: 'Case Setup Scoring', to: '/performance-infrastructure/mockups/case-setup' },
   { id: 'task-tracker', label: '53-Task Tracker', to: '/performance-infrastructure/mockups/task-tracker' },
-  { id: 'client-contact-2', label: 'Contact Pursuit 2.0', to: '/performance-infrastructure/mockups/client-contact-2' },
-  { id: 'co-matter', label: 'Matter Record', to: '/performance-infrastructure/mockups/co-matter' },
+{ id: 'co-matter', label: 'Matter Record', to: '/performance-infrastructure/mockups/co-matter' },
 ];
 
 const treatmentMonitoringTabs = [

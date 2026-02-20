@@ -5,8 +5,8 @@ import { DashboardFilterProvider } from './contexts/DashboardFilterContext.tsx';
 import { Sidebar } from './components/Sidebar.tsx';
 import PerformanceInfrastructure from './pages/PerformanceInfrastructure.tsx';
 import MockupsLanding from './pages/MockupsLanding.tsx';
+import LitifyMockupsLanding from './pages/LitifyMockupsLanding.tsx';
 import ClientContact from './pages/mockups/ClientContact.tsx';
-import ClientContact2 from './pages/mockups/ClientContact2.tsx';
 import CaseSetup from './pages/mockups/CaseSetup.tsx';
 import TaskTracker from './pages/mockups/TaskTracker.tsx';
 import TMContact from './pages/mockups/TMContact.tsx';
@@ -93,8 +93,8 @@ export default function App() {
             <Route path="case/:caseId" element={<CaseExecution />} />
             <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
             <Route path="performance-infrastructure/mockups" element={<MockupsLanding />} />
+            <Route path="performance-infrastructure/litify" element={<LitifyMockupsLanding />} />
             <Route path="performance-infrastructure/mockups/client-contact" element={<ClientContact />} />
-            <Route path="performance-infrastructure/mockups/client-contact-2" element={<ClientContact2 />} />
             <Route path="performance-infrastructure/mockups/case-setup" element={<CaseSetup />} />
             <Route path="performance-infrastructure/mockups/task-tracker" element={<TaskTracker />} />
             <Route path="performance-infrastructure/mockups/tm-contact" element={<TMContact />} />
