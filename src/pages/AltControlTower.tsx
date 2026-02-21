@@ -79,35 +79,40 @@ function buildRadialGauges(controlData: ReturnType<typeof getControlTowerData>, 
 }
 
 function buildSankeyData(activeCases: ReturnType<typeof getActiveCases>) {
+  // Prefix labels to avoid duplicate node IDs (e.g. "Treatment Monitoring" in both pre-lit and lit)
+  const sankeyLabel = (s: SubStage): string => {
+    if (preLitSubStageOrder.includes(s as any)) return `PL: ${stageLabels[s]}`;
+    return `Lit: ${stageLabels[s]}`;
+  };
+
   const nodes: { id: string }[] = [
     { id: 'Intake' },
-    ...preLitSubStageOrder.map(s => ({ id: stageLabels[s] })),
-    ...litSubStageOrder.map(s => ({ id: stageLabels[s] })),
+    ...preLitSubStageOrder.map(s => ({ id: sankeyLabel(s) })),
+    ...litSubStageOrder.map(s => ({ id: sankeyLabel(s) })),
   ];
 
-  // Flow: Intake → first pre-lit stages, pre-lit stages → next stages, last pre-lit → first lit, etc.
   const stageCounts = new Map<Stage, number>();
   activeCases.forEach(c => stageCounts.set(c.stage, (stageCounts.get(c.stage) || 0) + 1));
 
   const links: { source: string; target: string; value: number }[] = [];
   const intakeCount = stageCounts.get('intake') || 183;
 
-  // Intake feeds into pre-lit stages
-  links.push({ source: 'Intake', target: stageLabels['pre-account-opening'], value: intakeCount });
+  // Intake feeds into first pre-lit stage
+  links.push({ source: 'Intake', target: sankeyLabel('pre-account-opening'), value: intakeCount });
 
   // Sequential pre-lit flow
   for (let i = 0; i < preLitSubStageOrder.length - 1; i++) {
     const from = preLitSubStageOrder[i];
     const to = preLitSubStageOrder[i + 1];
     const val = stageCounts.get(from) || 100;
-    links.push({ source: stageLabels[from], target: stageLabels[to], value: Math.round(val * 0.85) });
+    links.push({ source: sankeyLabel(from), target: sankeyLabel(to), value: Math.round(val * 0.85) });
   }
 
   // Last pre-lit → first lit
   const lastPreLit = preLitSubStageOrder[preLitSubStageOrder.length - 1];
   links.push({
-    source: stageLabels[lastPreLit],
-    target: stageLabels['lit-case-opening'],
+    source: sankeyLabel(lastPreLit),
+    target: sankeyLabel('lit-case-opening'),
     value: stageCounts.get(lastPreLit) || 100,
   });
 
@@ -116,7 +121,7 @@ function buildSankeyData(activeCases: ReturnType<typeof getActiveCases>) {
     const from = litSubStageOrder[i];
     const to = litSubStageOrder[i + 1];
     const val = stageCounts.get(from) || 100;
-    links.push({ source: stageLabels[from], target: stageLabels[to], value: Math.round(val * 0.8) });
+    links.push({ source: sankeyLabel(from), target: sankeyLabel(to), value: Math.round(val * 0.8) });
   }
 
   return { nodes, links };
