@@ -24,7 +24,7 @@ export const nivoTheme: PartialTheme = {
 };
 
 export const chartColors = [
-  '#38bdf8', '#f472b6', '#a78bfa', '#34d399', '#fb923c',
-  '#facc15', '#f87171', '#22d3ee', '#818cf8', '#4ade80',
+  '#22c55e', '#a78bfa', '#38bdf8', '#f472b6', '#facc15',
+  '#fb923c', '#f87171', '#22d3ee', '#818cf8', '#4ade80',
   '#e879f9', '#fbbf24',
 ];
