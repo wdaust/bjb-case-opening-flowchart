@@ -253,6 +253,10 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
                   <LayoutDashboard size={14} className="shrink-0" />
                   <span className="text-xs">Litify Mockups</span>
                 </NavLink>
+                <NavLink to="/performance-infrastructure/alt-control-tower" className={linkClass}>
+                  <LayoutDashboard size={14} className="shrink-0" />
+                  <span className="text-xs">Alt Control Tower</span>
+                </NavLink>
               </div>
             )}
           </div>
