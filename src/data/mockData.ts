@@ -437,7 +437,7 @@ export interface StageAgeMetric {
 }
 
 export function getTopStageAgeMetrics(): StageAgeMetric[] {
-  const topStages: Stage[] = ["lit-discovery", "lit-expert-depo", "lit-arb-mediation", "pre-treatment-monitoring", "pre-value-development", "pre-demand-readiness"];
+  const topStages: Stage[] = ["lit-case-opening", "lit-treatment-monitoring", "lit-discovery", "lit-expert-depo", "lit-arb-mediation", "lit-trial"];
   return topStages.map(stage => {
     const stageCases = getCasesByStage(stage);
     const ages = stageCases.map(getDaysInStage).sort((a, b) => a - b);
