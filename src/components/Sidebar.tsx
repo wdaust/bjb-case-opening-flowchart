@@ -61,10 +61,16 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     cn(
-      'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors',
+      'group/link flex items-center gap-3 px-3 py-2 rounded-lg text-sm',
+      'transition-all duration-200 ease-out relative',
       isActive
-        ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-        : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+        ? 'bg-sidebar-primary/10 text-sidebar-primary font-medium shadow-sm shadow-sidebar-primary/5 border-l-2 border-sidebar-primary'
+        : [
+            'text-sidebar-foreground border-l-2 border-transparent',
+            'hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground',
+            'hover:translate-x-0.5 hover:border-sidebar-primary/40',
+            'hover:shadow-sm hover:shadow-sidebar-primary/5',
+          ]
     );
 
   const sidebarContent = (
@@ -127,10 +133,10 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
               <button
                 onClick={() => setStagesOpen(o => !o)}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
+                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ease-out w-full border-l-2',
                   location.pathname.startsWith('/stage')
-                    ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-                    : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+                    ? 'bg-sidebar-primary/10 text-sidebar-primary font-medium shadow-sm shadow-sidebar-primary/5 border-sidebar-primary'
+                    : 'text-sidebar-foreground border-transparent hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground hover:translate-x-0.5 hover:border-sidebar-primary/40 hover:shadow-sm hover:shadow-sidebar-primary/5'
                 )}
               >
                 <FolderOpen size={18} className="shrink-0" />
@@ -153,10 +159,10 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
                           <button
                             onClick={() => setExpandedParent(prev => prev === ps ? null : ps)}
                             className={cn(
-                              'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
+                              'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ease-out w-full border-l-2',
                               location.pathname === `/stage/${ps}` || (isExpanded && location.pathname.startsWith('/stage/'))
-                                ? 'text-sidebar-accent-foreground font-medium'
-                                : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+                                ? 'text-sidebar-primary font-medium border-sidebar-primary/50'
+                                : 'text-sidebar-foreground border-transparent hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground hover:translate-x-0.5 hover:border-sidebar-primary/40'
                             )}
                           >
                             <Icon size={14} className="shrink-0" />
@@ -231,10 +237,10 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
             <button
               onClick={() => setPerfOpen(o => !o)}
               className={cn(
-                'flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors w-full',
+                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 ease-out w-full border-l-2',
                 location.pathname.startsWith('/performance-infrastructure')
-                  ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-                  : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+                  ? 'bg-sidebar-primary/10 text-sidebar-primary font-medium shadow-sm shadow-sidebar-primary/5 border-sidebar-primary'
+                  : 'text-sidebar-foreground border-transparent hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground hover:translate-x-0.5 hover:border-sidebar-primary/40 hover:shadow-sm hover:shadow-sidebar-primary/5'
               )}
             >
               <GitBranch size={18} className="shrink-0" />
@@ -279,14 +285,14 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
       {/* Bottom controls */}
       <div className="p-2 border-t border-sidebar-border space-y-1">
         <Button variant="ghost" size="sm" onClick={onToggleDark}
-          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground transition-all duration-200"
           title="Toggle dark mode"
         >
           {darkMode ? <Sun size={18} className="shrink-0" /> : <Moon size={18} className="shrink-0" />}
           {!collapsed && <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>}
         </Button>
         <Button variant="ghost" size="sm" onClick={onToggleCollapse}
-          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-foreground max-md:hidden"
+          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground transition-all duration-200 max-md:hidden"
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight size={18} className="shrink-0" /> : <ChevronLeft size={18} className="shrink-0" />}
