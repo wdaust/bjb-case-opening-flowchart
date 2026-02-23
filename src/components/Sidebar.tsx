@@ -4,7 +4,7 @@ import { Button } from './ui/button.tsx';
 import {
   GitBranch, LayoutDashboard, Activity, AlertTriangle, TrendingUp,
   FolderOpen, ChevronLeft, ChevronRight, ChevronDown, Sun, Moon, Menu, X,
-  UserCircle, CalendarCheck, Inbox, FileText, Scale, Layers, DollarSign,
+  UserCircle, CalendarCheck, Inbox, FileText, Scale, Layers, DollarSign, Phone,
 } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
 import {
@@ -261,6 +261,10 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
                 <NavLink to="/performance-infrastructure/alt-control-tower" className={linkClass}>
                   <LayoutDashboard size={14} className="shrink-0" />
                   <span className="text-xs">Alt Control Tower</span>
+                </NavLink>
+                <NavLink to="/performance-infrastructure/call-team-dashboard" className={linkClass}>
+                  <Phone size={14} className="shrink-0" />
+                  <span className="text-xs">Call Team Dashboard</span>
                 </NavLink>
               </div>
             )}
