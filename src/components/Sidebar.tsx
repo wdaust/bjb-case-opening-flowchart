@@ -4,7 +4,7 @@ import { Button } from './ui/button.tsx';
 import {
   GitBranch, LayoutDashboard, Activity, AlertTriangle, TrendingUp,
   FolderOpen, ChevronLeft, ChevronRight, ChevronDown, Sun, Moon, Menu, X,
-  UserCircle, CalendarCheck, Inbox, FileText, Scale, Layers,
+  UserCircle, CalendarCheck, Inbox, FileText, Scale, Layers, DollarSign,
 } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
 import {
@@ -104,6 +104,11 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
         <NavLink to="/forecast" className={linkClass} title="Forecast & Yield">
           <TrendingUp size={18} className="shrink-0" />
           {!collapsed && <span>Forecast & Yield</span>}
+        </NavLink>
+
+        <NavLink to="/today-exposure" className={linkClass} title="Today's Exposure">
+          <DollarSign size={18} className="shrink-0" />
+          {!collapsed && <span>Today's Exposure</span>}
         </NavLink>
 
         {/* Divider */}
