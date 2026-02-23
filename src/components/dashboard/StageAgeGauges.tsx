@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { DashboardGrid } from './DashboardGrid';
+import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import type { StageAgeMetric } from '../../data/mockData';
 
 interface Props {
-  metrics: StageAgeMetric[];
+  litMetrics: StageAgeMetric[];
+  preLitMetrics: StageAgeMetric[];
 }
 
 /** Bullet chart card: qualitative ranges, median bar, P90 tick, SLA target line. */
@@ -83,12 +86,26 @@ function BulletCard({ m }: { m: StageAgeMetric }) {
   );
 }
 
-export function StageAgeGauges({ metrics }: Props) {
+export function StageAgeGauges({ litMetrics, preLitMetrics }: Props) {
+  const [view, setView] = useState<'lit' | 'pre-lit'>('lit');
+  const metrics = view === 'lit' ? litMetrics : preLitMetrics;
+
   return (
-    <DashboardGrid cols={2}>
-      {metrics.map(m => (
-        <BulletCard key={m.stage} m={m} />
-      ))}
-    </DashboardGrid>
+    <div>
+      <div className="flex items-center justify-between gap-4 mb-4">
+        <h2 className="text-lg font-semibold text-foreground">Aging & SLA Tracker</h2>
+        <Tabs value={view} onValueChange={(v) => setView(v as 'lit' | 'pre-lit')}>
+          <TabsList>
+            <TabsTrigger value="lit">Lit</TabsTrigger>
+            <TabsTrigger value="pre-lit">Pre-Lit</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      <DashboardGrid cols={2}>
+        {metrics.map(m => (
+          <BulletCard key={m.stage} m={m} />
+        ))}
+      </DashboardGrid>
+    </div>
   );
 }

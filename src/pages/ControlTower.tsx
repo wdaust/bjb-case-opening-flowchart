@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../utils/cn';
-import { getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels, getTopStageAgeMetrics } from '../data/mockData';
+import { getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels, getTopStageAgeMetrics, getPreLitStageAgeMetrics } from '../data/mockData';
 import type { SubStageCount, Stage } from '../data/mockData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { StageBar } from '../components/dashboard/StageBar';
@@ -14,6 +14,7 @@ export default function ControlTower() {
   const navigate = useNavigate();
   const controlTowerData = getControlTowerData();
   const topStageMetrics = getTopStageAgeMetrics();
+  const preLitMetrics = getPreLitStageAgeMetrics();
   const activeCases = useMemo(() => getActiveCases(), []);
   const allDeadlines = useMemo(() => getUpcomingDeadlines(90), []);
 
@@ -209,11 +210,12 @@ export default function ControlTower() {
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
+      <h1 className="text-2xl font-bold text-foreground">Performance Control Tower</h1>
       <FilterBar />
 
       <SectionHeader title="Inventory by Stage" />
       <StageBar parentStages={controlTowerData.stageCounts} />
-      <StageAgeGauges metrics={topStageMetrics} />
+      <StageAgeGauges litMetrics={topStageMetrics} preLitMetrics={preLitMetrics} />
 
       {/* Row 1 — Portfolio Overview */}
       <DashboardGrid cols={4}>

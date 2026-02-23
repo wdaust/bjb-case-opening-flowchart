@@ -86,9 +86,9 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
 
       {/* Nav */}
       <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
-        <NavLink to="/control-tower" className={linkClass} title="Control Tower">
+        <NavLink to="/control-tower" className={linkClass} title="Command View">
           <LayoutDashboard size={18} className="shrink-0" />
-          {!collapsed && <span>Control Tower</span>}
+          {!collapsed && <span>Command View</span>}
         </NavLink>
 
         <NavLink to="/inventory-health" className={linkClass} title="Inventory Health Index">

@@ -454,6 +454,28 @@ export function getTopStageAgeMetrics(): StageAgeMetric[] {
   });
 }
 
+export function getPreLitStageAgeMetrics(): StageAgeMetric[] {
+  const stages: Stage[] = [
+    "pre-account-opening", "pre-treatment-monitoring",
+    "pre-value-development", "pre-demand-readiness",
+    "pre-negotiation", "pre-resolution-pending",
+  ];
+  return stages.map(stage => {
+    const stageCases = getCasesByStage(stage);
+    const ages = stageCases.map(getDaysInStage).sort((a, b) => a - b);
+    const medianAge = ages.length > 0 ? ages[Math.floor(ages.length / 2)] : 0;
+    const p90Age = ages.length > 0 ? ages[Math.floor(ages.length * 0.9)] : 0;
+    return {
+      stage,
+      label: stageLabels[stage],
+      count: stageCases.length,
+      medianAge,
+      p90Age,
+      slaTarget: stageSlaTargets[stage],
+    };
+  });
+}
+
 export function getSlaStatus(c: LitCase): "ok" | "warning" | "breach" {
   const days = getDaysInStage(c);
   if (days > c.slaTarget) return "breach";
