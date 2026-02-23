@@ -21,16 +21,18 @@ import {
 import { ResponsiveSankey } from '@nivo/sankey';
 import { nivoTheme } from '../lib/nivoTheme';
 
-// ── Palette (matching AltControlTower) ─────────────────────────────────
+// ── Palette ─────────────────────────────────────────────────────────────
+// Case type colors (categorical)
 const GREEN = '#22c55e';
 const VIOLET = '#a78bfa';
 const SKY = '#38bdf8';
 const PINK = '#f472b6';
 const YELLOW = '#facc15';
+// Semantic severity colors (good → warning → danger → critical)
+const EMERALD = '#10b981';
 const AMBER = '#f59e0b';
-const ORANGE = '#f97316';
 const RED = '#ef4444';
-const DARK_RED = '#dc2626';
+const ROSE = '#e11d48';
 
 const STAGE_COLORS: Record<string, string> = {
   Intake: GREEN,
@@ -199,7 +201,7 @@ export default function ControlTower() {
     const compliancePct = total > 0 ? Math.round((onTrack / total) * 100) : 0;
     return {
       data: [
-        { name: 'On-Track', value: onTrack, color: GREEN },
+        { name: 'On-Track', value: onTrack, color: EMERALD },
         { name: 'Warning', value: warning, color: AMBER },
         { name: 'Over SLA', value: overSla, color: RED },
       ],
@@ -216,7 +218,7 @@ export default function ControlTower() {
     const coveragePct = total > 0 ? Math.round((covered / total) * 100) : 0;
     return {
       data: [
-        { name: 'Covered', value: covered, color: GREEN },
+        { name: 'Covered', value: covered, color: EMERALD },
         { name: 'Partial', value: partial, color: AMBER },
         { name: 'No Next Action', value: none, color: RED },
       ],
@@ -236,10 +238,10 @@ export default function ControlTower() {
     }
     return {
       data: [
-        { name: 'Low Risk', value: low, color: GREEN },
+        { name: 'Low Risk', value: low, color: EMERALD },
         { name: 'Medium Risk', value: medium, color: AMBER },
-        { name: 'High Risk', value: high, color: ORANGE },
-        { name: 'Critical', value: critical, color: DARK_RED },
+        { name: 'High Risk', value: high, color: RED },
+        { name: 'Critical', value: critical, color: ROSE },
       ],
       highRiskCount: high + critical,
     };
@@ -559,16 +561,16 @@ export default function ControlTower() {
                 nodeSpacing={14}
                 nodeBorderWidth={0}
                 nodeBorderRadius={3}
-                linkOpacity={0.25}
-                linkHoverOpacity={0.75}
-                linkHoverOthersOpacity={0.08}
+                linkOpacity={0.5}
+                linkHoverOpacity={0.8}
+                linkHoverOthersOpacity={0.1}
                 linkContract={0}
-                linkBlendMode="screen"
+                linkBlendMode="multiply"
                 enableLinkGradient
                 labelPosition="outside"
                 labelOrientation="horizontal"
                 labelPadding={12}
-                labelTextColor="#a1a1aa"
+                labelTextColor={{ from: 'color', modifiers: [['darker', 1.2]] }}
                 margin={{ top: 10, right: 140, bottom: 10, left: 10 }}
               />
             </div>
@@ -739,16 +741,16 @@ export default function ControlTower() {
                     <YAxis hide />
                     <RechartsTooltip {...tooltipStyle} />
                     <Bar dataKey="1-7 days" stackId="a" fill={AMBER} />
-                    <Bar dataKey="8-14 days" stackId="a" fill={ORANGE} />
-                    <Bar dataKey="15+ days" stackId="a" fill={RED} radius={[3, 3, 0, 0]} />
+                    <Bar dataKey="8-14 days" stackId="a" fill={RED} />
+                    <Bar dataKey="15+ days" stackId="a" fill={ROSE} radius={[3, 3, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
             <div className="flex gap-3 mt-2">
               <LegendDot color={AMBER} label="1-7 days" />
-              <LegendDot color={ORANGE} label="8-14 days" />
-              <LegendDot color={RED} label="15+ days" />
+              <LegendDot color={RED} label="8-14 days" />
+              <LegendDot color={ROSE} label="15+ days" />
             </div>
           </div>
         </DashboardGrid>
