@@ -611,6 +611,30 @@ export function getWeeklyThroughput(): WeeklyMetric[] {
   return weeks;
 }
 
+// ── Weekly exits by stage (for stacked bar) ─────────────────────────────
+export function getWeeklyExitsByStage(): { week: string; 'Pre-Lit': number; Lit: number; Settled: number; Dismissed: number }[] {
+  const result = [];
+  for (let w = 0; w < 8; w++) {
+    result.push({
+      week: `W${w + 1}`,
+      'Pre-Lit': 12 + ((w * 3) % 8),
+      Lit: 8 + ((w * 5) % 10),
+      Settled: 18 + ((w * 7) % 12),
+      Dismissed: 5 + ((w * 2) % 6),
+    });
+  }
+  return result;
+}
+
+// ── Overdue tasks by stage (for stacked bar) ────────────────────────────
+export function getOverdueTasksByStage(): { stage: string; '1-7 days': number; '8-14 days': number; '15+ days': number }[] {
+  return [
+    { stage: 'Discovery', '1-7 days': 34, '8-14 days': 18, '15+ days': 12 },
+    { stage: 'Expert & Depo', '1-7 days': 28, '8-14 days': 14, '15+ days': 9 },
+    { stage: 'Arb/Med', '1-7 days': 16, '8-14 days': 8, '15+ days': 5 },
+  ];
+}
+
 // ── Forecast data ───────────────────────────────────────────────────────
 export function getForecastData() {
   const active = getActiveCases();
