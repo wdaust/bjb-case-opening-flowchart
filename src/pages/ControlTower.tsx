@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../utils/cn';
 import { getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels } from '../data/mockData';
-import type { SubStageCount } from '../data/mockData';
+import type { SubStageCount, Stage } from '../data/mockData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { StageBar } from '../components/dashboard/StageBar';
 import { FilterBar } from '../components/dashboard/FilterBar';
@@ -45,7 +45,6 @@ export default function ControlTower() {
 
   const totalExposure = activeCases.reduce((s, c) => s + c.exposureAmount, 0);
   const avgEvPerCase = activeCases.length > 0 ? Math.round(controlTowerData.totalEV / activeCases.length) : 0;
-  const highestEvCase = activeCases.reduce((max, c) => c.expectedValue > max.expectedValue ? c : max, activeCases[0]);
   const avgEvConfidence = activeCases.length > 0
     ? Math.round(activeCases.reduce((s, c) => s + c.evConfidence, 0) / activeCases.length * 100)
     : 0;
@@ -82,25 +81,9 @@ export default function ControlTower() {
     return days >= 14 && days <= 30;
   }).length;
 
-  const courtDates = allDeadlines.filter(d => ["trial", "court", "depo", "motion"].includes(d.type));
-  const trials = courtDates.filter(d => d.type === "trial").length;
-  const depositions = courtDates.filter(d => d.type === "depo").length;
-  const motions = courtDates.filter(d => d.type === "motion").length;
-
   const overSlaCases = activeCases.filter(c => c.riskFlags.includes("Over SLA"));
   const bothFlags = activeCases.filter(c => c.riskFlags.includes("Over SLA") && c.riskFlags.includes("Silent stall")).length;
 
-  const maxExposureCase = activeCases.reduce((max, c) => c.exposureAmount > max.exposureAmount ? c : max, activeCases[0]);
-  const minExposureCase = activeCases.reduce((min, c) => c.exposureAmount < min.exposureAmount ? c : min, activeCases[0]);
-  const avgExposurePerCase = activeCases.length > 0 ? Math.round(totalExposure / activeCases.length) : 0;
-
-  const evExposureRatio = totalExposure > 0 ? Math.round((controlTowerData.totalEV / totalExposure) * 1000) / 10 : 0;
-  const preLitExposure = preLitCases.reduce((s, c) => s + c.exposureAmount, 0);
-  const preLitEV = preLitCases.reduce((s, c) => s + c.expectedValue, 0);
-  const litExposure = litCases.reduce((s, c) => s + c.exposureAmount, 0);
-  const litEV = litCases.reduce((s, c) => s + c.expectedValue, 0);
-  const preLitRatio = preLitExposure > 0 ? Math.round((preLitEV / preLitExposure) * 1000) / 10 : 0;
-  const litRatio = litExposure > 0 ? Math.round((litEV / litExposure) * 1000) / 10 : 0;
 
   // Flatten all substages for heat map
   const heatMapSubstages: (SubStageCount & { parentStage: string })[] = controlTowerData.stageCounts
@@ -212,7 +195,7 @@ export default function ControlTower() {
   ];
 
   const abbreviateStage = (stage: string) =>
-    stageLabels[stage]
+    stageLabels[stage as Stage]
       .replace("Treatment Monitoring", "Treat Mon")
       .replace("Account Opening", "Acct Open")
       .replace("Value Development", "Val Dev")
