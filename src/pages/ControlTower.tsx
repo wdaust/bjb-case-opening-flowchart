@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../utils/cn';
 import {
@@ -100,8 +100,17 @@ const tooltipStyle = {
 
 const hoverCard = "transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20";
 
+// Reactively detect dark mode from the <html> class toggle
+const darkSubscribe = (cb: () => void) => {
+  const obs = new MutationObserver(cb);
+  obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  return () => obs.disconnect();
+};
+const darkSnapshot = () => document.documentElement.classList.contains('dark');
+
 export default function ControlTower() {
   const navigate = useNavigate();
+  const isDark = useSyncExternalStore(darkSubscribe, darkSnapshot);
   const controlTowerData = getControlTowerData();
   const topStageMetrics = getTopStageAgeMetrics();
   const preLitMetrics = getPreLitStageAgeMetrics();
@@ -561,16 +570,16 @@ export default function ControlTower() {
                 nodeSpacing={14}
                 nodeBorderWidth={0}
                 nodeBorderRadius={3}
-                linkOpacity={0.5}
-                linkHoverOpacity={0.8}
-                linkHoverOthersOpacity={0.1}
+                linkOpacity={isDark ? 0.35 : 0.5}
+                linkHoverOpacity={isDark ? 0.75 : 0.8}
+                linkHoverOthersOpacity={isDark ? 0.08 : 0.1}
                 linkContract={0}
-                linkBlendMode="multiply"
+                linkBlendMode={isDark ? 'screen' : 'multiply'}
                 enableLinkGradient
                 labelPosition="outside"
                 labelOrientation="horizontal"
                 labelPadding={12}
-                labelTextColor={{ from: 'color', modifiers: [['darker', 1.2]] }}
+                labelTextColor={isDark ? '#a1a1aa' : { from: 'color', modifiers: [['darker', 1.2]] }}
                 margin={{ top: 10, right: 140, bottom: 10, left: 10 }}
               />
             </div>
