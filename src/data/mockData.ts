@@ -427,6 +427,33 @@ export function getDaysInStage(c: LitCase): number {
   return Math.floor((now.getTime() - entry.getTime()) / (1000 * 60 * 60 * 24));
 }
 
+export interface StageAgeMetric {
+  stage: Stage;
+  label: string;
+  count: number;
+  medianAge: number;
+  p90Age: number;
+  slaTarget: number;
+}
+
+export function getTopStageAgeMetrics(): StageAgeMetric[] {
+  const topStages: Stage[] = ["lit-discovery", "lit-expert-depo", "lit-arb-mediation", "pre-treatment-monitoring", "pre-value-development", "pre-demand-readiness"];
+  return topStages.map(stage => {
+    const stageCases = getCasesByStage(stage);
+    const ages = stageCases.map(getDaysInStage).sort((a, b) => a - b);
+    const medianAge = ages.length > 0 ? ages[Math.floor(ages.length / 2)] : 0;
+    const p90Age = ages.length > 0 ? ages[Math.floor(ages.length * 0.9)] : 0;
+    return {
+      stage,
+      label: stageLabels[stage],
+      count: stageCases.length,
+      medianAge,
+      p90Age,
+      slaTarget: stageSlaTargets[stage],
+    };
+  });
+}
+
 export function getSlaStatus(c: LitCase): "ok" | "warning" | "breach" {
   const days = getDaysInStage(c);
   if (days > c.slaTarget) return "breach";

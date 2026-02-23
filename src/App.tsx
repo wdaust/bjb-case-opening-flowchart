@@ -46,6 +46,7 @@ import AttorneyCockpit from './pages/AttorneyCockpit.tsx';
 import ManagerRhythm from './pages/ManagerRhythm.tsx';
 import CaseExecution from './pages/CaseExecution.tsx';
 import TodaysExposure from './pages/TodaysExposure.tsx';
+import GaugeOptions from './pages/GaugeOptions.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 const SIDEBAR_KEY = 'bjb-sidebar-collapsed';
@@ -102,6 +103,7 @@ export default function App() {
             <Route path="manager-rhythm" element={<ManagerRhythm />} />
             <Route path="today-exposure" element={<TodaysExposure />} />
             <Route path="case/:caseId" element={<CaseExecution />} />
+            <Route path="gauge-options" element={<GaugeOptions />} />
             <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
             <Route path="performance-infrastructure/mockups" element={<MockupsLanding />} />
             <Route path="performance-infrastructure/litify" element={<LitifyMockupsLanding />} />

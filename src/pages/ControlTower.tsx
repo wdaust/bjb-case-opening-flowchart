@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../utils/cn';
-import { getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels } from '../data/mockData';
+import { getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels, getTopStageAgeMetrics } from '../data/mockData';
 import type { SubStageCount, Stage } from '../data/mockData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { StageBar } from '../components/dashboard/StageBar';
+import { StageAgeGauges } from '../components/dashboard/StageAgeGauges';
 import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
@@ -12,6 +13,7 @@ import { SectionHeader } from '../components/dashboard/SectionHeader';
 export default function ControlTower() {
   const navigate = useNavigate();
   const controlTowerData = getControlTowerData();
+  const topStageMetrics = getTopStageAgeMetrics();
   const activeCases = useMemo(() => getActiveCases(), []);
   const allDeadlines = useMemo(() => getUpcomingDeadlines(90), []);
 
@@ -209,6 +211,10 @@ export default function ControlTower() {
     <div className="flex-1 overflow-auto p-6 space-y-6">
       <FilterBar />
 
+      <SectionHeader title="Inventory by Stage" />
+      <StageBar parentStages={controlTowerData.stageCounts} />
+      <StageAgeGauges metrics={topStageMetrics} />
+
       {/* Row 1 — Portfolio Overview */}
       <DashboardGrid cols={4}>
         <StatCard
@@ -359,9 +365,6 @@ export default function ControlTower() {
       </DashboardGrid>
 
       {/* Full-width sections */}
-      <SectionHeader title="Inventory by Stage" />
-      <StageBar parentStages={controlTowerData.stageCounts} />
-
       <SectionHeader
         title="Bottleneck Detector"
         subtitle="Heat map by sub-stage — severity-coded metrics"
