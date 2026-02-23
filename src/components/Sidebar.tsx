@@ -71,17 +71,17 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="p-4 border-b border-sidebar-border flex items-center gap-3 min-h-[60px]">
-        <img
-          src={
-            collapsed
-              ? `${import.meta.env.BASE_URL}favicon-dark.png`
-              : darkMode
-                ? `${import.meta.env.BASE_URL}logo.png`
-                : `${import.meta.env.BASE_URL}logo-dark.png`
-          }
-          alt="BJB"
-          className={cn('transition-all duration-200', collapsed ? 'w-8 h-8' : 'h-8')}
-        />
+        <div className={cn('transition-all duration-200', !darkMode && !collapsed && 'bg-black rounded px-2 py-1')}>
+          <img
+            src={
+              collapsed
+                ? `${import.meta.env.BASE_URL}favicon-dark.png`
+                : `${import.meta.env.BASE_URL}logo.png`
+            }
+            alt="BJB"
+            className={cn('transition-all duration-200', collapsed ? 'w-8 h-8' : 'h-8')}
+          />
+        </div>
       </div>
 
       {/* Nav */}
