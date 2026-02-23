@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-} from 'recharts';
-import { getControlTowerData, getActiveCases, getUpcomingDeadlines, parentStageLabels } from '../data/mockData';
+import { cn } from '../utils/cn';
+import { getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels } from '../data/mockData';
+import type { SubStageCount } from '../data/mockData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { StageBar } from '../components/dashboard/StageBar';
 import { FilterBar } from '../components/dashboard/FilterBar';
@@ -103,19 +102,132 @@ export default function ControlTower() {
   const preLitRatio = preLitExposure > 0 ? Math.round((preLitEV / preLitExposure) * 1000) / 10 : 0;
   const litRatio = litExposure > 0 ? Math.round((litEV / litExposure) * 1000) / 10 : 0;
 
-  const throughputRates = [4.2, 3.1, 2.4];
-  const bottleneckData = controlTowerData.stageCounts.map((sc, i) => ({
-    stage: parentStageLabels[sc.parentStage],
-    avgAge: sc.avgAge,
-    throughput: throughputRates[i] ?? 1.0,
-  }));
+  // Flatten all substages for heat map
+  const heatMapSubstages: (SubStageCount & { parentStage: string })[] = controlTowerData.stageCounts
+    .filter(sc => sc.parentStage !== "intake")
+    .flatMap(sc => sc.substages.map(sub => ({ ...sub, parentStage: sc.parentStage })));
+
+  // Simulated throughput and stall % derived from existing data
+  const getSimThroughput = (sub: SubStageCount) => {
+    // Higher count + lower avgAge = higher throughput
+    const base = sub.count > 0 ? Math.round((sub.count / Math.max(sub.avgAge, 1)) * 7 * 10) / 10 : 0;
+    return Math.min(Math.max(base, 0.2), 8.0);
+  };
+  const getSimStall = (sub: SubStageCount) => {
+    // Stall % derived from overSla ratio and avgAge
+    const base = sub.count > 0 ? (sub.overSla / sub.count) * 0.4 + (Math.min(sub.avgAge, 300) / 300) * 0.2 : 0;
+    return Math.round(base * 1000) / 10;
+  };
+
+  // Premium heat map helpers
+  type Severity = "good" | "warning" | "elevated" | "critical";
+
+  const severityClasses: Record<Severity, string> = {
+    good:     "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 ring-emerald-500/20",
+    warning:  "bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 ring-amber-500/20",
+    elevated: "bg-orange-500/15 text-orange-700 dark:bg-orange-400/20 dark:text-orange-300 ring-orange-500/25",
+    critical: "bg-red-500/15 text-red-700 dark:bg-red-400/20 dark:text-red-300 ring-red-500/25",
+  };
+
+  const getSeverity = (metric: string, value: number): Severity => {
+    switch (metric) {
+      case "avgAge":
+        return value < 30 ? "good" : value < 90 ? "warning" : value < 180 ? "elevated" : "critical";
+      case "overSla":
+        return value < 10 ? "good" : value < 25 ? "warning" : value < 50 ? "elevated" : "critical";
+      case "throughput":
+        return value > 3 ? "good" : value > 1 ? "warning" : "critical";
+      case "stall":
+        return value < 5 ? "good" : value < 15 ? "warning" : "critical";
+      default:
+        return "good";
+    }
+  };
+
+  // Group spans for header row
+  const groups = (() => {
+    const result: { label: string; colSpan: number }[] = [];
+    let current: string | null = null;
+    let count = 0;
+    for (const sub of heatMapSubstages) {
+      const label = sub.parentStage === "pre-lit" ? "Pre-Lit" : "Litigation";
+      if (label !== current) {
+        if (current !== null) result.push({ label: current, colSpan: count });
+        current = label;
+        count = 1;
+      } else {
+        count++;
+      }
+    }
+    if (current !== null) result.push({ label: current, colSpan: count });
+    return result;
+  })();
+
+  // DRY metric row definitions
+  const metricRows: {
+    key: string;
+    label: string;
+    unit: string;
+    accentBorder: string;
+    getValue: (sub: SubStageCount) => number;
+    format: (v: number) => string;
+    metricKey: string;
+  }[] = [
+    {
+      key: "avgAge",
+      label: "Avg Age",
+      unit: "days",
+      accentBorder: "border-l-blue-500/60",
+      getValue: (sub) => sub.avgAge,
+      format: (v) => `${v}`,
+      metricKey: "avgAge",
+    },
+    {
+      key: "overSla",
+      label: "Over-SLA",
+      unit: "%",
+      accentBorder: "border-l-amber-500/60",
+      getValue: (sub) => sub.count > 0 ? Math.round((sub.overSla / sub.count) * 1000) / 10 : 0,
+      format: (v) => `${v}%`,
+      metricKey: "overSla",
+    },
+    {
+      key: "throughput",
+      label: "Throughput",
+      unit: "/wk",
+      accentBorder: "border-l-emerald-500/60",
+      getValue: (sub) => getSimThroughput(sub),
+      format: (v) => `${v}`,
+      metricKey: "throughput",
+    },
+    {
+      key: "stall",
+      label: "Stall",
+      unit: "%",
+      accentBorder: "border-l-rose-500/60",
+      getValue: (sub) => getSimStall(sub),
+      format: (v) => `${v}%`,
+      metricKey: "stall",
+    },
+  ];
+
+  const abbreviateStage = (stage: string) =>
+    stageLabels[stage]
+      .replace("Treatment Monitoring", "Treat Mon")
+      .replace("Account Opening", "Acct Open")
+      .replace("Value Development", "Val Dev")
+      .replace("Demand Readiness", "Dem Ready")
+      .replace("Resolution Pending", "Res Pend")
+      .replace("Case Opening", "Case Open")
+      .replace("Expert & Deposition", "Exp & Dep")
+      .replace("Arbitration/Mediation", "Arb/Med");
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
       <FilterBar />
 
       {/* Row 1 — Portfolio Overview */}
-      <DashboardGrid cols={5}>
+      <DashboardGrid cols={4}>
         <StatCard
           label="Total Active Inventory"
           value={controlTowerData.totalActive}
@@ -128,14 +240,25 @@ export default function ControlTower() {
           ]}
         />
         <StatCard
-          label="New In / Closed Out (30d)"
-          value="340 in / 310 out"
-          delta="net +30"
+          label="New In (30d)"
+          value={340}
+          delta="+12% vs prior 30d"
           deltaType="positive"
           subMetrics={[
             { label: "Avg days to intake", value: "4.2d", deltaType: "positive" },
             { label: "Reopen rate", value: "2.1%", deltaType: "neutral" },
             { label: "Net trend (7d)", value: "+8", deltaType: "positive" },
+          ]}
+        />
+        <StatCard
+          label="Closed Out (30d)"
+          value={310}
+          delta="net +30"
+          deltaType="positive"
+          subMetrics={[
+            { label: "Settled", value: Math.round(310 * 0.65), deltaType: "positive" },
+            { label: "Dismissed", value: Math.round(310 * 0.25), deltaType: "neutral" },
+            { label: "Trial verdict", value: Math.round(310 * 0.10), deltaType: "neutral" },
           ]}
         />
         <StatCard
@@ -150,6 +273,10 @@ export default function ControlTower() {
             { label: "Worst stage", value: "Discovery", deltaType: "negative" },
           ]}
         />
+      </DashboardGrid>
+
+      {/* Row 2 — Velocity & Throughput */}
+      <DashboardGrid cols={4}>
         <StatCard
           label="Silent Stall %"
           value={`${controlTowerData.stallPct}%`}
@@ -169,14 +296,10 @@ export default function ControlTower() {
           deltaType="positive"
           subMetrics={[
             { label: "Avg EV/case", value: `$${(avgEvPerCase / 1000).toFixed(0)}K`, deltaType: "neutral" },
-            { label: "Highest EV", value: `$${(highestEvCase?.expectedValue / 1000).toFixed(0)}K`, deltaType: "positive" },
+            { label: "Total exposure", value: `$${(totalExposure / 1_000_000).toFixed(1)}M`, deltaType: "neutral" },
             { label: "EV confidence", value: `${avgEvConfidence}%`, deltaType: avgEvConfidence > 50 ? "positive" : "negative" },
           ]}
         />
-      </DashboardGrid>
-
-      {/* Row 2 — Velocity & Throughput */}
-      <DashboardGrid cols={5}>
         <StatCard
           label="Avg Days in Pre-Lit"
           value={`${preLitAvgAge}d`}
@@ -199,6 +322,10 @@ export default function ControlTower() {
             { label: "Throughput/wk", value: "3.1", deltaType: "positive" },
           ]}
         />
+      </DashboardGrid>
+
+      {/* Row 3 — Risk & Operational */}
+      <DashboardGrid cols={4}>
         <StatCard
           label="Weekly Closures"
           value={weeklyClosures}
@@ -206,8 +333,8 @@ export default function ControlTower() {
           deltaType="positive"
           subMetrics={[
             { label: "Settled", value: Math.round(weeklyClosures * 0.65), deltaType: "positive" },
-            { label: "Dismissed", value: Math.round(weeklyClosures * 0.25), deltaType: "neutral" },
-            { label: "Trial verdict", value: Math.round(weeklyClosures * 0.10), deltaType: "neutral" },
+            { label: "Pre-Lit avg", value: "195d", deltaType: "neutral" },
+            { label: "Lit avg", value: "412d", deltaType: "negative" },
           ]}
         />
         <StatCard
@@ -222,21 +349,6 @@ export default function ControlTower() {
           ]}
         />
         <StatCard
-          label="Avg Time to Resolution"
-          value="285d"
-          delta="all resolved cases"
-          deltaType="neutral"
-          subMetrics={[
-            { label: "Pre-Lit avg", value: "195d", deltaType: "neutral" },
-            { label: "Lit avg", value: "412d", deltaType: "negative" },
-            { label: "Fastest case", value: "45d", deltaType: "positive" },
-          ]}
-        />
-      </DashboardGrid>
-
-      {/* Row 3 — Risk & Financial */}
-      <DashboardGrid cols={5}>
-        <StatCard
           label="Upcoming SOL (30d)"
           value={solDeadlines.filter(d => {
             const days = Math.ceil((new Date(d.date).getTime() - new Date("2026-02-19").getTime()) / 86400000);
@@ -248,39 +360,6 @@ export default function ControlTower() {
             { label: "< 7 days", value: sol7d, deltaType: sol7d > 0 ? "negative" : "positive" },
             { label: "7-14 days", value: sol7to14, deltaType: sol7to14 > 3 ? "negative" : "neutral" },
             { label: "14-30 days", value: sol14to30, deltaType: "neutral" },
-          ]}
-        />
-        <StatCard
-          label="Court Dates (30d)"
-          value={courtDates.length}
-          delta="trials, depos, motions"
-          deltaType="neutral"
-          subMetrics={[
-            { label: "Trials", value: trials, deltaType: "neutral" },
-            { label: "Depositions", value: depositions, deltaType: "neutral" },
-            { label: "Motions", value: motions, deltaType: "neutral" },
-          ]}
-        />
-        <StatCard
-          label="Total Exposure"
-          value={`$${(totalExposure / 1_000_000).toFixed(1)}M`}
-          delta="all active cases"
-          deltaType="neutral"
-          subMetrics={[
-            { label: "Avg/case", value: `$${(avgExposurePerCase / 1000).toFixed(0)}K`, deltaType: "neutral" },
-            { label: "Max case", value: `$${(maxExposureCase?.exposureAmount / 1000).toFixed(0)}K`, deltaType: "negative" },
-            { label: "Min case", value: `$${(minExposureCase?.exposureAmount / 1000).toFixed(0)}K`, deltaType: "neutral" },
-          ]}
-        />
-        <StatCard
-          label="EV / Exposure Ratio"
-          value={`${evExposureRatio}%`}
-          delta="totalEV / totalExposure"
-          deltaType={evExposureRatio > 50 ? "positive" : "negative"}
-          subMetrics={[
-            { label: "Pre-Lit ratio", value: `${preLitRatio}%`, deltaType: preLitRatio > 50 ? "positive" : "negative" },
-            { label: "Lit ratio", value: `${litRatio}%`, deltaType: litRatio > 50 ? "positive" : "negative" },
-            { label: "Best type", value: "Med Mal", deltaType: "positive" },
           ]}
         />
         <StatCard
@@ -302,21 +381,87 @@ export default function ControlTower() {
 
       <SectionHeader
         title="Bottleneck Detector"
-        subtitle="Avg age vs throughput by stage track"
+        subtitle="Heat map by sub-stage — severity-coded metrics"
       />
-      <div className="rounded-lg border border-border bg-card p-4">
-        <ResponsiveContainer width="100%" height={280}>
-          <ComposedChart data={bottleneckData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-            <XAxis dataKey="stage" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-            <YAxis yAxisId="left" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-            <YAxis yAxisId="right" orientation="right" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-            <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-            <Legend wrapperStyle={{ color: 'hsl(var(--muted-foreground))' }} />
-            <Bar yAxisId="left" dataKey="avgAge" fill="#6366f1" name="Avg Age (days)" radius={[4, 4, 0, 0]} />
-            <Line yAxisId="right" type="monotone" dataKey="throughput" stroke="#10b981" strokeWidth={2} name="Throughput" dot={{ fill: '#10b981', r: 4 }} />
-          </ComposedChart>
-        </ResponsiveContainer>
+      <div className="rounded-xl border border-border bg-card p-5 overflow-x-auto">
+        {/* Inline legend */}
+        <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
+          <span className="font-medium text-foreground">Severity</span>
+          {([
+            { label: "Good", cls: "bg-emerald-500/10 ring-1 ring-emerald-500/20" },
+            { label: "Warning", cls: "bg-amber-500/10 ring-1 ring-amber-500/20" },
+            { label: "Elevated", cls: "bg-orange-500/15 ring-1 ring-orange-500/25" },
+            { label: "Critical", cls: "bg-red-500/15 ring-1 ring-red-500/25" },
+          ] as const).map(({ label, cls }) => (
+            <span key={label} className="flex items-center gap-1.5">
+              <span className={cn("inline-block w-3 h-3 rounded", cls)} />
+              {label}
+            </span>
+          ))}
+        </div>
+
+        <table className="w-full text-sm" style={{ borderSpacing: "4px 4px", borderCollapse: "separate" }}>
+          <thead>
+            {/* Group header row */}
+            <tr>
+              <th className="sticky left-0 bg-card z-10" />
+              {groups.map((g) => (
+                <th
+                  key={g.label}
+                  colSpan={g.colSpan}
+                  className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground pb-1"
+                >
+                  {g.label}
+                </th>
+              ))}
+            </tr>
+            {/* Stage name header row */}
+            <tr>
+              <th className="text-left text-muted-foreground font-medium p-2 min-w-[120px] sticky left-0 bg-card z-10" />
+              {heatMapSubstages.map((sub) => (
+                <th
+                  key={sub.stage}
+                  className="text-center font-medium p-2 cursor-pointer hover:text-foreground text-muted-foreground whitespace-nowrap text-xs"
+                  onClick={() => navigate(`/stage/${sub.stage}`)}
+                >
+                  {abbreviateStage(sub.stage)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {metricRows.map((row, rowIdx) => (
+              <tr key={row.key} className={rowIdx % 2 === 1 ? "bg-muted/30 dark:bg-muted/10" : ""}>
+                <td
+                  className={cn(
+                    "text-left text-foreground font-semibold p-2 sticky left-0 bg-card z-10 whitespace-nowrap border-l-[3px]",
+                    row.accentBorder,
+                    rowIdx % 2 === 1 && "bg-muted/30 dark:bg-muted/10",
+                  )}
+                >
+                  {row.label} <span className="text-muted-foreground font-normal text-xs">({row.unit})</span>
+                </td>
+                {heatMapSubstages.map((sub) => {
+                  const v = row.getValue(sub);
+                  const severity = getSeverity(row.metricKey, v);
+                  return (
+                    <td
+                      key={sub.stage}
+                      className={cn(
+                        "text-center p-2 cursor-pointer rounded-lg font-bold tabular-nums transition-all duration-200",
+                        "hover:scale-105 hover:brightness-110 hover:ring-1 hover:shadow-sm",
+                        severityClasses[severity],
+                      )}
+                      onClick={() => navigate(`/stage/${sub.stage}`)}
+                    >
+                      {row.format(v)}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

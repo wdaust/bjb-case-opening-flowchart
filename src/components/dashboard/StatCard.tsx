@@ -32,7 +32,7 @@ export function StatCard({ label, value, delta, deltaType = "neutral", sparkline
       <p className="text-xs font-medium text-muted-foreground truncate mb-2">{label}</p>
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-2xl font-bold text-card-foreground">{value}</p>
+          <p className="text-3xl font-bold text-card-foreground">{value}</p>
           {delta && (
             <div className="flex items-center gap-1 mt-1">
               {deltaType === "positive" && <TrendingUp size={12} className="text-emerald-500" />}

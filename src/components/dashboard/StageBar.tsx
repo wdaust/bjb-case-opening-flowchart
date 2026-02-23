@@ -1,13 +1,8 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
-import type { ParentStage, ParentStageCount } from '../../data/mockData';
+import type { ParentStageCount } from '../../data/mockData';
 import { stageLabels, stageColors } from '../../data/mockData';
-
-const parentColors: Record<ParentStage, string> = {
-  intake: "bg-blue-500",
-  "pre-lit": "bg-emerald-500",
-  lit: "bg-red-500",
-};
 
 interface Props {
   parentStages: ParentStageCount[];
@@ -16,68 +11,83 @@ interface Props {
 
 export function StageBar({ parentStages, className }: Props) {
   const navigate = useNavigate();
+  const [hoveredStage, setHoveredStage] = useState<string | null>(null);
 
   // Filter out Intake — only Pre-Lit and Lit
   const filtered = parentStages.filter(ps => ps.parentStage !== "intake");
-  const total = filtered.reduce((s, ps) => s + ps.count, 0);
+
+  // Flatten all substages for proportional sizing
+  const allSubstages = filtered.flatMap((ps, groupIdx) =>
+    ps.substages.map(sub => ({ ...sub, parentStage: ps.parentStage, groupIdx }))
+  );
+  const total = allSubstages.reduce((s, sub) => s + sub.count, 0);
 
   return (
-    <div className={cn("space-y-3", className)}>
-      {/* Parent bar — 2 segments (Pre-Lit + Lit only) */}
-      <div className="flex h-10 rounded-lg overflow-hidden border border-border">
-        {filtered.map(ps => {
-          const pct = total > 0 ? (ps.count / total) * 100 : 0;
-          if (pct < 1) return null;
+    <div className={cn("space-y-2", className)}>
+      {/* Stacked bar with sub-stage segments */}
+      <div className="flex h-14 rounded-lg overflow-hidden border border-border relative">
+        {allSubstages.map((sub, i) => {
+          const pct = total > 0 ? (sub.count / total) * 100 : 0;
+          if (pct < 0.5) return null;
+
+          // Add a visual separator between parent groups
+          const prevGroup = i > 0 ? allSubstages[i - 1]?.groupIdx : sub.groupIdx;
+          const isGroupBoundary = sub.groupIdx !== prevGroup;
+
           return (
             <div
-              key={ps.parentStage}
+              key={sub.stage}
               className={cn(
-                "flex items-center justify-center text-xs font-medium text-white transition-all",
-                parentColors[ps.parentStage],
+                "flex flex-col items-center justify-center text-[10px] font-medium text-white cursor-pointer transition-opacity relative",
+                stageColors[sub.stage],
+                hoveredStage && hoveredStage !== sub.stage && "opacity-70",
+                isGroupBoundary && "border-l-[3px] border-white",
               )}
               style={{ width: `${pct}%` }}
-              title={`${ps.label}: ${ps.count} cases`}
+              onClick={() => navigate(`/stage/${sub.stage}`)}
+              onMouseEnter={() => setHoveredStage(sub.stage)}
+              onMouseLeave={() => setHoveredStage(null)}
             >
-              {pct > 8 && (
-                <span>{ps.label} ({ps.count})</span>
+              {pct > 5 && (
+                <>
+                  <span className="truncate max-w-full px-1 leading-tight">
+                    {stageLabels[sub.stage].replace("Treatment Monitoring", "Treat Mon").replace("Account Opening", "Acct Open").replace("Value Development", "Val Dev").replace("Demand Readiness", "Dem Ready").replace("Resolution Pending", "Res Pend").replace("Case Opening", "Case Open").replace("Expert & Deposition", "Exp & Dep").replace("Arbitration/Mediation", "Arb/Med")}
+                  </span>
+                  <span className="font-bold text-xs">{sub.count}</span>
+                </>
+              )}
+
+              {/* Tooltip */}
+              {hoveredStage === sub.stage && (
+                <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 z-50 bg-card border border-border rounded-lg shadow-lg p-3 text-left whitespace-nowrap pointer-events-none">
+                  <p className="text-xs font-semibold text-foreground">{stageLabels[sub.stage]}</p>
+                  <p className="text-[11px] text-muted-foreground mt-1">Cases: <span className="text-foreground font-medium">{sub.count}</span></p>
+                  <p className="text-[11px] text-muted-foreground">Over SLA: <span className="text-red-500 font-medium">{sub.overSla}</span></p>
+                  <p className="text-[11px] text-muted-foreground">Avg Age: <span className="text-foreground font-medium">{sub.avgAge}d</span></p>
+                </div>
               )}
             </div>
           );
         })}
       </div>
 
-      {/* Sub-stage cards inline under each parent segment */}
-      <div className="grid grid-cols-2 gap-4">
-        {filtered.map(ps => (
-          <div key={ps.parentStage} className="space-y-2">
-            <div className="flex items-center gap-2">
-              <div className={cn("w-3 h-3 rounded-sm shrink-0", parentColors[ps.parentStage])} />
-              <p className="text-xs font-semibold text-foreground">{ps.label}</p>
-              <span className="text-xs text-muted-foreground">({ps.count})</span>
-              {ps.overSla > 0 && (
-                <span className="text-[10px] text-red-500">{ps.overSla} over SLA</span>
-              )}
-            </div>
-            {ps.substages.length > 0 && (
-              <div className="grid grid-cols-3 gap-2">
-                {ps.substages.map(sub => (
-                  <div
-                    key={sub.stage}
-                    onClick={() => navigate(`/stage/${sub.stage}`)}
-                    className="flex items-center gap-2 p-2 rounded-md border border-border cursor-pointer hover:bg-accent/50 transition-colors"
-                  >
-                    <div className={cn("w-2.5 h-2.5 rounded-sm shrink-0", stageColors[sub.stage])} />
-                    <div className="min-w-0">
-                      <p className="text-[10px] font-medium text-foreground truncate">{stageLabels[sub.stage]}</p>
-                      <p className="text-sm font-bold text-foreground">{sub.count}</p>
-                      {sub.overSla > 0 && (
-                        <p className="text-[10px] text-red-500">{sub.overSla} over SLA</p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+      {/* Compact inline legend */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-1">
+        {filtered.map((ps, groupIdx) => (
+          <div key={ps.parentStage} className="contents">
+            {groupIdx > 0 && (
+              <div className="w-px h-4 bg-border mx-1" />
             )}
+            {ps.substages.map(sub => (
+              <div
+                key={sub.stage}
+                className="flex items-center gap-1.5 cursor-pointer hover:opacity-80"
+                onClick={() => navigate(`/stage/${sub.stage}`)}
+              >
+                <div className={cn("w-2.5 h-2.5 rounded-full shrink-0", stageColors[sub.stage])} />
+                <span className="text-[10px] text-muted-foreground">{stageLabels[sub.stage]}</span>
+              </div>
+            ))}
           </div>
         ))}
       </div>
