@@ -6,23 +6,112 @@ import { DashboardGrid } from '../components/dashboard/DashboardGrid.tsx';
 import { SectionHeader } from '../components/dashboard/SectionHeader.tsx';
 import { DataTable, type Column } from '../components/dashboard/DataTable.tsx';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs.tsx';
+import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover.tsx';
 import { cn } from '../utils/cn.ts';
 import {
   getCallAgents,
   getAgentCallData,
   getCallTeamOverview,
+  getAvailableWeeks,
+  getAgentLeaderboard,
+  getDailyGoals,
   type CallSession,
   type DispositionRow,
   type DailyCallStats,
+  type TimeBlock,
+  type AgentLeaderboardRow,
+  type DayOfWeek,
 } from '../data/callTeamMockData.ts';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, AlertTriangle, Trophy } from 'lucide-react';
+
+// ── Compliance Flag Helper ─────────────────────────────────────────
+
+function hasConsecutiveZeroBlocks(blocks: TimeBlock[], threshold = 3): boolean {
+  let consecutive = 0;
+  for (const block of blocks) {
+    if (block.status === "no-calls") {
+      consecutive++;
+      if (consecutive >= threshold) return true;
+    } else {
+      consecutive = 0;
+    }
+  }
+  return false;
+}
+
+// ── Heatmap Cell with Popover ──────────────────────────────────────
+
+function HeatmapCell({ block }: { block: TimeBlock }) {
+  const baseClasses = "w-7 h-7 rounded flex items-center justify-center text-[10px] font-medium mx-auto";
+
+  const statusClasses = cn(
+    baseClasses,
+    block.status === "no-calls" && "bg-red-500/20 text-red-400",
+    block.status === "calls" && "bg-card border border-border text-foreground",
+    block.status === "contact" && "bg-amber-400/15 ring-2 ring-amber-400 text-amber-300 cursor-pointer",
+    block.status === "appointment" && "bg-purple-500/25 text-purple-300 cursor-pointer",
+    block.status === "time-off" && "bg-blue-500/20 text-blue-400",
+  );
+
+  if (block.status === "contact" && block.contactDetail) {
+    const d = block.contactDetail;
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className={statusClasses}>{block.calls}</div>
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-3" side="top" sideOffset={8}>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-sm text-foreground">{d.contactName}</span>
+              <span className="text-xs px-1.5 py-0.5 rounded bg-amber-400/20 text-amber-400 font-medium">{d.caseId}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">{d.phone}</p>
+            <p className="text-xs text-foreground">{d.outcome}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed border-t border-border pt-2">{d.transcript}</p>
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  if (block.status === "appointment" && block.appointmentDetail) {
+    const d = block.appointmentDetail;
+    return (
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className={statusClasses}>{block.calls}</div>
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-3" side="top" sideOffset={8}>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-sm text-foreground">{d.clientName}</span>
+              <span className="text-xs px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-medium">{d.caseId}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">{d.phone}</p>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-foreground">{d.appointmentDate}</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300">{d.appointmentType}</span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed border-t border-border pt-2">{d.notes}</p>
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  return (
+    <div className={statusClasses}>
+      {block.status === "time-off" ? "—" : block.calls}
+    </div>
+  );
+}
 
 // ── Session Heatmap ────────────────────────────────────────────────
 
-function SessionHeatmap({ session }: { session: CallSession }) {
+function SessionHeatmap({ session, showComplianceFlags = false }: { session: CallSession; showComplianceFlags?: boolean }) {
   const [open, setOpen] = useState(true);
 
-  // Compute column totals
   const colTotals = useMemo(() => {
     const blockCount = session.grid[0]?.blocks.length ?? 0;
     const totals: number[] = Array(blockCount).fill(0);
@@ -33,6 +122,17 @@ function SessionHeatmap({ session }: { session: CallSession }) {
     }
     return totals;
   }, [session]);
+
+  const complianceFlags = useMemo(() => {
+    if (!showComplianceFlags) return new Set<string>();
+    const flagged = new Set<string>();
+    for (const row of session.grid) {
+      if (hasConsecutiveZeroBlocks(row.blocks)) {
+        flagged.add(row.day);
+      }
+    }
+    return flagged;
+  }, [session, showComplianceFlags]);
 
   return (
     <div className="rounded-lg border border-border bg-card overflow-hidden">
@@ -88,22 +188,18 @@ function SessionHeatmap({ session }: { session: CallSession }) {
               {session.grid.map((row) => (
                 <tr key={row.day}>
                   <td className="py-0.5 px-1.5 text-foreground font-medium sticky left-0 bg-card">
-                    {row.day.slice(0, 3)}
+                    <div className="flex items-center gap-1">
+                      {row.day.slice(0, 3)}
+                      {complianceFlags.has(row.day) && (
+                        <span title="3+ consecutive zero-call blocks detected">
+                          <AlertTriangle size={12} className="text-red-500" />
+                        </span>
+                      )}
+                    </div>
                   </td>
                   {row.blocks.map((block, bIdx) => (
                     <td key={bIdx} className="py-0.5 px-0.5 text-center">
-                      <div
-                        className={cn(
-                          "w-7 h-7 rounded flex items-center justify-center text-[10px] font-medium mx-auto",
-                          block.status === "no-calls" && "bg-red-500/20 text-red-400",
-                          block.status === "calls" && "bg-card border border-border text-foreground",
-                          block.status === "contact" && "bg-amber-400/15 ring-2 ring-amber-400 text-amber-300",
-                          block.status === "appointment" && "bg-purple-500/25 text-purple-300",
-                          block.status === "time-off" && "bg-blue-500/20 text-blue-400",
-                        )}
-                      >
-                        {block.status === "time-off" ? "—" : block.calls}
-                      </div>
+                      <HeatmapCell block={block} />
                     </td>
                   ))}
                 </tr>
@@ -141,6 +237,11 @@ function SessionHeatmap({ session }: { session: CallSession }) {
             <span className="flex items-center gap-1">
               <div className="w-3 h-3 rounded bg-blue-500/20" /> Time Off
             </span>
+            {showComplianceFlags && (
+              <span className="flex items-center gap-1">
+                <AlertTriangle size={10} className="text-red-500" /> Compliance Flag
+              </span>
+            )}
           </div>
         </div>
       )}
@@ -226,6 +327,95 @@ function DispositionTable({ dispositions }: { dispositions: DispositionRow[] }) 
   );
 }
 
+// ── Agent Leaderboard ──────────────────────────────────────────────
+
+const leaderboardColumns: Column<AgentLeaderboardRow & { key: string; rank: number }>[] = [
+  {
+    key: "rank",
+    label: "Rank",
+    render: (row) => {
+      const colors: Record<number, string> = {
+        1: "bg-amber-400/20 text-amber-400",
+        2: "bg-slate-300/20 text-slate-300",
+        3: "bg-orange-400/20 text-orange-400",
+      };
+      const cls = colors[row.rank];
+      return cls ? (
+        <span className={cn("inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold", cls)}>
+          {row.rank}
+        </span>
+      ) : (
+        <span className="text-muted-foreground text-xs">{row.rank}</span>
+      );
+    },
+  },
+  { key: "name", label: "Agent" },
+  { key: "team", label: "Team" },
+  { key: "totalCalls", label: "Total Calls", sortable: true },
+  {
+    key: "contactRate",
+    label: "Contact Rate",
+    sortable: true,
+    render: (row) => `${row.contactRate}%`,
+  },
+  {
+    key: "contactToAptRate",
+    label: "Contact\u2192Apt %",
+    sortable: true,
+    render: (row) => `${row.contactToAptRate}%`,
+  },
+  { key: "appointmentsSet", label: "Appointments", sortable: true },
+  { key: "zeroCallBlocks", label: "Zero Blocks", sortable: true },
+  {
+    key: "activeCallingPct",
+    label: "Active %",
+    sortable: true,
+    render: (row) => `${row.activeCallingPct}%`,
+  },
+];
+
+// ── Daily Goal Tracker Card ────────────────────────────────────────
+
+function GoalTrackerCard({ agentName, goals }: { agentName: string; goals: { day: DayOfWeek; actual: number; target: number; pct: number; metGoal: boolean }[] }) {
+  const daysMet = goals.filter(g => g.metGoal).length;
+
+  return (
+    <div className="rounded-lg border border-border bg-card p-4">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-sm font-semibold text-foreground">{agentName}</span>
+        <span className={cn(
+          "text-xs font-medium px-2 py-0.5 rounded-full",
+          daysMet >= 4 ? "bg-emerald-500/20 text-emerald-400" :
+          daysMet >= 3 ? "bg-amber-400/20 text-amber-400" :
+          "bg-red-500/20 text-red-400"
+        )}>
+          {daysMet}/5 days
+        </span>
+      </div>
+      <div className="space-y-2">
+        {goals.map(g => {
+          const pctCapped = Math.min(g.pct, 100);
+          const barColor = g.metGoal ? "bg-emerald-500" : g.pct >= 80 ? "bg-amber-400" : "bg-red-500";
+          return (
+            <div key={g.day} className="flex items-center gap-2">
+              <span className="text-[10px] text-muted-foreground w-7 shrink-0">{g.day.slice(0, 3)}</span>
+              <div className="flex-1 h-2 rounded-full bg-muted/50 overflow-hidden">
+                <div
+                  className={cn("h-full rounded-full transition-all", barColor)}
+                  style={{ width: `${pctCapped}%` }}
+                />
+              </div>
+              <span className="text-[10px] text-muted-foreground w-10 text-right shrink-0">
+                {g.actual}/{g.target}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── Main Page ──────────────────────────────────────────────────────
 
 const dailyColumns: Column<DailyCallStats & { key: string }>[] = [
@@ -240,9 +430,25 @@ const dailyColumns: Column<DailyCallStats & { key: string }>[] = [
 export default function CallTeamDashboard() {
   const agents = useMemo(() => getCallAgents(), []);
   const [selectedAgentId, setSelectedAgentId] = useState(agents[0].id);
+  const [weekIndex, setWeekIndex] = useState(0);
 
-  const teamOverview = useMemo(() => getCallTeamOverview(), []);
-  const agentData = useMemo(() => getAgentCallData(selectedAgentId), [selectedAgentId]);
+  const weeks = useMemo(() => getAvailableWeeks(), []);
+  const teamOverview = useMemo(() => getCallTeamOverview(weekIndex), [weekIndex]);
+  const agentData = useMemo(() => getAgentCallData(selectedAgentId, weekIndex), [selectedAgentId, weekIndex]);
+  const leaderboard = useMemo(() => getAgentLeaderboard(weekIndex), [weekIndex]);
+  const dailyGoals = useMemo(() => getDailyGoals(weekIndex), [weekIndex]);
+
+  // Contact→Apt % for team
+  const teamContactToAptPct = useMemo(() => {
+    const totalContacts = teamOverview.contactsMade + teamOverview.appointmentsSet;
+    return totalContacts > 0 ? Math.round((teamOverview.appointmentsSet / totalContacts) * 100) : 0;
+  }, [teamOverview]);
+
+  // Contact→Apt % for agent
+  const agentContactToAptPct = useMemo(() => {
+    const totalContacts = agentData.contactsMade + agentData.appointmentsSet;
+    return totalContacts > 0 ? Math.round((agentData.appointmentsSet / totalContacts) * 100) : 0;
+  }, [agentData]);
 
   const teamDailyRows = useMemo(
     () => teamOverview.dailyStats.map(d => ({ ...d, key: d.day })),
@@ -262,6 +468,26 @@ export default function CallTeamDashboard() {
     [agentData]
   );
 
+  // Leaderboard rows with rank
+  const leaderboardRows = useMemo(
+    () => leaderboard.map((r, i) => ({ ...r, key: r.agentId, rank: i + 1 })),
+    [leaderboard]
+  );
+
+  // Daily goal tracker grouped by agent
+  const goalsByAgent = useMemo(() => {
+    const map = new Map<string, { name: string; goals: { day: DayOfWeek; actual: number; target: number; pct: number; metGoal: boolean }[] }>();
+    for (const g of dailyGoals) {
+      if (!map.has(g.agentId)) {
+        map.set(g.agentId, { name: g.name, goals: [] });
+      }
+      map.get(g.agentId)!.goals.push({ day: g.day, actual: g.actual, target: g.target, pct: g.pct, metGoal: g.metGoal });
+    }
+    return Array.from(map.values());
+  }, [dailyGoals]);
+
+  const selectClasses = "rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring";
+
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
       <Breadcrumbs
@@ -272,6 +498,20 @@ export default function CallTeamDashboard() {
       />
       <h1 className="text-2xl font-bold text-foreground">Call Team Dashboard</h1>
 
+      {/* Week Picker — above Tabs, applies to both */}
+      <div className="flex items-center gap-3">
+        <label className="text-sm font-medium text-muted-foreground">Week of:</label>
+        <select
+          value={weekIndex}
+          onChange={e => setWeekIndex(Number(e.target.value))}
+          className={selectClasses}
+        >
+          {weeks.map(w => (
+            <option key={w.value} value={w.value}>{w.label}</option>
+          ))}
+        </select>
+      </div>
+
       <Tabs defaultValue="team">
         <TabsList>
           <TabsTrigger value="team">Team Overview</TabsTrigger>
@@ -280,22 +520,35 @@ export default function CallTeamDashboard() {
 
         {/* ── Team Overview ── */}
         <TabsContent value="team" className="space-y-6 mt-4">
-          {/* KPI Row */}
+          {/* KPI Row — replaced Active Call Time with Contact→Apt % */}
           <DashboardGrid cols={6}>
             <StatCard label="Total Calls" value={teamOverview.totalCalls.toLocaleString()} />
             <StatCard label="Avg Calls/Day" value={teamOverview.avgCallsPerDay.toLocaleString()} />
             <StatCard label="Zero-Call Blocks" value={teamOverview.zeroCallBlocks} />
             <StatCard label="Appointments Set" value={teamOverview.appointmentsSet} />
             <StatCard label="Active Calling %" value={`${teamOverview.activeCallingPct}%`} />
-            <StatCard label="Active Call Time" value={teamOverview.activeCallTime} />
+            <StatCard label="Contact→Apt %" value={`${teamContactToAptPct}%`} />
           </DashboardGrid>
+
+          {/* Agent Leaderboard */}
+          <div>
+            <SectionHeader
+              title="Agent Leaderboard"
+              actions={<Trophy size={16} className="text-amber-400" />}
+            />
+            <DataTable
+              data={leaderboardRows}
+              columns={leaderboardColumns}
+              keyField="key"
+            />
+          </div>
 
           {/* Session Heatmaps */}
           <div>
-            <SectionHeader title="Session Performance" subtitle={`${teamOverview.totalAgents} agents across 5 daily sessions`} />
+            <SectionHeader title="Session Performance" subtitle={`${teamOverview.totalAgents} agents aggregated across 5 daily sessions`} />
             <div className="space-y-3">
               {teamOverview.sessions.map(session => (
-                <SessionHeatmap key={session.sessionNumber} session={session} />
+                <SessionHeatmap key={session.sessionNumber} session={session} showComplianceFlags />
               ))}
             </div>
           </div>
@@ -308,6 +561,16 @@ export default function CallTeamDashboard() {
               columns={dailyColumns}
               keyField="key"
             />
+          </div>
+
+          {/* Daily Goal Tracker */}
+          <div>
+            <SectionHeader title="Daily Goal Tracker" subtitle="Target: 40 calls/day" />
+            <DashboardGrid cols={4}>
+              {goalsByAgent.map(a => (
+                <GoalTrackerCard key={a.name} agentName={a.name} goals={a.goals} />
+              ))}
+            </DashboardGrid>
           </div>
 
           {/* Dispositions */}
@@ -348,7 +611,7 @@ export default function CallTeamDashboard() {
             <select
               value={selectedAgentId}
               onChange={e => setSelectedAgentId(e.target.value)}
-              className="rounded-md border border-border bg-card px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className={selectClasses}
             >
               {agents.map(a => (
                 <option key={a.id} value={a.id}>
@@ -358,14 +621,14 @@ export default function CallTeamDashboard() {
             </select>
           </div>
 
-          {/* KPI Row */}
+          {/* KPI Row — replaced Active Call Time with Contact→Apt % */}
           <DashboardGrid cols={6}>
             <StatCard label="Total Calls" value={agentData.totalCalls.toLocaleString()} />
             <StatCard label="Avg Calls/Day" value={agentData.avgCallsPerDay.toLocaleString()} />
             <StatCard label="Zero-Call Blocks" value={agentData.zeroCallBlocks} />
             <StatCard label="Appointments Set" value={agentData.appointmentsSet} />
             <StatCard label="Active Calling %" value={`${agentData.activeCallingPct}%`} />
-            <StatCard label="Active Call Time" value={agentData.activeCallTime} />
+            <StatCard label="Contact→Apt %" value={`${agentContactToAptPct}%`} />
           </DashboardGrid>
 
           {/* Pay Breakdown */}
@@ -384,7 +647,7 @@ export default function CallTeamDashboard() {
             <SectionHeader title="Session Performance" subtitle={`${agentData.agent.name} — ${agentData.agent.team}`} />
             <div className="space-y-3">
               {agentData.sessions.map(session => (
-                <SessionHeatmap key={session.sessionNumber} session={session} />
+                <SessionHeatmap key={session.sessionNumber} session={session} showComplianceFlags />
               ))}
             </div>
           </div>

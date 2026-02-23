@@ -4,10 +4,29 @@ export type DayOfWeek = "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Frida
 
 export type BlockStatus = "calls" | "no-calls" | "contact" | "appointment" | "time-off";
 
+export interface ContactDetail {
+  contactName: string;
+  phone: string;
+  caseId: string;
+  outcome: string;
+  transcript: string;
+}
+
+export interface AppointmentDetail {
+  clientName: string;
+  phone: string;
+  caseId: string;
+  appointmentDate: string;
+  appointmentType: string;
+  notes: string;
+}
+
 export interface TimeBlock {
   time: string;
   calls: number;
   status: BlockStatus;
+  contactDetail?: ContactDetail;
+  appointmentDetail?: AppointmentDetail;
 }
 
 export interface SessionDayRow {
@@ -73,6 +92,7 @@ export interface AgentCallData {
   avgCallsPerDay: number;
   zeroCallBlocks: number;
   appointmentsSet: number;
+  contactsMade: number;
   activeCallingPct: number;
   activeCallTime: string;
   sessions: CallSession[];
@@ -87,6 +107,7 @@ export interface CallTeamOverview {
   avgCallsPerDay: number;
   zeroCallBlocks: number;
   appointmentsSet: number;
+  contactsMade: number;
   activeCallingPct: number;
   activeCallTime: string;
   totalAgents: number;
@@ -94,6 +115,28 @@ export interface CallTeamOverview {
   dailyStats: DailyCallStats[];
   dispositions: DispositionRow[];
   weeklyTrend: number[];
+}
+
+export interface AgentLeaderboardRow {
+  agentId: string;
+  name: string;
+  team: string;
+  totalCalls: number;
+  contactRate: number;
+  contactToAptRate: number;
+  appointmentsSet: number;
+  zeroCallBlocks: number;
+  activeCallingPct: number;
+}
+
+export interface AgentDailyGoal {
+  agentId: string;
+  name: string;
+  day: DayOfWeek;
+  target: number;
+  actual: number;
+  pct: number;
+  metGoal: boolean;
 }
 
 // ── Constants ──────────────────────────────────────────────────────
@@ -135,6 +178,48 @@ const AGENTS: CallAgent[] = [
   { id: "ag-8", name: "Tyler Brooks", team: "Team Bravo" },
 ];
 
+// ── Mock Data Arrays for Hover Details ────────────────────────────
+
+const MOCK_NAMES = [
+  "Maria Torres", "Robert Williams", "Jennifer Adams", "Michael Brown",
+  "Patricia Garcia", "Christopher Lee", "Amanda Wilson", "Daniel Martinez",
+  "Stephanie Clark", "Andrew Taylor", "Nicole Anderson", "Kevin Thomas",
+  "Laura Jackson", "Brian White", "Rachel Harris",
+];
+
+const MOCK_OUTCOMES = [
+  "Interested — callback scheduled",
+  "Needs more info — sending brochure",
+  "Ready to proceed — appointment set",
+  "Not interested at this time",
+  "Requested call back next week",
+  "Spouse needs to be present — rescheduling",
+  "Wants to discuss with attorney first",
+  "Positive — moving forward with consultation",
+];
+
+const MOCK_TRANSCRIPTS = [
+  "Caller explained the situation regarding their case. Client expressed interest and requested a follow-up call next week.",
+  "Left detailed voicemail. Previous attempts went to voicemail as well. Client returned call within the hour.",
+  "Spoke with client about their options. They are considering next steps and will call back after reviewing documents.",
+  "Client was receptive to the consultation offer. Confirmed availability for Thursday afternoon.",
+  "Discussed case details and timeline expectations. Client asked about fees and was satisfied with the explanation.",
+  "Initial contact went well. Client has questions about the process and wants to schedule a consultation.",
+  "Client mentioned they were referred by a friend. Very interested in moving forward quickly.",
+  "Brief conversation — client is currently at work. Agreed to a callback this evening at 6 PM.",
+];
+
+const MOCK_APT_TYPES = ["Initial Consultation", "Follow-up", "Document Review", "Case Evaluation"];
+
+const MOCK_APT_NOTES = [
+  "Client prefers afternoon appointments. Referred by existing client.",
+  "Follow-up from last week's initial call. Has documents ready for review.",
+  "Needs Spanish interpreter. Confirmed with office manager.",
+  "Client is bringing spouse. Allow extra 15 minutes.",
+  "Urgent matter — client needs consultation before court date next Friday.",
+  "Returning client from 2024 case. New matter related to previous issue.",
+];
+
 // ── Deterministic pseudo-random ────────────────────────────────────
 
 function seeded(seed: number): number {
@@ -146,12 +231,69 @@ function seededInt(seed: number, min: number, max: number): number {
   return min + Math.floor(seeded(seed) * (max - min + 1));
 }
 
+function seededPick<T>(seed: number, arr: T[]): T {
+  return arr[seededInt(seed, 0, arr.length - 1)];
+}
+
+// ── Detail Generators ─────────────────────────────────────────────
+
+function generateContactDetail(seed: number): ContactDetail {
+  const name = seededPick(seed, MOCK_NAMES);
+  const areaCode = seededInt(seed + 10, 200, 999);
+  const mid = seededInt(seed + 20, 100, 999);
+  const last = seededInt(seed + 30, 1000, 9999);
+  const caseYear = 2024 + seededInt(seed + 40, 0, 2);
+  const caseNum = seededInt(seed + 50, 100, 9999);
+  return {
+    contactName: name,
+    phone: `(${areaCode}) ${mid}-${last}`,
+    caseId: `CAS-${caseYear}-${String(caseNum).padStart(4, "0")}`,
+    outcome: seededPick(seed + 60, MOCK_OUTCOMES),
+    transcript: seededPick(seed + 70, MOCK_TRANSCRIPTS),
+  };
+}
+
+function generateAppointmentDetail(seed: number, weekIndex: number): AppointmentDetail {
+  const name = seededPick(seed + 100, MOCK_NAMES);
+  const areaCode = seededInt(seed + 110, 200, 999);
+  const mid = seededInt(seed + 120, 100, 999);
+  const last = seededInt(seed + 130, 1000, 9999);
+  const caseYear = 2024 + seededInt(seed + 140, 0, 2);
+  const caseNum = seededInt(seed + 150, 100, 9999);
+
+  // Generate appointment date in the future relative to the week
+  const now = new Date();
+  const weekStart = new Date(now);
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1 - weekIndex * 7);
+  const aptOffset = seededInt(seed + 160, 1, 10);
+  const aptDate = new Date(weekStart);
+  aptDate.setDate(aptDate.getDate() + aptOffset);
+  const hours = seededInt(seed + 170, 9, 16);
+  const minutes = seededPick(seed + 180, [0, 15, 30, 45]);
+  aptDate.setHours(hours, minutes);
+
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const ampm = hours >= 12 ? "PM" : "AM";
+  const displayHour = hours > 12 ? hours - 12 : hours === 0 ? 12 : hours;
+  const displayMin = String(minutes).padStart(2, "0");
+
+  return {
+    clientName: name,
+    phone: `(${areaCode}) ${mid}-${last}`,
+    caseId: `CAS-${caseYear}-${String(caseNum).padStart(4, "0")}`,
+    appointmentDate: `${monthNames[aptDate.getMonth()]} ${aptDate.getDate()}, ${aptDate.getFullYear()} at ${displayHour}:${displayMin} ${ampm}`,
+    appointmentType: seededPick(seed + 190, MOCK_APT_TYPES),
+    notes: seededPick(seed + 200, MOCK_APT_NOTES),
+  };
+}
+
 // ── Generators ─────────────────────────────────────────────────────
 
-function generateTimeBlocks(sessionIdx: number, dayIdx: number, agentIdx: number): TimeBlock[] {
+function generateTimeBlocks(sessionIdx: number, dayIdx: number, agentIdx: number, weekIndex: number = 0): TimeBlock[] {
   const def = SESSION_DEFS[sessionIdx];
   const [startH, startM] = def.start.split(":").map(Number);
   const blocks: TimeBlock[] = [];
+  const weekOffset = weekIndex * 100000;
 
   for (let b = 0; b < def.blocks; b++) {
     const totalMin = startM + b * 5;
@@ -159,7 +301,7 @@ function generateTimeBlocks(sessionIdx: number, dayIdx: number, agentIdx: number
     const m = totalMin % 60;
     const time = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 
-    const seed = agentIdx * 10000 + sessionIdx * 1000 + dayIdx * 100 + b;
+    const seed = weekOffset + agentIdx * 10000 + sessionIdx * 1000 + dayIdx * 100 + b;
     const roll = seeded(seed);
 
     let status: BlockStatus;
@@ -182,16 +324,24 @@ function generateTimeBlocks(sessionIdx: number, dayIdx: number, agentIdx: number
       calls = seededInt(seed + 3, 1, 4);
     }
 
-    blocks.push({ time, calls, status });
+    const block: TimeBlock = { time, calls, status };
+
+    if (status === "contact") {
+      block.contactDetail = generateContactDetail(seed * 7 + 3);
+    } else if (status === "appointment") {
+      block.appointmentDetail = generateAppointmentDetail(seed * 7 + 5, weekIndex);
+    }
+
+    blocks.push(block);
   }
 
   return blocks;
 }
 
-function generateSession(sessionIdx: number, agentIdx: number): CallSession {
+function generateSession(sessionIdx: number, agentIdx: number, weekIndex: number = 0): CallSession {
   const grid: SessionDayRow[] = DAYS.map((day, dayIdx) => ({
     day,
-    blocks: generateTimeBlocks(sessionIdx, dayIdx, agentIdx),
+    blocks: generateTimeBlocks(sessionIdx, dayIdx, agentIdx, weekIndex),
   }));
 
   let contactsMade = 0;
@@ -216,12 +366,12 @@ function generateSession(sessionIdx: number, agentIdx: number): CallSession {
   };
 }
 
-function generateDispositions(agentIdx: number): DispositionRow[] {
+function generateDispositions(agentIdx: number, weekIndex: number = 0): DispositionRow[] {
+  const weekOffset = weekIndex * 50000;
   return DISPOSITION_CODES.map((code, codeIdx) => {
     const bySession: [number, number, number, number, number] = [0, 0, 0, 0, 0];
     for (let s = 0; s < 5; s++) {
-      const seed = agentIdx * 1000 + codeIdx * 100 + s * 10 + 7;
-      // Weight certain codes higher
+      const seed = weekOffset + agentIdx * 1000 + codeIdx * 100 + s * 10 + 7;
       const weight = codeIdx >= 7 ? 2.5 : codeIdx >= 3 ? 1.5 : 1;
       bySession[s] = Math.round(seededInt(seed, 0, 8) * weight);
     }
@@ -230,7 +380,7 @@ function generateDispositions(agentIdx: number): DispositionRow[] {
   });
 }
 
-function generateDailyStats(sessions: CallSession[]): DailyCallStats[] {
+function generateDailyStats(sessions: CallSession[], weekIndex: number = 0): DailyCallStats[] {
   return DAYS.map((day, dayIdx) => {
     let totalCalls = 0;
     let contacts = 0;
@@ -246,8 +396,9 @@ function generateDailyStats(sessions: CallSession[]): DailyCallStats[] {
     }
 
     const contactRate = totalCalls > 0 ? Math.round((contacts / totalCalls) * 100) : 0;
-    const avgMin = seededInt(dayIdx * 13 + 42, 1, 3);
-    const avgSec = seededInt(dayIdx * 17 + 23, 10, 55);
+    const seedBase = (weekIndex + 1) * 1000;
+    const avgMin = seededInt(seedBase + dayIdx * 13 + 42, 1, 3);
+    const avgSec = seededInt(seedBase + dayIdx * 17 + 23, 10, 55);
 
     return {
       day,
@@ -260,15 +411,16 @@ function generateDailyStats(sessions: CallSession[]): DailyCallStats[] {
   });
 }
 
-function generateAgentData(agentIdx: number): AgentCallData {
+function generateAgentData(agentIdx: number, weekIndex: number = 0): AgentCallData {
   const agent = AGENTS[agentIdx];
-  const sessions = Array.from({ length: 5 }, (_, i) => generateSession(i, agentIdx));
-  const dailyStats = generateDailyStats(sessions);
-  const dispositions = generateDispositions(agentIdx);
+  const sessions = Array.from({ length: 5 }, (_, i) => generateSession(i, agentIdx, weekIndex));
+  const dailyStats = generateDailyStats(sessions, weekIndex);
+  const dispositions = generateDispositions(agentIdx, weekIndex);
 
   let totalCalls = 0;
   let zeroCallBlocks = 0;
   let appointmentsSet = 0;
+  let contactsMade = 0;
 
   for (const s of sessions) {
     totalCalls += s.callAttempts;
@@ -276,6 +428,7 @@ function generateAgentData(agentIdx: number): AgentCallData {
     for (const row of s.grid) {
       for (const block of row.blocks) {
         if (block.status === "appointment") appointmentsSet++;
+        if (block.status === "contact") contactsMade++;
       }
     }
   }
@@ -285,13 +438,14 @@ function generateAgentData(agentIdx: number): AgentCallData {
   const activeBlocks = totalBlocks - zeroCallBlocks;
   const activeCallingPct = Math.round((activeBlocks / totalBlocks) * 100);
 
-  const totalMinutes = seededInt(agentIdx * 99 + 55, 180, 320);
+  const weekSeedOffset = weekIndex * 7777;
+  const totalMinutes = seededInt(weekSeedOffset + agentIdx * 99 + 55, 180, 320);
   const hours = Math.floor(totalMinutes / 60);
   const mins = totalMinutes % 60;
 
-  const payForCalling = seededInt(agentIdx * 77 + 11, 400, 650);
-  const aptPayBonus = appointmentsSet * seededInt(agentIdx * 33 + 22, 15, 35);
-  const callingBonus = totalCalls > 150 ? seededInt(agentIdx * 44 + 33, 50, 150) : 0;
+  const payForCalling = seededInt(weekSeedOffset + agentIdx * 77 + 11, 400, 650);
+  const aptPayBonus = appointmentsSet * seededInt(weekSeedOffset + agentIdx * 33 + 22, 15, 35);
+  const callingBonus = totalCalls > 150 ? seededInt(weekSeedOffset + agentIdx * 44 + 33, 50, 150) : 0;
   const totalPay = payForCalling + aptPayBonus + callingBonus;
 
   const weeklyTrend = dailyStats.map(d => d.totalCalls);
@@ -302,6 +456,7 @@ function generateAgentData(agentIdx: number): AgentCallData {
     avgCallsPerDay,
     zeroCallBlocks,
     appointmentsSet,
+    contactsMade,
     activeCallingPct,
     activeCallTime: `${hours}h ${mins}m`,
     sessions,
@@ -312,25 +467,100 @@ function generateAgentData(agentIdx: number): AgentCallData {
   };
 }
 
+// ── Aggregated Team Heatmap Helper ────────────────────────────────
+
+const STATUS_PRIORITY: Record<BlockStatus, number> = {
+  "appointment": 5,
+  "contact": 4,
+  "time-off": 3,
+  "no-calls": 2,
+  "calls": 1,
+};
+
+function aggregateGrids(allAgentSessions: CallSession[][]): SessionDayRow[] {
+  const firstAgent = allAgentSessions[0];
+  if (!firstAgent || firstAgent.length === 0) return [];
+
+  // We aggregate per-session, but this helper is called per session index
+  // Actually we need to aggregate across agents for a given session
+  return DAYS.map((day, dayIdx) => {
+    const blockCount = firstAgent[0]?.grid[dayIdx]?.blocks.length ?? 0;
+    const blocks: TimeBlock[] = [];
+
+    for (let b = 0; b < blockCount; b++) {
+      let totalCalls = 0;
+      let bestStatus: BlockStatus = "calls";
+      let bestPriority = 0;
+      let bestContactDetail: ContactDetail | undefined;
+      let bestAppointmentDetail: AppointmentDetail | undefined;
+
+      for (const agentSessions of allAgentSessions) {
+        // For a given session, get this agent's block
+        const agentBlock = agentSessions[0]?.grid[dayIdx]?.blocks[b];
+        if (!agentBlock) continue;
+        totalCalls += agentBlock.calls;
+        const priority = STATUS_PRIORITY[agentBlock.status];
+        if (priority > bestPriority) {
+          bestPriority = priority;
+          bestStatus = agentBlock.status;
+          bestContactDetail = agentBlock.contactDetail;
+          bestAppointmentDetail = agentBlock.appointmentDetail;
+        }
+      }
+
+      const time = firstAgent[0]?.grid[dayIdx]?.blocks[b]?.time ?? "";
+      const block: TimeBlock = { time, calls: totalCalls, status: bestStatus };
+      if (bestContactDetail) block.contactDetail = bestContactDetail;
+      if (bestAppointmentDetail) block.appointmentDetail = bestAppointmentDetail;
+      blocks.push(block);
+    }
+
+    return { day, blocks };
+  });
+}
+
 // ── Public API ─────────────────────────────────────────────────────
 
 export function getCallAgents(): CallAgent[] {
   return AGENTS;
 }
 
-export function getAgentCallData(agentId: string): AgentCallData {
-  const idx = AGENTS.findIndex(a => a.id === agentId);
-  if (idx === -1) return generateAgentData(0);
-  return generateAgentData(idx);
+export function getAvailableWeeks(): { label: string; value: number }[] {
+  const weeks: { label: string; value: number }[] = [];
+  const now = new Date();
+
+  for (let i = 0; i < 12; i++) {
+    const weekStart = new Date(now);
+    // Go to Monday of this week, then subtract i weeks
+    const dayOfWeek = weekStart.getDay();
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    weekStart.setDate(weekStart.getDate() + mondayOffset - i * 7);
+
+    const friday = new Date(weekStart);
+    friday.setDate(friday.getDate() + 4);
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const label = `${monthNames[weekStart.getMonth()]} ${weekStart.getDate()} – ${monthNames[friday.getMonth()]} ${friday.getDate()}, ${friday.getFullYear()}`;
+    weeks.push({ label, value: i });
+  }
+
+  return weeks;
 }
 
-export function getCallTeamOverview(): CallTeamOverview {
-  const allAgents = AGENTS.map((_, i) => generateAgentData(i));
+export function getAgentCallData(agentId: string, weekIndex: number = 0): AgentCallData {
+  const idx = AGENTS.findIndex(a => a.id === agentId);
+  if (idx === -1) return generateAgentData(0, weekIndex);
+  return generateAgentData(idx, weekIndex);
+}
+
+export function getCallTeamOverview(weekIndex: number = 0): CallTeamOverview {
+  const allAgents = AGENTS.map((_, i) => generateAgentData(i, weekIndex));
 
   const totalCalls = allAgents.reduce((s, a) => s + a.totalCalls, 0);
   const avgCallsPerDay = Math.round(totalCalls / 5);
   const zeroCallBlocks = allAgents.reduce((s, a) => s + a.zeroCallBlocks, 0);
   const appointmentsSet = allAgents.reduce((s, a) => s + a.appointmentsSet, 0);
+  const contactsMade = allAgents.reduce((s, a) => s + a.contactsMade, 0);
   const activeCallingPct = Math.round(
     allAgents.reduce((s, a) => s + a.activeCallingPct, 0) / allAgents.length
   );
@@ -343,20 +573,20 @@ export function getCallTeamOverview(): CallTeamOverview {
   const hours = Math.floor(avgMinutes / 60);
   const mins = avgMinutes % 60;
 
-  // Aggregate sessions by merging grids across agents
+  // Aggregate sessions with proper cell-by-cell aggregation
   const sessions: CallSession[] = Array.from({ length: 5 }, (_, sIdx) => {
     const agentSessions = allAgents.map(a => a.sessions[sIdx]);
-    const contactsMade = agentSessions.reduce((s, ses) => s + ses.contactsMade, 0);
+    const sessionContactsMade = agentSessions.reduce((s, ses) => s + ses.contactsMade, 0);
     const totalZeros = agentSessions.reduce((s, ses) => s + ses.totalZeros, 0);
     const callAttempts = agentSessions.reduce((s, ses) => s + ses.callAttempts, 0);
 
-    // Use first agent's grid as representative (team-level heatmap shows agent 0)
-    const grid = agentSessions[0].grid;
+    // Aggregate grids cell-by-cell across all agents
+    const grid = aggregateGrids(allAgents.map(a => [a.sessions[sIdx]]));
 
     return {
       sessionNumber: sIdx + 1,
       timeRange: SESSION_DEFS[sIdx].timeRange,
-      contactsMade,
+      contactsMade: sessionContactsMade,
       totalZeros,
       callAttempts,
       grid,
@@ -398,6 +628,7 @@ export function getCallTeamOverview(): CallTeamOverview {
     avgCallsPerDay,
     zeroCallBlocks,
     appointmentsSet,
+    contactsMade,
     activeCallingPct,
     activeCallTime: `${hours}h ${mins}m`,
     totalAgents: AGENTS.length,
@@ -406,4 +637,54 @@ export function getCallTeamOverview(): CallTeamOverview {
     dispositions,
     weeklyTrend,
   };
+}
+
+export function getAgentLeaderboard(weekIndex: number = 0): AgentLeaderboardRow[] {
+  const allAgents = AGENTS.map((_, i) => generateAgentData(i, weekIndex));
+
+  const rows: AgentLeaderboardRow[] = allAgents.map(a => {
+    const totalContacts = a.contactsMade + a.appointmentsSet;
+    const contactRate = a.totalCalls > 0 ? Math.round((totalContacts / a.totalCalls) * 100) : 0;
+    const contactToAptRate = totalContacts > 0 ? Math.round((a.appointmentsSet / totalContacts) * 100) : 0;
+
+    return {
+      agentId: a.agent.id,
+      name: a.agent.name,
+      team: a.agent.team,
+      totalCalls: a.totalCalls,
+      contactRate,
+      contactToAptRate,
+      appointmentsSet: a.appointmentsSet,
+      zeroCallBlocks: a.zeroCallBlocks,
+      activeCallingPct: a.activeCallingPct,
+    };
+  });
+
+  // Sort by totalCalls descending
+  rows.sort((a, b) => b.totalCalls - a.totalCalls);
+  return rows;
+}
+
+export function getDailyGoals(weekIndex: number = 0): AgentDailyGoal[] {
+  const allAgents = AGENTS.map((_, i) => generateAgentData(i, weekIndex));
+  const goals: AgentDailyGoal[] = [];
+
+  for (const agent of allAgents) {
+    for (const ds of agent.dailyStats) {
+      const target = 40;
+      const actual = ds.totalCalls;
+      const pct = Math.round((actual / target) * 100);
+      goals.push({
+        agentId: agent.agent.id,
+        name: agent.agent.name,
+        day: ds.day,
+        target,
+        actual,
+        pct,
+        metGoal: actual >= target,
+      });
+    }
+  }
+
+  return goals;
 }
