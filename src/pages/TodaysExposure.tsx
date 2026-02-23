@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
-  ScatterChart, Scatter, ZAxis,
+  ScatterChart, Scatter, ZAxis, Legend, ReferenceLine,
 } from 'recharts';
-import { getActiveCases, getUpcomingDeadlines, parentStageLabels, type ParentStage } from '../data/mockData';
+import { getActiveCases, getUpcomingDeadlines, parentStageLabels, stageLabels, type ParentStage, type Stage } from '../data/mockData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { DeadlineList } from '../components/dashboard/DeadlineList';
 import { FilterBar } from '../components/dashboard/FilterBar';
@@ -54,15 +54,25 @@ export default function TodaysExposure() {
       .sort((a, b) => b.exposure - a.exposure);
   }, [activeCases]);
 
-  // EV vs Exposure scatter data
+  // EV vs Exposure bubble data — grouped by sub-stage
   const evVsExposure = useMemo(() => {
-    return exposureByStage.map(d => ({
-      stage: d.stage,
+    const map: Record<string, { stage: string; parentStage: string; exposure: number; ev: number; count: number }> = {};
+    activeCases.forEach(c => {
+      if (!c.subStage || c.parentStage === "intake") return;
+      const key = c.subStage;
+      const label = stageLabels[key as Stage] || key;
+      if (!map[key]) map[key] = { stage: label, parentStage: c.parentStage, exposure: 0, ev: 0, count: 0 };
+      map[key].exposure += c.exposureAmount;
+      map[key].ev += c.expectedValue;
+      map[key].count++;
+    });
+    return Object.values(map).map(d => ({
+      ...d,
       ratio: d.exposure > 0 ? Math.round((d.ev / d.exposure) * 100) : 0,
       exposure: Math.round(d.exposure / 1_000_000),
       ev: Math.round(d.ev / 1_000_000),
     }));
-  }, [exposureByStage]);
+  }, [activeCases]);
 
   const solDeadlines = useMemo(() =>
     allDeadlines
@@ -208,16 +218,42 @@ export default function TodaysExposure() {
       {/* Bottom section — 2-column grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
-          <SectionHeader title="EV vs Exposure Ratio" subtitle="Expected value as % of exposure by stage" />
+          <SectionHeader title="EV vs Exposure by Sub-Stage" subtitle="Bubble size = case count · Color = Pre-Lit vs Lit" />
           <div className="rounded-lg border border-border bg-card p-4">
             <ResponsiveContainer width="100%" height={280}>
-              <ScatterChart>
+              <ScatterChart margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="exposure" name="Exposure ($M)" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} label={{ value: 'Exposure ($M)', position: 'insideBottom', offset: -5, fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
                 <YAxis dataKey="ev" name="EV ($M)" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} label={{ value: 'EV ($M)', angle: -90, position: 'insideLeft', fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
-                <ZAxis dataKey="ratio" range={[100, 500]} name="Ratio %" />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number | undefined, name?: string) => [(name ?? '') === 'Ratio %' ? `${v ?? 0}%` : `$${v ?? 0}M`, name ?? '']} />
-                <Scatter data={evVsExposure} fill="#6366f1" />
+                <ZAxis dataKey="count" range={[80, 600]} name="Cases" />
+                <ReferenceLine segment={[{ x: 0, y: 0 }, { x: Math.max(...evVsExposure.map(d => d.exposure), 10), y: Math.max(...evVsExposure.map(d => d.exposure), 10) }]} stroke="hsl(var(--muted-foreground))" strokeDasharray="4 4" strokeOpacity={0.5} />
+                <Tooltip
+                  contentStyle={tooltipStyle}
+                  content={({ active, payload }) => {
+                    if (!active || !payload?.length) return null;
+                    const d = payload[0].payload as { stage: string; exposure: number; ev: number; ratio: number; count: number };
+                    return (
+                      <div style={tooltipStyle} className="p-2 text-sm shadow-md">
+                        <p className="font-semibold">{d.stage}</p>
+                        <p>Exposure: ${d.exposure}M</p>
+                        <p>EV: ${d.ev}M</p>
+                        <p>Ratio: {d.ratio}%</p>
+                        <p>Cases: {d.count}</p>
+                      </div>
+                    );
+                  }}
+                />
+                <Legend />
+                <Scatter
+                  data={evVsExposure.filter(d => d.parentStage === "pre-lit")}
+                  fill="#10b981"
+                  name="Pre-Lit"
+                />
+                <Scatter
+                  data={evVsExposure.filter(d => d.parentStage === "lit")}
+                  fill="#6366f1"
+                  name="Lit"
+                />
               </ScatterChart>
             </ResponsiveContainer>
           </div>
