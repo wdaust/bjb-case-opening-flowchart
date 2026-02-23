@@ -23,8 +23,8 @@ function BulletCard({ m }: { m: StageAgeMetric }) {
       <div className="relative w-full" style={{ height: chartH }}>
         {/* qualitative ranges */}
         <div className="absolute inset-0 flex rounded" style={{ top: (chartH - barH) / 2, height: barH }}>
-          <div className="rounded-l" style={{ width: pct(m.slaTarget * 0.5), background: 'rgba(34,197,94,0.18)' }} />
-          <div style={{ width: pct(m.slaTarget * 0.3), background: 'rgba(234,179,8,0.18)' }} />
+          <div className="rounded-l" style={{ width: pct(m.slaTarget * 0.8), background: 'rgba(34,197,94,0.18)' }} />
+          <div style={{ width: pct(m.slaTarget * 0.2), background: 'rgba(234,179,8,0.18)' }} />
           <div className="flex-1 rounded-r" style={{ background: 'rgba(239,68,68,0.18)' }} />
         </div>
 

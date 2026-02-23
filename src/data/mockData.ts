@@ -365,7 +365,7 @@ function buildCases(): LitCase[] {
         pod: pods[officeIdx],
         office: att.office,
         venue: venues[venueIdx],
-        status: i < 6300 ? "active" : i < 6430 ? "settled" : "closed",
+        status: i < 6450 ? "active" : i < 6500 ? "settled" : "closed",
         slaTarget: sla,
         lastActivityDate: daysAgo(lastActivityDaysAgo),
         nextAction: nextActions[i % nextActions.length],
