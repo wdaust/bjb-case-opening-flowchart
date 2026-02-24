@@ -423,18 +423,6 @@ export default function ControlTower() {
             ]}
           />
           <StatCard
-            label="Closed Out (30d)"
-            value={310}
-            delta="net +30"
-            deltaType="positive"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Settled", value: Math.round(310 * 0.65), deltaType: "positive" },
-              { label: "Dismissed", value: Math.round(310 * 0.25), deltaType: "neutral" },
-              { label: "Trial verdict", value: Math.round(310 * 0.10), deltaType: "neutral" },
-            ]}
-          />
-          <StatCard
             label="Over-SLA %"
             value={`${controlTowerData.overSlaPct}%`}
             delta="by stage"

@@ -48,6 +48,7 @@ import ManagerRhythm from './pages/ManagerRhythm.tsx';
 import CaseExecution from './pages/CaseExecution.tsx';
 import TodaysExposure from './pages/TodaysExposure.tsx';
 import GaugeOptions from './pages/GaugeOptions.tsx';
+import { AIChatWidget } from './components/dashboard/AIChatWidget.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 const SIDEBAR_KEY = 'bjb-sidebar-collapsed';
@@ -83,6 +84,7 @@ function Layout() {
       <main className="flex-1 flex flex-col min-w-0 min-h-0">
         <Outlet />
       </main>
+      <AIChatWidget />
     </div>
   );
 }
