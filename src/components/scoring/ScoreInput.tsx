@@ -25,27 +25,34 @@ const scoreColors: Record<number, string> = {
 export function ScoreInput({ value, onChange, rubric }: ScoreInputProps) {
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((n) => (
-          <Tooltip key={n}>
-            <TooltipTrigger asChild>
-              <Button
-                size="sm"
-                variant={value === n ? 'default' : 'outline'}
-                className={cn(
-                  'w-8 h-8 p-0',
-                  value === n && scoreColors[n]
-                )}
-                onClick={() => onChange(n)}
-              >
-                {n}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-xs">
-              <p className="text-xs">{rubric[n] ?? `Score ${n}`}</p>
-            </TooltipContent>
-          </Tooltip>
-        ))}
+      <div>
+        <div className="flex gap-1">
+          {[1, 2, 3, 4, 5].map((n) => (
+            <Tooltip key={n}>
+              <TooltipTrigger asChild>
+                <Button
+                  size="sm"
+                  variant={value === n ? 'default' : 'outline'}
+                  className={cn(
+                    'w-8 h-8 p-0',
+                    value === n && scoreColors[n]
+                  )}
+                  onClick={() => onChange(n)}
+                >
+                  {n}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-xs">
+                <p className="text-xs">{rubric[n] ?? `Score ${n}`}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+        <div className="flex justify-between text-[10px] leading-tight text-muted-foreground mt-1 gap-1">
+          <span className="flex-1 text-red-500/80">1: {rubric[1]}</span>
+          <span className="flex-1 text-center text-yellow-600/80">3: {rubric[3]}</span>
+          <span className="flex-1 text-right text-green-600/80">5: {rubric[5]}</span>
+        </div>
       </div>
     </TooltipProvider>
   );

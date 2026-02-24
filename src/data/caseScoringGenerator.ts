@@ -73,14 +73,14 @@ function getBand(percentage: number): { name: string; color: string } {
 }
 
 // ── Composite Weights ────────────────────────────────────────────────────
-// CPI 25%, Client Profile 20%, Liability 20%, Policy 15%, Treatment 20%
+// UCIS MCHS: LSM 25%, TQM 25%, CRM 20%, CCM 15%, CPM 15%
 
 const COMPOSITE_WEIGHTS: Record<string, number> = {
-  'case-performance': 0.25,
-  'client-profile': 0.20,
-  'liability': 0.20,
-  'policy': 0.15,
-  'treatment': 0.20,
+  'lsm': 0.25,
+  'tqm': 0.25,
+  'crm': 0.20,
+  'ccm': 0.15,
+  'cpm': 0.15,
 };
 
 // ── Score Generation ─────────────────────────────────────────────────────
@@ -105,23 +105,15 @@ function generateCaseScore(caseId: string, system: ScoringSystem, litCase: LitCa
     const gateComplete = litCase.gateChecklist.filter(g => g.completed).length;
     basePercentage += (gateComplete / gateTotal - 0.5) * 0.08;
 
-    // System-specific adjustments
+    // System-specific adjustments (UCIS modules)
     switch (system.id) {
-      case 'client-profile':
-        // Later stages generally have better client profiles (established relationship)
-        if (litCase.parentStage === 'lit') basePercentage += 0.05;
-        break;
-      case 'liability':
-        // Cases that made it to lit generally have decent liability
+      case 'lsm':
+        // Liability Strength — cases in lit generally have decent liability
         if (litCase.parentStage === 'lit') basePercentage += 0.08;
         if (litCase.stage === 'lit-arb-mediation' || litCase.stage === 'lit-trial') basePercentage += 0.05;
         break;
-      case 'policy':
-        // Coverage is more defined in later stages
-        if (litCase.parentStage !== 'intake') basePercentage += 0.03;
-        break;
-      case 'treatment':
-        // Treatment strength grows over time
+      case 'tqm':
+        // Treatment Quality — strength grows over time
         if (litCase.stage === 'lit-treatment-monitoring' || litCase.stage === 'pre-treatment-monitoring') {
           basePercentage -= 0.05; // Still in treatment, not yet complete
         }
@@ -129,8 +121,16 @@ function generateCaseScore(caseId: string, system: ScoringSystem, litCase: LitCa
           basePercentage += 0.07; // Treatment more complete
         }
         break;
-      case 'case-performance':
-        // Penalty for SLA breach
+      case 'crm':
+        // Coverage & Recovery — more defined in later stages
+        if (litCase.parentStage !== 'intake') basePercentage += 0.03;
+        break;
+      case 'ccm':
+        // Client Cooperation — established relationship in lit
+        if (litCase.parentStage === 'lit') basePercentage += 0.05;
+        break;
+      case 'cpm':
+        // Case Performance — penalty for SLA breach
         if (litCase.riskFlags.includes('Over SLA')) basePercentage -= 0.10;
         if (litCase.riskFlags.includes('Silent stall')) basePercentage -= 0.08;
         break;

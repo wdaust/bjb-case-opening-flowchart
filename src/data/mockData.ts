@@ -41,6 +41,7 @@ export interface LitCase {
   attorney: string;
   pod: string;
   office: string;
+  team: string;
   venue: string;
   status: string;
   slaTarget: number;
@@ -58,7 +59,7 @@ export interface LitCase {
 }
 
 export interface Attorney {
-  id: string; name: string; pod: string; office: string; role: string;
+  id: string; name: string; pod: string; office: string; team: string; role: string;
   caseCount: number; overSlaCount: number; stallCount: number;
   nextActionCoverage: number; throughputWeekly: number;
 }
@@ -164,31 +165,31 @@ const gateTemplates: Record<Stage, string[]> = {
 
 // ── Attorneys (scaled for ~6,518 cases) ─────────────────────────────────
 export const attorneys: Attorney[] = [
-  { id: "att-01", name: "Sarah Chen", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 344, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.95, throughputWeekly: 2.1 },
-  { id: "att-02", name: "Marcus Rivera", pod: "Hartford Lit Team", office: "Hartford", role: "Partner", caseCount: 230, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.98, throughputWeekly: 1.8 },
-  { id: "att-03", name: "Jennifer Walsh", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 312, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.87, throughputWeekly: 1.5 },
-  { id: "att-04", name: "David Kim", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 369, overSlaCount: 33, stallCount: 8, nextActionCoverage: 0.92, throughputWeekly: 2.3 },
-  { id: "att-05", name: "Rachel Thompson", pod: "NYC Lit Team", office: "NYC", role: "Partner", caseCount: 180, overSlaCount: 0, stallCount: 0, nextActionCoverage: 1.0, throughputWeekly: 1.2 },
-  { id: "att-06", name: "James O'Brien", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 287, overSlaCount: 49, stallCount: 25, nextActionCoverage: 0.82, throughputWeekly: 1.4 },
-  { id: "att-07", name: "Maria Santos", pod: "Chicago Lit Team", office: "Chicago", role: "Senior Associate", caseCount: 328, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.93, throughputWeekly: 2.0 },
-  { id: "att-08", name: "Robert Chen", pod: "Chicago Lit Team", office: "Chicago", role: "Partner", caseCount: 205, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.97, throughputWeekly: 1.6 },
-  { id: "att-09", name: "Emily Watson", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 295, overSlaCount: 33, stallCount: 16, nextActionCoverage: 0.88, throughputWeekly: 1.3 },
-  { id: "att-10", name: "Michael Torres", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 271, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.90, throughputWeekly: 1.7 },
-  { id: "att-11", name: "Lisa Park", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 246, overSlaCount: 16, stallCount: 0, nextActionCoverage: 0.94, throughputWeekly: 1.9 },
-  { id: "att-12", name: "Andrew Miller", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 279, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.85, throughputWeekly: 1.1 },
-  { id: "att-13", name: "Nicole Foster", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 238, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.96, throughputWeekly: 2.2 },
-  { id: "att-14", name: "Christopher Lee", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 303, overSlaCount: 33, stallCount: 8, nextActionCoverage: 0.89, throughputWeekly: 1.6 },
-  { id: "att-15", name: "Amanda Hughes", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 254, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.91, throughputWeekly: 1.5 },
-  { id: "att-16", name: "Daniel Brooks", pod: "Hartford Lit Team", office: "Hartford", role: "Partner", caseCount: 164, overSlaCount: 0, stallCount: 0, nextActionCoverage: 0.99, throughputWeekly: 1.0 },
-  { id: "att-17", name: "Stephanie Nguyen", pod: "NYC Lit Team", office: "NYC", role: "Senior Associate", caseCount: 262, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.93, throughputWeekly: 1.8 },
-  { id: "att-18", name: "Kevin Martinez", pod: "Chicago Lit Team", office: "Chicago", role: "Senior Associate", caseCount: 221, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.95, throughputWeekly: 2.0 },
-  { id: "att-19", name: "Patricia Adams", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 320, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.86, throughputWeekly: 1.4 },
-  { id: "att-20", name: "Brian Wilson", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 213, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.92, throughputWeekly: 1.3 },
-  { id: "att-21", name: "Laura Garcia", pod: "Chicago Lit Team", office: "Chicago", role: "Partner", caseCount: 148, overSlaCount: 0, stallCount: 0, nextActionCoverage: 1.0, throughputWeekly: 0.9 },
-  { id: "att-22", name: "Thomas Wright", pod: "Hartford Lit Team", office: "Hartford", role: "Associate", caseCount: 336, overSlaCount: 49, stallCount: 25, nextActionCoverage: 0.83, throughputWeekly: 1.2 },
-  { id: "att-23", name: "Jessica Patel", pod: "NYC Lit Team", office: "NYC", role: "Associate", caseCount: 197, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.94, throughputWeekly: 1.7 },
-  { id: "att-24", name: "Ryan Cooper", pod: "Chicago Lit Team", office: "Chicago", role: "Associate", caseCount: 287, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.90, throughputWeekly: 1.5 },
-  { id: "att-25", name: "Megan Hall", pod: "Hartford Lit Team", office: "Hartford", role: "Senior Associate", caseCount: 230, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.96, throughputWeekly: 2.1 },
+  { id: "att-01", name: "Sarah Chen", pod: "Hartford Lit Team", office: "Hartford", team: "Alpha", role: "Senior Associate", caseCount: 344, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.95, throughputWeekly: 2.1 },
+  { id: "att-02", name: "Marcus Rivera", pod: "Hartford Lit Team", office: "Hartford", team: "Bravo", role: "Partner", caseCount: 230, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.98, throughputWeekly: 1.8 },
+  { id: "att-03", name: "Jennifer Walsh", pod: "Hartford Lit Team", office: "Hartford", team: "Charlie", role: "Associate", caseCount: 312, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.87, throughputWeekly: 1.5 },
+  { id: "att-04", name: "David Kim", pod: "NYC Lit Team", office: "NYC", team: "Alpha", role: "Senior Associate", caseCount: 369, overSlaCount: 33, stallCount: 8, nextActionCoverage: 0.92, throughputWeekly: 2.3 },
+  { id: "att-05", name: "Rachel Thompson", pod: "NYC Lit Team", office: "NYC", team: "Charlie", role: "Partner", caseCount: 180, overSlaCount: 0, stallCount: 0, nextActionCoverage: 1.0, throughputWeekly: 1.2 },
+  { id: "att-06", name: "James O'Brien", pod: "NYC Lit Team", office: "NYC", team: "Bravo", role: "Associate", caseCount: 287, overSlaCount: 49, stallCount: 25, nextActionCoverage: 0.82, throughputWeekly: 1.4 },
+  { id: "att-07", name: "Maria Santos", pod: "Chicago Lit Team", office: "Chicago", team: "Alpha", role: "Senior Associate", caseCount: 328, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.93, throughputWeekly: 2.0 },
+  { id: "att-08", name: "Robert Chen", pod: "Chicago Lit Team", office: "Chicago", team: "Delta", role: "Partner", caseCount: 205, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.97, throughputWeekly: 1.6 },
+  { id: "att-09", name: "Emily Watson", pod: "Chicago Lit Team", office: "Chicago", team: "Bravo", role: "Associate", caseCount: 295, overSlaCount: 33, stallCount: 16, nextActionCoverage: 0.88, throughputWeekly: 1.3 },
+  { id: "att-10", name: "Michael Torres", pod: "Hartford Lit Team", office: "Hartford", team: "Charlie", role: "Associate", caseCount: 271, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.90, throughputWeekly: 1.7 },
+  { id: "att-11", name: "Lisa Park", pod: "NYC Lit Team", office: "NYC", team: "Bravo", role: "Senior Associate", caseCount: 246, overSlaCount: 16, stallCount: 0, nextActionCoverage: 0.94, throughputWeekly: 1.9 },
+  { id: "att-12", name: "Andrew Miller", pod: "Chicago Lit Team", office: "Chicago", team: "Charlie", role: "Associate", caseCount: 279, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.85, throughputWeekly: 1.1 },
+  { id: "att-13", name: "Nicole Foster", pod: "Hartford Lit Team", office: "Hartford", team: "Delta", role: "Senior Associate", caseCount: 238, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.96, throughputWeekly: 2.2 },
+  { id: "att-14", name: "Christopher Lee", pod: "NYC Lit Team", office: "NYC", team: "Alpha", role: "Associate", caseCount: 303, overSlaCount: 33, stallCount: 8, nextActionCoverage: 0.89, throughputWeekly: 1.6 },
+  { id: "att-15", name: "Amanda Hughes", pod: "Chicago Lit Team", office: "Chicago", team: "Bravo", role: "Associate", caseCount: 254, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.91, throughputWeekly: 1.5 },
+  { id: "att-16", name: "Daniel Brooks", pod: "Hartford Lit Team", office: "Hartford", team: "Delta", role: "Partner", caseCount: 164, overSlaCount: 0, stallCount: 0, nextActionCoverage: 0.99, throughputWeekly: 1.0 },
+  { id: "att-17", name: "Stephanie Nguyen", pod: "NYC Lit Team", office: "NYC", team: "Charlie", role: "Senior Associate", caseCount: 262, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.93, throughputWeekly: 1.8 },
+  { id: "att-18", name: "Kevin Martinez", pod: "Chicago Lit Team", office: "Chicago", team: "Charlie", role: "Senior Associate", caseCount: 221, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.95, throughputWeekly: 2.0 },
+  { id: "att-19", name: "Patricia Adams", pod: "Hartford Lit Team", office: "Hartford", team: "Alpha", role: "Associate", caseCount: 320, overSlaCount: 41, stallCount: 16, nextActionCoverage: 0.86, throughputWeekly: 1.4 },
+  { id: "att-20", name: "Brian Wilson", pod: "NYC Lit Team", office: "NYC", team: "Delta", role: "Associate", caseCount: 213, overSlaCount: 16, stallCount: 8, nextActionCoverage: 0.92, throughputWeekly: 1.3 },
+  { id: "att-21", name: "Laura Garcia", pod: "Chicago Lit Team", office: "Chicago", team: "Delta", role: "Partner", caseCount: 148, overSlaCount: 0, stallCount: 0, nextActionCoverage: 1.0, throughputWeekly: 0.9 },
+  { id: "att-22", name: "Thomas Wright", pod: "Hartford Lit Team", office: "Hartford", team: "Bravo", role: "Associate", caseCount: 336, overSlaCount: 49, stallCount: 25, nextActionCoverage: 0.83, throughputWeekly: 1.2 },
+  { id: "att-23", name: "Jessica Patel", pod: "NYC Lit Team", office: "NYC", team: "Bravo", role: "Associate", caseCount: 197, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.94, throughputWeekly: 1.7 },
+  { id: "att-24", name: "Ryan Cooper", pod: "Chicago Lit Team", office: "Chicago", team: "Alpha", role: "Associate", caseCount: 287, overSlaCount: 25, stallCount: 8, nextActionCoverage: 0.90, throughputWeekly: 1.5 },
+  { id: "att-25", name: "Megan Hall", pod: "Hartford Lit Team", office: "Hartford", team: "Delta", role: "Senior Associate", caseCount: 230, overSlaCount: 8, stallCount: 0, nextActionCoverage: 0.96, throughputWeekly: 2.1 },
 ];
 
 // ── Helpers ─────────────────────────────────────────────────────────────
@@ -364,6 +365,7 @@ function buildCases(): LitCase[] {
         attorney: att.name,
         pod: pods[officeIdx],
         office: att.office,
+        team: att.team,
         venue: venues[venueIdx],
         status: i < 6450 ? "active" : i < 6500 ? "settled" : "closed",
         slaTarget: sla,
@@ -663,3 +665,5 @@ export function getForecastData() {
     ],
   };
 }
+
+export function getTeams(): string[] { return ['Alpha', 'Bravo', 'Charlie', 'Delta']; }

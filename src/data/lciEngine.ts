@@ -407,6 +407,13 @@ export function getOffices(): string[] {
   return Array.from(officeSet).sort();
 }
 
+export function calculateTeamLCI(teamName: string): LCIResult {
+  const teamCases = cases.filter(c => c.team === teamName);
+  return calculateLCI(`team-lci-${teamName}`, teamCases);
+}
+
+export { getTeams } from './mockData';
+
 // ── Escalations ──────────────────────────────────────────────────────────
 
 export function getEscalations(): EscalationItem[] {

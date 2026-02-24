@@ -13,10 +13,10 @@ import { MiniSparkline } from '../components/dashboard/MiniSparkline';
 import { EscalationBanner } from '../components/dashboard/EscalationBanner';
 import {
   calculateFirmLCI,
-  calculateOfficeLCI,
+  calculateTeamLCI,
   calculateAttorneyLCI,
   getEscalations,
-  getOffices,
+  getTeams,
   LAYER_DEFINITIONS,
   type LCIBand,
 } from '../data/lciEngine';
@@ -46,11 +46,11 @@ export default function LCIReport() {
 
   const firmLCI = useMemo(() => calculateFirmLCI(), []);
   const escalations = useMemo(() => getEscalations(), []);
-  const offices = useMemo(() => getOffices(), []);
+  const teams = useMemo(() => getTeams(), []);
 
-  const officeLCIs = useMemo(
-    () => offices.map(office => ({ office, lci: calculateOfficeLCI(office) })),
-    [offices],
+  const teamLCIs = useMemo(
+    () => teams.map(team => ({ team, lci: calculateTeamLCI(team) })),
+    [teams],
   );
 
   const attorneyLCIs = useMemo(() => {
@@ -295,13 +295,13 @@ export default function LCIReport() {
         </div>
       </div>
 
-      {/* Section 5: Office-Level Comparison */}
+      {/* Section 5: Team Comparison */}
       <div>
-        <SectionHeader title="Office-Level Comparison" subtitle="LCI scores and layer breakdown by office" />
-        <DashboardGrid cols={offices.length <= 4 ? (offices.length as 1 | 2 | 3 | 4) : 4}>
-          {officeLCIs.map(({ office, lci }) => (
-            <div key={office} className="rounded-xl border border-border bg-card p-4 space-y-3">
-              <h3 className="text-sm font-semibold text-foreground">{office}</h3>
+        <SectionHeader title="Team Comparison" subtitle="LCI scores and layer breakdown by team" />
+        <DashboardGrid cols={teams.length <= 4 ? (teams.length as 1 | 2 | 3 | 4) : 4}>
+          {teamLCIs.map(({ team, lci }) => (
+            <div key={team} className="rounded-xl border border-border bg-card p-4 space-y-3">
+              <h3 className="text-sm font-semibold text-foreground">{team}</h3>
               <div className="flex items-center gap-3">
                 <ScoreGauge score={lci.score} maxScore={100} size={70} />
                 <div className="space-y-1">
@@ -354,7 +354,7 @@ export default function LCIReport() {
                 >
                   <span className="text-xs font-bold text-muted-foreground w-5 shrink-0">{i + 1}</span>
                   <span className="text-sm font-medium text-foreground flex-1 min-w-0 truncate">{att.name}</span>
-                  <span className="text-xs text-muted-foreground shrink-0">{att.office}</span>
+                  <span className="text-xs text-muted-foreground shrink-0">{att.team}</span>
                   <div className="w-16 shrink-0">
                     <MiniSparkline data={att.lci.trend} color={bandColor(att.lci.band)} height={20} />
                   </div>
@@ -377,7 +377,7 @@ export default function LCIReport() {
                 >
                   <span className="text-xs font-bold text-muted-foreground w-5 shrink-0">{i + 1}</span>
                   <span className="text-sm font-medium text-foreground flex-1 min-w-0 truncate">{att.name}</span>
-                  <span className="text-xs text-muted-foreground shrink-0">{att.office}</span>
+                  <span className="text-xs text-muted-foreground shrink-0">{att.team}</span>
                   <div className="w-16 shrink-0">
                     <MiniSparkline data={att.lci.trend} color={bandColor(att.lci.band)} height={20} />
                   </div>
