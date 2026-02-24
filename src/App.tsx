@@ -48,6 +48,7 @@ import ManagerRhythm from './pages/ManagerRhythm.tsx';
 import CaseExecution from './pages/CaseExecution.tsx';
 import TodaysExposure from './pages/TodaysExposure.tsx';
 import GaugeOptions from './pages/GaugeOptions.tsx';
+import LCIReport from './pages/LCIReport.tsx';
 import { AIChatWidget } from './components/dashboard/AIChatWidget.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
@@ -107,6 +108,7 @@ export default function App() {
             <Route path="today-exposure" element={<TodaysExposure />} />
             <Route path="case/:caseId" element={<CaseExecution />} />
             <Route path="gauge-options" element={<GaugeOptions />} />
+            <Route path="lci-report" element={<LCIReport />} />
             <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
             <Route path="performance-infrastructure/mockups" element={<MockupsLanding />} />
             <Route path="performance-infrastructure/litify" element={<LitifyMockupsLanding />} />

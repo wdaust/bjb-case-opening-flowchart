@@ -387,7 +387,7 @@ export default function ControlTower() {
       <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
         <DashboardGrid cols={4}>
           {/* LCI Gauge Card */}
-          <div className={cn("rounded-xl border border-border bg-card p-5 flex flex-col items-center justify-center gap-2", hoverCard)}>
+          <div className={cn("rounded-xl border border-border bg-card p-5 flex flex-col items-center justify-center gap-2 cursor-pointer", hoverCard)} onClick={() => navigate('/lci-report')}>
             <ScoreGauge score={firmLCI.score} maxScore={100} size={90} label="Firm LCI" />
             <span className={cn(
               'text-xs font-semibold px-2 py-0.5 rounded-full',
