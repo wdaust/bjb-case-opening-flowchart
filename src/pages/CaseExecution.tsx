@@ -5,6 +5,10 @@ import { Breadcrumbs } from "../components/dashboard/Breadcrumbs";
 import { SectionHeader } from "../components/dashboard/SectionHeader";
 import { DeadlineList } from "../components/dashboard/DeadlineList";
 import { GateChecklist } from "../components/dashboard/GateChecklist";
+import { LCIBadge } from "../components/dashboard/LCIBadge";
+import { ScoreGauge } from "../components/scoring/ScoreGauge";
+import { getCaseScores } from "../data/caseScoringGenerator";
+import { calculateCaseLCI } from "../data/lciEngine";
 import {
   cases,
   stageLabels,
@@ -51,6 +55,9 @@ export default function CaseExecution() {
       </div>
     );
   }
+
+  const caseScores = useMemo(() => getCaseScores(theCase.id), [theCase.id]);
+  const caseLCI = useMemo(() => calculateCaseLCI(theCase.id), [theCase.id]);
 
   const daysInStage = getDaysInStage(theCase);
   const slaTarget = theCase.slaTarget;
@@ -224,6 +231,25 @@ export default function CaseExecution() {
                   <span className="text-xs text-muted-foreground">Hard Costs Remaining</span>
                   <p className="text-lg font-semibold text-foreground">{fmtCurrency(theCase.hardCostsRemaining)}</p>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <SectionHeader title="Case Health" />
+            <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <LCIBadge score={caseLCI} />
+                <span className="text-sm text-muted-foreground">Litigation Control Index</span>
+              </div>
+              <div className="flex flex-wrap justify-center gap-3">
+                {caseScores.scores.map(s => (
+                  <div key={s.systemId} className="flex flex-col items-center">
+                    <ScoreGauge score={s.percentage} maxScore={100} size={60} />
+                    <span className="text-[10px] text-muted-foreground mt-1 text-center leading-tight max-w-[60px]">{s.shortLabel}</span>
+                    <span className="text-[10px] font-medium" style={{ color: s.bandColor }}>{s.band}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

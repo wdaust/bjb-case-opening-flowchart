@@ -17,7 +17,11 @@ import { DashboardGrid } from "../components/dashboard/DashboardGrid";
 import { StatCard } from "../components/dashboard/StatCard";
 import { SectionHeader } from "../components/dashboard/SectionHeader";
 import { DataTable, type Column } from "../components/dashboard/DataTable";
+import { LCIBadge } from "../components/dashboard/LCIBadge";
+import { ScoreGauge } from "../components/scoring/ScoreGauge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
+import { calculateAttorneyLCI } from "../data/lciEngine";
+import { getAttorneyCaseScoreAverages } from "../data/caseScoringGenerator";
 import {
   attorneys,
   getCasesByAttorney,
@@ -50,6 +54,8 @@ export default function AttorneyCockpit() {
 
   const attCases = useMemo(() => getCasesByAttorney(att.name), [att.name]);
   const activeCases = useMemo(() => attCases.filter((c) => c.status === "active"), [attCases]);
+  const attorneyLCI = useMemo(() => calculateAttorneyLCI(att.id), [att.id]);
+  const avgCaseScores = useMemo(() => getAttorneyCaseScoreAverages(att.name), [att.name]);
 
   const stageData = useMemo(() => {
     const counts: Record<string, { stage: string; label: string; count: number }> = {};
@@ -170,6 +176,7 @@ export default function AttorneyCockpit() {
             </option>
           ))}
         </select>
+        <LCIBadge score={attorneyLCI.score} />
       </div>
 
       <DashboardGrid cols={4}>
@@ -190,6 +197,23 @@ export default function AttorneyCockpit() {
           deltaType={att.nextActionCoverage > 0.9 ? "positive" : "neutral"}
         />
       </DashboardGrid>
+
+      {/* Portfolio Health */}
+      <div className="rounded-xl border border-border bg-card p-5">
+        <div className="flex items-center gap-3 mb-4">
+          <SectionHeader title="Portfolio Health" />
+        </div>
+        <div className="flex flex-wrap items-center gap-6">
+          <ScoreGauge score={attorneyLCI.score} maxScore={100} size={80} label="LCI" />
+          {avgCaseScores.map(s => (
+            <div key={s.systemId} className="flex flex-col items-center">
+              <ScoreGauge score={s.percentage} maxScore={100} size={60} />
+              <span className="text-[10px] text-muted-foreground mt-1">{s.shortLabel}</span>
+              <span className="text-[10px] font-medium" style={{ color: s.bandColor }}>{s.percentage}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <Tabs defaultValue="overview">
         <TabsList>

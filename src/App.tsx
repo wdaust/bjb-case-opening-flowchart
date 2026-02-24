@@ -94,7 +94,7 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Navigate to="/control-tower" replace />} />
-            <Route path="control-tower" element={<ControlTower />} />
+<Route path="control-tower" element={<ControlTower />} />
             <Route path="stage/:stageId" element={<StageCommand />} />
             <Route path="inventory-health" element={<InventoryHealth />} />
             <Route path="risk-radar" element={<RiskRadar />} />

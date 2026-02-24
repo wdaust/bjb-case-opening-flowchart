@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
+import { useMemo } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   AreaChart, Area, Cell, Legend,
@@ -10,6 +11,9 @@ import {
   getDaysInStage, getAgingDistribution, stageSlaTargets,
   type Stage, type ParentStage, type SubStage, type AgingBand,
 } from '../data/mockData';
+import { calculateStageLCI } from '../data/lciEngine';
+import { getStageMetrics } from '../data/stageMetricsGenerator';
+import { caseOpeningPursuitLadder } from '../data/caseOpeningMetricsData';
 import { StatCard } from '../components/dashboard/StatCard';
 import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
@@ -17,6 +21,9 @@ import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { AgingHeatmap } from '../components/dashboard/AgingHeatmap';
 import { DataTable, type Column } from '../components/dashboard/DataTable';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
+import { LCIBadge } from '../components/dashboard/LCIBadge';
+import { StageScorecard } from '../components/dashboard/StageScorecard';
+import { PursuitLadder } from '../components/dashboard/PursuitLadder';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
 
 export default function StageCommand() {
@@ -123,6 +130,17 @@ export default function StageCommand() {
   // Substage / intake detail mode (existing behavior)
   const stageData = getStageCommandData(stage);
   const weeklyData = getWeeklyThroughput();
+  const stageLCI = useMemo(() => calculateStageLCI(stage), [stage]);
+  const stageMetrics = useMemo(() => getStageMetrics(stage), [stage]);
+
+  const isCaseOpeningStage = stage.includes('case-opening') || stage.includes('account-opening');
+  const isTreatmentMonitoringStage = stage.includes('treatment-monitoring');
+  const showPursuitLadder = isCaseOpeningStage || isTreatmentMonitoringStage;
+
+  // Generate deterministic compliance rates for pursuit ladder
+  const pursuitComplianceRates = useMemo(() => {
+    return caseOpeningPursuitLadder.map((_, i) => Math.round(95 - i * 3.2 + (i % 3) * 2));
+  }, []);
 
   const gateBarColor = (pct: number) => {
     if (pct >= 80) return '#10b981';
@@ -168,7 +186,10 @@ export default function StageCommand() {
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
-      <Breadcrumbs crumbs={crumbs} />
+      <div className="flex items-center gap-3">
+        <Breadcrumbs crumbs={crumbs} />
+        <LCIBadge score={stageLCI.score} />
+      </div>
       <FilterBar />
 
       <Tabs defaultValue="inventory">
@@ -178,6 +199,7 @@ export default function StageCommand() {
           <TabsTrigger value="throughput">Throughput</TabsTrigger>
           {gateChartData.length > 0 && <TabsTrigger value="gates">Gates</TabsTrigger>}
           <TabsTrigger value="queue">Priority Queue</TabsTrigger>
+          <TabsTrigger value="scorecard">Scorecard</TabsTrigger>
         </TabsList>
 
         <TabsContent value="inventory">
@@ -262,6 +284,26 @@ export default function StageCommand() {
             <DataTable columns={columns} data={stageData.priorityQueue} keyField="id"
               onRowClick={(row) => navigate(`/case/${row.id}`)} maxRows={20}
             />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="scorecard">
+          <div className="space-y-6 pt-4">
+            <StageScorecard
+              stageId={stageMetrics.stageId}
+              stageName={stageMetrics.stageName}
+              metrics={stageMetrics.metrics}
+              overallHealth={stageMetrics.overallHealth}
+              greenCount={stageMetrics.greenCount}
+              amberCount={stageMetrics.amberCount}
+              redCount={stageMetrics.redCount}
+            />
+            {showPursuitLadder && (
+              <PursuitLadder
+                steps={caseOpeningPursuitLadder}
+                complianceRates={pursuitComplianceRates}
+              />
+            )}
           </div>
         </TabsContent>
       </Tabs>

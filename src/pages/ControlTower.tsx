@@ -8,12 +8,15 @@ import {
   type ParentStage,
 } from '../data/mockData';
 import type { SubStageCount, Stage } from '../data/mockData';
+import { calculateFirmLCI, getEscalations } from '../data/lciEngine';
 import { StatCard } from '../components/dashboard/StatCard';
 import { StageBar } from '../components/dashboard/StageBar';
 import { StageAgeGauges } from '../components/dashboard/StageAgeGauges';
 import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
+import { EscalationBanner } from '../components/dashboard/EscalationBanner';
+import { ScoreGauge } from '../components/scoring/ScoreGauge';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
@@ -116,6 +119,8 @@ export default function ControlTower() {
   const preLitMetrics = getPreLitStageAgeMetrics();
   const activeCases = useMemo(() => getActiveCases(), []);
   const allDeadlines = useMemo(() => getUpcomingDeadlines(90), []);
+  const firmLCI = useMemo(() => calculateFirmLCI(), []);
+  const escalations = useMemo(() => getEscalations(), []);
 
   const formattedEV = `$${(controlTowerData.totalEV / 1_000_000).toFixed(1)}M`;
 
@@ -368,6 +373,10 @@ export default function ControlTower() {
       <h1 className="text-2xl font-bold text-foreground animate-fade-in-up">Performance Control Tower</h1>
       <FilterBar />
 
+      {escalations.length > 0 && (
+        <EscalationBanner escalations={escalations} />
+      )}
+
       <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}>
         <SectionHeader title="Inventory by Stage" />
         <StageBar parentStages={controlTowerData.stageCounts} />
@@ -377,6 +386,18 @@ export default function ControlTower() {
       {/* Row 1 — Portfolio Overview */}
       <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
         <DashboardGrid cols={4}>
+          {/* LCI Gauge Card */}
+          <div className={cn("rounded-xl border border-border bg-card p-5 flex flex-col items-center justify-center gap-2", hoverCard)}>
+            <ScoreGauge score={firmLCI.score} maxScore={100} size={90} label="Firm LCI" />
+            <span className={cn(
+              'text-xs font-semibold px-2 py-0.5 rounded-full',
+              firmLCI.band === 'green' ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
+                : firmLCI.band === 'amber' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
+                : 'bg-red-500/15 text-red-600 dark:text-red-400',
+            )}>
+              {firmLCI.band === 'green' ? 'Healthy' : firmLCI.band === 'amber' ? 'Watch' : 'Critical'}
+            </span>
+          </div>
           <StatCard
             label="Total Active Inventory"
             value={controlTowerData.totalActive}
