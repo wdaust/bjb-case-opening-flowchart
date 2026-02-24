@@ -193,7 +193,6 @@ export default function LCIReport() {
         <div className="space-y-2">
           {firmLCI.layers.map(layer => {
             const isExpanded = expandedLayers.has(layer.layerId);
-            const def = LAYER_DEFINITIONS.find(d => d.id === layer.layerId);
             const weightedContribution = (layer.score * layer.weight).toFixed(1);
 
             return (
