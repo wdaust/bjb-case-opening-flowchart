@@ -61,8 +61,11 @@ function Layout() {
       return stored === null ? true : stored === 'true';
     } catch { return true; }
   });
+
   const [collapsed, setCollapsed] = useState(() => {
-    try { return localStorage.getItem(SIDEBAR_KEY) === 'true'; } catch { return false; }
+    try {
+      return localStorage.getItem(SIDEBAR_KEY) === 'true';
+    } catch { return false; }
   });
 
   useEffect(() => {
@@ -75,16 +78,18 @@ function Layout() {
   }, [collapsed]);
 
   return (
-    <div className="h-screen flex overflow-hidden">
+    <div className="h-screen flex overflow-hidden bg-sidebar-background">
       <Sidebar
         darkMode={darkMode}
         onToggleDark={() => setDarkMode(d => !d)}
         collapsed={collapsed}
         onToggleCollapse={() => setCollapsed(c => !c)}
       />
-      <main className="flex-1 flex flex-col min-w-0 min-h-0">
-        <Outlet />
-      </main>
+      <div className="flex-1 flex flex-col min-w-0 min-h-0 p-3">
+        <main className="flex-1 bg-background rounded-2xl overflow-auto shadow-lg">
+          <Outlet />
+        </main>
+      </div>
       <AIChatWidget />
     </div>
   );

@@ -77,7 +77,7 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="p-4 border-b border-sidebar-border flex items-center gap-3 min-h-[60px]">
-        <div className={cn('transition-all duration-200', !darkMode && !collapsed && 'bg-black rounded px-2 py-1')}>
+        <div className="transition-all duration-200">
           <img
             src={
               collapsed

@@ -459,6 +459,7 @@ export default function ControlTower() {
             value={formattedEV}
             delta="+3.2% vs last month"
             deltaType="positive"
+            variant="hero"
             className={hoverCard}
             subMetrics={[
               { label: "Avg EV/case", value: `$${(avgEvPerCase / 1000).toFixed(0)}K`, deltaType: "neutral" },
