@@ -33,7 +33,7 @@ export function BillingHistory({ records }: Props) {
                 <td className="py-2 px-3 text-foreground text-xs text-right font-medium">${r.amount.toLocaleString()}</td>
                 <td className="py-2 px-3 text-center">
                   {r.fileName ? (
-                    <FileText size={12} className="text-red-400 inline-block" title={r.fileName} />
+                    <span title={r.fileName}><FileText size={12} className="text-red-400 inline-block" /></span>
                   ) : (
                     <span className="text-muted-foreground/30">—</span>
                   )}
