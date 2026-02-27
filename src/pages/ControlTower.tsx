@@ -1,4 +1,4 @@
-import { useMemo, useSyncExternalStore } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../utils/cn';
 import {
@@ -21,71 +21,22 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
-import { ResponsiveSankey } from '@nivo/sankey';
-import { nivoTheme } from '../lib/nivoTheme';
 
-// ── Palette ─────────────────────────────────────────────────────────────
-// Case type colors (categorical)
+// ── Palette — green monochrome ──────────────────────────────────────────
+// Categorical shades (bright → muted greens + grays)
 const GREEN = '#22c55e';
-const VIOLET = '#a78bfa';
-const SKY = '#38bdf8';
-const PINK = '#f472b6';
-const YELLOW = '#facc15';
-// Semantic severity colors (good → warning → danger → critical)
-const EMERALD = '#10b981';
-const AMBER = '#f59e0b';
-const RED = '#ef4444';
-const ROSE = '#e11d48';
+const GREEN_80 = '#22c55ecc';
+const GREEN_60 = '#22c55e99';
+const GREEN_40 = '#22c55e66';
+const GREEN_20 = '#22c55e33';
+// Semantic severity (green → dim gray)
+const EMERALD = '#22c55e';
+const AMBER = '#555555';
+const RED = '#444444';
+const ROSE = '#333333';
 
-const STAGE_COLORS: Record<string, string> = {
-  Intake: GREEN,
-  'Pre-Litigation': VIOLET,
-  Litigation: SKY,
-};
-
-const CASE_TYPE_COLORS: Record<string, string> = {
-  PI: GREEN,
-  'Med Mal': VIOLET,
-  'Product Liability': SKY,
-  'Premises Liability': PINK,
-  'Auto Accident': YELLOW,
-  'Wrongful Death': '#fb923c',
-};
-
-const SANKEY_COLORS = [GREEN, VIOLET, SKY, PINK, YELLOW, '#fb923c', '#f87171', '#22d3ee', '#818cf8'];
 
 // ── Helpers ────────────────────────────────────────────────────────────
-function fmt$(n: number) {
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `$${(n / 1_000).toFixed(0)}K`;
-  return `$${n}`;
-}
-
-function buildSankeyData(activeCases: { caseType: string; parentStage: ParentStage; expectedValue: number }[]) {
-  const caseTypeSet = new Set(activeCases.map(c => c.caseType));
-  const caseTypes = Array.from(caseTypeSet);
-  const stages: ParentStage[] = ['intake', 'pre-lit', 'lit'];
-
-  const nodes = [
-    ...stages.map(s => ({ id: parentStageLabels[s], nodeColor: STAGE_COLORS[parentStageLabels[s]] || GREEN })),
-    ...caseTypes.map(ct => ({ id: ct, nodeColor: CASE_TYPE_COLORS[ct] || GREEN })),
-  ];
-
-  const links: { source: string; target: string; value: number }[] = [];
-  for (const ps of stages) {
-    for (const ct of caseTypes) {
-      const ev = activeCases
-        .filter(c => c.caseType === ct && c.parentStage === ps)
-        .reduce((s, c) => s + c.expectedValue, 0);
-      if (ev > 0) {
-        links.push({ source: parentStageLabels[ps], target: ct, value: Math.round(ev / 1_000_000 * 100) / 100 });
-      }
-    }
-  }
-
-  return { nodes, links };
-}
-
 function LegendDot({ color, label }: { color: string; label: string }) {
   return (
     <div className="flex items-center gap-1.5">
@@ -103,17 +54,8 @@ const tooltipStyle = {
 
 const hoverCard = "transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20";
 
-// Reactively detect dark mode from the <html> class toggle
-const darkSubscribe = (cb: () => void) => {
-  const obs = new MutationObserver(cb);
-  obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-  return () => obs.disconnect();
-};
-const darkSnapshot = () => document.documentElement.classList.contains('dark');
-
 export default function ControlTower() {
   const navigate = useNavigate();
-  const isDark = useSyncExternalStore(darkSubscribe, darkSnapshot);
   const controlTowerData = getControlTowerData();
   const topStageMetrics = getTopStageAgeMetrics();
   const preLitMetrics = getPreLitStageAgeMetrics();
@@ -190,10 +132,6 @@ export default function ControlTower() {
 
   const overSlaCases = activeCases.filter(c => c.riskFlags.includes("Over SLA"));
   const bothFlags = activeCases.filter(c => c.riskFlags.includes("Over SLA") && c.riskFlags.includes("Silent stall")).length;
-
-  // ── Sankey data ───────────────────────────────────────────────────────
-  const sankeyData = useMemo(() => buildSankeyData(activeCases), [activeCases]);
-  const sankeyCaseTypes = useMemo(() => Array.from(new Set(activeCases.map(c => c.caseType))), [activeCases]);
 
   // ── Donut 1: SLA Compliance ───────────────────────────────────────────
   const slaComplianceData = useMemo(() => {
@@ -308,10 +246,10 @@ export default function ControlTower() {
   type Severity = "good" | "warning" | "elevated" | "critical";
 
   const severityClasses: Record<Severity, string> = {
-    good:     "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300 ring-emerald-500/20",
-    warning:  "bg-amber-500/10 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300 ring-amber-500/20",
-    elevated: "bg-orange-500/15 text-orange-700 dark:bg-orange-400/20 dark:text-orange-300 ring-orange-500/25",
-    critical: "bg-red-500/15 text-red-700 dark:bg-red-400/20 dark:text-red-300 ring-red-500/25",
+    good:     "bg-green-500/15 text-green-400 ring-green-500/25",
+    warning:  "bg-white/5 text-gray-300 ring-white/10",
+    elevated: "bg-white/8 text-gray-400 ring-white/12",
+    critical: "bg-white/10 text-gray-500 ring-white/15",
   };
 
   const getSeverity = (metric: string, value: number): Severity => {
@@ -351,10 +289,10 @@ export default function ControlTower() {
     key: string; label: string; unit: string; accentBorder: string;
     getValue: (sub: SubStageCount) => number; format: (v: number) => string; metricKey: string;
   }[] = [
-    { key: "avgAge", label: "Avg Age", unit: "days", accentBorder: "border-l-blue-500/60", getValue: (sub) => sub.avgAge, format: (v) => `${v}`, metricKey: "avgAge" },
-    { key: "overSla", label: "Over-SLA", unit: "%", accentBorder: "border-l-amber-500/60", getValue: (sub) => sub.count > 0 ? Math.round((sub.overSla / sub.count) * 1000) / 10 : 0, format: (v) => `${v}%`, metricKey: "overSla" },
-    { key: "throughput", label: "Throughput", unit: "/wk", accentBorder: "border-l-emerald-500/60", getValue: (sub) => getSimThroughput(sub), format: (v) => `${v}`, metricKey: "throughput" },
-    { key: "stall", label: "Stall", unit: "%", accentBorder: "border-l-rose-500/60", getValue: (sub) => getSimStall(sub), format: (v) => `${v}%`, metricKey: "stall" },
+    { key: "avgAge", label: "Avg Age", unit: "days", accentBorder: "border-l-green-500/40", getValue: (sub) => sub.avgAge, format: (v) => `${v}`, metricKey: "avgAge" },
+    { key: "overSla", label: "Over-SLA", unit: "%", accentBorder: "border-l-green-500/25", getValue: (sub) => sub.count > 0 ? Math.round((sub.overSla / sub.count) * 1000) / 10 : 0, format: (v) => `${v}%`, metricKey: "overSla" },
+    { key: "throughput", label: "Throughput", unit: "/wk", accentBorder: "border-l-green-500/60", getValue: (sub) => getSimThroughput(sub), format: (v) => `${v}`, metricKey: "throughput" },
+    { key: "stall", label: "Stall", unit: "%", accentBorder: "border-l-gray-500/40", getValue: (sub) => getSimStall(sub), format: (v) => `${v}%`, metricKey: "stall" },
   ];
 
   const abbreviateStage = (stage: string) =>
@@ -391,9 +329,9 @@ export default function ControlTower() {
             <ScoreGauge score={firmLCI.score} maxScore={100} size={90} label="Firm LCI" />
             <span className={cn(
               'text-xs font-semibold px-2 py-0.5 rounded-full',
-              firmLCI.band === 'green' ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400'
-                : firmLCI.band === 'amber' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400'
-                : 'bg-red-500/15 text-red-600 dark:text-red-400',
+              firmLCI.band === 'green' ? 'bg-green-500/15 text-green-400'
+                : firmLCI.band === 'amber' ? 'bg-white/10 text-gray-400'
+                : 'bg-white/10 text-gray-500',
             )}>
               {firmLCI.band === 'green' ? 'Healthy' : firmLCI.band === 'amber' ? 'Watch' : 'Critical'}
             </span>
@@ -551,52 +489,6 @@ export default function ControlTower() {
         </DashboardGrid>
       </div>
 
-      {/* ── EV Distribution Sankey ─────────────────────────────────────── */}
-      <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '300ms', animationFillMode: 'forwards' }}>
-        <SectionHeader title="EV Distribution by Case Type" subtitle="Expected value flow from stages into case types" />
-        <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-          <div className="flex gap-6">
-            <div className="shrink-0 w-[180px] flex flex-col justify-between">
-              <div>
-                <div className="text-3xl font-bold text-foreground">{fmt$(controlTowerData.totalEV)}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">Total EV</div>
-                <div className="text-lg font-semibold text-muted-foreground mt-3">{fmt$(totalExposure)}</div>
-                <div className="text-xs text-muted-foreground">Total Exposure</div>
-              </div>
-              <div className="flex flex-wrap gap-x-3 gap-y-1 mt-4">
-                {sankeyCaseTypes.map(ct => (
-                  <LegendDot key={ct} color={CASE_TYPE_COLORS[ct] || GREEN} label={ct} />
-                ))}
-              </div>
-            </div>
-            <div className="flex-1 h-[350px]">
-              <ResponsiveSankey
-                data={sankeyData}
-                theme={nivoTheme}
-                colors={SANKEY_COLORS}
-                nodeOpacity={1}
-                nodeHoverOthersOpacity={0.35}
-                nodeThickness={16}
-                nodeSpacing={14}
-                nodeBorderWidth={0}
-                nodeBorderRadius={3}
-                linkOpacity={isDark ? 0.35 : 0.5}
-                linkHoverOpacity={isDark ? 0.75 : 0.8}
-                linkHoverOthersOpacity={isDark ? 0.08 : 0.1}
-                linkContract={0}
-                linkBlendMode={isDark ? 'screen' : 'multiply'}
-                enableLinkGradient
-                labelPosition="outside"
-                labelOrientation="horizontal"
-                labelPadding={12}
-                labelTextColor={isDark ? '#a1a1aa' : { from: 'color', modifiers: [['darker', 1.2]] }}
-                margin={{ top: 10, right: 140, bottom: 10, left: 10 }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* ── Donut Charts (LCF Framework) ───────────────────────────────── */}
       <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
         <SectionHeader title="LCF Framework Metrics" subtitle="SLA compliance, next-action coverage, and risk distribution" />
@@ -700,14 +592,14 @@ export default function ControlTower() {
                     <YAxis hide />
                     <RechartsTooltip {...tooltipStyle} />
                     {inventoryBarData.caseTypes.map((ct, i) => (
-                      <Bar key={ct} dataKey={ct} stackId="a" fill={[GREEN, VIOLET, SKY, PINK, YELLOW][i % 5]} radius={i === inventoryBarData.caseTypes.length - 1 ? [3, 3, 0, 0] : undefined} />
+                      <Bar key={ct} dataKey={ct} stackId="a" fill={[GREEN, GREEN_80, GREEN_60, GREEN_40, GREEN_20][i % 5]} radius={i === inventoryBarData.caseTypes.length - 1 ? [3, 3, 0, 0] : undefined} />
                     ))}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
             <div className="flex flex-wrap gap-3 mt-2">
-              {inventoryBarData.caseTypes.map((ct, i) => <LegendDot key={ct} color={[GREEN, VIOLET, SKY, PINK, YELLOW][i % 5]} label={ct} />)}
+              {inventoryBarData.caseTypes.map((ct, i) => <LegendDot key={ct} color={[GREEN, GREEN_80, GREEN_60, GREEN_40, GREEN_20][i % 5]} label={ct} />)}
             </div>
           </div>
 
@@ -719,7 +611,7 @@ export default function ControlTower() {
               <div className="shrink-0">
                 <div className="text-3xl font-bold text-foreground">{totalWeeklyExits}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">exits/week</div>
-                <div className="text-lg font-semibold text-emerald-500 mt-2">+4.2%</div>
+                <div className="text-lg font-semibold text-green-500 mt-2">+4.2%</div>
                 <div className="text-xs text-muted-foreground">trend</div>
               </div>
               <div className="flex-1 h-[140px]">
@@ -728,19 +620,19 @@ export default function ControlTower() {
                     <XAxis dataKey="week" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
                     <YAxis hide />
                     <RechartsTooltip {...tooltipStyle} />
-                    <Bar dataKey="Pre-Lit" stackId="a" fill={VIOLET} />
-                    <Bar dataKey="Lit" stackId="a" fill={SKY} />
+                    <Bar dataKey="Pre-Lit" stackId="a" fill={GREEN_40} />
+                    <Bar dataKey="Lit" stackId="a" fill={GREEN_60} />
                     <Bar dataKey="Settled" stackId="a" fill={GREEN} />
-                    <Bar dataKey="Dismissed" stackId="a" fill={PINK} radius={[3, 3, 0, 0]} />
+                    <Bar dataKey="Dismissed" stackId="a" fill={GREEN_20} radius={[3, 3, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
             <div className="flex gap-3 mt-2">
-              <LegendDot color={VIOLET} label="Pre-Lit" />
-              <LegendDot color={SKY} label="Lit" />
+              <LegendDot color={GREEN_40} label="Pre-Lit" />
+              <LegendDot color={GREEN_60} label="Lit" />
               <LegendDot color={GREEN} label="Settled" />
-              <LegendDot color={PINK} label="Dismissed" />
+              <LegendDot color={GREEN_20} label="Dismissed" />
             </div>
           </div>
 
@@ -759,17 +651,17 @@ export default function ControlTower() {
                     <XAxis dataKey="stage" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
                     <YAxis hide />
                     <RechartsTooltip {...tooltipStyle} />
-                    <Bar dataKey="1-7 days" stackId="a" fill={AMBER} />
-                    <Bar dataKey="8-14 days" stackId="a" fill={RED} />
-                    <Bar dataKey="15+ days" stackId="a" fill={ROSE} radius={[3, 3, 0, 0]} />
+                    <Bar dataKey="1-7 days" stackId="a" fill={GREEN_60} />
+                    <Bar dataKey="8-14 days" stackId="a" fill={GREEN_40} />
+                    <Bar dataKey="15+ days" stackId="a" fill={GREEN_20} radius={[3, 3, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
             <div className="flex gap-3 mt-2">
-              <LegendDot color={AMBER} label="1-7 days" />
-              <LegendDot color={RED} label="8-14 days" />
-              <LegendDot color={ROSE} label="15+ days" />
+              <LegendDot color={GREEN_60} label="1-7 days" />
+              <LegendDot color={GREEN_40} label="8-14 days" />
+              <LegendDot color={GREEN_20} label="15+ days" />
             </div>
           </div>
         </DashboardGrid>
@@ -785,10 +677,10 @@ export default function ControlTower() {
           <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
             <span className="font-medium text-foreground">Severity</span>
             {([
-              { label: "Good", cls: "bg-emerald-500/10 ring-1 ring-emerald-500/20" },
-              { label: "Warning", cls: "bg-amber-500/10 ring-1 ring-amber-500/20" },
-              { label: "Elevated", cls: "bg-orange-500/15 ring-1 ring-orange-500/25" },
-              { label: "Critical", cls: "bg-red-500/15 ring-1 ring-red-500/25" },
+              { label: "Good", cls: "bg-green-500/15 ring-1 ring-green-500/25" },
+              { label: "Warning", cls: "bg-white/5 ring-1 ring-white/10" },
+              { label: "Elevated", cls: "bg-white/8 ring-1 ring-white/12" },
+              { label: "Critical", cls: "bg-white/10 ring-1 ring-white/15" },
             ] as const).map(({ label, cls }) => (
               <span key={label} className="flex items-center gap-1.5">
                 <span className={cn("inline-block w-3 h-3 rounded", cls)} />

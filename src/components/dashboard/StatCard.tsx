@@ -40,12 +40,12 @@ export function StatCard({ label, value, delta, deltaType = "neutral", sparkline
           <p className={cn("text-3xl font-bold", isHero ? "text-white" : "text-card-foreground")}>{value}</p>
           {delta && (
             <div className="flex items-center gap-1 mt-1">
-              {deltaType === "positive" && <TrendingUp size={12} className="text-emerald-500" />}
-              {deltaType === "negative" && <TrendingDown size={12} className="text-red-500" />}
+              {deltaType === "positive" && <TrendingUp size={12} className="text-green-500" />}
+              {deltaType === "negative" && <TrendingDown size={12} className="text-gray-500" />}
               <span className={cn(
                 "text-xs font-medium",
-                deltaType === "positive" && "text-emerald-500",
-                deltaType === "negative" && "text-red-500",
+                deltaType === "positive" && "text-green-500",
+                deltaType === "negative" && "text-gray-500",
                 deltaType === "neutral" && "text-muted-foreground",
               )}>
                 {delta}
@@ -56,7 +56,7 @@ export function StatCard({ label, value, delta, deltaType = "neutral", sparkline
             <div className="w-20 mt-1">
               <MiniSparkline
                 data={sparklineData}
-                color={deltaType === "negative" ? "#ef4444" : "#10b981"}
+                color={deltaType === "negative" ? "#555555" : "#22c55e"}
               />
             </div>
           )}
@@ -71,8 +71,8 @@ export function StatCard({ label, value, delta, deltaType = "neutral", sparkline
                 </div>
                 <div className={cn(
                   "w-1.5 h-1.5 rounded-full shrink-0",
-                  sm.deltaType === "positive" && "bg-emerald-500",
-                  sm.deltaType === "negative" && "bg-red-500",
+                  sm.deltaType === "positive" && "bg-green-500",
+                  sm.deltaType === "negative" && "bg-gray-600",
                   (!sm.deltaType || sm.deltaType === "neutral") && "bg-muted-foreground/40",
                 )} />
               </div>

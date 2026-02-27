@@ -39,6 +39,7 @@ import TrialMatter from './pages/mockups/TrialMatter.tsx';
 import ControlTower from './pages/ControlTower.tsx';
 import AltControlTower from './pages/AltControlTower.tsx';
 import CallTeamDashboard from './pages/CallTeamDashboard.tsx';
+import ProviderNetwork from './pages/ProviderNetwork.tsx';
 import StageCommand from './pages/StageCommand.tsx';
 import InventoryHealth from './pages/InventoryHealth.tsx';
 import RiskRadar from './pages/RiskRadar.tsx';
@@ -50,6 +51,7 @@ import TodaysExposure from './pages/TodaysExposure.tsx';
 import GaugeOptions from './pages/GaugeOptions.tsx';
 import LCIReport from './pages/LCIReport.tsx';
 import { AIChatWidget } from './components/dashboard/AIChatWidget.tsx';
+import TopNavMockup from './pages/TopNavMockup.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 const SIDEBAR_KEY = 'bjb-sidebar-collapsed';
@@ -100,6 +102,7 @@ export default function App() {
     <TooltipProvider delayDuration={300}>
       <DashboardFilterProvider>
         <Routes>
+          <Route path="top-nav-mockup" element={<TopNavMockup />} />
           <Route element={<Layout />}>
             <Route index element={<Navigate to="/control-tower" replace />} />
 <Route path="control-tower" element={<ControlTower />} />
@@ -119,6 +122,7 @@ export default function App() {
             <Route path="performance-infrastructure/litify" element={<LitifyMockupsLanding />} />
             <Route path="performance-infrastructure/alt-control-tower" element={<AltControlTower />} />
             <Route path="performance-infrastructure/call-team-dashboard" element={<CallTeamDashboard />} />
+            <Route path="performance-infrastructure/provider-network" element={<ProviderNetwork />} />
             <Route path="performance-infrastructure/mockups/client-contact" element={<ClientContact />} />
             <Route path="performance-infrastructure/mockups/case-setup" element={<CaseSetup />} />
             <Route path="performance-infrastructure/mockups/task-tracker" element={<TaskTracker />} />

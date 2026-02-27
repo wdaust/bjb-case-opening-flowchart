@@ -4,7 +4,7 @@ import { Button } from './ui/button.tsx';
 import {
   GitBranch, LayoutDashboard, Activity, AlertTriangle, TrendingUp,
   FolderOpen, ChevronLeft, ChevronRight, ChevronDown, Sun, Moon, Menu, X,
-  UserCircle, CalendarCheck, Inbox, FileText, Scale, Layers, DollarSign, Phone,
+  UserCircle, CalendarCheck, Inbox, FileText, Scale, Layers, DollarSign, Phone, Stethoscope,
 } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
 import {
@@ -252,6 +252,10 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
             </button>
             {perfOpen && (
               <div className="ml-4 mt-0.5 space-y-0.5">
+                <NavLink to="/performance-infrastructure/provider-network" className={linkClass}>
+                  <Stethoscope size={14} className="shrink-0" />
+                  <span className="text-xs">Provider Network</span>
+                </NavLink>
                 <NavLink to="/performance-infrastructure" end className={linkClass}>
                   <GitBranch size={14} className="shrink-0" />
                   <span className="text-xs">Flowcharts</span>
@@ -271,6 +275,10 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
                 <NavLink to="/performance-infrastructure/call-team-dashboard" className={linkClass}>
                   <Phone size={14} className="shrink-0" />
                   <span className="text-xs">Call Team Dashboard</span>
+                </NavLink>
+                <NavLink to="/top-nav-mockup" className={linkClass}>
+                  <LayoutDashboard size={14} className="shrink-0" />
+                  <span className="text-xs">Top Nav Mockup</span>
                 </NavLink>
               </div>
             )}
