@@ -5,6 +5,7 @@ import ProviderAssist from './provider-network/ProviderAssist.tsx';
 import ProviderPortal from './provider-network/ProviderPortal.tsx';
 import ReferClientForm from './provider-network/ReferClientForm.tsx';
 import EducationLibrary from './provider-network/EducationLibrary.tsx';
+import MedicalBilling from '../components/provider-network/MedicalBilling.tsx';
 import {
   INITIAL_CLIENTS,
   INITIAL_BILLING,
@@ -52,6 +53,7 @@ export default function ProviderNetwork() {
           <TabsTrigger value="portal">Provider Portal</TabsTrigger>
           <TabsTrigger value="refer">Client Referral</TabsTrigger>
           <TabsTrigger value="education">Education Library</TabsTrigger>
+          <TabsTrigger value="billing">Medical Billing</TabsTrigger>
         </TabsList>
 
         <TabsContent value="assist">
@@ -76,6 +78,10 @@ export default function ProviderNetwork() {
 
         <TabsContent value="education">
           <EducationLibrary />
+        </TabsContent>
+
+        <TabsContent value="billing">
+          <MedicalBilling clients={clients} billing={billing} />
         </TabsContent>
       </Tabs>
     </div>

@@ -82,6 +82,8 @@ export interface BillingRecord {
   description: string;
   amount: number;
   fileName?: string;
+  invoiceNumber: string;
+  status: 'paid' | 'pending' | 'overdue';
 }
 
 export interface Client {
@@ -174,36 +176,104 @@ export const INITIAL_CLIENTS: Client[] = [
 // ── Mock Billing Records (30) ────────────────────────────────────────
 
 export const INITIAL_BILLING: BillingRecord[] = [
-  { id: 'b1', clientId: 'c1', date: '2025-12-20', treatmentType: 'Initial Exam', description: 'Full spinal evaluation and X-rays', amount: 450 },
-  { id: 'b2', clientId: 'c1', date: '2026-01-05', treatmentType: 'Adjustment', description: 'Cervical spine adjustment session 1', amount: 150 },
-  { id: 'b3', clientId: 'c1', date: '2026-01-19', treatmentType: 'Adjustment', description: 'Cervical spine adjustment session 2', amount: 150 },
-  { id: 'b4', clientId: 'c2', date: '2025-11-25', treatmentType: 'Consultation', description: 'Orthopedic knee evaluation', amount: 600 },
-  { id: 'b5', clientId: 'c2', date: '2025-12-10', treatmentType: 'MRI', description: 'Knee MRI imaging', amount: 1200 },
-  { id: 'b6', clientId: 'c2', date: '2026-01-08', treatmentType: 'Surgery', description: 'Arthroscopic knee repair', amount: 8500 },
-  { id: 'b7', clientId: 'c3', date: '2025-10-10', treatmentType: 'Initial Exam', description: 'Pain assessment and evaluation', amount: 350 },
-  { id: 'b8', clientId: 'c3', date: '2025-10-25', treatmentType: 'Injection', description: 'Epidural steroid injection L4-L5', amount: 1800 },
-  { id: 'b9', clientId: 'c4', date: '2025-09-18', treatmentType: 'Initial Exam', description: 'PT evaluation - shoulder injury', amount: 250 },
-  { id: 'b10', clientId: 'c4', date: '2025-10-02', treatmentType: 'Therapy Session', description: 'Range of motion exercises - week 1', amount: 175 },
-  { id: 'b11', clientId: 'c4', date: '2025-10-16', treatmentType: 'Therapy Session', description: 'Strengthening exercises - week 2', amount: 175 },
-  { id: 'b12', clientId: 'c4', date: '2025-10-30', treatmentType: 'Therapy Session', description: 'Functional training - week 3', amount: 175 },
-  { id: 'b13', clientId: 'c5', date: '2025-09-02', treatmentType: 'Consultation', description: 'Neurological evaluation', amount: 500 },
-  { id: 'b14', clientId: 'c5', date: '2025-09-20', treatmentType: 'EMG/NCS', description: 'Electromyography and nerve conduction', amount: 950 },
-  { id: 'b15', clientId: 'c6', date: '2025-07-20', treatmentType: 'MRI', description: 'Lumbar spine MRI', amount: 1400 },
-  { id: 'b16', clientId: 'c6', date: '2025-08-05', treatmentType: 'CT Scan', description: 'Follow-up CT scan', amount: 900 },
-  { id: 'b17', clientId: 'c7', date: '2025-06-28', treatmentType: 'Initial Exam', description: 'General physical exam and assessment', amount: 300 },
-  { id: 'b18', clientId: 'c7', date: '2025-07-15', treatmentType: 'Lab Work', description: 'Blood panel and urinalysis', amount: 275 },
-  { id: 'b19', clientId: 'c7', date: '2025-08-01', treatmentType: 'Follow-up', description: 'Results review and treatment plan', amount: 200 },
-  { id: 'b20', clientId: 'c8', date: '2025-05-15', treatmentType: 'Evaluation', description: 'Psychological assessment - PTSD', amount: 400 },
-  { id: 'b21', clientId: 'c8', date: '2025-06-01', treatmentType: 'Therapy', description: 'CBT session 1', amount: 250 },
-  { id: 'b22', clientId: 'c8', date: '2025-06-15', treatmentType: 'Therapy', description: 'CBT session 2', amount: 250 },
-  { id: 'b23', clientId: 'c8', date: '2025-07-01', treatmentType: 'Therapy', description: 'CBT session 3', amount: 250 },
-  { id: 'b24', clientId: 'c9', date: '2026-01-10', treatmentType: 'Consultation', description: 'Oral surgery evaluation', amount: 550 },
-  { id: 'b25', clientId: 'c9', date: '2026-01-25', treatmentType: 'X-Ray', description: 'Panoramic dental X-ray', amount: 200 },
-  { id: 'b26', clientId: 'c10', date: '2025-12-05', treatmentType: 'Initial Exam', description: 'Podiatric evaluation - ankle injury', amount: 325 },
-  { id: 'b27', clientId: 'c10', date: '2025-12-20', treatmentType: 'Custom Orthotics', description: 'Orthotic fitting and mold', amount: 475 },
-  { id: 'b28', clientId: 'c11', date: '2025-04-25', treatmentType: 'Initial Exam', description: 'Chiropractic evaluation', amount: 400 },
-  { id: 'b29', clientId: 'c11', date: '2025-05-10', treatmentType: 'Adjustment', description: 'Full spine adjustment x 8 visits', amount: 1200 },
-  { id: 'b30', clientId: 'c12', date: '2025-10-01', treatmentType: 'Consultation', description: 'Orthopedic shoulder evaluation', amount: 575 },
+  // c1 - John Martinez - Auto Accident / Chiropractor
+  { id: 'b1', clientId: 'c1', date: '2025-12-20', treatmentType: 'Initial Exam', description: 'Full spinal evaluation and X-rays', amount: 450, invoiceNumber: 'INV-2025-001', status: 'paid' },
+  { id: 'b2', clientId: 'c1', date: '2026-01-05', treatmentType: 'Adjustment', description: 'Cervical spine adjustment session 1', amount: 150, invoiceNumber: 'INV-2026-002', status: 'paid' },
+  { id: 'b3', clientId: 'c1', date: '2026-01-19', treatmentType: 'Adjustment', description: 'Cervical spine adjustment session 2', amount: 150, invoiceNumber: 'INV-2026-003', status: 'pending' },
+  // c2 - Sandra Lee - Slip & Fall / Orthopedic Surgeon
+  { id: 'b4', clientId: 'c2', date: '2025-11-25', treatmentType: 'Consultation', description: 'Orthopedic knee evaluation', amount: 600, invoiceNumber: 'INV-2025-004', status: 'paid' },
+  { id: 'b5', clientId: 'c2', date: '2025-12-10', treatmentType: 'MRI', description: 'Knee MRI imaging', amount: 1200, invoiceNumber: 'INV-2025-005', status: 'paid' },
+  { id: 'b6', clientId: 'c2', date: '2026-01-08', treatmentType: 'Surgery', description: 'Arthroscopic knee repair', amount: 8500, invoiceNumber: 'INV-2026-006', status: 'pending' },
+  // c3 - Robert Davis - Work Injury / Pain Management
+  { id: 'b7', clientId: 'c3', date: '2025-10-10', treatmentType: 'Initial Exam', description: 'Pain assessment and evaluation', amount: 350, invoiceNumber: 'INV-2025-007', status: 'paid' },
+  { id: 'b8', clientId: 'c3', date: '2025-10-25', treatmentType: 'Injection', description: 'Epidural steroid injection L4-L5', amount: 1800, invoiceNumber: 'INV-2025-008', status: 'overdue' },
+  // c4 - Emily Chen - Auto Accident / Physical Therapy
+  { id: 'b9', clientId: 'c4', date: '2025-09-18', treatmentType: 'Initial Exam', description: 'PT evaluation - shoulder injury', amount: 250, invoiceNumber: 'INV-2025-009', status: 'paid' },
+  { id: 'b10', clientId: 'c4', date: '2025-10-02', treatmentType: 'Therapy Session', description: 'Range of motion exercises - week 1', amount: 175, invoiceNumber: 'INV-2025-010', status: 'paid' },
+  { id: 'b11', clientId: 'c4', date: '2025-10-16', treatmentType: 'Therapy Session', description: 'Strengthening exercises - week 2', amount: 175, invoiceNumber: 'INV-2025-011', status: 'paid' },
+  { id: 'b12', clientId: 'c4', date: '2025-10-30', treatmentType: 'Therapy Session', description: 'Functional training - week 3', amount: 175, invoiceNumber: 'INV-2025-012', status: 'pending' },
+  // c5 - Michael Johnson - Auto Accident / Neurologist
+  { id: 'b13', clientId: 'c5', date: '2025-09-02', treatmentType: 'Consultation', description: 'Neurological evaluation', amount: 500, invoiceNumber: 'INV-2025-013', status: 'paid' },
+  { id: 'b14', clientId: 'c5', date: '2025-09-20', treatmentType: 'EMG/NCS', description: 'Electromyography and nerve conduction', amount: 950, invoiceNumber: 'INV-2025-014', status: 'overdue' },
+  // c6 - Jessica Williams - Slip & Fall / Radiologist
+  { id: 'b15', clientId: 'c6', date: '2025-07-20', treatmentType: 'MRI', description: 'Lumbar spine MRI', amount: 1400, invoiceNumber: 'INV-2025-015', status: 'paid' },
+  { id: 'b16', clientId: 'c6', date: '2025-08-05', treatmentType: 'CT Scan', description: 'Follow-up CT scan', amount: 900, invoiceNumber: 'INV-2025-016', status: 'paid' },
+  // c7 - David Kim - Work Injury / General Practitioner
+  { id: 'b17', clientId: 'c7', date: '2025-06-28', treatmentType: 'Initial Exam', description: 'General physical exam and assessment', amount: 300, invoiceNumber: 'INV-2025-017', status: 'paid' },
+  { id: 'b18', clientId: 'c7', date: '2025-07-15', treatmentType: 'Lab Work', description: 'Blood panel and urinalysis', amount: 275, invoiceNumber: 'INV-2025-018', status: 'pending' },
+  { id: 'b19', clientId: 'c7', date: '2025-08-01', treatmentType: 'Follow-up', description: 'Results review and treatment plan', amount: 200, invoiceNumber: 'INV-2025-019', status: 'paid' },
+  // c8 - Amanda Garcia - Auto Accident / Psychologist
+  { id: 'b20', clientId: 'c8', date: '2025-05-15', treatmentType: 'Evaluation', description: 'Psychological assessment - PTSD', amount: 400, invoiceNumber: 'INV-2025-020', status: 'paid' },
+  { id: 'b21', clientId: 'c8', date: '2025-06-01', treatmentType: 'Therapy', description: 'CBT session 1', amount: 250, invoiceNumber: 'INV-2025-021', status: 'paid' },
+  { id: 'b22', clientId: 'c8', date: '2025-06-15', treatmentType: 'Therapy', description: 'CBT session 2', amount: 250, invoiceNumber: 'INV-2025-022', status: 'pending' },
+  { id: 'b23', clientId: 'c8', date: '2025-07-01', treatmentType: 'Therapy', description: 'CBT session 3', amount: 250, invoiceNumber: 'INV-2025-023', status: 'paid' },
+  // c9 - Christopher Brown - Medical Malpractice / Oral Surgeon
+  { id: 'b24', clientId: 'c9', date: '2026-01-10', treatmentType: 'Consultation', description: 'Oral surgery evaluation', amount: 550, invoiceNumber: 'INV-2026-024', status: 'pending' },
+  { id: 'b25', clientId: 'c9', date: '2026-01-25', treatmentType: 'X-Ray', description: 'Panoramic dental X-ray', amount: 200, invoiceNumber: 'INV-2026-025', status: 'pending' },
+  // c10 - Rachel Patel - Premises Liability / Podiatrist
+  { id: 'b26', clientId: 'c10', date: '2025-12-05', treatmentType: 'Initial Exam', description: 'Podiatric evaluation - ankle injury', amount: 325, invoiceNumber: 'INV-2025-026', status: 'paid' },
+  { id: 'b27', clientId: 'c10', date: '2025-12-20', treatmentType: 'Custom Orthotics', description: 'Orthotic fitting and mold', amount: 475, invoiceNumber: 'INV-2025-027', status: 'overdue' },
+  // c11 - Thomas Wilson - Auto Accident / Chiropractor
+  { id: 'b28', clientId: 'c11', date: '2025-04-25', treatmentType: 'Initial Exam', description: 'Chiropractic evaluation', amount: 400, invoiceNumber: 'INV-2025-028', status: 'paid' },
+  { id: 'b29', clientId: 'c11', date: '2025-05-10', treatmentType: 'Adjustment', description: 'Full spine adjustment x 8 visits', amount: 1200, invoiceNumber: 'INV-2025-029', status: 'paid' },
+  // c12 - Laura Nguyen - Work Injury / Orthopedic Surgeon
+  { id: 'b30', clientId: 'c12', date: '2025-10-01', treatmentType: 'Consultation', description: 'Orthopedic shoulder evaluation', amount: 575, invoiceNumber: 'INV-2025-030', status: 'pending' },
+
+  // ── Additional billing records (b31–b60) ──────────────────────────────
+
+  // c1 - John Martinez - Auto Accident / Chiropractor
+  { id: 'b31', clientId: 'c1', date: '2026-02-02', treatmentType: 'Adjustment', description: 'Cervical spine adjustment session 3', amount: 150, invoiceNumber: 'INV-2026-031', status: 'pending' },
+  { id: 'b32', clientId: 'c1', date: '2026-02-16', treatmentType: 'X-Ray', description: 'Follow-up cervical X-ray', amount: 225, invoiceNumber: 'INV-2026-032', status: 'pending' },
+
+  // c2 - Sandra Lee - Slip & Fall / Orthopedic Surgeon
+  { id: 'b33', clientId: 'c2', date: '2026-01-22', treatmentType: 'Follow-up', description: 'Post-surgical evaluation', amount: 350, invoiceNumber: 'INV-2026-033', status: 'pending' },
+  { id: 'b34', clientId: 'c2', date: '2026-02-05', treatmentType: 'Physical Therapy', description: 'Post-op rehab session 1', amount: 200, invoiceNumber: 'INV-2026-034', status: 'pending' },
+
+  // c3 - Robert Davis - Work Injury / Pain Management
+  { id: 'b35', clientId: 'c3', date: '2025-11-10', treatmentType: 'Follow-up', description: 'Pain management follow-up visit', amount: 275, invoiceNumber: 'INV-2025-035', status: 'paid' },
+  { id: 'b36', clientId: 'c3', date: '2025-11-25', treatmentType: 'Injection', description: 'Trigger point injection - trapezius', amount: 950, invoiceNumber: 'INV-2025-036', status: 'overdue' },
+  { id: 'b37', clientId: 'c3', date: '2025-12-15', treatmentType: 'Medication Review', description: 'Prescription adjustment visit', amount: 200, invoiceNumber: 'INV-2025-037', status: 'pending' },
+
+  // c4 - Emily Chen - Auto Accident / Physical Therapy
+  { id: 'b38', clientId: 'c4', date: '2025-11-13', treatmentType: 'Therapy Session', description: 'Advanced strengthening - week 4', amount: 175, invoiceNumber: 'INV-2025-038', status: 'paid' },
+
+  // c5 - Michael Johnson - Auto Accident / Neurologist
+  { id: 'b39', clientId: 'c5', date: '2025-10-10', treatmentType: 'Follow-up', description: 'Neurology follow-up and review', amount: 350, invoiceNumber: 'INV-2025-039', status: 'paid' },
+  { id: 'b40', clientId: 'c5', date: '2025-11-05', treatmentType: 'MRI', description: 'Brain MRI with contrast', amount: 1600, invoiceNumber: 'INV-2025-040', status: 'overdue' },
+  { id: 'b41', clientId: 'c5', date: '2025-12-01', treatmentType: 'Consultation', description: 'Second opinion evaluation', amount: 500, invoiceNumber: 'INV-2025-041', status: 'pending' },
+
+  // c6 - Jessica Williams - Slip & Fall / Radiologist
+  { id: 'b42', clientId: 'c6', date: '2025-08-20', treatmentType: 'X-Ray', description: 'Follow-up spinal X-rays', amount: 350, invoiceNumber: 'INV-2025-042', status: 'paid' },
+  { id: 'b43', clientId: 'c6', date: '2025-09-10', treatmentType: 'Ultrasound', description: 'Diagnostic ultrasound - soft tissue', amount: 475, invoiceNumber: 'INV-2025-043', status: 'paid' },
+  { id: 'b44', clientId: 'c6', date: '2025-10-01', treatmentType: 'Report', description: 'Comprehensive radiology report', amount: 300, invoiceNumber: 'INV-2025-044', status: 'paid' },
+
+  // c7 - David Kim - Work Injury / General Practitioner
+  { id: 'b45', clientId: 'c7', date: '2025-08-20', treatmentType: 'Referral', description: 'Specialist referral documentation', amount: 150, invoiceNumber: 'INV-2025-045', status: 'paid' },
+  { id: 'b46', clientId: 'c7', date: '2025-09-05', treatmentType: 'Follow-up', description: 'Treatment progress assessment', amount: 200, invoiceNumber: 'INV-2025-046', status: 'paid' },
+
+  // c8 - Amanda Garcia - Auto Accident / Psychologist
+  { id: 'b47', clientId: 'c8', date: '2025-07-15', treatmentType: 'Therapy', description: 'CBT session 4', amount: 250, invoiceNumber: 'INV-2025-047', status: 'paid' },
+
+  // c9 - Christopher Brown - Medical Malpractice / Oral Surgeon
+  { id: 'b48', clientId: 'c9', date: '2026-02-10', treatmentType: 'Surgery', description: 'Dental implant procedure', amount: 3500, invoiceNumber: 'INV-2026-048', status: 'pending' },
+  { id: 'b49', clientId: 'c9', date: '2026-02-20', treatmentType: 'Follow-up', description: 'Post-surgical follow-up', amount: 275, invoiceNumber: 'INV-2026-049', status: 'pending' },
+  { id: 'b50', clientId: 'c9', date: '2026-03-01', treatmentType: 'Imaging', description: 'Post-op dental imaging', amount: 300, invoiceNumber: 'INV-2026-050', status: 'pending' },
+
+  // c10 - Rachel Patel - Premises Liability / Podiatrist
+  { id: 'b51', clientId: 'c10', date: '2026-01-05', treatmentType: 'Follow-up', description: 'Orthotic adjustment visit', amount: 200, invoiceNumber: 'INV-2026-051', status: 'pending' },
+  { id: 'b52', clientId: 'c10', date: '2026-01-20', treatmentType: 'Therapy', description: 'Gait training session', amount: 275, invoiceNumber: 'INV-2026-052', status: 'pending' },
+  { id: 'b53', clientId: 'c10', date: '2026-02-05', treatmentType: 'Evaluation', description: 'Progress evaluation', amount: 325, invoiceNumber: 'INV-2026-053', status: 'pending' },
+
+  // c11 - Thomas Wilson - Auto Accident / Chiropractor
+  { id: 'b54', clientId: 'c11', date: '2025-06-01', treatmentType: 'Therapy', description: 'Decompression therapy x 6', amount: 900, invoiceNumber: 'INV-2025-054', status: 'paid' },
+  { id: 'b55', clientId: 'c11', date: '2025-07-01', treatmentType: 'Evaluation', description: 'Discharge evaluation', amount: 300, invoiceNumber: 'INV-2025-055', status: 'paid' },
+  { id: 'b56', clientId: 'c11', date: '2025-07-15', treatmentType: 'Report', description: 'Final treatment narrative', amount: 250, invoiceNumber: 'INV-2025-056', status: 'paid' },
+
+  // c12 - Laura Nguyen - Work Injury / Orthopedic Surgeon
+  { id: 'b57', clientId: 'c12', date: '2025-10-15', treatmentType: 'MRI', description: 'Shoulder MRI', amount: 1300, invoiceNumber: 'INV-2025-057', status: 'paid' },
+  { id: 'b58', clientId: 'c12', date: '2025-11-01', treatmentType: 'Surgery', description: 'Rotator cuff repair', amount: 9200, invoiceNumber: 'INV-2025-058', status: 'overdue' },
+  { id: 'b59', clientId: 'c12', date: '2025-11-20', treatmentType: 'Follow-up', description: 'Post-op evaluation', amount: 350, invoiceNumber: 'INV-2025-059', status: 'pending' },
+  { id: 'b60', clientId: 'c12', date: '2025-12-10', treatmentType: 'Physical Therapy', description: 'Post-op rehab session 1', amount: 200, invoiceNumber: 'INV-2025-060', status: 'pending' },
 ];
 
 // ── Education Videos (15) ────────────────────────────────────────────
@@ -248,6 +318,35 @@ export function getStageCounts(clients: Client[]): Record<CaseStage, number> {
     counts[c.stage]++;
   }
   return counts;
+}
+
+export interface ClientBillingSummary {
+  clientId: string;
+  clientName: string;
+  injuryType: InjuryType;
+  totalBilled: number;
+  totalPaid: number;
+  totalPending: number;
+  totalOverdue: number;
+  recordCount: number;
+  records: BillingRecord[];
+}
+
+export function getClientBillingSummary(clients: Client[], billing: BillingRecord[]): ClientBillingSummary[] {
+  return clients.map(client => {
+    const records = billing.filter(b => b.clientId === client.id);
+    return {
+      clientId: client.id,
+      clientName: client.name,
+      injuryType: client.injuryType,
+      totalBilled: records.reduce((sum, r) => sum + r.amount, 0),
+      totalPaid: records.filter(r => r.status === 'paid').reduce((sum, r) => sum + r.amount, 0),
+      totalPending: records.filter(r => r.status === 'pending').reduce((sum, r) => sum + r.amount, 0),
+      totalOverdue: records.filter(r => r.status === 'overdue').reduce((sum, r) => sum + r.amount, 0),
+      recordCount: records.length,
+      records,
+    };
+  });
 }
 
 // ── Mock Address Book for autocomplete ───────────────────────────────
