@@ -56,6 +56,8 @@ export function BillingSubmitModal({ client, onClose, onSubmit }: Props) {
       description,
       amount: parseFloat(amount),
       fileName: fileName || undefined,
+      invoiceNumber: `INV-${date.slice(0, 4)}-${Date.now().toString().slice(-3)}`,
+      status: 'pending',
     });
 
     setSubmitted(true);
