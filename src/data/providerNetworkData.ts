@@ -99,6 +99,58 @@ export interface Client {
   notes?: string;
 }
 
+export type ReferralStage = 'New Lead' | 'Contacted' | 'Appointment Set' | 'In Treatment';
+
+export interface ReferralTracking {
+  id: string;
+  clientId: string;
+  stage: ReferralStage;
+  calls: number;
+  texts: number;
+  emails: number;
+  appointmentDate?: string;
+}
+
+export const REFERRAL_STAGE_LABELS: Record<ReferralStage, string> = {
+  'New Lead': 'New Lead',
+  'Contacted': 'Contacted',
+  'Appointment Set': 'Appointment Set',
+  'In Treatment': 'In Treatment',
+};
+
+export const REFERRAL_STAGE_COLORS: Record<ReferralStage, string> = {
+  'New Lead': 'bg-blue-500/20 text-blue-400',
+  'Contacted': 'bg-amber-500/20 text-amber-400',
+  'Appointment Set': 'bg-purple-500/20 text-purple-400',
+  'In Treatment': 'bg-emerald-500/20 text-emerald-400',
+};
+
+export const REFERRAL_STAGES: ReferralStage[] = ['New Lead', 'Contacted', 'Appointment Set', 'In Treatment'];
+
+export type DocumentPriority = 'standard' | 'expedited' | 'urgent';
+export type DocumentRequestStatus = 'open' | 'in_progress' | 'completed';
+
+export interface DocumentRequest {
+  id: string;
+  clientId: string;
+  message: string;
+  priority: DocumentPriority;
+  date: string;
+  status: DocumentRequestStatus;
+}
+
+export const PRIORITY_COLORS: Record<DocumentPriority, string> = {
+  standard: 'bg-slate-500/20 text-slate-400',
+  expedited: 'bg-amber-500/20 text-amber-400',
+  urgent: 'bg-red-500/20 text-red-400',
+};
+
+export const DOC_STATUS_COLORS: Record<DocumentRequestStatus, string> = {
+  open: 'bg-blue-500/20 text-blue-400',
+  in_progress: 'bg-amber-500/20 text-amber-400',
+  completed: 'bg-emerald-500/20 text-emerald-400',
+};
+
 export interface EducationVideo {
   id: string;
   title: string;
@@ -276,6 +328,38 @@ export const INITIAL_BILLING: BillingRecord[] = [
   { id: 'b60', clientId: 'c12', date: '2025-12-10', treatmentType: 'Physical Therapy', description: 'Post-op rehab session 1', amount: 200, invoiceNumber: 'INV-2025-060', status: 'pending' },
 ];
 
+// ── Mock Referral Tracking (12) ──────────────────────────────────────
+
+export const INITIAL_REFERRAL_TRACKING: ReferralTracking[] = [
+  { id: 'rt1', clientId: 'c1', stage: 'In Treatment', calls: 3, texts: 5, emails: 2, appointmentDate: '2025-12-18' },
+  { id: 'rt2', clientId: 'c2', stage: 'In Treatment', calls: 2, texts: 4, emails: 3, appointmentDate: '2025-11-22' },
+  { id: 'rt3', clientId: 'c3', stage: 'In Treatment', calls: 4, texts: 2, emails: 1, appointmentDate: '2025-10-08' },
+  { id: 'rt4', clientId: 'c4', stage: 'Appointment Set', calls: 2, texts: 3, emails: 2, appointmentDate: '2026-03-10' },
+  { id: 'rt5', clientId: 'c5', stage: 'Appointment Set', calls: 1, texts: 6, emails: 1, appointmentDate: '2026-03-15' },
+  { id: 'rt6', clientId: 'c6', stage: 'Contacted', calls: 3, texts: 2, emails: 4 },
+  { id: 'rt7', clientId: 'c7', stage: 'Contacted', calls: 1, texts: 1, emails: 2 },
+  { id: 'rt8', clientId: 'c8', stage: 'In Treatment', calls: 5, texts: 3, emails: 2, appointmentDate: '2025-05-12' },
+  { id: 'rt9', clientId: 'c9', stage: 'New Lead', calls: 0, texts: 1, emails: 0 },
+  { id: 'rt10', clientId: 'c10', stage: 'Contacted', calls: 2, texts: 3, emails: 1 },
+  { id: 'rt11', clientId: 'c11', stage: 'In Treatment', calls: 4, texts: 4, emails: 3, appointmentDate: '2025-04-20' },
+  { id: 'rt12', clientId: 'c12', stage: 'New Lead', calls: 1, texts: 0, emails: 1 },
+];
+
+// ── Mock Document Requests (10) ─────────────────────────────────────
+
+export const INITIAL_DOCUMENT_REQUESTS: DocumentRequest[] = [
+  { id: 'dr1', clientId: 'c1', message: 'Please provide initial treatment records and X-ray results.', priority: 'standard', date: '2026-01-05', status: 'open' },
+  { id: 'dr2', clientId: 'c2', message: 'Need post-surgical operative report ASAP.', priority: 'urgent', date: '2026-01-12', status: 'in_progress' },
+  { id: 'dr3', clientId: 'c3', message: 'Request for pain management intake evaluation notes.', priority: 'standard', date: '2026-01-18', status: 'completed' },
+  { id: 'dr4', clientId: 'c4', message: 'PT progress notes for weeks 1-4 needed for discovery.', priority: 'expedited', date: '2026-01-22', status: 'in_progress' },
+  { id: 'dr5', clientId: 'c5', message: 'EMG/NCS results and neurologist interpretation.', priority: 'urgent', date: '2026-01-28', status: 'open' },
+  { id: 'dr6', clientId: 'c6', message: 'MRI imaging files and radiology report.', priority: 'standard', date: '2026-02-02', status: 'completed' },
+  { id: 'dr7', clientId: 'c7', message: 'General assessment and referral documentation.', priority: 'standard', date: '2026-02-08', status: 'open' },
+  { id: 'dr8', clientId: 'c8', message: 'Psychological evaluation report for settlement.', priority: 'expedited', date: '2026-02-12', status: 'completed' },
+  { id: 'dr9', clientId: 'c9', message: 'Dental surgery pre-op clearance documents.', priority: 'urgent', date: '2026-02-18', status: 'in_progress' },
+  { id: 'dr10', clientId: 'c10', message: 'Podiatric evaluation and custom orthotic records.', priority: 'expedited', date: '2026-02-25', status: 'open' },
+];
+
 // ── Education Videos (15) ────────────────────────────────────────────
 
 export const EDUCATION_VIDEOS: EducationVideo[] = [
@@ -297,6 +381,19 @@ export const EDUCATION_VIDEOS: EducationVideo[] = [
 ];
 
 // ── Helper functions ─────────────────────────────────────────────────
+
+export function getReferralStageCounts(tracking: ReferralTracking[]): Record<ReferralStage, number> {
+  const counts: Record<ReferralStage, number> = {
+    'New Lead': 0,
+    'Contacted': 0,
+    'Appointment Set': 0,
+    'In Treatment': 0,
+  };
+  for (const t of tracking) {
+    counts[t.stage]++;
+  }
+  return counts;
+}
 
 export function getClientBilling(clientId: string, billing: BillingRecord[]): BillingRecord[] {
   return billing.filter(b => b.clientId === clientId);
