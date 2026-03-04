@@ -16,19 +16,23 @@ const dateRanges = [
 
 interface Props {
   className?: string;
+  variant?: "default" | "glass";
 }
 
-export function FilterBar({ className }: Props) {
+export function FilterBar({ className, variant = "default" }: Props) {
   const { filters, setFilter, resetFilters } = useDashboardFilters();
+  const isGlass = variant === "glass";
   const hasFilters = Object.entries(filters).some(([k, v]) => {
     if (k === "dateRange") return v !== "30d";
     return v !== "all";
   });
 
-  const selectClass = "h-8 rounded-md border border-input bg-background px-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring";
+  const selectClass = isGlass
+    ? "h-8 rounded-md border border-white/[0.1] bg-white/[0.04] px-2 text-xs text-white/80 focus:outline-none focus:ring-1 focus:ring-ring"
+    : "h-8 rounded-md border border-input bg-background px-2 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring";
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-2 p-3 rounded-lg border border-border bg-card/50", className)}>
+    <div className={cn("flex flex-wrap items-center gap-2 p-3 border", isGlass ? "bg-white/[0.03] backdrop-blur-sm border-white/[0.06] rounded-xl" : "rounded-lg border-border bg-card/50", className)}>
       <Filter size={14} className="text-muted-foreground shrink-0" />
 
       <select value={filters.office} onChange={e => setFilter("office", e.target.value)} className={selectClass}>
@@ -60,7 +64,7 @@ export function FilterBar({ className }: Props) {
             className={cn(
               "px-2 py-1 rounded text-xs font-medium transition-colors",
               filters.dateRange === dr.value
-                ? "bg-primary text-primary-foreground"
+                ? isGlass ? "bg-green-500/20 text-green-400" : "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-accent",
             )}
           >

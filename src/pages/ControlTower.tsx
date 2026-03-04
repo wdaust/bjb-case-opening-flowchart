@@ -4,7 +4,7 @@ import { cn } from '../utils/cn';
 import {
   getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels,
   getTopStageAgeMetrics, getPreLitStageAgeMetrics, parentStageLabels,
-  getWeeklyExitsByStage, getOverdueTasksByStage,
+  getWeeklyExitsByStage, getOverdueTasksByStage, getWeeklyThroughput,
   type ParentStage,
 } from '../data/mockData';
 import type { SubStageCount, Stage } from '../data/mockData';
@@ -16,7 +16,11 @@ import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { EscalationBanner } from '../components/dashboard/EscalationBanner';
+import { HeroSection } from '../components/dashboard/HeroSection';
+import { HeroTitle } from '../components/dashboard/HeroTitle';
+import { HeroSummaryTicker } from '../components/dashboard/HeroSummaryTicker';
 import { ScoreGauge } from '../components/scoring/ScoreGauge';
+import { useCountUp } from '../hooks/useCountUp';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
@@ -306,74 +310,117 @@ export default function ControlTower() {
       .replace("Expert & Deposition", "Exp & Dep")
       .replace("Arbitration/Mediation", "Arb/Med");
 
+  // Sparkline data from weekly throughput
+  const weeklyThroughput = useMemo(() => getWeeklyThroughput(), []);
+  const inventorySparkline = weeklyThroughput.map(w => w.newIn);
+  const newInSparkline = weeklyThroughput.map(w => w.closedOut);
+  const overSlaSparkline = weeklyThroughput.map(w => w.overSla);
+
+  // Animated KPI values
+  const totalActiveAnimated = useCountUp(controlTowerData.totalActive, 800);
+  const newIn30dAnimated = useCountUp(340, 800);
+  const overSlaPctAnimated = useCountUp(controlTowerData.overSlaPct, 800, 1);
+
+  // On-SLA percentage for ticker
+  const onSlaPct = Math.round(100 - controlTowerData.overSlaPct);
+
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
-      <h1 className="text-2xl font-bold text-foreground animate-fade-in-up">Performance Control Tower</h1>
-      <FilterBar />
+      {/* ── Glassmorphic Command Header ──────────────────────── */}
+      <HeroSection>
+        {/* Zone 1: Title Row */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <HeroTitle title="Performance Control Tower" subtitle="Firm Operations Overview" />
+          <HeroSummaryTicker
+            totalCases={controlTowerData.totalActive}
+            onSlaPct={onSlaPct}
+            lciScore={firmLCI.score}
+          />
+        </div>
 
-      {escalations.length > 0 && (
-        <EscalationBanner escalations={escalations} />
-      )}
+        {/* Zone 2: Filter Bar (glass-skinned) */}
+        <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+          <FilterBar variant="glass" />
+        </div>
+
+        {/* Escalation Banner (unchanged) */}
+        {escalations.length > 0 && (
+          <EscalationBanner escalations={escalations} />
+        )}
+
+        {/* Zone 3: KPI Cards (4-col glassmorphic) */}
+        <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
+          <DashboardGrid cols={4}>
+            {/* LCI Gauge Card — green border + pulse glow */}
+            <div
+              className={cn(
+                "rounded-xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-5 flex flex-col items-center justify-center gap-2 cursor-pointer gradient-border",
+                "border-t-2 border-t-green-500 animate-pulse-glow",
+                hoverCard,
+              )}
+              onClick={() => navigate('/lci-report')}
+            >
+              <ScoreGauge score={firmLCI.score} maxScore={100} size={90} label="Firm LCI" />
+              <span className={cn(
+                'text-xs font-semibold px-2 py-0.5 rounded-full',
+                firmLCI.band === 'green' ? 'bg-green-500/15 text-green-400'
+                  : firmLCI.band === 'amber' ? 'bg-white/10 text-gray-400'
+                  : 'bg-white/10 text-gray-500',
+              )}>
+                {firmLCI.band === 'green' ? 'Healthy' : firmLCI.band === 'amber' ? 'Watch' : 'Critical'}
+              </span>
+            </div>
+            <StatCard
+              label="Total Active Inventory"
+              value={totalActiveAnimated}
+              delta="+30 vs 30d ago"
+              deltaType="positive"
+              variant="glass"
+              sparklineData={inventorySparkline}
+              className={hoverCard}
+              subMetrics={[
+                { label: "Pre-Lit", value: preLitCases.length, deltaType: "neutral" },
+                { label: "Lit", value: litCases.length, deltaType: "neutral" },
+                { label: "Avg/attorney", value: avgPerAttorney, deltaType: "neutral" },
+              ]}
+            />
+            <StatCard
+              label="New In (30d)"
+              value={newIn30dAnimated}
+              delta="+12% vs prior 30d"
+              deltaType="positive"
+              variant="glass"
+              sparklineData={newInSparkline}
+              className={hoverCard}
+              subMetrics={[
+                { label: "Avg days to intake", value: "4.2d", deltaType: "positive" },
+                { label: "Reopen rate", value: "2.1%", deltaType: "neutral" },
+                { label: "Net trend (7d)", value: "+8", deltaType: "positive" },
+              ]}
+            />
+            <StatCard
+              label="Over-SLA %"
+              value={`${overSlaPctAnimated}%`}
+              delta="by stage"
+              deltaType={controlTowerData.overSlaPct > 10 ? "negative" : "positive"}
+              onClick={() => navigate('/inventory-health')}
+              variant="glass"
+              sparklineData={overSlaSparkline}
+              className={hoverCard}
+              subMetrics={[
+                { label: "Pre-Lit SLA%", value: `${preLitSla}%`, deltaType: preLitSla > 20 ? "negative" : "positive" },
+                { label: "Lit SLA%", value: `${litSla}%`, deltaType: litSla > 20 ? "negative" : "positive" },
+                { label: "Worst stage", value: "Discovery", deltaType: "negative" },
+              ]}
+            />
+          </DashboardGrid>
+        </div>
+      </HeroSection>
 
       <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}>
         <SectionHeader title="Inventory by Stage" />
         <StageBar parentStages={controlTowerData.stageCounts} />
         <StageAgeGauges litMetrics={topStageMetrics} preLitMetrics={preLitMetrics} />
-      </div>
-
-      {/* Row 1 — Portfolio Overview */}
-      <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}>
-        <DashboardGrid cols={4}>
-          {/* LCI Gauge Card */}
-          <div className={cn("rounded-xl border border-border bg-card p-5 flex flex-col items-center justify-center gap-2 cursor-pointer", hoverCard)} onClick={() => navigate('/lci-report')}>
-            <ScoreGauge score={firmLCI.score} maxScore={100} size={90} label="Firm LCI" />
-            <span className={cn(
-              'text-xs font-semibold px-2 py-0.5 rounded-full',
-              firmLCI.band === 'green' ? 'bg-green-500/15 text-green-400'
-                : firmLCI.band === 'amber' ? 'bg-white/10 text-gray-400'
-                : 'bg-white/10 text-gray-500',
-            )}>
-              {firmLCI.band === 'green' ? 'Healthy' : firmLCI.band === 'amber' ? 'Watch' : 'Critical'}
-            </span>
-          </div>
-          <StatCard
-            label="Total Active Inventory"
-            value={controlTowerData.totalActive}
-            delta="+30 vs 30d ago"
-            deltaType="positive"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Pre-Lit", value: preLitCases.length, deltaType: "neutral" },
-              { label: "Lit", value: litCases.length, deltaType: "neutral" },
-              { label: "Avg/attorney", value: avgPerAttorney, deltaType: "neutral" },
-            ]}
-          />
-          <StatCard
-            label="New In (30d)"
-            value={340}
-            delta="+12% vs prior 30d"
-            deltaType="positive"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Avg days to intake", value: "4.2d", deltaType: "positive" },
-              { label: "Reopen rate", value: "2.1%", deltaType: "neutral" },
-              { label: "Net trend (7d)", value: "+8", deltaType: "positive" },
-            ]}
-          />
-          <StatCard
-            label="Over-SLA %"
-            value={`${controlTowerData.overSlaPct}%`}
-            delta="by stage"
-            deltaType={controlTowerData.overSlaPct > 10 ? "negative" : "positive"}
-            onClick={() => navigate('/inventory-health')}
-            className={hoverCard}
-            subMetrics={[
-              { label: "Pre-Lit SLA%", value: `${preLitSla}%`, deltaType: preLitSla > 20 ? "negative" : "positive" },
-              { label: "Lit SLA%", value: `${litSla}%`, deltaType: litSla > 20 ? "negative" : "positive" },
-              { label: "Worst stage", value: "Discovery", deltaType: "negative" },
-            ]}
-          />
-        </DashboardGrid>
       </div>
 
       {/* Row 2 — Velocity & Throughput */}
