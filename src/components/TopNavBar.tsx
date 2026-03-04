@@ -148,7 +148,7 @@ export function TopNavBar() {
           <img
             src={`${import.meta.env.BASE_URL}logo.png`}
             alt="BJB"
-            className="h-6 brightness-0 invert"
+            className="h-8"
           />
         </div>
 
