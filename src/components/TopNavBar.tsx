@@ -61,7 +61,7 @@ const navTabs: NavItem[] = [
 function DropdownMenu({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const timeout = useRef<ReturnType<typeof setTimeout>>();
+  const timeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const location = useLocation();
 
   useEffect(() => {
