@@ -97,7 +97,7 @@ function DropdownMenu({ item, onNavigate }: { item: NavItem; onNavigate?: () => 
         <ChevronDown size={12} className={cn('transition-transform', open && 'rotate-180')} />
       </NavLink>
       {open && (
-        <div className="absolute top-full right-0 mt-1 py-1 bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg shadow-xl min-w-[200px] z-50">
+        <div className="absolute top-full right-0 mt-1 py-1 bg-black border border-[#2a2a2a] rounded-lg shadow-xl min-w-[200px] z-50">
           {item.children!.map((child) => (
             <NavLink
               key={child.to}
@@ -139,10 +139,10 @@ export function TopNavBar() {
 
   return (
     <header
-      className="sticky top-0 z-50 shrink-0 bg-[#1a1a1a] border-b border-[#2a2a2a]"
+      className="sticky top-0 z-50 shrink-0 bg-black border-b border-[#2a2a2a]"
       style={{ fontFamily: "'IBM Plex Mono', monospace" }}
     >
-      <div className="max-w-[1460px] mx-auto h-14 flex items-center px-6 gap-8">
+      <div className="h-14 flex items-center px-6 gap-8">
         {/* Left: Logo */}
         <div className="shrink-0">
           <img
@@ -185,7 +185,7 @@ export function TopNavBar() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#1a1a1a] border-t border-[#2a2a2a] px-4 pb-3 max-h-[70vh] overflow-y-auto">
+        <div className="md:hidden bg-black border-t border-[#2a2a2a] px-4 pb-3 max-h-[70vh] overflow-y-auto">
           {navTabs.map((tab) =>
             tab.children ? (
               <div key={tab.label}>
