@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { TooltipProvider } from './components/ui/tooltip.tsx';
 import { DashboardFilterProvider } from './contexts/DashboardFilterContext.tsx';
-import { Sidebar } from './components/Sidebar.tsx';
+import { TopNavBar } from './components/TopNavBar.tsx';
 import PerformanceInfrastructure from './pages/PerformanceInfrastructure.tsx';
 import MockupsLanding from './pages/MockupsLanding.tsx';
 import LitifyMockupsLanding from './pages/LitifyMockupsLanding.tsx';
@@ -54,41 +54,18 @@ import { AIChatWidget } from './components/dashboard/AIChatWidget.tsx';
 import TopNavMockup from './pages/TopNavMockup.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
-const SIDEBAR_KEY = 'bjb-sidebar-collapsed';
 
 function Layout() {
-  const [darkMode, setDarkMode] = useState(() => {
-    try {
-      const stored = localStorage.getItem(DARK_MODE_KEY);
-      return stored === null ? true : stored === 'true';
-    } catch { return true; }
-  });
-
-  const [collapsed, setCollapsed] = useState(() => {
-    try {
-      return localStorage.getItem(SIDEBAR_KEY) === 'true';
-    } catch { return false; }
-  });
-
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', darkMode);
-    try { localStorage.setItem(DARK_MODE_KEY, String(darkMode)); } catch { /* ignore */ }
-  }, [darkMode]);
-
-  useEffect(() => {
-    try { localStorage.setItem(SIDEBAR_KEY, String(collapsed)); } catch { /* ignore */ }
-  }, [collapsed]);
+    document.documentElement.classList.add('dark');
+    try { localStorage.setItem(DARK_MODE_KEY, 'true'); } catch { /* ignore */ }
+  }, []);
 
   return (
-    <div className="h-screen flex overflow-hidden bg-sidebar-background">
-      <Sidebar
-        darkMode={darkMode}
-        onToggleDark={() => setDarkMode(d => !d)}
-        collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed(c => !c)}
-      />
-      <div className="flex-1 flex flex-col min-w-0 min-h-0 p-3">
-        <main className="flex-1 bg-background rounded-2xl overflow-auto shadow-lg">
+    <div className="h-screen flex flex-col bg-[#111111]" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+      <TopNavBar />
+      <div className="flex-1 min-h-0 overflow-auto">
+        <main className="bg-background min-h-full">
           <Outlet />
         </main>
       </div>
@@ -102,8 +79,8 @@ export default function App() {
     <TooltipProvider delayDuration={300}>
       <DashboardFilterProvider>
         <Routes>
-          <Route path="top-nav-mockup" element={<TopNavMockup />} />
           <Route element={<Layout />}>
+            <Route path="top-nav-mockup" element={<TopNavMockup />} />
             <Route index element={<Navigate to="/control-tower" replace />} />
 <Route path="control-tower" element={<ControlTower />} />
             <Route path="stage/:stageId" element={<StageCommand />} />
