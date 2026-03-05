@@ -144,12 +144,9 @@ export function TopNavBar() {
     >
       <div className="h-14 flex items-center px-6 gap-8">
         {/* Left: Logo */}
-        <div className="shrink-0">
-          <img
-            src={`${import.meta.env.BASE_URL}logo.png`}
-            alt="BJB"
-            className="h-[2.3rem]"
-          />
+        <div className="shrink-0 flex flex-col leading-tight">
+          <span className="text-sm font-bold text-white tracking-wider" style={{ fontFamily: 'Georgia, serif' }}>BRANDON J. BRODERICK</span>
+          <span className="text-[10px] text-gray-400 tracking-widest uppercase" style={{ fontFamily: 'Georgia, serif' }}>Attorney at Law</span>
         </div>
 
         {/* Center: Nav Tabs */}
