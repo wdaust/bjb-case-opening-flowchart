@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const TITLE = 'OPTIMUS CONTROL TOWER';
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?<>{}[]=/\\|~^';
 const RESOLVE_INTERVAL = 80; // ms per character resolve
-const SHIMMER_DURATION = 800; // ms for chrome shine sweep
-const FADE_DURATION = 600; // ms for overlay fade-out
+const SHIMMER_DURATION = 800;
+const FADE_DURATION = 600;
 
 interface OptimusIntroProps {
   onComplete: () => void;
@@ -14,70 +14,69 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
   const [displayChars, setDisplayChars] = useState<string[]>(() =>
     TITLE.split('').map((ch) => (ch === ' ' ? ' ' : CHARS[Math.floor(Math.random() * CHARS.length)])),
   );
-  const [resolvedCount, setResolvedCount] = useState(0);
   const [phase, setPhase] = useState<'scramble' | 'shimmer' | 'fade'>('scramble');
-  const rafRef = useRef<number>(0);
-  const lastResolveRef = useRef(0);
-  const startTimeRef = useRef(0);
+  const [resolvedCount, setResolvedCount] = useState(0);
 
-  const animate = useCallback(
-    (timestamp: number) => {
-      if (!startTimeRef.current) startTimeRef.current = timestamp;
+  // All mutable animation state in refs to avoid recreating the rAF callback
+  const phaseRef = useRef<'scramble' | 'shimmer' | 'fade'>('scramble');
+  const resolvedRef = useRef(0);
+  const lastResolveTime = useRef(0);
+  const phaseStartTime = useRef(0);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
-      if (phase === 'scramble') {
-        // Resolve one letter every RESOLVE_INTERVAL ms
-        if (timestamp - lastResolveRef.current >= RESOLVE_INTERVAL) {
-          lastResolveRef.current = timestamp;
-          setResolvedCount((prev) => {
-            const next = prev + 1;
-            if (next >= TITLE.length) {
-              setPhase('shimmer');
-              startTimeRef.current = timestamp;
-            }
-            return next;
-          });
+  useEffect(() => {
+    let raf = 0;
+
+    const tick = (ts: number) => {
+      if (!phaseStartTime.current) phaseStartTime.current = ts;
+
+      if (phaseRef.current === 'scramble') {
+        if (ts - lastResolveTime.current >= RESOLVE_INTERVAL) {
+          lastResolveTime.current = ts;
+          resolvedRef.current += 1;
+          setResolvedCount(resolvedRef.current);
+
+          if (resolvedRef.current >= TITLE.length) {
+            phaseRef.current = 'shimmer';
+            phaseStartTime.current = ts;
+            setPhase('shimmer');
+          }
         }
 
-        // Scramble unresolved characters every frame
-        setDisplayChars((prev) => {
-          const next = [...prev];
-          for (let i = resolvedCount; i < TITLE.length; i++) {
+        // Scramble unresolved chars
+        const rc = resolvedRef.current;
+        setDisplayChars(() => {
+          const next = TITLE.split('');
+          for (let i = rc; i < TITLE.length; i++) {
             if (TITLE[i] === ' ') continue;
             next[i] = CHARS[Math.floor(Math.random() * CHARS.length)];
-          }
-          // Ensure resolved chars show correct letter
-          for (let i = 0; i < resolvedCount; i++) {
-            next[i] = TITLE[i];
           }
           return next;
         });
       }
 
-      if (phase === 'shimmer') {
-        const elapsed = timestamp - startTimeRef.current;
-        if (elapsed >= SHIMMER_DURATION) {
+      if (phaseRef.current === 'shimmer') {
+        if (ts - phaseStartTime.current >= SHIMMER_DURATION) {
+          phaseRef.current = 'fade';
+          phaseStartTime.current = ts;
           setPhase('fade');
-          startTimeRef.current = timestamp;
         }
       }
 
-      if (phase === 'fade') {
-        const elapsed = timestamp - startTimeRef.current;
-        if (elapsed >= FADE_DURATION) {
-          onComplete();
+      if (phaseRef.current === 'fade') {
+        if (ts - phaseStartTime.current >= FADE_DURATION) {
+          onCompleteRef.current();
           return;
         }
       }
 
-      rafRef.current = requestAnimationFrame(animate);
-    },
-    [phase, resolvedCount, onComplete],
-  );
+      raf = requestAnimationFrame(tick);
+    };
 
-  useEffect(() => {
-    rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [animate]);
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []); // runs once
 
   return (
     <div
