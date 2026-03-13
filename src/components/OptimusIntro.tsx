@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 
 const TITLE = 'OPTIMUS CONTROL TOWER';
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?<>{}[]=/\\|~^';
-const RESOLVE_INTERVAL = 80; // ms per character resolve
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*!?<>{}[]=/|~';
+const RESOLVE_INTERVAL = 60; // ms per character resolve
+const SCRAMBLE_INTERVAL = 40; // ms between scramble visual updates
 const SHIMMER_DURATION = 800;
 const FADE_DURATION = 600;
 
@@ -11,61 +12,91 @@ interface OptimusIntroProps {
 }
 
 export function OptimusIntro({ onComplete }: OptimusIntroProps) {
-  const [displayChars, setDisplayChars] = useState<string[]>(() =>
-    TITLE.split('').map((ch) => (ch === ' ' ? ' ' : CHARS[Math.floor(Math.random() * CHARS.length)])),
-  );
-  const [phase, setPhase] = useState<'scramble' | 'shimmer' | 'fade'>('scramble');
-  const [resolvedCount, setResolvedCount] = useState(0);
-
-  // All mutable animation state in refs to avoid recreating the rAF callback
-  const phaseRef = useRef<'scramble' | 'shimmer' | 'fade'>('scramble');
-  const resolvedRef = useRef(0);
-  const lastResolveTime = useRef(0);
-  const phaseStartTime = useRef(0);
+  const canvasRef = useRef<HTMLDivElement>(null);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
+  const [phase, setPhase] = useState<'scramble' | 'shimmer' | 'fade'>('scramble');
 
   useEffect(() => {
     let raf = 0;
+    let resolved = 0;
+    let lastResolve = 0;
+    let lastScramble = 0;
+    let phaseStart = 0;
+    let currentPhase: 'scramble' | 'shimmer' | 'fade' = 'scramble';
+
+    // Pre-create span elements
+    const container = canvasRef.current;
+    if (!container) return;
+    const spans: HTMLSpanElement[] = [];
+    for (let i = 0; i < TITLE.length; i++) {
+      const span = document.createElement('span');
+      span.style.display = 'inline-block';
+      if (TITLE[i] === ' ') {
+        span.style.minWidth = '0.35em';
+        span.textContent = ' ';
+      } else {
+        span.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
+        span.style.opacity = '0.6';
+      }
+      container.appendChild(span);
+      spans.push(span);
+    }
 
     const tick = (ts: number) => {
-      if (!phaseStartTime.current) phaseStartTime.current = ts;
+      if (!phaseStart) {
+        phaseStart = ts;
+        lastResolve = ts;
+        lastScramble = ts;
+      }
 
-      if (phaseRef.current === 'scramble') {
-        if (ts - lastResolveTime.current >= RESOLVE_INTERVAL) {
-          lastResolveTime.current = ts;
-          resolvedRef.current += 1;
-          setResolvedCount(resolvedRef.current);
-
-          if (resolvedRef.current >= TITLE.length) {
-            phaseRef.current = 'shimmer';
-            phaseStartTime.current = ts;
+      if (currentPhase === 'scramble') {
+        // Resolve one letter
+        if (ts - lastResolve >= RESOLVE_INTERVAL) {
+          // Skip spaces
+          while (resolved < TITLE.length && TITLE[resolved] === ' ') {
+            resolved++;
+          }
+          if (resolved < TITLE.length) {
+            spans[resolved].textContent = TITLE[resolved];
+            spans[resolved].style.opacity = '1';
+            spans[resolved].style.textShadow = '0 0 30px #00d4ff, 0 0 60px #00d4ffaa, 0 0 80px #00d4ff55';
+            // Clear glow on previous
+            if (resolved > 0) {
+              spans[resolved - 1].style.textShadow = '';
+            }
+            resolved++;
+            lastResolve = ts;
+          }
+          if (resolved >= TITLE.length) {
+            // Clear last glow
+            spans[TITLE.length - 1].style.textShadow = '';
+            currentPhase = 'shimmer';
             setPhase('shimmer');
+            phaseStart = ts;
           }
         }
 
-        // Scramble unresolved chars
-        const rc = resolvedRef.current;
-        setDisplayChars(() => {
-          const next = TITLE.split('');
-          for (let i = rc; i < TITLE.length; i++) {
+        // Scramble unresolved chars (throttled)
+        if (ts - lastScramble >= SCRAMBLE_INTERVAL) {
+          for (let i = resolved; i < TITLE.length; i++) {
             if (TITLE[i] === ' ') continue;
-            next[i] = CHARS[Math.floor(Math.random() * CHARS.length)];
+            spans[i].textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
           }
-          return next;
-        });
-      }
-
-      if (phaseRef.current === 'shimmer') {
-        if (ts - phaseStartTime.current >= SHIMMER_DURATION) {
-          phaseRef.current = 'fade';
-          phaseStartTime.current = ts;
-          setPhase('fade');
+          lastScramble = ts;
         }
       }
 
-      if (phaseRef.current === 'fade') {
-        if (ts - phaseStartTime.current >= FADE_DURATION) {
+      if (currentPhase === 'shimmer') {
+        if (ts - phaseStart >= SHIMMER_DURATION) {
+          currentPhase = 'fade';
+          setPhase('fade');
+          phaseStart = ts;
+        }
+      }
+
+      if (currentPhase === 'fade') {
+        if (ts - phaseStart >= FADE_DURATION) {
           onCompleteRef.current();
           return;
         }
@@ -75,8 +106,11 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
     };
 
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []); // runs once
+    return () => {
+      cancelAnimationFrame(raf);
+      container.innerHTML = '';
+    };
+  }, []);
 
   return (
     <div
@@ -89,8 +123,10 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
     >
       <div className="text-center px-4">
         <h1
+          ref={canvasRef}
           className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-[0.15em] whitespace-nowrap"
           style={{
+            color: '#00d4ff',
             textShadow: '0 0 20px #00d4ff, 0 0 40px #00d4ff55',
             ...(phase === 'shimmer'
               ? {
@@ -101,26 +137,9 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
                   backgroundClip: 'text',
                   animation: 'optimus-shimmer 0.8s ease-in-out forwards',
                 }
-              : { color: '#00d4ff' }),
+              : {}),
           }}
-        >
-          {displayChars.map((ch, i) => (
-            <span
-              key={i}
-              style={{
-                display: 'inline-block',
-                minWidth: ch === ' ' ? '0.35em' : undefined,
-                opacity: i < resolvedCount || TITLE[i] === ' ' ? 1 : 0.6,
-                textShadow:
-                  i === resolvedCount - 1 && phase === 'scramble'
-                    ? '0 0 30px #00d4ff, 0 0 60px #00d4ffaa, 0 0 80px #00d4ff55'
-                    : undefined,
-              }}
-            >
-              {ch}
-            </span>
-          ))}
-        </h1>
+        />
       </div>
 
       <style>{`
