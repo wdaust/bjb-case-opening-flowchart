@@ -54,6 +54,7 @@ const navTabs: NavItem[] = [
       { label: 'Provider Network', to: '/performance-infrastructure/provider-network' },
       { label: 'Alt Control Tower', to: '/performance-infrastructure/alt-control-tower' },
       { label: 'Call Team Dashboard', to: '/performance-infrastructure/call-team-dashboard' },
+      { label: 'MOS', to: '/performance-infrastructure/mos' },
     ],
   },
 ];

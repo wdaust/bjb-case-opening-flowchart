@@ -40,6 +40,7 @@ import ControlTower from './pages/ControlTower.tsx';
 import AltControlTower from './pages/AltControlTower.tsx';
 import CallTeamDashboard from './pages/CallTeamDashboard.tsx';
 import ProviderNetwork from './pages/ProviderNetwork.tsx';
+import MOS from './pages/MOS.tsx';
 import StageCommand from './pages/StageCommand.tsx';
 import InventoryHealth from './pages/InventoryHealth.tsx';
 import RiskRadar from './pages/RiskRadar.tsx';
@@ -100,6 +101,7 @@ export default function App() {
             <Route path="performance-infrastructure/alt-control-tower" element={<AltControlTower />} />
             <Route path="performance-infrastructure/call-team-dashboard" element={<CallTeamDashboard />} />
             <Route path="performance-infrastructure/provider-network" element={<ProviderNetwork />} />
+            <Route path="performance-infrastructure/mos" element={<MOS />} />
             <Route path="performance-infrastructure/mockups/client-contact" element={<ClientContact />} />
             <Route path="performance-infrastructure/mockups/case-setup" element={<CaseSetup />} />
             <Route path="performance-infrastructure/mockups/task-tracker" element={<TaskTracker />} />
