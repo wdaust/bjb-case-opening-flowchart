@@ -10,50 +10,106 @@ interface NavItem {
 }
 
 const navTabs: NavItem[] = [
-  { label: 'Command View', to: '/control-tower' },
-  { label: 'Inventory Health', to: '/inventory-health' },
-  { label: 'Risk Radar', to: '/risk-radar' },
-  { label: 'Forecast', to: '/forecast' },
-  { label: "Today's Exposure", to: '/today-exposure' },
   {
-    label: 'Stages',
-    to: '/stage/intake',
+    label: 'INTAKE',
+    to: '/dept/intake/dashboard',
     children: [
-      { label: 'Intake', to: '/stage/intake' },
-      { label: 'Pre-Litigation', to: '/stage/pre-lit' },
-      { label: '  Account Opening', to: '/stage/pre-account-opening' },
-      { label: '  Treatment Monitoring', to: '/stage/pre-treatment-monitoring' },
-      { label: '  Value Development', to: '/stage/pre-value-development' },
-      { label: '  Demand Readiness', to: '/stage/pre-demand-readiness' },
-      { label: '  Negotiation', to: '/stage/pre-negotiation' },
-      { label: '  Resolution Pending', to: '/stage/pre-resolution-pending' },
-      { label: 'Litigation', to: '/stage/lit' },
-      { label: '  Case Opening', to: '/stage/lit-case-opening' },
-      { label: '  Treatment Monitoring', to: '/stage/lit-treatment-monitoring' },
-      { label: '  Discovery', to: '/stage/lit-discovery' },
-      { label: '  Expert & Deposition', to: '/stage/lit-expert-depo' },
-      { label: '  Arbitration/Mediation', to: '/stage/lit-arb-mediation' },
-      { label: '  Trial', to: '/stage/lit-trial' },
+      { label: 'Dashboard', to: '/dept/intake/dashboard' },
+      { label: 'New Leads', to: '/dept/intake/new-leads' },
+      { label: 'Pipeline', to: '/dept/intake/pipeline' },
+      { label: 'Conversion Metrics', to: '/dept/intake/conversion-metrics' },
     ],
   },
   {
-    label: 'People',
-    to: '/attorney',
+    label: 'PRE LIT',
+    to: '/dept/pre-lit/dashboard',
     children: [
+      { label: 'Dashboard', to: '/dept/pre-lit/dashboard' },
+      { label: 'Treatment Monitoring', to: '/dept/pre-lit/treatment-monitoring' },
+      { label: 'Value Development', to: '/dept/pre-lit/value-development' },
+      { label: 'Demand Readiness', to: '/dept/pre-lit/demand-readiness' },
+      { label: 'Negotiation', to: '/dept/pre-lit/negotiation' },
+    ],
+  },
+  {
+    label: 'MED RECORDS',
+    to: '/dept/med-records/dashboard',
+    children: [
+      { label: 'Dashboard', to: '/dept/med-records/dashboard' },
+      { label: 'Records Requests', to: '/dept/med-records/records-requests' },
+      { label: 'Pending Records', to: '/dept/med-records/pending-records' },
+      { label: 'Completion Rate', to: '/dept/med-records/completion-rate' },
+    ],
+  },
+  {
+    label: 'CLAIMS',
+    to: '/dept/claims/dashboard',
+    children: [
+      { label: 'Dashboard', to: '/dept/claims/dashboard' },
+      { label: 'Active Claims', to: '/dept/claims/active-claims' },
+      { label: 'Settlements', to: '/dept/claims/settlements' },
+      { label: 'Billing', to: '/dept/claims/billing' },
+    ],
+  },
+  {
+    label: 'LIT',
+    to: '/dept/lit/dashboard',
+    children: [
+      { label: 'Dashboard', to: '/dept/lit/dashboard' },
+      { label: 'Case Opening', to: '/dept/lit/case-opening' },
+      { label: 'Discovery', to: '/dept/lit/discovery' },
+      { label: 'Expert & Depo', to: '/dept/lit/expert-depo' },
+      { label: 'Arb/Med', to: '/dept/lit/arb-med' },
+      { label: 'Trial', to: '/dept/lit/trial' },
+    ],
+  },
+  {
+    label: 'PIP ARBS',
+    to: '/dept/pip-arbs/dashboard',
+    children: [
+      { label: 'Dashboard', to: '/dept/pip-arbs/dashboard' },
+      { label: 'Active Cases', to: '/dept/pip-arbs/active-cases' },
+      { label: 'Hearings', to: '/dept/pip-arbs/hearings' },
+      { label: 'Awards', to: '/dept/pip-arbs/awards' },
+    ],
+  },
+  {
+    label: 'MED MARKETING',
+    to: '/dept/med-marketing/dashboard',
+    children: [
+      { label: 'Dashboard', to: '/dept/med-marketing/dashboard' },
+      { label: 'Outbound Calls', to: '/dept/med-marketing/outbound-calls' },
+      { label: 'Appointments', to: '/dept/med-marketing/appointments' },
+      { label: 'Referrals', to: '/dept/med-marketing/referrals' },
+      { label: 'Conversion', to: '/dept/med-marketing/conversion' },
+    ],
+  },
+  {
+    label: 'LEGAL MARKETING',
+    to: '/dept/legal-marketing/dashboard',
+    children: [
+      { label: 'Dashboard', to: '/dept/legal-marketing/dashboard' },
+      { label: 'Campaigns', to: '/dept/legal-marketing/campaigns' },
+      { label: 'Leads by Source', to: '/dept/legal-marketing/leads-by-source' },
+      { label: 'Cost per Case', to: '/dept/legal-marketing/cost-per-case' },
+      { label: 'ROI', to: '/dept/legal-marketing/roi' },
+    ],
+  },
+  {
+    label: 'More',
+    to: '/control-tower',
+    children: [
+      { label: 'Command View', to: '/control-tower' },
+      { label: 'Inventory Health', to: '/inventory-health' },
+      { label: 'Risk Radar', to: '/risk-radar' },
+      { label: 'Forecast', to: '/forecast' },
+      { label: "Today's Exposure", to: '/today-exposure' },
+      { label: '---', to: '' },
       { label: 'Attorney Cockpit', to: '/attorney' },
       { label: 'Manager Rhythm', to: '/manager-rhythm' },
-    ],
-  },
-  {
-    label: 'Development',
-    to: '/performance-infrastructure',
-    children: [
-      { label: 'Flowcharts', to: '/performance-infrastructure' },
-      { label: 'Mockups', to: '/performance-infrastructure/mockups' },
-      { label: 'Litify Mockups', to: '/performance-infrastructure/litify' },
-      { label: 'Provider Network', to: '/performance-infrastructure/provider-network' },
-      { label: 'Alt Control Tower', to: '/performance-infrastructure/alt-control-tower' },
-      { label: 'Call Team Dashboard', to: '/performance-infrastructure/call-team-dashboard' },
+      { label: '---', to: '' },
+      { label: 'Stages', to: '/stage/intake' },
+      { label: 'Development', to: '/performance-infrastructure' },
       { label: 'MOS', to: '/performance-infrastructure/mos' },
     ],
   },
@@ -70,11 +126,9 @@ function DropdownMenu({ item, onNavigate }: { item: NavItem; onNavigate?: () => 
   }, []);
 
   const isGroupActive = (tab: NavItem) => {
-    if (tab.to === '/stage/intake') return location.pathname.startsWith('/stage');
-    if (tab.to === '/attorney')
-      return location.pathname.startsWith('/attorney') || location.pathname.startsWith('/manager-rhythm');
-    if (tab.to === '/performance-infrastructure')
-      return location.pathname.startsWith('/performance-infrastructure') || location.pathname.startsWith('/top-nav-mockup');
+    if (tab.children) {
+      return tab.children.some((child) => child.to && location.pathname === child.to);
+    }
     return location.pathname === tab.to;
   };
 
@@ -99,25 +153,27 @@ function DropdownMenu({ item, onNavigate }: { item: NavItem; onNavigate?: () => 
       </NavLink>
       {open && (
         <div className="absolute top-full right-0 mt-1 py-1 bg-black border border-[#2a2a2a] rounded-lg shadow-xl min-w-[200px] z-50">
-          {item.children!.map((child) => (
-            <NavLink
-              key={child.to}
-              to={child.to}
-              onClick={() => { setOpen(false); onNavigate?.(); }}
-              className={() =>
-                cn(
-                  'block px-4 py-1.5 text-sm transition-colors whitespace-nowrap',
-                  location.pathname === child.to
-                    ? 'text-white bg-[#2a2a2a]'
-                    : child.label.startsWith('  ')
-                      ? 'text-gray-500 hover:text-gray-300 hover:bg-[#222] pl-7'
+          {item.children!.map((child, idx) =>
+            child.label === '---' ? (
+              <div key={`sep-${idx}`} className="my-1 border-t border-[#2a2a2a]" />
+            ) : (
+              <NavLink
+                key={child.to}
+                to={child.to}
+                onClick={() => { setOpen(false); onNavigate?.(); }}
+                className={() =>
+                  cn(
+                    'block px-4 py-1.5 text-sm transition-colors whitespace-nowrap',
+                    location.pathname === child.to
+                      ? 'text-white bg-[#2a2a2a]'
                       : 'text-gray-400 hover:text-gray-200 hover:bg-[#222]',
-                )
-              }
-            >
-              {child.label.trimStart()}
-            </NavLink>
-          ))}
+                  )
+                }
+              >
+                {child.label}
+              </NavLink>
+            ),
+          )}
         </div>
       )}
     </div>
@@ -129,13 +185,11 @@ export function TopNavBar() {
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const location = useLocation();
 
-  const isActive = (to: string) => {
-    if (to === '/stage/intake') return location.pathname.startsWith('/stage');
-    if (to === '/performance-infrastructure')
-      return location.pathname.startsWith('/performance-infrastructure') || location.pathname.startsWith('/top-nav-mockup');
-    if (to === '/attorney')
-      return location.pathname.startsWith('/attorney') || location.pathname.startsWith('/manager-rhythm');
-    return location.pathname === to;
+  const isActive = (tab: NavItem) => {
+    if (tab.children) {
+      return tab.children.some((child) => child.to && location.pathname === child.to);
+    }
+    return location.pathname === tab.to;
   };
 
   return (
@@ -154,30 +208,15 @@ export function TopNavBar() {
         </div>
 
         {/* Center: Nav Tabs */}
-        <nav className="hidden md:flex items-center justify-center flex-1 gap-6">
-          {navTabs.map((tab) =>
-            tab.children ? (
-              <DropdownMenu key={tab.label} item={tab} />
-            ) : (
-              <NavLink
-                key={tab.label}
-                to={tab.to}
-                className={() =>
-                  cn(
-                    'text-sm font-medium transition-colors',
-                    isActive(tab.to) ? 'text-white' : 'text-gray-500 hover:text-gray-300',
-                  )
-                }
-              >
-                {tab.label}
-              </NavLink>
-            ),
-          )}
+        <nav className="hidden lg:flex items-center justify-center flex-1 gap-4">
+          {navTabs.map((tab) => (
+            <DropdownMenu key={tab.label} item={tab} />
+          ))}
         </nav>
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden text-gray-400"
+          className="lg:hidden text-gray-400"
           onClick={() => setMobileOpen((o) => !o)}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -186,26 +225,28 @@ export function TopNavBar() {
 
       {/* Mobile dropdown */}
       {mobileOpen && (
-        <div className="md:hidden bg-black border-t border-[#2a2a2a] px-4 pb-3 max-h-[70vh] overflow-y-auto">
-          {navTabs.map((tab) =>
-            tab.children ? (
-              <div key={tab.label}>
-                <button
-                  onClick={() => setMobileExpanded((e) => (e === tab.label ? null : tab.label))}
-                  className={cn(
-                    'flex items-center justify-between w-full py-2 text-sm font-medium transition-colors',
-                    isActive(tab.to) ? 'text-white' : 'text-gray-500',
-                  )}
-                >
-                  {tab.label}
-                  <ChevronDown
-                    size={14}
-                    className={cn('transition-transform', mobileExpanded === tab.label && 'rotate-180')}
-                  />
-                </button>
-                {mobileExpanded === tab.label && (
-                  <div className="pl-4 pb-1">
-                    {tab.children.map((child) => (
+        <div className="lg:hidden bg-black border-t border-[#2a2a2a] px-4 pb-3 max-h-[70vh] overflow-y-auto">
+          {navTabs.map((tab) => (
+            <div key={tab.label}>
+              <button
+                onClick={() => setMobileExpanded((e) => (e === tab.label ? null : tab.label))}
+                className={cn(
+                  'flex items-center justify-between w-full py-2 text-sm font-medium transition-colors',
+                  isActive(tab) ? 'text-white' : 'text-gray-500',
+                )}
+              >
+                {tab.label}
+                <ChevronDown
+                  size={14}
+                  className={cn('transition-transform', mobileExpanded === tab.label && 'rotate-180')}
+                />
+              </button>
+              {mobileExpanded === tab.label && tab.children && (
+                <div className="pl-4 pb-1">
+                  {tab.children.map((child, idx) =>
+                    child.label === '---' ? (
+                      <div key={`sep-${idx}`} className="my-1 border-t border-[#2a2a2a]" />
+                    ) : (
                       <NavLink
                         key={child.to}
                         to={child.to}
@@ -219,28 +260,14 @@ export function TopNavBar() {
                           )
                         }
                       >
-                        {child.label.trimStart()}
+                        {child.label}
                       </NavLink>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ) : (
-              <NavLink
-                key={tab.label}
-                to={tab.to}
-                onClick={() => setMobileOpen(false)}
-                className={() =>
-                  cn(
-                    'block py-2 text-sm font-medium transition-colors',
-                    isActive(tab.to) ? 'text-white' : 'text-gray-500 hover:text-gray-300',
-                  )
-                }
-              >
-                {tab.label}
-              </NavLink>
-            ),
-          )}
+                    ),
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </header>

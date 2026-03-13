@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { OptimusIntro } from '../components/OptimusIntro';
 import { cn } from '../utils/cn';
 import {
   getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels,
@@ -60,6 +61,14 @@ const hoverCard = "transition-all duration-300 ease-out hover:scale-[1.02] hover
 
 export default function ControlTower() {
   const navigate = useNavigate();
+  const [introPlayed, setIntroPlayed] = useState(
+    () => sessionStorage.getItem('optimus-intro-played') === 'true',
+  );
+
+  const handleIntroComplete = () => {
+    sessionStorage.setItem('optimus-intro-played', 'true');
+    setIntroPlayed(true);
+  };
   const controlTowerData = getControlTowerData();
   const topStageMetrics = getTopStageAgeMetrics();
   const preLitMetrics = getPreLitStageAgeMetrics();
@@ -326,11 +335,12 @@ export default function ControlTower() {
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
+      {!introPlayed && <OptimusIntro onComplete={handleIntroComplete} />}
       {/* ── Glassmorphic Command Header ──────────────────────── */}
       <HeroSection>
         {/* Zone 1: Title Row */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-          <HeroTitle title="Performance Control Tower" subtitle="Firm Operations Overview" />
+          <HeroTitle title="Optimus Control Tower" subtitle="Firm-Wide Command Center" />
           <HeroSummaryTicker
             totalCases={controlTowerData.totalActive}
             onSlaPct={onSlaPct}
