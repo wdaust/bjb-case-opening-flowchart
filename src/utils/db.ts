@@ -103,3 +103,70 @@ export async function clearAllSections(): Promise<boolean> {
     return false;
   }
 }
+
+// ─── Generic JSONB helpers (used by MOS and other pages) ─────────────────────
+
+/** Load a generic JSONB blob from the sections table by id */
+export async function loadGenericSection<T>(id: string): Promise<T | null> {
+  const sql = getSql();
+  if (!sql) return null;
+  try {
+    const rows = await sql`SELECT data FROM sections WHERE id = ${id}`;
+    return rows.length > 0 ? (rows[0].data as T) : null;
+  } catch (err) {
+    console.error(`Failed to load generic section ${id}:`, err);
+    return null;
+  }
+}
+
+/** Save a generic JSONB blob to the sections table by id */
+export async function saveGenericSection<T>(id: string, data: T): Promise<boolean> {
+  const sql = getSql();
+  if (!sql) return false;
+  try {
+    await sql`
+      INSERT INTO sections (id, data, updated_at)
+      VALUES (${id}, ${JSON.stringify(data)}::jsonb, now())
+      ON CONFLICT (id) DO UPDATE SET
+        data = ${JSON.stringify(data)}::jsonb,
+        updated_at = now()
+    `;
+    return true;
+  } catch (err) {
+    console.error(`Failed to save generic section ${id}:`, err);
+    return false;
+  }
+}
+
+/** Load approvals/notes from spec_approvals table */
+export async function loadApprovals(pageId: string): Promise<{ checkboxes: Record<string, { checked: boolean; date: string }>; notes: string } | null> {
+  const sql = getSql();
+  if (!sql) return null;
+  try {
+    const rows = await sql`SELECT checkboxes, notes FROM spec_approvals WHERE page_id = ${pageId}`;
+    return rows.length > 0 ? { checkboxes: rows[0].checkboxes as Record<string, { checked: boolean; date: string }>, notes: (rows[0].notes as string) || '' } : null;
+  } catch (err) {
+    console.error(`Failed to load approvals for ${pageId}:`, err);
+    return null;
+  }
+}
+
+/** Save approvals/notes to spec_approvals table */
+export async function saveApprovals(pageId: string, checkboxes: Record<string, { checked: boolean; date: string }>, notes: string): Promise<boolean> {
+  const sql = getSql();
+  if (!sql) return false;
+  try {
+    await sql`
+      INSERT INTO spec_approvals (page_id, checkboxes, notes, updated_at)
+      VALUES (${pageId}, ${JSON.stringify(checkboxes)}::jsonb, ${notes}, now())
+      ON CONFLICT (page_id) DO UPDATE SET
+        checkboxes = ${JSON.stringify(checkboxes)}::jsonb,
+        notes = ${notes},
+        updated_at = now()
+    `;
+    return true;
+  } catch (err) {
+    console.error(`Failed to save approvals for ${pageId}:`, err);
+    return false;
+  }
+}
