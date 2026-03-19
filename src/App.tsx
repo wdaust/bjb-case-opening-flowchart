@@ -53,6 +53,7 @@ import GaugeOptions from './pages/GaugeOptions.tsx';
 import LCIReport from './pages/LCIReport.tsx';
 import { AIChatWidget } from './components/dashboard/AIChatWidget.tsx';
 import TopNavMockup from './pages/TopNavMockup.tsx';
+import SpecViewer from './pages/SpecViewer.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 
@@ -132,6 +133,7 @@ export default function App() {
             <Route path="performance-infrastructure/mockups/trial-scoring" element={<TrialScoring />} />
             <Route path="performance-infrastructure/mockups/trial-metrics" element={<TrialMetrics />} />
             <Route path="performance-infrastructure/mockups/trial-matter" element={<TrialMatter />} />
+            <Route path="specs/:page?" element={<SpecViewer />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>

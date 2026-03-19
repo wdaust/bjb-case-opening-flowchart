@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BJB Dev Summary — Litify Dev Specification</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        background: '#fafafa', foreground: '#0a0a0a', card: '#ffffff', 'card-foreground': '#0a0a0a',
+        primary: '#171717', 'primary-foreground': '#fafafa', secondary: '#f5f5f5', 'secondary-foreground': '#171717',
+        muted: '#f5f5f5', 'muted-foreground': '#737373', accent: '#f5f5f5', 'accent-foreground': '#171717',
+        destructive: '#ef4444', border: '#e5e5e5', input: '#e5e5e5', ring: '#0a0a0a',
+        sidebar: '#fafafa', 'sidebar-foreground': '#171717', 'sidebar-accent': '#f5f5f5',
+      },
+      borderRadius: { lg: '0.625rem', md: '0.5rem', sm: '0.375rem' }
+    }
+  }
+}
+</script>
+<style>
+@media print{aside,nav,.search-bar{display:none!important}main{padding:20px!important}[data-card-body]{display:block!important}.bg-primary{background:#171717!important;color:#fafafa!important;-webkit-print-color-adjust:exact}}
+.search-highlight{background:#fef3c7;outline:2px solid #d97706;border-radius:2px}
+</style>
+</head>
+<body class="bg-background text-foreground font-[-apple-system,BlinkMacSystemFont,'Inter',sans-serif] text-sm leading-relaxed">
+<!-- TOP NAV -->
+<nav class="sticky top-0 z-50 h-14 border-b border-border bg-card">
+  <div class="max-w-[1460px] mx-auto h-full flex items-center justify-between px-6">
+    <span class="text-sm font-semibold text-muted-foreground tracking-wide">BJB Performance Plan</span>
+    <div class="hidden md:flex items-center gap-1">
+      <a href="index.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Case Opening</a>
+      <a href="treatment-monitoring.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Treatment Monitoring</a>
+      <a href="written-discovery.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Written Discovery</a>
+      <a href="expert-deposition.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Expert &amp; Deposition</a>
+      <a href="arbitration-mediation.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Arb &amp; Mediation</a>
+      <a href="trial.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Trial</a>
+      <a href="litify-dev-summary.html" class="px-3 py-1.5 text-sm font-medium text-foreground bg-accent rounded-md no-underline" style="border-bottom: 2px solid #d97706">Dev Summary</a>
+      <a href="scoring-review.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Scoring Review</a>
+      <a href="metrics.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Metrics</a>
+      <a href="mos.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">MOS</a>
+    </div>
+    <button id="nav-hamburger" class="md:hidden text-foreground" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mobile-nav" class="hidden md:hidden bg-card border-t border-border px-4 pb-3">
+    <a href="index.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Case Opening</a>
+    <a href="treatment-monitoring.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Treatment Monitoring</a>
+    <a href="written-discovery.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Written Discovery</a>
+    <a href="expert-deposition.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Expert &amp; Deposition</a>
+    <a href="arbitration-mediation.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Arb &amp; Mediation</a>
+    <a href="trial.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Trial</a>
+    <a href="litify-dev-summary.html" class="block px-3 py-2 text-sm font-medium text-foreground bg-accent rounded-md no-underline">Dev Summary</a>
+    <a href="scoring-review.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Scoring Review</a>
+    <a href="metrics.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Metrics</a>
+    <a href="mos.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">MOS</a>
+  </div>
+</nav>
+<div class="flex h-[calc(100vh-3.5rem)]">
+<aside class="hidden md:flex w-64 flex-col border-r border-border bg-card overflow-y-auto shrink-0">
+  <div class="px-5 pt-6 pb-4 border-b border-border">
+    <h2 class="text-xs font-bold text-foreground tracking-wide uppercase">BJB Dev Summary</h2>
+    <p class="text-[11px] text-muted-foreground mt-1">All Phases Consolidated</p>
+  </div>
+  <div class="py-3">
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Reference</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('dashboard')">Dashboard</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('fields')">Custom Fields</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('fields-co')">Case Opening</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('fields-tm')">Treatment Monitoring</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('fields-wd')">Written Discovery</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('fields-ed')">Expert &amp; Deposition</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('fields-am')">Arb &amp; Mediation</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('fields-tr')">Trial</a>
+  </div>
+  <div class="py-3">
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Automations</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('flows')">Flows &amp; Automations</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('validation')">Validation Rules</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('permissions')">Permission Sets</a>
+  </div>
+  <div class="py-3">
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Cross-Reference</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('picklists')">Picklist Quick-Ref</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('formulas')">Formula Fields</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('type-summary')">Field Type Summary</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('object-summary')">Object Summary</a>
+  </div>
+  <div class="py-3">
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Deployment</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('checklist')">Build Checklist</a>
+  </div>
+</aside>
+
+<main class="flex-1 overflow-y-auto" id="main-scroll">
+<!-- STICKY SEARCH BAR -->
+<div class="search-bar sticky top-0 z-40 bg-card border-b border-border px-6 py-3 shadow-sm">
+  <div class="max-w-7xl mx-auto flex items-center gap-3">
+    <svg class="w-4 h-4 text-muted-foreground shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    <input id="global-search" type="text" placeholder="Search all fields, flows, rules… (e.g. BJB__MCHS or Pursuit)" class="flex-1 bg-transparent border-none outline-none text-sm text-foreground placeholder:text-muted-foreground" oninput="doSearch(this.value)">
+    <span id="search-count" class="text-xs text-muted-foreground hidden"></span>
+    <button onclick="document.getElementById('global-search').value='';doSearch('')" class="text-xs text-muted-foreground hover:text-foreground">&times; Clear</button>
+  </div>
+</div>
+
+<div class="max-w-7xl px-6 lg:px-10 py-10 mx-auto">
+<div class="border-b-4 border-[#d97706] pb-8 mb-8">
+  <h1 class="text-2xl font-bold text-foreground">Dev Summary &mdash; All Phases Consolidated</h1>
+  <p class="text-sm text-muted-foreground mt-1">Single-page reference for all custom fields, flows, validation rules &amp; permission sets</p>
+  <span class="inline-block mt-3 px-3 py-0.5 text-xs font-medium border border-border rounded-full text-muted-foreground">v4.0 &bull; February 2026</span>
+</div>
+<!-- ========== SECTION 1: DASHBOARD ========== -->
+<section id="dashboard" class="mb-12">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Dashboard</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">Summary counts across all phases</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 p-6 bg-card border border-t-0 border-border rounded-b-lg">
+  <div class="text-center p-4 rounded-lg bg-muted">
+    <div class="text-3xl font-bold text-[#d97706]">209</div>
+    <div class="text-xs text-muted-foreground mt-1">Custom Fields</div>
+  </div>
+  <div class="text-center p-4 rounded-lg bg-muted">
+    <div class="text-3xl font-bold text-[#d97706]">39</div>
+    <div class="text-xs text-muted-foreground mt-1">Flows</div>
+  </div>
+  <div class="text-center p-4 rounded-lg bg-muted">
+    <div class="text-3xl font-bold text-[#d97706]">20</div>
+    <div class="text-xs text-muted-foreground mt-1">Validation Rules</div>
+  </div>
+  <div class="text-center p-4 rounded-lg bg-muted">
+    <div class="text-3xl font-bold text-[#d97706]">6</div>
+    <div class="text-xs text-muted-foreground mt-1">Permission Sets</div>
+  </div>
+  <div class="text-center p-4 rounded-lg bg-muted">
+    <div class="text-3xl font-bold text-[#d97706]">6</div>
+    <div class="text-xs text-muted-foreground mt-1">Objects Touched</div>
+  </div>
+  <div class="text-center p-4 rounded-lg bg-muted">
+    <div class="text-3xl font-bold text-[#d97706]">45</div>
+    <div class="text-xs text-muted-foreground mt-1">Picklist Fields</div>
+  </div>
+</div>
+</section>
+
+<!-- ========== SECTION 2: CUSTOM FIELDS ========== -->
+<section id="fields" class="mb-12">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Custom Fields</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">All BJB__ fields across 6 phases &mdash; grouped by source page</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card">
+
+<!-- CO Fields -->
+<div class="border-b border-border" id="fields-co">
+<button onclick="toggleCard('card-co')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <div class="flex items-center gap-3">
+    <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800 border border-blue-300">CO</span>
+    <span class="font-semibold text-foreground">Case Opening Fields</span>
+    <span class="text-xs text-muted-foreground">(95 fields)</span>
+  </div>
+  <svg class="w-4 h-4 text-muted-foreground transition-transform" id="card-co-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-co" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">API Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Notes / Picklist Values</th></tr></thead>
+<tbody>
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">D.2.1 — Case Opening &amp; Status</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Case_Opening_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">New Lead / Qualified / Accepted / Assigned / Pursuit Active / OA Scheduled / OA Completed / Post-OA Active / Filing Pipeline / Fully Opened / MIA / Declined / On Hold</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__OA_Assigned_Date__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Set by BJB_Pursuit_Start flow</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__OA_Completed_Date__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Set by BJB_OA_Burst flow</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__OA_On_Time__c</td><td class="px-4 py-1.5">Formula(Bool)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">TRUE if OA completed within 24 hours of assignment</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Pursuit_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Attempt 1–8 / Intro Letter / No Contact Letter 1–2 / MIA Routed / Connected</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Pursuit_Attempt_Count__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Rollup of pursuit tasks completed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__MIA_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Date case routed to MIA status</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Case_Opening_Complete__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">TRUE when all 8 final gate requirements met</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Engagement_Letter_Signed__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">DocuSign completion flag</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Automation_Burst_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Not Started / In Progress / Success / Partial Failure / Failed</td></tr>
+
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">D.2.2 — Quality Gate Fields</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Preferred_Contact_Method__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Phone / Text / Email / Portal</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Preferred_Contact_Time__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Morning / Afternoon / Evening / Any</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Provider_List_Initiated__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">At least one provider entered</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Medicare_Flag__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Yes / No / Unknown</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Medicaid_Flag__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Yes / No / Unknown</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__ERISA_Flag__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Yes / No / Unknown</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__VA_Benefits_Flag__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Yes / No / Unknown</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Evidence_Photos__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Complete / Pending / None</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Evidence_Video__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Complete / Pending / None</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Evidence_Witnesses__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Complete / Pending / None</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Prior_Injuries_Flag__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Yes / No — YES triggers BJB_Risk_Alert flow</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Treatment_Gaps_Flag__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Yes / No</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Defense_Contact_Flag__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Yes / No — YES triggers BJB_Risk_Alert flow</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Data_Trust_Score__c</td><td class="px-4 py-1.5">Formula(%)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">% of required fields populated</td></tr>
+</tbody>
+</table>
+</div>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">API Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Notes</th></tr></thead>
+<tbody>
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">D.2.3 — Client Profile Scoring (28 metrics + composites)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Contactability__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Range 1.0–5.0</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Responsiveness__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Range 1.0–5.0</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Honesty__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Range 1.0–5.0</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Tx_Consistency__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Treatment consistency 1–5</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Care_Plan_Compliance__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Care plan compliance 1–5</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Escalation_Readiness__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Willingness for procedures 1–5</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Tx_Doc_Strength__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Treatment doc strength 1–5</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Prior_Medical_Disclosure__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Range 1.0–5.0</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono italic text-muted-foreground" colspan="4">… 20 additional CP scoring metrics (same pattern: Number(2,1), 1.0–5.0 range, on Matter)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Score__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Average of all 28 CP metrics</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Intervention_Required__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">TRUE if any category avg ≤ 2</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Intervention_Reason__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Can't Reach / Missed Treatment / Unrealistic Demands / Conflict / Non-Compliant / Social Media Risk / Credibility / Other</td></tr>
+
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">D.2.4 — Liability Scoring (LSI + SLI)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__LSI_Fault_Clarity__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 25%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__LSI_Evidence_Strength__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 20%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__LSI_Witness_Profile__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__LSI_Police_Docs__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__LSI_Comp_Neg__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__LSI_Score__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weighted LSI composite</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__SLI_Coverage__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__SLI_Jury_Optics__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 5%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__SLI_Defense_Escapes__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 5%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__SLI_Doc_Readiness__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 5%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__SLI_Score__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weighted SLI composite (all 9 factors)</td></tr>
+
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">D.2.5 — Policy &amp; Collectability (CSI + RDI)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CSI_Limits_Adequacy__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 25%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CSI_Verification__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 15%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CSI_Additional_Policies__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CSI_Carrier_Behavior__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CSI_Defendant_Assets__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 5%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CSI_Score__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weighted CSI composite</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__RDI_Reservation__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__RDI_UMUIM__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__RDI_Liens__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 5%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__RDI_Multi_Party__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 5%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__RDI_Doc_Readiness__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 5%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__RDI_Score__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weighted RDI composite</td></tr>
+</tbody>
+</table>
+</div>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">API Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Notes</th></tr></thead>
+<tbody>
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">D.2.6 — Treatment Strength Index (TSI)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Severity__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 25%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Consistency__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 20%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Provider_Cred__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 20%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Objective_Proof__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 20%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Future_Exposure__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weight 15%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Score__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">(Sev×0.25)+(Con×0.20)+(Cred×0.20)+(Proof×0.20)+(Exp×0.15)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Surgery_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Injection_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Gap_30_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_MRI_Confirmed_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Specialist_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Future_Care_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene gate</td></tr>
+
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">D.2.7 — Case Performance Index (CPI)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Economic_Efficiency__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pillar 1 — 15%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Momentum__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pillar 2 — 15%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_File_Integrity__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pillar 3 — 15%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Defense_Friction__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pillar 4 — 15%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Strategic_Priority__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pillar 5 — 10%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Risk_Exposure__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pillar 6 — 15%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Negotiation_Readiness__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pillar 7 — 15%</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Total__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">(P1×0.15)+(P2×0.15)+…+(P7×0.15)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Band__c</td><td class="px-4 py-1.5">Formula(Text)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Prime Asset / Strong Performer / Manage Closely / At Risk</td></tr>
+
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">D.2.8 — Master Score &amp; Pipeline</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__MCHS__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">(SLI×0.25)+(TSI×0.25)+(CP×0.20)+((CSI+RDI)/2×0.15)+(CPI×0.15)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__MCHS_Band__c</td><td class="px-4 py-1.5">Formula(Text)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Prime Asset / Strong Performer / Manage Closely / Intervention Required</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Score_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Provisional / Verified / Validated</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Score_Last_Updated__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Workflow-stamped on score change</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Complaint_Draft_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Set when draft uploaded</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Complaint_Approved_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Set when attorney approves</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Complaint_Filed_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Set when filed with court</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Service_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Not Initiated / Requested / Served / Non-Service / Substitute / Default</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Records_Chase_Step__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Submitted / FU1–3 / TL1–3 / Subpoena / POS / Motion / Received</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Health_Index__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Composite from scorecard components</td></tr>
+</tbody>
+</table>
+</div>
+</div><!-- end card-co -->
+</div><!-- end fields-co wrapper -->
+<!-- TM Fields -->
+<div class="border-b border-border" id="fields-tm">
+<button onclick="toggleCard('card-tm')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <div class="flex items-center gap-3">
+    <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-orange-100 text-orange-800 border border-orange-300">TM</span>
+    <span class="font-semibold text-foreground">Treatment Monitoring Fields</span>
+    <span class="text-xs text-muted-foreground">(20 fields)</span>
+  </div>
+  <svg class="w-4 h-4 text-muted-foreground transition-transform" id="card-tm-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-tm" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">API Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Notes</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Severity__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Medical Severity (25% weight)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Consistency__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Treatment Consistency (20%)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Provider_Cred__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Provider Credibility (20%)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Objective_Proof__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Objective Proof (20%)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Future_Exposure__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Future Exposure (15%)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Score__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weighted TSI composite</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Surgery_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene: Surgery documented</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Injection_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene: Injection documented</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Gap_30_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene: Gap &gt;30 days analyzed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_MRI_Confirmed_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene: MRI/imaging recorded</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Specialist_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene: Specialist involvement</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Future_Care_YN__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Data Hygiene: Future care assessed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Tx_Consistency__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Steady care=5, Abandoned=1</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Care_Plan_Compliance__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Completes PT/referrals=5, Refuses=1</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Escalation_Readiness__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Willing for procedures=5, Refuses=1</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Tx_Doc_Strength__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Detailed notes=5, Poor docs=1</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Score_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Provisional / Verified / Validated</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Score_Last_Updated__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Most recent review timestamp</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Treatment_Gaps_Flag__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Yes / No</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- WD Fields -->
+<div class="border-b border-border" id="fields-wd">
+<button onclick="toggleCard('card-wd')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <div class="flex items-center gap-3">
+    <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800 border border-purple-300">WD</span>
+    <span class="font-semibold text-foreground">Written Discovery Fields</span>
+    <span class="text-xs text-muted-foreground">(24 fields)</span>
+  </div>
+  <svg class="w-4 h-4 text-muted-foreground transition-transform" id="card-wd-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-wd" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">API Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Notes</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Tracker_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Not Started / In Progress / Complete</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Draft_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Plaintiff responses drafted date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Draft_Due__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Complaint + 30 days</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Pursuit_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Not Started / In Progress / Connected / Escalated / MIA</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Attempt_Count__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">0–9 call attempts</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Letter_1_Sent__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Contact Letter 1 flag</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Letter_2_Sent__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Contact Letter 2 flag</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Escalation_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Management escalation date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Appt_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Scheduled appointment</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Appt_Completed__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Appointment completed flag</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Finalized_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Attorney finalized date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Approved_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Attorney approved for service</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Service_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Responses served date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Answer_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Defendant answer date (SLA anchor)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_GF_Letter_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Good faith letter sent</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_MTC_Filed__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Motion to compel filed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_MTC_Outcome__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pending / Granted / Denied / Moot</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_End_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Court-ordered end date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Health_Index__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">DHI composite score</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Disc_Reachability__c</td><td class="px-4 py-1.5">Number(1-5)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Discovery reachability score</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Disc_Compliance_Risk__c</td><td class="px-4 py-1.5">Number(1-5)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Discovery compliance risk</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Disc_Defense_Risk__c</td><td class="px-4 py-1.5">Number(1-5)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Discovery defense risk</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Disc_Credibility__c</td><td class="px-4 py-1.5">Number(1-5)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Credibility stability score</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Disc_Amendment_Likelihood__c</td><td class="px-4 py-1.5">Number(1-5)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Amendment likelihood</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- ED Fields -->
+<div class="border-b border-border" id="fields-ed">
+<button onclick="toggleCard('card-ed')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <div class="flex items-center gap-3">
+    <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800 border border-emerald-300">ED</span>
+    <span class="font-semibold text-foreground">Expert &amp; Deposition Fields</span>
+    <span class="text-xs text-muted-foreground">(36 fields)</span>
+  </div>
+  <svg class="w-4 h-4 text-muted-foreground transition-transform" id="card-ed-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-ed" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">API Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Notes</th></tr></thead>
+<tbody>
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-emerald-700 bg-emerald-50">Expert Tracking</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Name__c</td><td class="px-4 py-1.5">Text(255)</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Expert full name</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Email__c</td><td class="px-4 py-1.5">Email</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Expert contact email</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Phone__c</td><td class="px-4 py-1.5">Phone</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Expert office phone</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Specialty__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Orthopedic / Neurological / etc.</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Difficulty_Score__c</td><td class="px-4 py-1.5">Number(1,0)</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">1=Easy, 2=Moderate, 3=Difficult</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Retain_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Pending / Attempt 1–3 / Retained / Failed / Replaced</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Retain_Attempts__c</td><td class="px-4 py-1.5">Number(1,0)</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Count of retention attempts</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Retain_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Date retained</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Fee_Schedule__c</td><td class="px-4 py-1.5">Currency</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Agreed fee amount</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Replaced__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Replacement flag</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Replacement_Expert__c</td><td class="px-4 py-1.5">Lookup(Expert)</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Link to replacement</td></tr>
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-emerald-700 bg-emerald-50">Deposition</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Depo_Type__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Non-Party / Defendant / Client / Expert</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Depo_Date__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Scheduled date/time</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Depo_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Scheduled / Confirmed / Completed / Cancelled / Rescheduled</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Depo_Notice_Served__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Notice served flag</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Court_Reporter__c</td><td class="px-4 py-1.5">Text(255)</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Reporter name/company</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Interpreter_Required__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Interpreter needed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Depo_Score__c</td><td class="px-4 py-1.5">Number(3,0)</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Post-depo case score</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Transcript_Ordered__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Transcript ordered flag</td></tr>
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-emerald-700 bg-emerald-50">Report &amp; IME</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Report_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Report</td><td class="px-4 py-1.5">Requested / FU 1–4 / Received / Under Review / Approved / Amendment / Amended</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Materials_Sent_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Report</td><td class="px-4 py-1.5">Materials sent to expert</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Report_Received_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Report</td><td class="px-4 py-1.5">Report received date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Report_Turnaround_Days__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Report</td><td class="px-4 py-1.5">Received - Sent</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Attorney_Review_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Report</td><td class="px-4 py-1.5">Attorney review date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Amendment_Count__c</td><td class="px-4 py-1.5">Number(2,0)</td><td class="px-4 py-1.5">Report</td><td class="px-4 py-1.5">Amendments requested</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Report_Strength__c</td><td class="px-4 py-1.5">Number(1,0)</td><td class="px-4 py-1.5">Report</td><td class="px-4 py-1.5">Attorney rating 1–5</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__IME_Date__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">IME</td><td class="px-4 py-1.5">Scheduled IME date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__IME_Location__c</td><td class="px-4 py-1.5">Text(500)</td><td class="px-4 py-1.5">IME</td><td class="px-4 py-1.5">IME location</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__IME_Notice_Sent__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">IME</td><td class="px-4 py-1.5">Client notified</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__IME_Attended__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">IME</td><td class="px-4 py-1.5">Client attended</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__IME_Report_Received__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">IME</td><td class="px-4 py-1.5">IME report uploaded</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__IME_Favorability__c</td><td class="px-4 py-1.5">Number(1,0)</td><td class="px-4 py-1.5">IME</td><td class="px-4 py-1.5">Outcome rating 1–5</td></tr>
+<tr class="border-t border-border"><td colspan="4" class="px-4 py-2 font-bold text-emerald-700 bg-emerald-50">Index Scores</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__EPI_Score__c</td><td class="px-4 py-1.5">Number(3,0)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Expert Performance Index (0–100)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__DPI_Score__c</td><td class="px-4 py-1.5">Number(3,0)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Defense Pressure Index (0–100)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__ELI_Score__c</td><td class="px-4 py-1.5">Number(3,0)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Expert Leverage Index (0–100)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TRI_Score__c</td><td class="px-4 py-1.5">Number(3,0)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Trial Readiness Index (0–100)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Pressure_Gap__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">DPI - Normalized Offer Trend</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Combined_Strategic__c</td><td class="px-4 py-1.5">Formula(Num)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">(DPI×0.25)+(ELI×0.20)+(TRI×0.20)+(CPI×0.20)+(CSI×0.15)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- AM Fields -->
+<div class="border-b border-border" id="fields-am">
+<button onclick="toggleCard('card-am')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <div class="flex items-center gap-3">
+    <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800 border border-teal-300">AM</span>
+    <span class="font-semibold text-foreground">Arbitration &amp; Mediation Fields</span>
+    <span class="text-xs text-muted-foreground">(22 fields)</span>
+  </div>
+  <svg class="w-4 h-4 text-muted-foreground transition-transform" id="card-am-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-am" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">API Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Notes</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Arb_Court_Notice_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">SLA clock start</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Arb_Calendar_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Arbitration event date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Arb_Statement_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Draft / Approved / Edits Needed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Arb_Packet_Sent__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Packet-Ready gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__DeNovo_Direction__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">File / Diary / NA / Def Filed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__DeNovo_Direction_Date__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Latency measurement</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__DeNovo_Attempt_Count__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Tracks 1/2/3 attempts</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__DeNovo_Filed_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Filing timeliness</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Med_Directive__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Approved / NA / Postpone</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Med_Calendar_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Mediation event date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Med_Statement_Status__c</td><td class="px-4 py-1.5">Picklist</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Draft / Approved / Edits</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Med_Packet_Sent__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Packet gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TPI_Score__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Trial Probability Index (1–5)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__WEV__c</td><td class="px-4 py-1.5">Currency</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Weighted Expected Verdict</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSS_Score__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Trial Strength Score (1–5)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__ATV__c</td><td class="px-4 py-1.5">Currency</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Adjusted Trial Value: WEV × ((TSS−1)/4)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__SLS_Score__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Settlement Leverage Shift (1–5)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CTT__c</td><td class="px-4 py-1.5">Currency</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Cost-to-Try (total projected)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CTT_Ratio__c</td><td class="px-4 py-1.5">Percent</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">CTT / ATV</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TRS_Score__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Trial Readiness Score (1–5)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__ERI_Score__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Economic Risk Index (1–5)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CCS_Score__c</td><td class="px-4 py-1.5">Number(2,1)</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Confidence Calibration (1–5)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- TR Fields -->
+<div class="border-b border-border" id="fields-tr">
+<button onclick="toggleCard('card-tr')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <div class="flex items-center gap-3">
+    <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800 border border-red-300">TR</span>
+    <span class="font-semibold text-foreground">Trial Fields</span>
+    <span class="text-xs text-muted-foreground">(12 fields)</span>
+  </div>
+  <svg class="w-4 h-4 text-muted-foreground transition-transform" id="card-tr-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-tr" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">API Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Notes</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Trial_Court_Notice_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">SLA clock start</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Trial_Date__c</td><td class="px-4 py-1.5">Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Trial event date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Trial_Notebook_30__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">30% milestone gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Trial_Notebook_60__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">60% milestone gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Trial_Notebook_100__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">100% milestone gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Availability_Confirmed__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Readiness gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Fee_Amount__c</td><td class="px-4 py-1.5">Currency</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Fee tracking</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Fee_Paid__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Payment gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Trial_Attorney_Ready__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Final readiness</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Trial_Ready__c</td><td class="px-4 py-1.5">Checkbox</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Composite readiness gate</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Client_Trial_Notice_Sent__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Client notice tracking</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Trial_Notice_Sent__c</td><td class="px-4 py-1.5">DateTime</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Expert notice tracking</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</div><!-- end fields border wrapper -->
+</section>
+<!-- ========== SECTION 3: FLOWS ========== -->
+<section id="flows" class="mb-12">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Flows &amp; Automations</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">All Record-Triggered and Scheduled flows across phases</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">Flow Name</th><th class="px-4 py-2 font-semibold">Type</th><th class="px-4 py-2 font-semibold">Trigger</th><th class="px-4 py-2 font-semibold">Description</th><th class="px-4 py-2 font-semibold">Source</th></tr></thead>
+<tbody>
+<!-- CO Flows -->
+<tr class="border-t-2 border-blue-300"><td colspan="5" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">Case Opening (15 flows)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Pursuit_Start</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Status → Assigned</td><td class="px-4 py-1.5">Set OA_Assigned_Date, create Pursuit Attempt 1 task, set Pursuit_Status</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Pursuit_Escalate</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Attempt 6 complete, not Connected</td><td class="px-4 py-1.5">No Contact Letter 1, Attempt 7 for Attorney (Day 19)</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Intro_Letter</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Assigned + 5 days, not Connected</td><td class="px-4 py-1.5">Trigger mail merge: Intro Letter. Log Chatter.</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_MIA_Route</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Attempt 8 complete, not Connected</td><td class="px-4 py-1.5">No Contact Letter 2, set MIA, set MIA_Date</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_OA_Burst</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Status → OA Completed</td><td class="px-4 py-1.5">Set OA_Completed_Date, create 6 auto + 3 human + 5 scoring tasks</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Burst_Monitor</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Every 30 min</td><td class="px-4 py-1.5">Check In Progress bursts. All done → Success. Any failed → Partial Failure + alert</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Risk_Alert</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Prior_Injuries=Yes OR Defense_Contact=Yes</td><td class="px-4 py-1.5">Create Risk Flag Review task for Attorney (24 hrs), Chatter post</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Complaint_Tasks</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Status = OA Completed (once)</td><td class="px-4 py-1.5">Draft Complaint (OA+3d), Approve Complaint (OA+6d)</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Filing_Task</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Complaint_Approved_Date populated</td><td class="px-4 py-1.5">File Complaint (24 biz hrs), Draft Summons (OA+15d)</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Service_Monitor</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Daily 8am</td><td class="px-4 py-1.5">Service_Status=Requested &gt;30d: alert. &gt;56d: substitute motion</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Default_Notify</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Default_Requested_Date populated</td><td class="px-4 py-1.5">Certified + regular mail to defendant, letter to carrier</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Records_Chase</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Daily 9am</td><td class="px-4 py-1.5">FU tasks at Day 20/27/34. TL escalation Day 42/52/62. Subpoena Day 67.</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Score_Snapshot</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Any BJB__ score field changed</td><td class="px-4 py-1.5">Create Scoring_Snapshot__c with all scores + timestamp</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Score_Verify</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">All Data Hygiene Gate fields populated</td><td class="px-4 py-1.5">Score_Status Provisional → Verified, Chatter notification</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Stale_Data</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Weekly Monday 8am</td><td class="px-4 py-1.5">Score_Last_Updated &gt;30d + active: create Re-score task</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+
+<!-- WD Flows -->
+<tr class="border-t-2 border-purple-300"><td colspan="5" class="px-4 py-2 font-bold text-purple-700 bg-purple-50">Written Discovery (7 flows)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Discovery_Pursuit_Start</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Discovery_Draft_Date populated</td><td class="px-4 py-1.5">Initiate client pursuit ladder, create first call task</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Discovery_Contact_Letter</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Day 16 / Day 47</td><td class="px-4 py-1.5">Generate and queue contact letters at attempt thresholds</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Discovery_Escalate</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Attempt_Count=6 + Letter_2_Sent</td><td class="px-4 py-1.5">Management escalation task, update pursuit status</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Discovery_Service_Task</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Discovery_Approved_Date populated</td><td class="px-4 py-1.5">Create service task with SLA based on answer date</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Discovery_GF_Letter</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">60d from Answer_Date</td><td class="px-4 py-1.5">Auto-generate good faith letter if no defense response</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Discovery_MTC_Monitor</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">70d from Answer_Date</td><td class="px-4 py-1.5">Evaluate need for motion to compel, create task</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Discovery_Score_Refresh</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Discovery_Appt_Completed=true</td><td class="px-4 py-1.5">Trigger all 5 scoring system reassessments (1hr SLA)</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+
+<!-- ED Flows -->
+<tr class="border-t-2 border-emerald-300"><td colspan="5" class="px-4 py-2 font-bold text-emerald-700 bg-emerald-50">Expert &amp; Deposition (6 flows)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Expert_Retention</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">New Expert, Retain_Status=Pending</td><td class="px-4 py-1.5">Retention task ladder, success/failure paths, replacement directive</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Report_Follow_Up</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Materials_Sent_Date populated</td><td class="px-4 py-1.5">Auto FU tasks at Day 14/21/28/35, escalate Day 35</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_IME_Reminder</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">IME_Date populated + Notice_Sent</td><td class="px-4 py-1.5">10-day reminder, 1-day reminder with directions</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Depo_Scheduling</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">New Depo, Status=Scheduled</td><td class="px-4 py-1.5">Notice prep (5d SLA), verification (5d before), post-depo tasks</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_SLA_Enforcement</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Daily 8am</td><td class="px-4 py-1.5">Scan open tasks, apply escalation ladder, send notifications</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Score_Calculation</td><td class="px-4 py-1.5">Scheduled + On-Demand</td><td class="px-4 py-1.5">Weekly batch + key field updates</td><td class="px-4 py-1.5">Calculate EPI, DPI, ELI, TRI + combined strategic score</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+
+<!-- AM Flows -->
+<tr class="border-t-2 border-teal-300"><td colspan="5" class="px-4 py-2 font-bold text-teal-700 bg-teal-50">Arbitration &amp; Mediation (6 flows)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Arb_Client_Notice</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Court notice date populated</td><td class="px-4 py-1.5">Send letter/text/email to client</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Med_Client_Notice</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Med_Directive = Approved</td><td class="px-4 py-1.5">Send letter/text/email to client</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_DeNovo_Escalation</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Daily 4pm</td><td class="px-4 py-1.5">Day 7 cases → escalate to Director</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_DeNovo_Attempt_Reminder</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Attempt count changes</td><td class="px-4 py-1.5">Notify attorney at each attempt window</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Scoring_Pack_Reminder</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Arb date = today</td><td class="px-4 py-1.5">Notify attorney to complete scoring within 24 hrs</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Packet_Ready_Validation</td><td class="px-4 py-1.5">Before Save</td><td class="px-4 py-1.5">Stage = Ready for Arb/Med</td><td class="px-4 py-1.5">Validate all components complete</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+
+<!-- TR Flows -->
+<tr class="border-t-2 border-red-300"><td colspan="5" class="px-4 py-2 font-bold text-red-700 bg-red-50">Trial (5 flows)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Trial_Client_Notice</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Court notice date populated</td><td class="px-4 py-1.5">Send letter/text/email to client</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Trial_Expert_Notice</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">Court notice date populated</td><td class="px-4 py-1.5">Send notice to all retained experts</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Trial_Milestone_Reminder</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Weekly</td><td class="px-4 py-1.5">Check upcoming trials vs milestone completion</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Trial_Readiness_Alert</td><td class="px-4 py-1.5">Record-Triggered</td><td class="px-4 py-1.5">3 biz days before trial</td><td class="px-4 py-1.5">Check all gates, alert Director if incomplete</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Fee_Payment_Reminder</td><td class="px-4 py-1.5">Scheduled</td><td class="px-4 py-1.5">Daily</td><td class="px-4 py-1.5">Cases ≤3 biz days with unpaid expert fees</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- ========== SECTION 4: VALIDATION RULES ========== -->
+<section id="validation" class="mb-12">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Validation Rules</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">All data-integrity rules across phases</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">Rule Name</th><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Condition</th><th class="px-4 py-2 font-semibold">Error Message</th><th class="px-4 py-2 font-semibold">Source</th></tr></thead>
+<tbody>
+<tr class="border-t-2 border-blue-300"><td colspan="5" class="px-4 py-2 font-bold text-blue-700 bg-blue-50">Case Opening</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_OA_Quality_Gate</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Status=OA Completed AND quality gate fields blank</td><td class="px-4 py-1.5">Cannot complete OA until all quality gate fields are populated</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Score_Range</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Any scoring field &lt; 1.0 or &gt; 5.0</td><td class="px-4 py-1.5">Score must be between 1.0 and 5.0</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Complaint_Before_OA</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Complaint_Draft_Date filled AND OA_Completed_Date null</td><td class="px-4 py-1.5">Cannot draft complaint before OA is completed</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Filing_Before_Approval</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Complaint_Filed_Date filled AND Complaint_Approved_Date null</td><td class="px-4 py-1.5">Cannot file before attorney approval is recorded</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Risk_Flag_Alert</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Prior_Injuries=Yes OR Defense_Contact=Yes, no open Risk task</td><td class="px-4 py-1.5">Risk flag requires attorney notification within 24 hrs</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-blue-100 text-blue-800">CO</span></td></tr>
+
+<tr class="border-t-2 border-purple-300"><td colspan="5" class="px-4 py-2 font-bold text-purple-700 bg-purple-50">Written Discovery</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Service_Requires_Approval</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Service_Date filled AND Approved_Date null</td><td class="px-4 py-1.5">Discovery responses cannot be served without attorney approval</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Finalization_Requires_Appt</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Finalized_Date filled AND Appt_Completed=false</td><td class="px-4 py-1.5">Cannot finalize without completing the discovery appointment</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Pursuit_Requires_Draft</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Pursuit_Status != Not Started AND Draft_Date null</td><td class="px-4 py-1.5">Client pursuit cannot begin until responses are drafted</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-purple-100 text-purple-800">WD</span></td></tr>
+
+<tr class="border-t-2 border-emerald-300"><td colspan="5" class="px-4 py-2 font-bold text-emerald-700 bg-emerald-50">Expert &amp; Deposition</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Expert_Requires_Email</td><td class="px-4 py-1.5">Expert</td><td class="px-4 py-1.5">Email blank AND Retain_Status != Pending</td><td class="px-4 py-1.5">Expert email required before retention attempts</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Report_Requires_Retention</td><td class="px-4 py-1.5">Report</td><td class="px-4 py-1.5">Report_Status=Requested AND Retain_Status != Retained</td><td class="px-4 py-1.5">Cannot request report until expert is retained</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_IME_Requires_Scheduling</td><td class="px-4 py-1.5">IME</td><td class="px-4 py-1.5">Notice_Sent=true AND IME_Date blank</td><td class="px-4 py-1.5">IME notice cannot be sent without scheduled IME date</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Depo_Requires_Approval</td><td class="px-4 py-1.5">Deposition</td><td class="px-4 py-1.5">Non-Party + Scheduled + no approval</td><td class="px-4 py-1.5">Non-party depositions require attorney approval</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-800">ED</span></td></tr>
+
+<tr class="border-t-2 border-teal-300"><td colspan="5" class="px-4 py-2 font-bold text-teal-700 bg-teal-50">Arbitration &amp; Mediation</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Require_Court_Notice_Date</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Arb date filled AND court notice date blank</td><td class="px-4 py-1.5">Court notice date required before arbitration date</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Require_Packet_Ready</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Stage=Ready AND packet not sent</td><td class="px-4 py-1.5">Cannot mark ready until packet sent</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Require_DeNovo_Disposition</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Exiting arb AND De Novo direction blank</td><td class="px-4 py-1.5">De Novo disposition required</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Require_Scoring_Pack</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">48hrs post-arb AND scoring fields blank</td><td class="px-4 py-1.5">Scoring pack must be completed within 48 hours</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-teal-100 text-teal-800">AM</span></td></tr>
+
+<tr class="border-t-2 border-red-300"><td colspan="5" class="px-4 py-2 font-bold text-red-700 bg-red-50">Trial</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Require_Court_Notice_Trial</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Trial date AND no court notice date</td><td class="px-4 py-1.5">Court notice date required before trial date</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Require_100_Notebook</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Trial_Ready=true AND Notebook_100 != true</td><td class="px-4 py-1.5">100% notebook required for Trial Ready</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Require_Expert_Confirm</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">Trial_Ready=true AND expert not confirmed</td><td class="px-4 py-1.5">Expert availability must be confirmed</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB_Require_Fee_Payment</td><td class="px-4 py-1.5">Matter</td><td class="px-4 py-1.5">≤3 biz days AND fee not paid</td><td class="px-4 py-1.5">Expert fees must be paid before trial</td><td class="px-4 py-1.5"><span class="px-1.5 py-0.5 text-[10px] font-bold rounded bg-red-100 text-red-800">TR</span></td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- ========== SECTION 5: PERMISSION SETS ========== -->
+<section id="permissions" class="mb-12">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Permission Sets</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">6 role-based permission sets for BJB fields</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">Permission Set</th><th class="px-4 py-2 font-semibold">Access Level</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono font-semibold">BJB_Case_Opening_User</td><td class="px-4 py-1.5">R/W: Case opening status, quality gate fields, task creation. Read-only: All scoring fields, MCHS, Health Index.</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono font-semibold">BJB_Scorer</td><td class="px-4 py-1.5">R/W: All scoring fields (all 5 systems). Can change Score_Status Provisional → Verified. Inherits Case_Opening_User.</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono font-semibold">BJB_Attorney_Reviewer</td><td class="px-4 py-1.5">R/W: All scores. Score_Status → Validated. Approve complaints. Override Intervention_Required.</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono font-semibold">BJB_Team_Lead</td><td class="px-4 py-1.5">All Scorer + exception queue access. Reassign tasks across team. Records chase escalation management.</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono font-semibold">BJB_Para_Manager</td><td class="px-4 py-1.5">All Team_Lead + team dashboards/portfolio views. Modify pursuit status. Close MIA cases.</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono font-semibold">BJB_Admin</td><td class="px-4 py-1.5">Full CRUD on all BJB__ fields and objects. Modify picklist values, validation rules, flow configs.</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- ========== SECTION 6: CROSS-REFERENCE ========== -->
+<section id="cross-ref" class="mb-12">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Cross-Reference</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">Picklists, formulas, field types, and object summaries</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card">
+
+<!-- Picklist Quick-Ref -->
+<div class="border-b border-border" id="picklists">
+<button onclick="toggleCard('card-picklists')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <span class="font-semibold text-foreground">Picklist Quick-Reference</span>
+  <svg class="w-4 h-4 text-muted-foreground" id="card-picklists-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-picklists" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">Field</th><th class="px-4 py-2 font-semibold">Values</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Arb_Statement_Status__c</td><td class="px-4 py-1.5">Draft / Approved / Edits Needed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Automation_Burst_Status__c</td><td class="px-4 py-1.5">Not Started / In Progress / Success / Partial Failure / Failed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Case_Opening_Status__c</td><td class="px-4 py-1.5">New Lead / Qualified / Accepted / Assigned / Pursuit Active / OA Scheduled / OA Completed / Post-OA Active / Filing Pipeline / Fully Opened / MIA / Declined / On Hold</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__DeNovo_Direction__c</td><td class="px-4 py-1.5">File / Diary / NA / Def Filed</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Depo_Status__c</td><td class="px-4 py-1.5">Scheduled / Confirmed / Completed / Cancelled / Rescheduled</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Depo_Type__c</td><td class="px-4 py-1.5">Non-Party / Defendant / Client / Expert</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_MTC_Outcome__c</td><td class="px-4 py-1.5">Pending / Granted / Denied / Moot</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Pursuit_Status__c</td><td class="px-4 py-1.5">Not Started / In Progress / Connected / Escalated / MIA</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Tracker_Status__c</td><td class="px-4 py-1.5">Not Started / In Progress / Complete</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Evidence_Photos__c</td><td class="px-4 py-1.5">Complete / Pending / None</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Evidence_Video__c</td><td class="px-4 py-1.5">Complete / Pending / None</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Evidence_Witnesses__c</td><td class="px-4 py-1.5">Complete / Pending / None</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Expert_Specialty__c</td><td class="px-4 py-1.5">Orthopedic / Neurological / (specialty-specific)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Intervention_Reason__c</td><td class="px-4 py-1.5">Can't Reach / Missed Treatment / Unrealistic Demands / Conflict / Non-Compliant / Social Media Risk / Credibility / Other</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Med_Directive__c</td><td class="px-4 py-1.5">Approved / NA / Postpone</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Med_Statement_Status__c</td><td class="px-4 py-1.5">Draft / Approved / Edits</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Medicare_Flag__c</td><td class="px-4 py-1.5">Yes / No / Unknown</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Medicaid_Flag__c</td><td class="px-4 py-1.5">Yes / No / Unknown</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__ERISA_Flag__c</td><td class="px-4 py-1.5">Yes / No / Unknown</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__VA_Benefits_Flag__c</td><td class="px-4 py-1.5">Yes / No / Unknown</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Preferred_Contact_Method__c</td><td class="px-4 py-1.5">Phone / Text / Email / Portal</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Preferred_Contact_Time__c</td><td class="px-4 py-1.5">Morning / Afternoon / Evening / Any</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Pursuit_Status__c</td><td class="px-4 py-1.5">Attempt 1–8 / Intro Letter / No Contact Letter 1–2 / MIA Routed / Connected</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Records_Chase_Step__c</td><td class="px-4 py-1.5">Submitted / FU1–3 / TL1–3 / Subpoena / POS / Motion / Received</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Report_Status__c</td><td class="px-4 py-1.5">Requested / FU 1–4 / Received / Under Review / Approved / Amendment / Amended</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Retain_Status__c</td><td class="px-4 py-1.5">Pending / Attempt 1–3 / Retained / Failed / Replaced</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Score_Status__c</td><td class="px-4 py-1.5">Provisional / Verified / Validated</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Service_Status__c</td><td class="px-4 py-1.5">Not Initiated / Requested / Served / Non-Service / Substitute / Default</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Formula Fields -->
+<div class="border-b border-border" id="formulas">
+<button onclick="toggleCard('card-formulas')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <span class="font-semibold text-foreground">Formula Fields</span>
+  <svg class="w-4 h-4 text-muted-foreground" id="card-formulas-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-formulas" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">Field</th><th class="px-4 py-2 font-semibold">Return Type</th><th class="px-4 py-2 font-semibold">Expression</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__OA_On_Time__c</td><td class="px-4 py-1.5">Boolean</td><td class="px-4 py-1.5">TRUE if OA completed within 24 hours of assignment</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Data_Trust_Score__c</td><td class="px-4 py-1.5">Percent</td><td class="px-4 py-1.5">% of required fields populated across record</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CP_Score__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Average of all 28 CP metrics</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__LSI_Score__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Weighted LSI: (Fault×0.25)+(Evidence×0.20)+(Witness×0.10)+(Police×0.10)+(CompNeg×0.10)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__SLI_Score__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">LSI base + (Coverage×0.10)+(Jury×0.05)+(Defense×0.05)+(DocReady×0.05)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CSI_Score__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Weighted CSI composite (5 factors)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__RDI_Score__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Weighted RDI composite (5 factors)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__TSI_Score__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">(Sev×0.25)+(Con×0.20)+(Cred×0.20)+(Proof×0.20)+(Exp×0.15)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Total__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">(P1×0.15)+(P2×0.15)+(P3×0.15)+(P4×0.15)+(P5×0.10)+(P6×0.15)+(P7×0.15)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__CPI_Band__c</td><td class="px-4 py-1.5">Text</td><td class="px-4 py-1.5">4.0–5.0=Prime Asset / 3.0–3.9=Strong / 2.0–2.9=Manage / 1.0–1.9=At Risk</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__MCHS__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">(SLI×0.25)+(TSI×0.25)+(CP×0.20)+((CSI+RDI)/2×0.15)+(CPI×0.15)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__MCHS_Band__c</td><td class="px-4 py-1.5">Text</td><td class="px-4 py-1.5">Prime Asset / Strong Performer / Manage Closely / Intervention Required</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Health_Index__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Composite from scorecard components</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Report_Turnaround_Days__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">Report_Received_Date − Materials_Sent_Date</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Pressure_Gap__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">DPI_Score − Normalized_Offer_Trend</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Combined_Strategic__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">(DPI×0.25)+(ELI×0.20)+(TRI×0.20)+(CPI×0.20)+(CSI×0.15)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-mono">BJB__Discovery_Health_Index__c</td><td class="px-4 py-1.5">Number</td><td class="px-4 py-1.5">DHI composite score</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Field Type Summary -->
+<div class="border-b border-border" id="type-summary">
+<button onclick="toggleCard('card-types')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <span class="font-semibold text-foreground">Field Type Summary</span>
+  <svg class="w-4 h-4 text-muted-foreground" id="card-types-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-types" class="hidden" data-card-body>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-6">
+  <div class="text-center p-3 rounded-lg bg-muted"><div class="text-2xl font-bold text-foreground">~75</div><div class="text-xs text-muted-foreground">Number (scoring)</div></div>
+  <div class="text-center p-3 rounded-lg bg-muted"><div class="text-2xl font-bold text-foreground">~28</div><div class="text-xs text-muted-foreground">Picklist</div></div>
+  <div class="text-center p-3 rounded-lg bg-muted"><div class="text-2xl font-bold text-foreground">~30</div><div class="text-xs text-muted-foreground">Checkbox</div></div>
+  <div class="text-center p-3 rounded-lg bg-muted"><div class="text-2xl font-bold text-foreground">~25</div><div class="text-xs text-muted-foreground">Date / DateTime</div></div>
+  <div class="text-center p-3 rounded-lg bg-muted"><div class="text-2xl font-bold text-foreground">~17</div><div class="text-xs text-muted-foreground">Formula</div></div>
+  <div class="text-center p-3 rounded-lg bg-muted"><div class="text-2xl font-bold text-foreground">~5</div><div class="text-xs text-muted-foreground">Text</div></div>
+  <div class="text-center p-3 rounded-lg bg-muted"><div class="text-2xl font-bold text-foreground">~5</div><div class="text-xs text-muted-foreground">Currency</div></div>
+  <div class="text-center p-3 rounded-lg bg-muted"><div class="text-2xl font-bold text-foreground">~4</div><div class="text-xs text-muted-foreground">Other (Email, Phone, Lookup, %)</div></div>
+</div>
+</div>
+</div>
+
+<!-- Object Summary -->
+<div id="object-summary">
+<button onclick="toggleCard('card-objects')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-muted/50 transition-colors">
+  <span class="font-semibold text-foreground">Object Summary</span>
+  <svg class="w-4 h-4 text-muted-foreground" id="card-objects-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+</button>
+<div id="card-objects" class="hidden" data-card-body>
+<div class="overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold">Object</th><th class="px-4 py-2 font-semibold">Approx. Field Count</th><th class="px-4 py-2 font-semibold">Sources</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-semibold">Matter</td><td class="px-4 py-1.5">~160</td><td class="px-4 py-1.5">CO, TM, WD, AM, TR, ED (index scores)</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-semibold">Expert</td><td class="px-4 py-1.5">~11</td><td class="px-4 py-1.5">ED</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-semibold">Deposition</td><td class="px-4 py-1.5">~8</td><td class="px-4 py-1.5">ED</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-semibold">Report</td><td class="px-4 py-1.5">~7</td><td class="px-4 py-1.5">ED</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-semibold">IME</td><td class="px-4 py-1.5">~6</td><td class="px-4 py-1.5">ED</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-1.5 font-semibold">Scoring_Snapshot__c</td><td class="px-4 py-1.5">Custom object</td><td class="px-4 py-1.5">CO (created in build step 1)</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+</div><!-- end cross-ref border wrapper -->
+</section>
+<!-- ========== SECTION 7: DEPLOYMENT CHECKLIST ========== -->
+<section id="checklist" class="mb-12">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Deployment Checklist</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">Ordered build sequence with dependencies — 90–100 hours total</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card overflow-x-auto">
+<table class="searchable-table w-full text-xs">
+<thead><tr class="bg-muted text-left"><th class="px-4 py-2 font-semibold w-10">#</th><th class="px-4 py-2 font-semibold">Task</th><th class="px-4 py-2 font-semibold">Dependencies</th><th class="px-4 py-2 font-semibold w-16">Hours</th></tr></thead>
+<tbody>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">1</td><td class="px-4 py-2">Create BJB__Scoring_Snapshot__c object + all fields</td><td class="px-4 py-2 text-muted-foreground">None</td><td class="px-4 py-2">4</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">2</td><td class="px-4 py-2">Create all custom fields on Matter (D.2.1–D.2.8)</td><td class="px-4 py-2 text-muted-foreground">None</td><td class="px-4 py-2">10</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">3</td><td class="px-4 py-2">Create picklist values for all picklist fields</td><td class="px-4 py-2 text-muted-foreground">Step 2</td><td class="px-4 py-2">3</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">4</td><td class="px-4 py-2">Create formula fields (scoring calcs, MCHS, Health Index, Bands)</td><td class="px-4 py-2 text-muted-foreground">Step 2</td><td class="px-4 py-2">5</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">5</td><td class="px-4 py-2">Create validation rules (all 20)</td><td class="px-4 py-2 text-muted-foreground">Steps 2–4</td><td class="px-4 py-2">3</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">6</td><td class="px-4 py-2">Create Task Record Types (Mandatory / Optional / System Auto)</td><td class="px-4 py-2 text-muted-foreground">None</td><td class="px-4 py-2">2</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">7</td><td class="px-4 py-2">Create Permission Sets (all 6)</td><td class="px-4 py-2 text-muted-foreground">Steps 1–2</td><td class="px-4 py-2">3</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">8</td><td class="px-4 py-2">Build pursuit ladder flows (Pursuit_Start, Escalate, Intro_Letter, MIA_Route)</td><td class="px-4 py-2 text-muted-foreground">Steps 2–3</td><td class="px-4 py-2">8</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">9</td><td class="px-4 py-2">Build post-OA burst flows (OA_Burst, Burst_Monitor, Risk_Alert)</td><td class="px-4 py-2 text-muted-foreground">Steps 2–3</td><td class="px-4 py-2">6</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">10</td><td class="px-4 py-2">Build complaint/filing flows (Complaint_Tasks, Filing_Task, Service_Monitor, Default_Notify)</td><td class="px-4 py-2 text-muted-foreground">Steps 2–3</td><td class="px-4 py-2">6</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">11</td><td class="px-4 py-2">Build records chase ladder flow (9 steps)</td><td class="px-4 py-2 text-muted-foreground">Steps 2–3</td><td class="px-4 py-2">6</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">12</td><td class="px-4 py-2">Build scoring + data trust flows (Score_Snapshot, Score_Verify, Stale_Data)</td><td class="px-4 py-2 text-muted-foreground">Steps 1–4</td><td class="px-4 py-2">4</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">13</td><td class="px-4 py-2">Configure Matter page layouts (score dials, quality gate, pipeline sections)</td><td class="px-4 py-2 text-muted-foreground">Steps 2–4</td><td class="px-4 py-2">4</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">14</td><td class="px-4 py-2">Build reports + dashboard (12 KPIs, exception queues, MCHS portfolio)</td><td class="px-4 py-2 text-muted-foreground">All above</td><td class="px-4 py-2">8</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">15</td><td class="px-4 py-2">Configure external integrations (DocuSign, mail vendor, CX1, DocuFree)</td><td class="px-4 py-2 text-muted-foreground">Steps 2, 8–11</td><td class="px-4 py-2">8–16</td></tr>
+<tr class="border-t border-border hover:bg-muted/30"><td class="px-4 py-2 font-bold text-[#d97706]">16</td><td class="px-4 py-2">UAT: run 5 test cases through full SOP end-to-end</td><td class="px-4 py-2 text-muted-foreground">All above</td><td class="px-4 py-2">8</td></tr>
+</tbody>
+</table>
+<div class="px-6 py-4 border-t border-border text-xs text-muted-foreground">
+  <strong>Total Estimate:</strong> 90–100 hours &nbsp;|&nbsp; <strong>Team:</strong> 1 Salesforce/Litify dev + 1 Litify admin + 1 project lead for UAT
+</div>
+</div>
+</section>
+
+</div><!-- end max-w-7xl -->
+</main>
+</div><!-- end flex -->
+
+<script>
+function navTo(id){
+  const el=document.getElementById(id);
+  if(el){
+    const main=document.getElementById('main-scroll');
+    if(main) main.scrollTo({top:el.offsetTop-120,behavior:'smooth'});
+  }
+}
+function toggleCard(id){
+  const el=document.getElementById(id);
+  const chevron=document.getElementById(id+'-chevron');
+  if(el){
+    el.classList.toggle('hidden');
+    if(chevron) chevron.style.transform=el.classList.contains('hidden')?'':'rotate(180deg)';
+  }
+}
+function doSearch(query){
+  const countEl=document.getElementById('search-count');
+  const tables=document.querySelectorAll('.searchable-table');
+  if(!query.trim()){
+    tables.forEach(t=>{
+      t.querySelectorAll('tbody tr').forEach(r=>{r.style.display='';r.querySelectorAll('td').forEach(td=>{td.innerHTML=td.textContent})});
+    });
+    countEl.classList.add('hidden');
+    return;
+  }
+  const q=query.toLowerCase();
+  let total=0;
+  tables.forEach(t=>{
+    t.querySelectorAll('tbody tr').forEach(r=>{
+      const text=r.textContent.toLowerCase();
+      if(r.querySelector('td[colspan]')){r.style.display='';return}
+      if(text.includes(q)){
+        r.style.display='';
+        total++;
+        // auto-expand parent card
+        let p=r.closest('[data-card-body]');
+        if(p&&p.classList.contains('hidden')){
+          p.classList.remove('hidden');
+          const chev=document.getElementById(p.id+'-chevron');
+          if(chev) chev.style.transform='rotate(180deg)';
+        }
+      } else {
+        r.style.display='none';
+      }
+    });
+  });
+  countEl.textContent=total+' match'+(total!==1?'es':'');
+  countEl.classList.remove('hidden');
+}
+</script>
+</body>
+</html>

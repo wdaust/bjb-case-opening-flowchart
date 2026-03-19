@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BJB Metrics &amp; Feedback</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        background: '#fafafa', foreground: '#0a0a0a', card: '#ffffff', 'card-foreground': '#0a0a0a',
+        primary: '#171717', 'primary-foreground': '#fafafa', secondary: '#f5f5f5', 'secondary-foreground': '#171717',
+        muted: '#f5f5f5', 'muted-foreground': '#737373', accent: '#f5f5f5', 'accent-foreground': '#171717',
+        destructive: '#ef4444', border: '#e5e5e5', input: '#e5e5e5', ring: '#0a0a0a',
+        sidebar: '#fafafa', 'sidebar-foreground': '#171717', 'sidebar-accent': '#f5f5f5',
+      },
+      borderRadius: { lg: '0.625rem', md: '0.5rem', sm: '0.375rem' }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-background text-foreground font-[-apple-system,BlinkMacSystemFont,'Inter',sans-serif] text-sm leading-relaxed">
+<!-- TOP NAV -->
+<nav class="sticky top-0 z-50 h-14 border-b border-border bg-card">
+  <div class="max-w-[1460px] mx-auto h-full flex items-center justify-between px-6">
+    <span class="text-sm font-semibold text-muted-foreground tracking-wide">BJB Performance Plan</span>
+    <div class="hidden md:flex items-center gap-1">
+      <a href="index.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Case Opening</a>
+      <a href="treatment-monitoring.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Treatment Monitoring</a>
+      <a href="written-discovery.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Written Discovery</a>
+      <a href="expert-deposition.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Expert &amp; Deposition</a>
+      <a href="arbitration-mediation.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Arb &amp; Mediation</a>
+      <a href="trial.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Trial</a>
+      <a href="litify-dev-summary.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Dev Summary</a>
+      <a href="scoring-review.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Scoring Review</a>
+      <a href="metrics.html" class="px-3 py-1.5 text-sm font-medium text-foreground bg-accent rounded-md no-underline" style="border-bottom: 2px solid #8b5cf6">Metrics</a>
+      <a href="mos.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">MOS</a>
+    </div>
+    <button id="nav-hamburger" class="md:hidden text-foreground" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mobile-nav" class="hidden md:hidden bg-card border-t border-border px-4 pb-3">
+    <a href="index.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Case Opening</a>
+    <a href="treatment-monitoring.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Treatment Monitoring</a>
+    <a href="written-discovery.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Written Discovery</a>
+    <a href="expert-deposition.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Expert &amp; Deposition</a>
+    <a href="arbitration-mediation.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Arb &amp; Mediation</a>
+    <a href="trial.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Trial</a>
+    <a href="litify-dev-summary.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Dev Summary</a>
+    <a href="scoring-review.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Scoring Review</a>
+    <a href="metrics.html" class="block px-3 py-2 text-sm font-medium text-foreground bg-accent rounded-md no-underline">Metrics</a>
+    <a href="mos.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">MOS</a>
+  </div>
+</nav>
+
+<div class="max-w-4xl mx-auto px-6 lg:px-10 py-10">
+
+<!-- Header -->
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h1 class="text-lg font-bold">Metrics &amp; Feedback</h1>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">Submit ideas for all metrics related to weekly scorecards, dashboard insights, KPI's or any kind of performance metric</p>
+</div>
+
+<!-- Form + List -->
+<div class="rounded-b-lg border-2 border-t-0 border-border bg-card p-6">
+  <div class="mb-6">
+    <div class="flex gap-3 mb-3">
+      <select id="feedback-author" class="border border-border rounded-md px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+        <option value="">Select your name...</option>
+        <option>Brandon Broderick</option>
+        <option>Ryan Broderick</option>
+        <option>John Moran</option>
+        <option>Matt Broderick</option>
+        <option>Marc Borden</option>
+        <option>Kennia Delgado</option>
+        <option>Brittany Hale</option>
+        <option>Marques Burgess</option>
+        <option>Frank Scott</option>
+        <option>Adam Greenspan</option>
+        <option>Eason Recto</option>
+        <option>Justin Billingsley</option>
+        <option>William D'Aust</option>
+        <option>Zachary Terracciano</option>
+      </select>
+      <select id="feedback-category" class="border border-border rounded-md px-3 py-2 text-sm bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
+        <option value="">Select category...</option>
+        <option>Weekly Scorecard</option>
+        <option>Dashboard Insight</option>
+        <option>KPI</option>
+        <option>Other Performance Metric</option>
+      </select>
+      <button onclick="submitFeedback()" class="px-4 py-2 bg-primary text-primary-foreground text-sm font-semibold rounded-md hover:bg-primary/90 transition-colors whitespace-nowrap">Submit</button>
+    </div>
+    <textarea id="feedback-text" class="w-full min-h-[100px] border border-border rounded-md p-3 text-sm resize-y focus:outline-none focus:ring-2 focus:ring-ring" placeholder="Share an idea, suggestion, or comment..."></textarea>
+  </div>
+  <div id="feedback-status" class="text-[11px] text-muted-foreground mb-3"></div>
+  <h3 class="text-base font-bold text-foreground mb-3 pt-4 border-t border-border">Team Feedback</h3>
+  <div id="feedback-list" class="space-y-3 text-sm text-muted-foreground">Loading...</div>
+</div>
+
+</div>
+
+<script type="module">
+import{neon}from'https://esm.sh/@neondatabase/serverless';
+const sql=neon('postgresql://neondb_owner:npg_rwK4vVmAyzG5@ep-mute-cloud-aik2rpsg.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require');
+const PAGE_ID='metrics';
+
+async function ensureFeedbackTable(){
+  await sql`CREATE TABLE IF NOT EXISTS spec_feedback(id SERIAL PRIMARY KEY,page_id TEXT,author TEXT,comment TEXT,created_at TIMESTAMPTZ DEFAULT now())`;
+  try{await sql`ALTER TABLE spec_feedback ADD COLUMN IF NOT EXISTS category TEXT DEFAULT ''`;}catch(e){}
+}
+
+async function loadFeedback(){
+  const list=document.getElementById('feedback-list');if(!list)return;
+  try{
+    await ensureFeedbackTable();
+    const rows=await sql`SELECT author,comment,category,created_at FROM spec_feedback ORDER BY created_at DESC`;
+    if(rows.length===0){list.innerHTML='<p class="text-muted-foreground text-sm">No feedback yet. Be the first to share!</p>';return;}
+    list.innerHTML=rows.map(r=>{
+      const d=new Date(r.created_at).toLocaleString();
+      const cat=r.category?`<span class="inline-block rounded-full px-2 py-0.5 text-[10px] font-medium bg-accent text-accent-foreground">${r.category}</span>`:'';
+      return `<div class="rounded-lg border border-border bg-card p-4 shadow-sm"><div class="flex items-center justify-between mb-1"><span class="font-semibold text-foreground text-sm">${r.author} ${cat}</span><span class="text-[11px] text-muted-foreground">${d}</span></div><p class="text-sm text-foreground/80">${r.comment.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p></div>`;
+    }).join('');
+  }catch(e){console.error(e);list.innerHTML='<p class="text-red-500 text-sm">Failed to load feedback.</p>';}
+}
+
+window.submitFeedback=async function(){
+  const authorEl=document.getElementById('feedback-author'),textEl=document.getElementById('feedback-text'),catEl=document.getElementById('feedback-category'),statusEl=document.getElementById('feedback-status');
+  const author=authorEl.value,comment=textEl.value.trim(),category=catEl.value;
+  if(!author||!category||!comment){statusEl.textContent='Please select your name, a category, and enter a comment.';statusEl.style.color='#c62828';return;}
+  try{
+    statusEl.textContent='Submitting...';statusEl.style.color='#737373';
+    await sql`INSERT INTO spec_feedback(page_id,author,comment,category)VALUES(${PAGE_ID},${author},${comment},${category})`;
+    textEl.value='';catEl.value='';statusEl.textContent='Submitted!';statusEl.style.color='#2e7d32';
+    await loadFeedback();
+  }catch(e){console.error(e);statusEl.textContent='Submit failed.';statusEl.style.color='#c62828';}
+};
+
+loadFeedback();
+</script>
+</body>
+</html>
