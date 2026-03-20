@@ -55,6 +55,7 @@ import { AIChatWidget } from './components/dashboard/AIChatWidget.tsx';
 import TopNavMockup from './pages/TopNavMockup.tsx';
 import SpecViewer from './pages/SpecViewer.tsx';
 import DeptDashboard from './pages/DeptDashboard.tsx';
+import TechProjects from './pages/TechProjects.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 
@@ -136,6 +137,7 @@ export default function App() {
             <Route path="performance-infrastructure/mockups/trial-matter" element={<TrialMatter />} />
             <Route path="dept/:deptId/:pageId" element={<DeptDashboard />} />
             <Route path="specs/:page?" element={<SpecViewer />} />
+            <Route path="tech-projects" element={<TechProjects />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>
