@@ -111,6 +111,7 @@ const navTabs: NavItem[] = [
       { label: 'Stages', to: '/stage/intake' },
       { label: 'Development', to: '/performance-infrastructure' },
       { label: 'MOS', to: '/performance-infrastructure/mos' },
+      { label: 'Provider Network', to: '/performance-infrastructure/provider-network' },
       { label: '---', to: '' },
       { label: 'Litify Spec', to: '/specs' },
     ],
