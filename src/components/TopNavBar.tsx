@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
 
@@ -202,13 +202,13 @@ export function TopNavBar() {
     >
       <div className="h-14 flex items-center px-6 gap-8">
         {/* Left: Logo */}
-        <div className="shrink-0">
+        <Link to="/control-tower" className="shrink-0">
           <img
             src={`${import.meta.env.BASE_URL}logo.png`}
             alt="Brandon J. Broderick — Attorney at Law"
             className="h-[2.3rem]"
           />
-        </div>
+        </Link>
 
         {/* Center: Nav Tabs */}
         <nav className="hidden lg:flex items-center justify-center flex-1 gap-4">
