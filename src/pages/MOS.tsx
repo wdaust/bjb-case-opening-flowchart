@@ -30,7 +30,7 @@ interface RockOwner {
   emptyRows: number;
 }
 
-interface JaidenMetric {
+interface TreatmentMetric {
   metric: string;
   target: string;
 }
@@ -57,33 +57,33 @@ type SyncStatus = '' | 'Loading...' | 'Saving...' | 'Synced' | 'Saved' | 'Offlin
 const WEEK_HEADERS = ['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','W13'];
 
 const executiveLeaders = [
-  { leader: 'Matt', divisions: 'Pre-LIT, Med Records, Claims, Workers Comp, NSA, Tech' },
-  { leader: 'Ryan', divisions: 'LIT, PIP Arbs, Medical Marketing, Law Firm Marketing, Employment' },
-  { leader: 'John', divisions: 'Intake, Marketing, Business LIT, Law Firm Marketing, Employment' },
-  { leader: 'Frank / Mike', divisions: 'Finance, AR Billing' },
+  { leader: 'Executive 1', divisions: 'Pre-LIT, Med Records, Claims, Workers Comp, NSA, Tech' },
+  { leader: 'Executive 2', divisions: 'LIT, PIP Arbs, Medical Marketing, Law Firm Marketing, Employment' },
+  { leader: 'Executive 3', divisions: 'Intake, Marketing, Business LIT, Law Firm Marketing, Employment' },
+  { leader: 'Executive 4 / 5', divisions: 'Finance, AR Billing' },
 ];
 
 const departmentLeads = [
-  { name: 'Brittany Hale', dept: 'Pre-LIT' },
-  { name: 'Kennia Delgado', dept: 'LIT Paralegal' },
-  { name: 'Marc Borden', dept: 'LIT Attorney' },
-  { name: 'Amy Estrada', dept: 'Medical Marketing' },
-  { name: 'Kevin Maleike', dept: 'Referrals' },
-  { name: 'Marques Burgess', dept: 'Intake' },
-  { name: 'Raphael Haddock', dept: 'Marketing' },
-  { name: 'Michelle Brignola', dept: 'PIP Arbs' },
-  { name: 'Ken Thayer', dept: 'Workers Comp' },
-  { name: 'Mike Fortunato', dept: 'Employment' },
-  { name: 'Kamran Ali', dept: 'NSA/IDR' },
-  { name: 'Jaiden Johnson', dept: 'Treatment (BOC)' },
+  { name: 'Dept Lead 1', dept: 'Pre-LIT' },
+  { name: 'Dept Lead 2', dept: 'LIT Paralegal' },
+  { name: 'Dept Lead 3', dept: 'LIT Attorney' },
+  { name: 'Dept Lead 4', dept: 'Medical Marketing' },
+  { name: 'Dept Lead 5', dept: 'Referrals' },
+  { name: 'Dept Lead 6', dept: 'Intake' },
+  { name: 'Dept Lead 7', dept: 'Marketing' },
+  { name: 'Dept Lead 8', dept: 'PIP Arbs' },
+  { name: 'Dept Lead 9', dept: 'Workers Comp' },
+  { name: 'Dept Lead 10', dept: 'Employment' },
+  { name: 'Dept Lead 11', dept: 'NSA/IDR' },
+  { name: 'Dept Lead 12', dept: 'Treatment (BOC)' },
 ];
 
 const vtoQuestions = [
-  { num: 1, title: 'Core Values', desc: "The guiding principles that define BJB's culture and decision-making" },
-  { num: 2, title: 'Core Focus (Purpose / Niche)', desc: 'Why BJB exists and what it does best' },
+  { num: 1, title: 'Core Values', desc: "The guiding principles that define the firm's culture and decision-making" },
+  { num: 2, title: 'Core Focus (Purpose / Niche)', desc: 'Why the firm exists and what it does best' },
   { num: 3, title: '10-Year Target', desc: 'The big, long-range goal that drives the firm forward' },
   { num: 4, title: 'Marketing Strategy', desc: 'Target market, three uniques, proven process, guarantee' },
-  { num: 5, title: '3-Year Picture', desc: 'Revenue, profit, measurables, and what BJB looks like in 3 years' },
+  { num: 5, title: '3-Year Picture', desc: 'Revenue, profit, measurables, and what the firm looks like in 3 years' },
   { num: 6, title: '1-Year Plan', desc: 'Revenue/profit targets and 3-7 goals for the year' },
   { num: 7, title: 'Quarterly Rocks', desc: 'The 3-7 most important priorities for the next 90 days' },
   { num: 8, title: 'Issues List', desc: 'Strategic issues to be solved, parked, or eliminated' },
@@ -101,10 +101,10 @@ const overviewCards = [
 const divisions: DivisionData[] = [
   {
     id: 'div1',
-    title: 'Division 1 — Matt (Pre-LIT / LIT / Claims / Med Records)',
+    title: 'Division 1 — Executive 1 (Pre-LIT / LIT / Claims / Med Records)',
     people: [
       {
-        name: 'Brittany Hale', title: 'Pre-LIT',
+        name: 'Dept Lead 1', title: 'Pre-LIT',
         kpis: [
           { metric: 'Demand-ready cases pushed to LIT', goal: '8/wk' },
           { metric: 'Treatment grade A cases', goal: '60%' },
@@ -128,7 +128,7 @@ const divisions: DivisionData[] = [
         ],
       },
       {
-        name: 'Kennia Delgado', title: 'LIT Paralegal',
+        name: 'Dept Lead 2', title: 'LIT Paralegal',
         kpis: [
           { metric: 'Outstanding treatment touches (>5)', goal: '<5' },
           { metric: 'Overdue complaint filings (55 days)', goal: '0' },
@@ -141,7 +141,7 @@ const divisions: DivisionData[] = [
         ],
       },
       {
-        name: 'Marc Borden', title: 'LIT Attorney',
+        name: 'Dept Lead 3', title: 'LIT Attorney',
         kpis: [
           { metric: 'Active LIT cases', goal: 'Track' },
           { metric: 'Settlement dollars', goal: 'Goal' },
@@ -173,10 +173,10 @@ const divisions: DivisionData[] = [
   },
   {
     id: 'div2',
-    title: 'Division 2 — John/Ryan (Medical Marketing / Referrals / Intake / Marketing)',
+    title: 'Division 2 — Executive 3/2 (Medical Marketing / Referrals / Intake / Marketing)',
     people: [
       {
-        name: 'Amy Estrada', title: 'Medical Marketing',
+        name: 'Dept Lead 4', title: 'Medical Marketing',
         kpis: [
           { metric: 'Outbound calls', goal: '250/wk' },
           { metric: 'Appointments set', goal: '25/wk' },
@@ -186,7 +186,7 @@ const divisions: DivisionData[] = [
         ],
       },
       {
-        name: 'Kevin Maleike', title: 'Referrals',
+        name: 'Dept Lead 5', title: 'Referrals',
         kpis: [
           { metric: 'Referrals received', goal: 'Track' },
           { metric: 'Referral conversion rate', goal: '>40%' },
@@ -209,7 +209,7 @@ const divisions: DivisionData[] = [
         ],
       },
       {
-        name: 'Marques Burgess', title: 'Intake',
+        name: 'Dept Lead 6', title: 'Intake',
         kpis: [
           { metric: 'New leads', goal: 'Track' },
           { metric: 'Signed cases', goal: 'Goal' },
@@ -234,7 +234,7 @@ const divisions: DivisionData[] = [
         ],
       },
       {
-        name: 'Raphael Haddock', title: 'Marketing',
+        name: 'Dept Lead 7', title: 'Marketing',
         kpis: [
           { metric: 'Calls by content page', goal: 'Track' },
           { metric: 'Calls by geo market', goal: 'Track' },
@@ -250,10 +250,10 @@ const divisions: DivisionData[] = [
   },
   {
     id: 'div3',
-    title: 'Division 3 — Ryan/Matt (PIP Arbs, Workers Comp, Employment, NSA, Tech)',
+    title: 'Division 3 — Executive 2/1 (PIP Arbs, Workers Comp, Employment, NSA, Tech)',
     people: [
       {
-        name: 'Michelle Brignola', title: 'PIP Arbs',
+        name: 'Dept Lead 8', title: 'PIP Arbs',
         kpis: [
           { metric: 'Active PIP cases', goal: 'Track' },
           { metric: 'New filings', goal: 'Track' },
@@ -272,7 +272,7 @@ const divisions: DivisionData[] = [
         ],
       },
       {
-        name: 'Ken Thayer', title: 'Workers Comp',
+        name: 'Dept Lead 9', title: 'Workers Comp',
         kpis: [
           { metric: 'Active WC cases', goal: 'Track' },
           { metric: 'New cases weekly', goal: 'Track' },
@@ -286,7 +286,7 @@ const divisions: DivisionData[] = [
         ],
       },
       {
-        name: 'Mike Fortunato', title: 'Employment',
+        name: 'Dept Lead 10', title: 'Employment',
         kpis: [
           { metric: 'Active employment cases', goal: 'Track' },
           { metric: 'New intakes weekly', goal: 'Track' },
@@ -297,7 +297,7 @@ const divisions: DivisionData[] = [
         ],
       },
       {
-        name: 'Kamran Ali', title: 'NSA/IDR',
+        name: 'Dept Lead 11', title: 'NSA/IDR',
         kpis: [
           { metric: 'Active NSA disputes', goal: 'Track' },
           { metric: 'IDR filings submitted', goal: 'Track' },
@@ -319,13 +319,13 @@ const departmentScorecards = [
 ];
 
 const rockOwners: RockOwner[] = [
-  { name: 'Matt', emptyRows: 3 },
-  { name: 'Ryan', emptyRows: 3 },
-  { name: 'John', emptyRows: 3 },
-  { name: 'Jaiden', emptyRows: 2 },
+  { name: 'Executive 1', emptyRows: 3 },
+  { name: 'Executive 2', emptyRows: 3 },
+  { name: 'Executive 3', emptyRows: 3 },
+  { name: 'Dept Lead 12', emptyRows: 2 },
 ];
 
-const jaidenMetrics: JaidenMetric[] = [
+const treatmentMetrics: TreatmentMetric[] = [
   { metric: 'Active treatment cases', target: 'Track' },
   { metric: 'Provider onboarding', target: '3/mo' },
   { metric: 'Treatment compliance rate', target: '>85%' },
@@ -657,12 +657,12 @@ function RockOwnerRows({
   );
 }
 
-// ─── Editable Jaiden Metrics ─────────────────────────────────────────────────
+// ─── Editable Treatment Metrics ──────────────────────────────────────────────
 
-function JaidenMetricsTable({
-  jaidenData, onCellChange,
+function TreatmentMetricsTable({
+  treatmentData, onCellChange,
 }: {
-  jaidenData: Record<number, Record<number, string>>;
+  treatmentData: Record<number, Record<number, string>>;
   onCellChange: (metricIdx: number, weekIdx: number, value: string) => void;
 }) {
   return (
@@ -678,7 +678,7 @@ function JaidenMetricsTable({
           </tr>
         </thead>
         <tbody>
-          {jaidenMetrics.map((m, mIdx) => (
+          {treatmentMetrics.map((m, mIdx) => (
             <tr key={mIdx} className="border-b border-[#2a2a2a] hover:bg-[#222]">
               <td className="px-2 py-1 text-gray-300">{m.metric}</td>
               <td className="px-2 py-1 text-center text-gray-300">{m.target}</td>
@@ -687,7 +687,7 @@ function JaidenMetricsTable({
                   <input
                     type="text"
                     className="w-full bg-transparent text-center text-xs text-gray-200 outline-none px-1 py-1 border border-transparent rounded hover:border-[#333] focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-                    value={jaidenData?.[mIdx]?.[weekIdx] ?? ''}
+                    value={treatmentData?.[mIdx]?.[weekIdx] ?? ''}
                     onChange={(e) => onCellChange(mIdx, weekIdx, e.target.value)}
                   />
                 </td>
@@ -831,7 +831,7 @@ export default function MOS() {
   // Interactive data
   const [scorecardData, setScorecardData] = useState<Record<string, Record<string, Record<number, Record<number, string>>>>>({});
   const [rocksData, setRocksData] = useState<Record<string, { description: string; status: RockStatus; weeks: Record<number, RockStatus> }[]>>({});
-  const [jaidenData, setJaidenData] = useState<Record<number, Record<number, string>>>({});
+  const [treatmentData, setTreatmentData] = useState<Record<number, Record<number, string>>>({});
   const [issuesCompany, setIssuesCompany] = useState<MosIssue[]>([]);
   const [issuesDept, setIssuesDept] = useState<MosIssue[]>([]);
   const [approvalState, setApprovalState] = useState<Record<string, { checked: boolean; date: string }>>({});
@@ -845,7 +845,7 @@ export default function MOS() {
   // Debounced saves
   useDebouncedSave('mos-scorecards', scorecardData, 800, dataLoaded);
   useDebouncedSave('mos-rocks', rocksData, 800, dataLoaded);
-  useDebouncedSave('mos-jaiden', jaidenData, 800, dataLoaded);
+  useDebouncedSave('mos-jaiden', treatmentData, 800, dataLoaded);
   useDebouncedSave('mos-issues-company', { issues: issuesCompany }, 300, dataLoaded);
   useDebouncedSave('mos-issues-dept', { issues: issuesDept }, 300, dataLoaded);
 
@@ -872,7 +872,7 @@ export default function MOS() {
       const [sc, rk, jd, ic, id, appr] = await Promise.all([
         loadGenericSection<typeof scorecardData>('mos-scorecards'),
         loadGenericSection<typeof rocksData>('mos-rocks'),
-        loadGenericSection<typeof jaidenData>('mos-jaiden'),
+        loadGenericSection<typeof treatmentData>('mos-jaiden'),
         loadGenericSection<{ issues: MosIssue[] }>('mos-issues-company'),
         loadGenericSection<{ issues: MosIssue[] }>('mos-issues-dept'),
         loadApprovals('mos'),
@@ -880,7 +880,7 @@ export default function MOS() {
 
       if (sc) setScorecardData(sc);
       if (rk) setRocksData(rk);
-      if (jd) setJaidenData(jd);
+      if (jd) setTreatmentData(jd);
       if (ic?.issues) setIssuesCompany(ic.issues);
       if (id?.issues) setIssuesDept(id.issues);
       if (appr) {
@@ -949,8 +949,8 @@ export default function MOS() {
     });
   }, []);
 
-  const handleJaidenChange = useCallback((metricIdx: number, weekIdx: number, value: string) => {
-    setJaidenData((prev) => {
+  const handleTreatmentChange = useCallback((metricIdx: number, weekIdx: number, value: string) => {
+    setTreatmentData((prev) => {
       const next = { ...prev };
       if (!next[metricIdx]) next[metricIdx] = {};
       next[metricIdx] = { ...next[metricIdx], [weekIdx]: value };
@@ -1011,7 +1011,7 @@ export default function MOS() {
           <div className="bg-[#1a1a1a] border border-[#2a2a2a] px-6 py-4 rounded-lg mb-6">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div>
-                <h1 className="text-lg font-bold text-white">BJB Management Operating System (MOS)</h1>
+                <h1 className="text-lg font-bold text-white">Management Operating System (MOS)</h1>
                 <p className="text-sm text-gray-500 mt-0.5">
                   A structured framework for running the firm with discipline, accountability, and alignment
                 </p>
@@ -1039,7 +1039,7 @@ export default function MOS() {
             onToggle={() => toggle('overview')}
           >
             <p className="text-sm text-gray-400 mb-6">
-              The <strong className="text-gray-200">Management Operating System (MOS)</strong> is BJB's structured
+              The <strong className="text-gray-200">Management Operating System (MOS)</strong> is the firm's structured
               framework for running the firm, inspired by EOS (Entrepreneurial Operating System). It provides a
               complete set of tools and disciplines to align the leadership team, drive accountability, and ensure
               consistent execution across all departments. MOS is built on six key components:
@@ -1329,8 +1329,8 @@ export default function MOS() {
               onWeekStatusChange={handleRockWeekStatusChange}
             />
 
-            <h4 className="text-sm font-semibold text-white mb-3">Jaiden Johnson — Misc Metrics</h4>
-            <JaidenMetricsTable jaidenData={jaidenData} onCellChange={handleJaidenChange} />
+            <h4 className="text-sm font-semibold text-white mb-3">Treatment (BOC) — Misc Metrics</h4>
+            <TreatmentMetricsTable treatmentData={treatmentData} onCellChange={handleTreatmentChange} />
 
             {/* Meeting Pulse */}
             <h4 className="text-sm font-semibold text-white mb-3">Meeting Pulse</h4>
@@ -1359,7 +1359,7 @@ export default function MOS() {
             <h5 className="text-xs font-semibold text-gray-200 mb-3">Two-Tier Meeting Structure</h5>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
               {[
-                { title: 'Executive L10', desc: 'Matt, Ryan, John, Frank/Mike reviewing division scorecards' },
+                { title: 'Executive L10', desc: 'Executive team reviewing division scorecards' },
                 { title: 'Department L10', desc: 'Manager with Team Lead reviewing department scorecard' },
                 { title: 'Team L10', desc: 'Team Lead with Team Members reviewing individual KPIs' },
               ].map((tier) => (

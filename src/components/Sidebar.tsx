@@ -84,7 +84,7 @@ export function Sidebar({ darkMode, onToggleDark, collapsed, onToggleCollapse }:
                 ? `${import.meta.env.BASE_URL}favicon-dark.png`
                 : `${import.meta.env.BASE_URL}logo.png`
             }
-            alt="BJB"
+            alt="Firm Logo"
             className={cn('transition-all duration-200', collapsed ? 'w-8 h-8' : 'h-8')}
           />
         </div>

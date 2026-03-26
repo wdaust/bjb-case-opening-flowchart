@@ -206,7 +206,7 @@ export function TopNavBar() {
         <Link to="/control-tower" className="shrink-0">
           <img
             src={`${import.meta.env.BASE_URL}logo.png`}
-            alt="Brandon J. Broderick — Attorney at Law"
+            alt="Firm Logo"
             className="h-[2.3rem]"
           />
         </Link>

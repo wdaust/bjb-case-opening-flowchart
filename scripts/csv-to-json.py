@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CSV-to-JSON conversion script for BJB Litigation Process Flowcharts.
+CSV-to-JSON conversion script for Litigation Process Flowcharts.
 Reads CSV exports from the Google Sheets spreadsheet and produces
 JSON files matching the SectionData interface.
 """
@@ -145,7 +145,7 @@ def parse_csv(filepath: str):
 
     # Row 0 = title row (col B has the title)
     title = rows[0][1].strip() if len(rows[0]) > 1 else ""
-    # Remove "BJB: " or "BJB: LIT / " prefix for cleaner titles
+    # Remove firm prefix or "LIT / " prefix for cleaner titles
     title = re.sub(r"^BJB:\s*(LIT\s*/\s*)?", "", title).strip()
 
     # Row 1 = header row — skip

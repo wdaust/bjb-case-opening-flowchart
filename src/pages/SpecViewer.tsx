@@ -7,7 +7,7 @@ export default function SpecViewer() {
   return (
     <iframe
       src={src}
-      title="BJB Litify Specification"
+      title="Litify Specification"
       className="w-full border-0"
       style={{ height: 'calc(100vh - 3.5rem)' }}
     />
