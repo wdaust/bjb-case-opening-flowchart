@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, LogOut } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
-import { useAuth } from '../contexts/AuthContext.tsx';
 
 interface NavItem {
   label: string;
@@ -189,7 +188,6 @@ export function TopNavBar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const location = useLocation();
-  const { logout } = useAuth();
 
   const isActive = (tab: NavItem) => {
     if (tab.children) {
@@ -226,15 +224,6 @@ export function TopNavBar() {
           onClick={() => setMobileOpen((o) => !o)}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
-        {/* Logout */}
-        <button
-          onClick={logout}
-          className="shrink-0 text-gray-500 hover:text-gray-300 transition-colors"
-          title="Logout"
-        >
-          <LogOut size={18} />
         </button>
       </div>
 
