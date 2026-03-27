@@ -56,6 +56,7 @@ import TopNavMockup from './pages/TopNavMockup.tsx';
 import SpecViewer from './pages/SpecViewer.tsx';
 import DeptDashboard from './pages/DeptDashboard.tsx';
 import TechProjects from './pages/TechProjects.tsx';
+import Analytics from './pages/Analytics.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 
@@ -138,6 +139,7 @@ export default function App() {
             <Route path="dept/:deptId/:pageId" element={<DeptDashboard />} />
             <Route path="specs/:page?" element={<SpecViewer />} />
             <Route path="tech-projects" element={<TechProjects />} />
+            <Route path="analytics" element={<Analytics />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>
