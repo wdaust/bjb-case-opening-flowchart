@@ -12,7 +12,6 @@ const PASSWORD_HASHES: Record<string, string> = {
   'fa6e501dec9b0eb1a84e83ec93ea4b1bfa4e530811d4997f08ca9611e38bf9f0': 'user-8',
   '7001a43dc7e223c1ef318c775f6308e136efcd6f090a7e4758f92d35b38a4c08': 'user-9',
   '7bfa7c82af28e822e662aa0af3305bfc182860dcd7c8cd4d4853ad3adf9f7f37': 'user-10',
-  '77b29bf00f3a1c013a74e284cd8a69b012baadf3a06022f143292073816ef9e1': 'admin',
 };
 
 export async function hashPassword(plain: string): Promise<string> {

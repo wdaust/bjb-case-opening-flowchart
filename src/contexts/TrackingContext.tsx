@@ -47,11 +47,9 @@ export function TrackingProvider({ children }: { children: ReactNode }) {
     initTrackingDb();
   }, []);
 
-  const isAdmin = userToken === 'admin';
-
   // Page views
   useEffect(() => {
-    if (!userToken || isAdmin) return;
+    if (!userToken) return;
     insertPageView({
       userToken,
       path: location.pathname,
@@ -69,7 +67,7 @@ export function TrackingProvider({ children }: { children: ReactNode }) {
 
   // Click listener
   useEffect(() => {
-    if (!userToken || isAdmin) return;
+    if (!userToken) return;
 
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
