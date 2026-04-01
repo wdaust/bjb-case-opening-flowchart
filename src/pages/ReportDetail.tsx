@@ -5,7 +5,7 @@ import { ReportSummaryTable } from '../components/reports/ReportSummaryTable.tsx
 import { DashboardRenderer } from '../components/reports/DashboardRenderer.tsx';
 import { RefreshIndicator } from '../components/reports/RefreshIndicator.tsx';
 import { useSalesforceReport } from '../hooks/useSalesforceReport.ts';
-import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce.ts';
+import type { ReportSummaryResponse, DashboardResponse, ReportConfig } from '../types/salesforce.ts';
 import { REPORT_MAP } from '../config/reports.ts';
 import { ArrowLeft, ExternalLink, Loader2, AlertCircle } from 'lucide-react';
 
