@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intake &mdash; Litify Dev Specification</title>
+<style>
+#tooltip-overlay{position:absolute;z-index:9999;background:#fff;border:1px solid #e5e5e5;border-radius:0.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:12px 14px;min-width:260px;max-width:340px;font-size:12px;color:#0a0a0a;line-height:1.5;pointer-events:none}
+#tooltip-overlay strong{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#171717;margin-bottom:6px}
+#tooltip-overlay ul{padding-left:14px;margin:4px 0 0}
+#tooltip-overlay li{margin-bottom:3px}
+.info-popover{display:none}
+.nav-dropdown-menu{display:none;}
+.nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown-menu:hover{display:block;}
+[data-card-body]{display:none;}
+.open>[data-card-body]{display:block;}
+.open>button [data-chevron]{transform:rotate(180deg);}
+@media print{aside,nav{display:none!important}main{padding:20px!important}[data-card-body]{display:block!important}.bg-primary{background:#171717!important;color:#fafafa!important;-webkit-print-color-adjust:exact}}
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        background: '#fafafa', foreground: '#0a0a0a', card: '#ffffff', 'card-foreground': '#0a0a0a',
+        primary: '#171717', 'primary-foreground': '#fafafa', secondary: '#f5f5f5', 'secondary-foreground': '#171717',
+        muted: '#f5f5f5', 'muted-foreground': '#737373', accent: '#f5f5f5', 'accent-foreground': '#171717',
+        destructive: '#ef4444', border: '#e5e5e5', input: '#e5e5e5', ring: '#0a0a0a',
+        sidebar: '#fafafa', 'sidebar-foreground': '#171717', 'sidebar-accent': '#f5f5f5',
+      },
+      borderRadius: { lg: '0.625rem', md: '0.5rem', sm: '0.375rem' }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-background text-foreground font-[-apple-system,BlinkMacSystemFont,'Inter',sans-serif] text-sm leading-relaxed">
+<!-- TOP NAV -->
+<nav class="sticky top-0 z-50 h-14 border-b border-border bg-card">
+  <div class="max-w-[1460px] mx-auto h-full flex items-center justify-between px-6">
+    <span class="text-sm font-semibold text-muted-foreground tracking-wide">Performance Plan</span>
+    <div class="hidden md:flex items-center gap-1">
+      <div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-foreground rounded-md transition-colors" style="border-bottom: 2px solid #ef4444">
+          Pre-LIT
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="intake.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-foreground bg-accent rounded-md no-underline"><span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Intake</a><a href="medical-records.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Med Records</a><a href="claims.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Claims</a><a href="pre-lit.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Pre-LIT</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Litigation
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="index.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Case Opening</a><a href="treatment-monitoring.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Treat. Monitoring</a><a href="written-discovery.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Written Discovery</a><a href="expert-deposition.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Arb &amp; Mediation</a><a href="trial.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Trial</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Support
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full right-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="litify-dev-summary.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Dev Summary</a><a href="scoring-review.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Scoring Review</a><a href="metrics.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Metrics</a>
+        </div>
+      </div>
+    </div>
+    <button id="nav-hamburger" class="md:hidden text-foreground" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mobile-nav" class="hidden md:hidden bg-card border-t border-border px-4 pb-3">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Pre-LIT</div><a href="intake.html" class="block px-3 py-2 text-sm font-medium text-foreground bg-accent rounded-md no-underline">Intake</a><a href="medical-records.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Med Records</a><a href="claims.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Claims</a><a href="pre-lit.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Pre-LIT</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Litigation</div><a href="index.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Case Opening</a><a href="treatment-monitoring.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Treat. Monitoring</a><a href="written-discovery.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Written Discovery</a><a href="expert-deposition.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Arb &amp; Mediation</a><a href="trial.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Trial</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Support</div><a href="litify-dev-summary.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Dev Summary</a><a href="scoring-review.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Scoring Review</a><a href="metrics.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Metrics</a>
+  </div>
+</nav>
+<div class="flex h-[calc(100vh-3.5rem)]">
+<aside class="hidden md:flex w-64 flex-col border-r border-border bg-card overflow-y-auto shrink-0">
+  <div class="px-5 pt-6 pb-4 border-b border-border">
+    <h2 class="text-xs font-bold text-foreground tracking-wide uppercase">Intake</h2>
+    <p class="text-[11px] text-muted-foreground mt-1">Performance Spec v1.0</p>
+  </div>
+  <div class="py-3">
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Tasks</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('intake-tasks')">Quick Action Panel</a>
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Admin</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('approval')">Approval & Notes</a>
+  </div>
+</aside>
+
+<main id="main-scroll" class="flex-1 overflow-y-auto">
+<div class="max-w-7xl px-6 lg:px-10 py-10 mx-auto">
+
+<!-- PAGE HEADER -->
+<div class="mb-10 border-b-4 border-[#ef4444] pb-8">
+  <h1 class="text-2xl font-bold text-foreground">Intake &mdash; Performance Specification</h1>
+  <p class="text-sm text-muted-foreground mt-1">Intake Call &nbsp;|&nbsp; Engagement Agreement &nbsp;|&nbsp; Google Review &nbsp;|&nbsp; Qualified Submission</p>
+  <span class="inline-block mt-3 px-3 py-0.5 text-xs border border-border rounded-full text-muted-foreground bg-muted">v1.0 &bull; April 2026</span>
+</div>
+
+<!-- LEGEND -->
+<div class="rounded-lg border border-border bg-card p-5 mb-8 flex flex-wrap gap-6">
+  <div>
+    <h4 class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Roles</h4>
+    <div class="flex flex-wrap gap-2">
+      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-700">Intake Specialist (IS)</span>
+    </div>
+  </div>
+</div>
+
+
+<section class="mb-12" id="intake-tasks">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Intake &mdash; Quick Action Panel</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">Call Completion &nbsp;|&nbsp; Engagement &nbsp;|&nbsp; Google Review &nbsp;|&nbsp; Qualified Submission</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-5">
+  <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Call</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">IS</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Call</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To successfully complete the initial intake call</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To complete the intake application, click complete, or reset appt, then click complete (need to get this app - case type, language, etc...)</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 30min from the intake call completion</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Call</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">IS</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Engagement agreement sent</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To send the engagement agreement to all qualified parties</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To send the engagement agreement to all qualified parties, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 30min from the intake call completion</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Call</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">IS</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Google review capture links sent</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To send the Google review capture link to the client</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To send the Google review capture link to the client, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 30min from the intake call completion</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Call</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">IS</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Engagement agreement completion</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To recieve the fully signed and properly completed engagement agreement, mark complete, or initiate engagement agreement pursuit</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To recieve the fully signed and properly completed engagement agreement, mark complete, or initiate engagement agreement pursuit, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 30min from the intake call completion</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Call</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">IS</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Qualified case submission</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To verify all qualification parameters are met then to submit the case</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once the engagement agreement pursuit has been completed and the engagement agreement is now fully executed, the IS will verify all qualification parameters are met then to submit the case, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 10min from the engagement agreement completion</td></tr></tbody>
+</table></div>
+</div>
+</section>
+
+<section class="mb-12" id="approval">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg mt-10">
+  <h2 class="text-lg font-bold">Approval &amp; Notes</h2>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-6">
+  <div class="flex items-center gap-3 mb-4">
+    <span class="text-xs text-muted-foreground" id="sync-status">Connecting&hellip;</span>
+  </div>
+  <div class="space-y-3">
+    <label class="flex items-start gap-3 p-3 rounded-md border border-border hover:bg-muted/30 transition-colors cursor-pointer">
+      <input type="checkbox" id="chk-intake-approved" data-key="intake-approved" class="mt-0.5 accent-[#171717]">
+      <div><span class="text-sm font-medium text-foreground">Intake Process Approved</span><br><span class="text-xs text-muted-foreground" id="chk-intake-approved-date"></span></div>
+    </label>
+  </div>
+  <div class="mt-6">
+    <label class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Management Notes</label>
+    <textarea id="mgmt-notes" class="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[80px]" placeholder="Add notes here..."></textarea>
+  </div>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<script>
+function navTo(id){
+  var el=document.getElementById(id);var main=document.getElementById('main-scroll');
+  if(el&&main){var mR=main.getBoundingClientRect();var eR=el.getBoundingClientRect();main.scrollTo({top:main.scrollTop+eR.top-mR.top-10,behavior:'smooth'});}
+}
+
+(function(){
+  var sections=['intake-tasks','approval'];
+  var links=document.querySelectorAll('.sidebar-link');
+  var main=document.getElementById('main-scroll');if(!main)return;
+  function spy(){var current='';sections.forEach(function(id){var el=document.getElementById(id);if(el){var r=el.getBoundingClientRect();var mR=main.getBoundingClientRect();if(r.top-mR.top<=120)current=id;}});
+  links.forEach(function(l){l.classList.remove('bg-accent','text-accent-foreground');var oc=l.getAttribute('onclick')||'';if(oc.indexOf("'"+current+"'")>-1)l.classList.add('bg-accent','text-accent-foreground');});};
+  main.addEventListener('scroll',spy);
+})();
+
+document.addEventListener('click',function(e){var mn=document.getElementById('mobile-nav');var nb=document.getElementById('nav-hamburger');if(mn&&!mn.classList.contains('hidden')&&!mn.contains(e.target)&&e.target!==nb&&!nb.contains(e.target))mn.classList.add('hidden');});
+</script>
+
+<script type="module">
+import { neon } from 'https://esm.sh/@neondatabase/serverless';
+
+const sql = neon('postgresql://neondb_owner:npg_rwK4vVmAyzG5@ep-mute-cloud-aik2rpsg.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require');
+const PAGE_ID = 'intake';
+const statusEl = document.getElementById('sync-status');
+const notesEl = document.getElementById('mgmt-notes');
+const checkboxes = document.querySelectorAll('input[type="checkbox"][data-key]');
+
+function setStatus(text, color) {
+  if (statusEl) { statusEl.textContent = text; statusEl.style.color = color || '#737373'; }
+}
+
+let saveTimer = null;
+function debounceSave(ms = 500) {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, ms);
+}
+
+async function ensureTable() {
+  await sql\`CREATE TABLE IF NOT EXISTS spec_approvals (
+    page_id TEXT PRIMARY KEY,
+    checkboxes JSONB NOT NULL DEFAULT '{}',
+    notes TEXT DEFAULT '',
+    updated_at TIMESTAMPTZ DEFAULT now()
+  )\`;
+}
+
+function gatherState() {
+  const cbState = {};
+  checkboxes.forEach(cb => {
+    const key = cb.dataset.key;
+    const dateSpan = document.getElementById(cb.id + '-date');
+    cbState[key] = {
+      checked: cb.checked,
+      date: dateSpan ? dateSpan.textContent : ''
+    };
+  });
+  return { checkboxes: cbState, notes: notesEl ? notesEl.value : '' };
+}
+
+async function saveState() {
+  try {
+    setStatus('Saving...', '#737373');
+    const state = gatherState();
+    await sql\`INSERT INTO spec_approvals (page_id, checkboxes, notes, updated_at)
+      VALUES (${PAGE_ID}, ${JSON.stringify(state.checkboxes)}, ${state.notes}, now())
+      ON CONFLICT (page_id) DO UPDATE SET
+        checkboxes = ${JSON.stringify(state.checkboxes)},
+        notes = ${state.notes},
+        updated_at = now()\`;
+    setStatus('\u2713 Saved', '#2e7d32');
+  } catch (e) {
+    console.error('Save failed:', e);
+    setStatus('\u26A0 Save failed', '#c62828');
+  }
+}
+
+async function loadState() {
+  try {
+    await ensureTable();
+    const rows = await sql\`SELECT checkboxes, notes FROM spec_approvals WHERE page_id = ${PAGE_ID}\`;
+    if (rows.length > 0) {
+      const { checkboxes: cbData, notes } = rows[0];
+      if (cbData) {
+        checkboxes.forEach(cb => {
+          const key = cb.dataset.key;
+          if (cbData[key]) {
+            cb.checked = cbData[key].checked || false;
+            const dateSpan = document.getElementById(cb.id + '-date');
+            if (dateSpan) dateSpan.textContent = cbData[key].date || '';
+          }
+        });
+      }
+      if (notesEl && notes) notesEl.value = notes;
+    }
+    setStatus('\u2713 Synced', '#2e7d32');
+  } catch (e) {
+    console.error('Load failed:', e);
+    setStatus('\u26A0 Offline (local only)', '#c62828');
+  }
+}
+
+checkboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    const dateSpan = document.getElementById(cb.id + '-date');
+    if (dateSpan) {
+      dateSpan.textContent = cb.checked ? 'Approved: ' + new Date().toLocaleString() : '';
+    }
+    debounceSave(300);
+  });
+});
+
+if (notesEl) {
+  notesEl.addEventListener('input', () => debounceSave(500));
+}
+
+loadState();
+</script>
+
+</body>
+</html>

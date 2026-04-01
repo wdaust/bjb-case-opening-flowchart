@@ -4,66 +4,12 @@ import { DashboardGrid } from '../components/dashboard/DashboardGrid.tsx';
 import { RefreshIndicator } from '../components/reports/RefreshIndicator.tsx';
 import { useSalesforceReport } from '../hooks/useSalesforceReport.ts';
 import { cn } from '../utils/cn.ts';
+import { REPORTS } from '../config/reports.ts';
 import type { ReportSummaryResponse, DashboardResponse, ReportConfig } from '../types/salesforce.ts';
 import {
   ExternalLink, BarChart3, LayoutDashboard, FileText, Loader2,
   AlertCircle, Users, Scale, Search, Activity,
 } from 'lucide-react';
-
-// ── Report registry ────────────────────────────────────────────────────
-// Replace IDs with real Salesforce report/dashboard IDs once credentials are set
-const REPORTS: ReportConfig[] = [
-  {
-    id: 'STATS_DASHBOARD_ID',
-    name: 'Stats at a Glance',
-    type: 'dashboard',
-    description: 'High-level firm KPIs and volume metrics',
-    sfUrl: 'https://litify.lightning.force.com/lightning/r/Dashboard/STATS_DASHBOARD_ID/view',
-  },
-  {
-    id: 'NJ_PI_TIMING_DASHBOARD_ID',
-    name: 'NJ PI — Timing',
-    type: 'dashboard',
-    description: 'Stage timing and throughput for NJ PI matters',
-    sfUrl: 'https://litify.lightning.force.com/lightning/r/Dashboard/NJ_PI_TIMING_DASHBOARD_ID/view',
-  },
-  {
-    id: 'RESOLUTIONS_REPORT_ID',
-    name: 'Resolutions',
-    type: 'report',
-    mode: 'summary',
-    description: 'Resolution outcomes across all matter types',
-    sfUrl: 'https://litify.lightning.force.com/lightning/r/Report/RESOLUTIONS_REPORT_ID/view',
-    recordCount: 11780,
-  },
-  {
-    id: 'DISCOVERY_TRACKERS_REPORT_ID',
-    name: 'Discovery Trackers',
-    type: 'report',
-    mode: 'summary',
-    description: 'Discovery task completion grouped by owner',
-    sfUrl: 'https://litify.lightning.force.com/lightning/r/Report/DISCOVERY_TRACKERS_REPORT_ID/view',
-    recordCount: 8454,
-  },
-  {
-    id: 'MATTERS_UNIVERSE_REPORT_ID',
-    name: 'Matters Universe',
-    type: 'report',
-    mode: 'summary',
-    description: 'Complete matter inventory — summary only (66K+ records)',
-    sfUrl: 'https://litify.lightning.force.com/lightning/r/Report/MATTERS_UNIVERSE_REPORT_ID/view',
-    recordCount: 66340,
-  },
-  {
-    id: 'EXPERTS_NOT_SERVED_REPORT_ID',
-    name: 'Experts Not Served',
-    type: 'report',
-    mode: 'summary',
-    description: 'Expert depositions not yet served, grouped by owner',
-    sfUrl: 'https://litify.lightning.force.com/lightning/r/Report/EXPERTS_NOT_SERVED_REPORT_ID/view',
-    recordCount: 23141,
-  },
-];
 
 const ICONS: Record<string, typeof BarChart3> = {
   'Stats at a Glance': Activity,

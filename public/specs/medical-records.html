@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical Records &mdash; Litify Dev Specification</title>
+<style>
+#tooltip-overlay{position:absolute;z-index:9999;background:#fff;border:1px solid #e5e5e5;border-radius:0.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:12px 14px;min-width:260px;max-width:340px;font-size:12px;color:#0a0a0a;line-height:1.5;pointer-events:none}
+#tooltip-overlay strong{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#171717;margin-bottom:6px}
+#tooltip-overlay ul{padding-left:14px;margin:4px 0 0}
+#tooltip-overlay li{margin-bottom:3px}
+.info-popover{display:none}
+.nav-dropdown-menu{display:none;}
+.nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown-menu:hover{display:block;}
+[data-card-body]{display:none;}
+.open>[data-card-body]{display:block;}
+.open>button [data-chevron]{transform:rotate(180deg);}
+@media print{aside,nav{display:none!important}main{padding:20px!important}[data-card-body]{display:block!important}.bg-primary{background:#171717!important;color:#fafafa!important;-webkit-print-color-adjust:exact}}
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        background: '#fafafa', foreground: '#0a0a0a', card: '#ffffff', 'card-foreground': '#0a0a0a',
+        primary: '#171717', 'primary-foreground': '#fafafa', secondary: '#f5f5f5', 'secondary-foreground': '#171717',
+        muted: '#f5f5f5', 'muted-foreground': '#737373', accent: '#f5f5f5', 'accent-foreground': '#171717',
+        destructive: '#ef4444', border: '#e5e5e5', input: '#e5e5e5', ring: '#0a0a0a',
+        sidebar: '#fafafa', 'sidebar-foreground': '#171717', 'sidebar-accent': '#f5f5f5',
+      },
+      borderRadius: { lg: '0.625rem', md: '0.5rem', sm: '0.375rem' }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-background text-foreground font-[-apple-system,BlinkMacSystemFont,'Inter',sans-serif] text-sm leading-relaxed">
+<!-- TOP NAV -->
+<nav class="sticky top-0 z-50 h-14 border-b border-border bg-card">
+  <div class="max-w-[1460px] mx-auto h-full flex items-center justify-between px-6">
+    <span class="text-sm font-semibold text-muted-foreground tracking-wide">Performance Plan</span>
+    <div class="hidden md:flex items-center gap-1">
+      <div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-foreground rounded-md transition-colors" style="border-bottom: 2px solid #ef4444">
+          Pre-LIT
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="intake.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Intake</a><a href="medical-records.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-foreground bg-accent rounded-md no-underline"><span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Med Records</a><a href="claims.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Claims</a><a href="pre-lit.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Pre-LIT</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Litigation
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="index.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Case Opening</a><a href="treatment-monitoring.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Treat. Monitoring</a><a href="written-discovery.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Written Discovery</a><a href="expert-deposition.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Arb &amp; Mediation</a><a href="trial.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Trial</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Support
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full right-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="litify-dev-summary.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Dev Summary</a><a href="scoring-review.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Scoring Review</a><a href="metrics.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Metrics</a>
+        </div>
+      </div>
+    </div>
+    <button id="nav-hamburger" class="md:hidden text-foreground" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mobile-nav" class="hidden md:hidden bg-card border-t border-border px-4 pb-3">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Pre-LIT</div><a href="intake.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Intake</a><a href="medical-records.html" class="block px-3 py-2 text-sm font-medium text-foreground bg-accent rounded-md no-underline">Med Records</a><a href="claims.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Claims</a><a href="pre-lit.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Pre-LIT</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Litigation</div><a href="index.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Case Opening</a><a href="treatment-monitoring.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Treat. Monitoring</a><a href="written-discovery.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Written Discovery</a><a href="expert-deposition.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Arb &amp; Mediation</a><a href="trial.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Trial</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Support</div><a href="litify-dev-summary.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Dev Summary</a><a href="scoring-review.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Scoring Review</a><a href="metrics.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Metrics</a>
+  </div>
+</nav>
+<div class="flex h-[calc(100vh-3.5rem)]">
+<aside class="hidden md:flex w-64 flex-col border-r border-border bg-card overflow-y-auto shrink-0">
+  <div class="px-5 pt-6 pb-4 border-b border-border">
+    <h2 class="text-xs font-bold text-foreground tracking-wide uppercase">Medical Records</h2>
+    <p class="text-[11px] text-muted-foreground mt-1">Performance Spec v1.0</p>
+  </div>
+  <div class="py-3">
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Phases</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('overview')">Overview</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('mr-0')">Records Request</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('mr-1')">Records Request Follow Up</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('mr-2')">Medical Record Submission</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('mr-3')">Medical Record QA Review</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('mr-4')">Medical Record Final Submission</a>
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Admin</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('approval')">Approval & Notes</a>
+  </div>
+</aside>
+
+<main id="main-scroll" class="flex-1 overflow-y-auto">
+<div class="max-w-7xl px-6 lg:px-10 py-10 mx-auto">
+
+<!-- PAGE HEADER -->
+<div class="mb-10 border-b-4 border-[#ef4444] pb-8">
+  <h1 class="text-2xl font-bold text-foreground">Medical Records &mdash; Performance Specification</h1>
+  <p class="text-sm text-muted-foreground mt-1">Records Request &nbsp;|&nbsp; Submission &nbsp;|&nbsp; Follow-Up &nbsp;|&nbsp; QA Review</p>
+  <span class="inline-block mt-3 px-3 py-0.5 text-xs border border-border rounded-full text-muted-foreground bg-muted">v1.0 &bull; April 2026</span>
+</div>
+
+<!-- LEGEND -->
+<div class="rounded-lg border border-border bg-card p-5 mb-8 flex flex-wrap gap-6">
+  <div>
+    <h4 class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Roles</h4>
+    <div class="flex flex-wrap gap-2">
+      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-700">Billing Coordinator</span>
+    </div>
+  </div>
+</div>
+
+
+<section class="mb-8" id="overview">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Medical Records &mdash; Process Overview</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">Records Request &nbsp;|&nbsp; Submission &nbsp;|&nbsp; Follow-Up &nbsp;|&nbsp; QA Review</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-5">
+  <p class="text-sm text-muted-foreground">The Medical Records department handles provider record requests from initial review through final submission. Each task follows an escalating SLA structure with standard and complex timelines.</p>
+</div>
+</section>
+<section class="mb-4" id="mr-0"><div id="mr-0" class="rounded-lg border border-border bg-card mb-4 open">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Records Request <span class="ml-2 text-xs font-normal text-muted-foreground">4 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    
+<div class="mb-4 p-4 rounded-lg border border-blue-200 bg-blue-50/50">
+  <h4 class="text-sm font-bold text-blue-800 mb-3">Pre-Send Verification Checklist</h4>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="mb-3"><h5 class="text-xs font-bold text-foreground mb-1">1. Provider Information (You Already Have This — Keep It)</h5><ul class="space-y-0.5"><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Provider name</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Correct facility/location</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Phone number</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Fax number</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Email (if applicable)</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Department (Medical Records / Billing / Radiology, etc.)</li></ul></div><div class="mb-3"><h5 class="text-xs font-bold text-foreground mb-1">2. HIPAA Authorization Verification (Critical)</h5><ul class="space-y-0.5"><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Correct patient name</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Date of birth</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>SSN (if required by provider)</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Signature present</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Signature date valid (within provider timeframe)</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Witness required (if applicable)</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Expiration date valid</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Scope of authorization (records + billing if needed)</li></ul></div><div class="mb-3"><h5 class="text-xs font-bold text-foreground mb-1">3. Request Scope Verification (Often Missed — Very Important)</h5><ul class="space-y-0.5"><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Dates of treatment specified</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Records vs. Billing vs. Films clearly identified</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Itemized billing requested (if applicable)</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Radiology images requested (if applicable)</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>EMS records requested (if applicable)</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Prior records requested (if applicable)</li></ul></div><div class="mb-3"><h5 class="text-xs font-bold text-foreground mb-1">4. Case Information Verification</h5><ul class="space-y-0.5"><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Correct client name</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Correct date of loss</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Correct claim number (if applicable)</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Correct attorney / firm contact information</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Correct return method (fax/email/mail)</li></ul></div><div class="mb-3"><h5 class="text-xs font-bold text-foreground mb-1">5. Special Provider Requirements (High Value Check)</h5><ul class="space-y-0.5"><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Provider-specific authorization form required?</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Copy of ID required?</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Payment required upfront?</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Online portal submission required?</li></ul></div><div class="mb-3"><h5 class="text-xs font-bold text-foreground mb-1">6. Duplicate Request Prevention (Operational Excellence)</h5><ul class="space-y-0.5"><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Verify request has not already been sent</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Verify records not already received</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Check prior follow-up notes</li></ul></div><div class="mb-3"><h5 class="text-xs font-bold text-foreground mb-1">7. Quality Control / Compliance Check</h5><ul class="space-y-0.5"><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>HIPAA properly attached</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Request letter attached</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>All pages legible</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>No missing documents</li><li class="text-xs text-muted-foreground flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-muted-foreground/50 shrink-0"></span>Correct provider selected</li></ul></div></div>
+</div><div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Standard</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Complex</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records request review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records request review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Reviewing the request to verify: Provider info; HIPPA and Request content for accuracy and standards compliance, mark complete or submit for revisions needed stage, mark complete 
+
+Medical Records Request — Pre-Send Verification Checklist
+1. Provider Information (You Already Have This — Keep It)
+Provider name
+Correct facility/location
+Phone number
+Fax number
+Email (if applicable)
+Department (Medical Records / Billing / Radiology, etc.)
+2. HIPAA Authorization Verification (Critical)
+Correct patient name
+Date of birth
+SSN (if required by provider)
+Signature present
+Signature date valid (within provider timeframe)
+Witness required (if applicable)
+Expiration date valid
+Scope of authorization (records + billing if needed)
+3. Request Scope Verification (Often Missed — Very Important)
+Dates of treatment specified
+Records vs. Billing vs. Films clearly identified
+Itemized billing requested (if applicable)
+Radiology images requested (if applicable)
+EMS records requested (if applicable)
+Prior records requested (if applicable)
+4. Case Information Verification
+Correct client name
+Correct date of loss
+Correct claim number (if applicable)
+Correct attorney / firm contact information
+Correct return method (fax/email/mail)
+5. Special Provider Requirements (High Value Check)
+Provider-specific authorization form required?
+Copy of ID required?
+Payment required upfront?
+Online portal submission required?
+6. Duplicate Request Prevention (Operational Excellence)
+Verify request has not already been sent
+Verify records not already received
+Check prior follow-up notes
+7. Quality Control / Compliance Check
+HIPAA properly attached
+Request letter attached
+All pages legible
+No missing documents
+Correct provider selected</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10 min from being assigned</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records request review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records request review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Reviewing the request to verify: Provider info; HIPPA and Request content for accuracy and standards compliance, mark complete or submit for revisions needed stage, mark complete 
+
+Medical Records Request — Pre-Send Verification Checklist
+1. Provider Information (You Already Have This — Keep It)
+Provider name
+Correct facility/location
+Phone number
+Fax number
+Email (if applicable)
+Department (Medical Records / Billing / Radiology, etc.)
+2. HIPAA Authorization Verification (Critical)
+Correct patient name
+Date of birth
+SSN (if required by provider)
+Signature present
+Signature date valid (within provider timeframe)
+Witness required (if applicable)
+Expiration date valid
+Scope of authorization (records + billing if needed)
+3. Request Scope Verification (Often Missed — Very Important)
+Dates of treatment specified
+Records vs. Billing vs. Films clearly identified
+Itemized billing requested (if applicable)
+Radiology images requested (if applicable)
+EMS records requested (if applicable)
+Prior records requested (if applicable)
+4. Case Information Verification
+Correct client name
+Correct date of loss
+Correct claim number (if applicable)
+Correct attorney / firm contact information
+Correct return method (fax/email/mail)
+5. Special Provider Requirements (High Value Check)
+Provider-specific authorization form required?
+Copy of ID required?
+Payment required upfront?
+Online portal submission required?
+6. Duplicate Request Prevention (Operational Excellence)
+Verify request has not already been sent
+Verify records not already received
+Check prior follow-up notes
+7. Quality Control / Compliance Check
+HIPAA properly attached
+Request letter attached
+All pages legible
+No missing documents
+Correct provider selected</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2 hours from being assigned</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2 hours from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records request review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records request review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Reviewing the request to verify: Provider info; HIPPA and Request content for accuracy and standards compliance, mark complete or submit for revisions needed stage, mark complete 
+
+Medical Records Request — Pre-Send Verification Checklist
+1. Provider Information (You Already Have This — Keep It)
+Provider name
+Correct facility/location
+Phone number
+Fax number
+Email (if applicable)
+Department (Medical Records / Billing / Radiology, etc.)
+2. HIPAA Authorization Verification (Critical)
+Correct patient name
+Date of birth
+SSN (if required by provider)
+Signature present
+Signature date valid (within provider timeframe)
+Witness required (if applicable)
+Expiration date valid
+Scope of authorization (records + billing if needed)
+3. Request Scope Verification (Often Missed — Very Important)
+Dates of treatment specified
+Records vs. Billing vs. Films clearly identified
+Itemized billing requested (if applicable)
+Radiology images requested (if applicable)
+EMS records requested (if applicable)
+Prior records requested (if applicable)
+4. Case Information Verification
+Correct client name
+Correct date of loss
+Correct claim number (if applicable)
+Correct attorney / firm contact information
+Correct return method (fax/email/mail)
+5. Special Provider Requirements (High Value Check)
+Provider-specific authorization form required?
+Copy of ID required?
+Payment required upfront?
+Online portal submission required?
+6. Duplicate Request Prevention (Operational Excellence)
+Verify request has not already been sent
+Verify records not already received
+Check prior follow-up notes
+7. Quality Control / Compliance Check
+HIPAA properly attached
+Request letter attached
+All pages legible
+No missing documents
+Correct provider selected</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 day from being assigned</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 day from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records request submission</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Submitting records request</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Submit to medical provider, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from revision completion</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from revision completion</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="mr-1"><div id="mr-1" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Records Request Follow Up <span class="ml-2 text-xs font-normal text-muted-foreground">20 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Standard</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Complex</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V1, send Email 1, mark &quot;Call Attempt 1 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">24 business hours from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">7 days from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V2, send Email 2, mark &quot;Call Attempt 2 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10 am on day 2 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10 am on day 10 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 3</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V3, send Email 3, mark &quot;Call Attempt 3 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">12 noon on day 2 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">12 noon on day 10 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 4</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V4, send Email 4, mark &quot;Call Attempt 4 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2pm on day 2 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2pm on day 10 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 5</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V5, send Email 5, mark &quot;Call Attempt 5 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">4pm on day 2 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">4pm on day 10 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 6</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V6, send Email 6, mark &quot;Call Attempt 6 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">9am on day 3 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">9am on day 14 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 7</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V7, send Email 7, mark &quot;Call Attempt 7 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10:30am on day 3 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10:30am on day 14 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 8</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V8, send Email 8, mark &quot;Call Attempt 8 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">11am on day 3 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">11am on day 14 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 9</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V9, send Email 9, mark &quot;Call Attempt 9 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2pm on day 3 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2pm on day 14 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 10</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V10, send Email 10, mark &quot;Call Attempt 10 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">4:30pm on day 3 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">4:30pm on day 14 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 11</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V11, send Email 11, mark &quot;Call Attempt 11 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10am on day 4 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10am on day 20 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 12</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V12, send Email 12, mark &quot;Call Attempt 12 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1pm on day 4 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1pm on day 20 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 13</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V13, send Email 13, mark &quot;Call Attempt 13 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">3pm on day 4 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">3pm on day 20 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 14</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V14, send Email 14, mark &quot;Call Attempt 14 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">4pm on day 4 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">4pm on day 20 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 15</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V15, send Email 15, mark &quot;Call Attempt 15 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">9am on day 5 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">9am on day 25 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 16</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V16, send Email 16, mark &quot;Call Attempt 16 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10am on day 5 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10am on day 25 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 17</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V17, send Email 17, mark &quot;Call Attempt 17 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">12:30noon on day 5 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">12:30noon on day 25 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 18</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V18, send Email 18, mark &quot;Call Attempt 18 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1pm on day 5 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1pm on day 25 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 19</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V19, send Email 19, mark &quot;Call Attempt 19 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">3pm on day 5 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">3pm on day 25 from when submitted to medical provider</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 20</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Records Request Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V20, send Email 15, mark &quot;Call Attempt 15 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">4pm on day 5 from when submitted to medical provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">4pm on day 25 from when submitted to medical provider</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="mr-2"><div id="mr-2" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Medical Record Submission <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Standard</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Complex</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record Submission</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Billing Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record Submission</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record Submission</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once medical record received, upload for QA review, the mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10min from receipt of medical record</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10min from receipt of medical record</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="mr-3"><div id="mr-3" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Medical Record QA Review <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Standard</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Complex</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record QA Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Records Supervisor</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record QA Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record QA Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once medical record received, review for QA, once completed, mark complete, if revisions needed, mark &quot;revisions needed&quot; complete, route back to BC</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1hr from receipt of medical record</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1hr from receipt of medical record</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="mr-4"><div id="mr-4" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Medical Record Final Submission <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Standard</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA - Complex</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record Final Submission</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Records Supervisor</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record Final Submission</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Medical Record Final Submission</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once medical record reviewed for QA, mark complete, notifications go out to matter team</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10 min after final review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10 min after final review</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+
+<section class="mb-12" id="approval">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg mt-10">
+  <h2 class="text-lg font-bold">Approval &amp; Notes</h2>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-6">
+  <div class="flex items-center gap-3 mb-4">
+    <span class="text-xs text-muted-foreground" id="sync-status">Connecting&hellip;</span>
+  </div>
+  <div class="space-y-3">
+    <label class="flex items-start gap-3 p-3 rounded-md border border-border hover:bg-muted/30 transition-colors cursor-pointer">
+      <input type="checkbox" id="chk-mr-approved" data-key="mr-approved" class="mt-0.5 accent-[#171717]">
+      <div><span class="text-sm font-medium text-foreground">Medical Records Process Approved</span><br><span class="text-xs text-muted-foreground" id="chk-mr-approved-date"></span></div>
+    </label>
+  </div>
+  <div class="mt-6">
+    <label class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Management Notes</label>
+    <textarea id="mgmt-notes" class="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[80px]" placeholder="Add notes here..."></textarea>
+  </div>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<script>
+function navTo(id){
+  var el=document.getElementById(id);var main=document.getElementById('main-scroll');
+  if(el&&main){var mR=main.getBoundingClientRect();var eR=el.getBoundingClientRect();main.scrollTo({top:main.scrollTop+eR.top-mR.top-10,behavior:'smooth'});}
+}
+
+(function(){
+  var sections=['overview','mr-0','mr-1','mr-2','mr-3','mr-4','approval'];
+  var links=document.querySelectorAll('.sidebar-link');
+  var main=document.getElementById('main-scroll');if(!main)return;
+  function spy(){var current='';sections.forEach(function(id){var el=document.getElementById(id);if(el){var r=el.getBoundingClientRect();var mR=main.getBoundingClientRect();if(r.top-mR.top<=120)current=id;}});
+  links.forEach(function(l){l.classList.remove('bg-accent','text-accent-foreground');var oc=l.getAttribute('onclick')||'';if(oc.indexOf("'"+current+"'")>-1)l.classList.add('bg-accent','text-accent-foreground');});};
+  main.addEventListener('scroll',spy);
+})();
+
+document.addEventListener('click',function(e){var mn=document.getElementById('mobile-nav');var nb=document.getElementById('nav-hamburger');if(mn&&!mn.classList.contains('hidden')&&!mn.contains(e.target)&&e.target!==nb&&!nb.contains(e.target))mn.classList.add('hidden');});
+</script>
+
+<script type="module">
+import { neon } from 'https://esm.sh/@neondatabase/serverless';
+
+const sql = neon('postgresql://neondb_owner:npg_rwK4vVmAyzG5@ep-mute-cloud-aik2rpsg.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require');
+const PAGE_ID = 'medical-records';
+const statusEl = document.getElementById('sync-status');
+const notesEl = document.getElementById('mgmt-notes');
+const checkboxes = document.querySelectorAll('input[type="checkbox"][data-key]');
+
+function setStatus(text, color) {
+  if (statusEl) { statusEl.textContent = text; statusEl.style.color = color || '#737373'; }
+}
+
+let saveTimer = null;
+function debounceSave(ms = 500) {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, ms);
+}
+
+async function ensureTable() {
+  await sql\`CREATE TABLE IF NOT EXISTS spec_approvals (
+    page_id TEXT PRIMARY KEY,
+    checkboxes JSONB NOT NULL DEFAULT '{}',
+    notes TEXT DEFAULT '',
+    updated_at TIMESTAMPTZ DEFAULT now()
+  )\`;
+}
+
+function gatherState() {
+  const cbState = {};
+  checkboxes.forEach(cb => {
+    const key = cb.dataset.key;
+    const dateSpan = document.getElementById(cb.id + '-date');
+    cbState[key] = {
+      checked: cb.checked,
+      date: dateSpan ? dateSpan.textContent : ''
+    };
+  });
+  return { checkboxes: cbState, notes: notesEl ? notesEl.value : '' };
+}
+
+async function saveState() {
+  try {
+    setStatus('Saving...', '#737373');
+    const state = gatherState();
+    await sql\`INSERT INTO spec_approvals (page_id, checkboxes, notes, updated_at)
+      VALUES (${PAGE_ID}, ${JSON.stringify(state.checkboxes)}, ${state.notes}, now())
+      ON CONFLICT (page_id) DO UPDATE SET
+        checkboxes = ${JSON.stringify(state.checkboxes)},
+        notes = ${state.notes},
+        updated_at = now()\`;
+    setStatus('\u2713 Saved', '#2e7d32');
+  } catch (e) {
+    console.error('Save failed:', e);
+    setStatus('\u26A0 Save failed', '#c62828');
+  }
+}
+
+async function loadState() {
+  try {
+    await ensureTable();
+    const rows = await sql\`SELECT checkboxes, notes FROM spec_approvals WHERE page_id = ${PAGE_ID}\`;
+    if (rows.length > 0) {
+      const { checkboxes: cbData, notes } = rows[0];
+      if (cbData) {
+        checkboxes.forEach(cb => {
+          const key = cb.dataset.key;
+          if (cbData[key]) {
+            cb.checked = cbData[key].checked || false;
+            const dateSpan = document.getElementById(cb.id + '-date');
+            if (dateSpan) dateSpan.textContent = cbData[key].date || '';
+          }
+        });
+      }
+      if (notesEl && notes) notesEl.value = notes;
+    }
+    setStatus('\u2713 Synced', '#2e7d32');
+  } catch (e) {
+    console.error('Load failed:', e);
+    setStatus('\u26A0 Offline (local only)', '#c62828');
+  }
+}
+
+checkboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    const dateSpan = document.getElementById(cb.id + '-date');
+    if (dateSpan) {
+      dateSpan.textContent = cb.checked ? 'Approved: ' + new Date().toLocaleString() : '';
+    }
+    debounceSave(300);
+  });
+});
+
+if (notesEl) {
+  notesEl.addEventListener('input', () => debounceSave(500));
+}
+
+loadState();
+</script>
+
+</body>
+</html>

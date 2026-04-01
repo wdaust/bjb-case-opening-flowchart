@@ -10,6 +10,8 @@
 #tooltip-overlay ul{padding-left:14px;margin:4px 0 0}
 #tooltip-overlay li{margin-bottom:3px}
 .info-popover{display:none}
+.nav-dropdown-menu{display:none;}
+.nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown-menu:hover{display:block;}
 [data-card-body]{display:none;}
 .open>[data-card-body]{display:block;}
 .open>button [data-chevron]{transform:rotate(180deg);}
@@ -39,30 +41,38 @@ tailwind.config = {
   <div class="max-w-[1460px] mx-auto h-full flex items-center justify-between px-6">
     <span class="text-sm font-semibold text-muted-foreground tracking-wide">Performance Plan</span>
     <div class="hidden md:flex items-center gap-1">
-      <a href="index.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Case Opening</a>
-      <a href="treatment-monitoring.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Treatment Monitoring</a>
-      <a href="written-discovery.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Written Discovery</a>
-      <a href="expert-deposition.html" class="px-3 py-1.5 text-sm font-medium text-foreground bg-accent rounded-md no-underline" style="border-bottom: 2px solid #10b981">Expert &amp; Deposition</a>
-      <a href="arbitration-mediation.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Arb &amp; Mediation</a>
-      <a href="trial.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Trial</a>
-      <a href="litify-dev-summary.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Dev Summary</a>
-      <a href="scoring-review.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Scoring Review</a>
-      <a href="metrics.html" class="px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline">Metrics</a>
+      <div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Pre-LIT
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="intake.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Intake</a><a href="medical-records.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Med Records</a><a href="claims.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Claims</a><a href="pre-lit.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Pre-LIT</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-foreground rounded-md transition-colors" style="border-bottom: 2px solid #ef4444">
+          Litigation
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="index.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Case Opening</a><a href="treatment-monitoring.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Treat. Monitoring</a><a href="written-discovery.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Written Discovery</a><a href="expert-deposition.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-foreground bg-accent rounded-md no-underline"><span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Arb &amp; Mediation</a><a href="trial.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Trial</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Support
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full right-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="litify-dev-summary.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Dev Summary</a><a href="scoring-review.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Scoring Review</a><a href="metrics.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Metrics</a>
+        </div>
+      </div>
     </div>
     <button id="nav-hamburger" class="md:hidden text-foreground" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
   </div>
   <div id="mobile-nav" class="hidden md:hidden bg-card border-t border-border px-4 pb-3">
-    <a href="index.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Case Opening</a>
-    <a href="treatment-monitoring.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Treatment Monitoring</a>
-    <a href="written-discovery.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Written Discovery</a>
-    <a href="expert-deposition.html" class="block px-3 py-2 text-sm font-medium text-foreground bg-accent rounded-md no-underline">Expert &amp; Deposition</a>
-    <a href="arbitration-mediation.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Arb &amp; Mediation</a>
-    <a href="trial.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Trial</a>
-    <a href="litify-dev-summary.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Dev Summary</a>
-    <a href="scoring-review.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Scoring Review</a>
-    <a href="metrics.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Metrics</a>
+    <div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Pre-LIT</div><a href="intake.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Intake</a><a href="medical-records.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Med Records</a><a href="claims.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Claims</a><a href="pre-lit.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Pre-LIT</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Litigation</div><a href="index.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Case Opening</a><a href="treatment-monitoring.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Treat. Monitoring</a><a href="written-discovery.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Written Discovery</a><a href="expert-deposition.html" class="block px-3 py-2 text-sm font-medium text-foreground bg-accent rounded-md no-underline">Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Arb &amp; Mediation</a><a href="trial.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Trial</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Support</div><a href="litify-dev-summary.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Dev Summary</a><a href="scoring-review.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Scoring Review</a><a href="metrics.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Metrics</a>
   </div>
 </nav>
 <div class="flex h-[calc(100vh-3.5rem)]">

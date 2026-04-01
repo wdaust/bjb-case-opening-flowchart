@@ -5,18 +5,9 @@ import { ReportSummaryTable } from '../components/reports/ReportSummaryTable.tsx
 import { DashboardRenderer } from '../components/reports/DashboardRenderer.tsx';
 import { RefreshIndicator } from '../components/reports/RefreshIndicator.tsx';
 import { useSalesforceReport } from '../hooks/useSalesforceReport.ts';
-import type { ReportSummaryResponse, DashboardResponse, ReportConfig } from '../types/salesforce.ts';
+import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce.ts';
+import { REPORT_MAP } from '../config/reports.ts';
 import { ArrowLeft, ExternalLink, Loader2, AlertCircle } from 'lucide-react';
-
-// Mirror the registry from Reports.tsx — in production, extract to shared config
-const REPORT_MAP: Record<string, ReportConfig> = {
-  STATS_DASHBOARD_ID: { id: 'STATS_DASHBOARD_ID', name: 'Stats at a Glance', type: 'dashboard', description: 'High-level firm KPIs', sfUrl: '' },
-  NJ_PI_TIMING_DASHBOARD_ID: { id: 'NJ_PI_TIMING_DASHBOARD_ID', name: 'NJ PI — Timing', type: 'dashboard', description: 'Stage timing for NJ PI', sfUrl: '' },
-  RESOLUTIONS_REPORT_ID: { id: 'RESOLUTIONS_REPORT_ID', name: 'Resolutions', type: 'report', mode: 'summary', description: 'Resolution outcomes', sfUrl: '' },
-  DISCOVERY_TRACKERS_REPORT_ID: { id: 'DISCOVERY_TRACKERS_REPORT_ID', name: 'Discovery Trackers', type: 'report', mode: 'summary', description: 'Discovery tasks by owner', sfUrl: '' },
-  MATTERS_UNIVERSE_REPORT_ID: { id: 'MATTERS_UNIVERSE_REPORT_ID', name: 'Matters Universe', type: 'report', mode: 'summary', description: 'Complete matter inventory', sfUrl: '' },
-  EXPERTS_NOT_SERVED_REPORT_ID: { id: 'EXPERTS_NOT_SERVED_REPORT_ID', name: 'Experts Not Served', type: 'report', mode: 'summary', description: 'Expert deps not served', sfUrl: '' },
-};
 
 function ReportContent({ config }: { config: ReportConfig }) {
   const { data, loading, error, refresh, lastFetched } = useSalesforceReport({

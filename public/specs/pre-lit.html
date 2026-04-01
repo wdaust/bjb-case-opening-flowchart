@@ -1,0 +1,2675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pre-LIT &mdash; Litify Dev Specification</title>
+<style>
+#tooltip-overlay{position:absolute;z-index:9999;background:#fff;border:1px solid #e5e5e5;border-radius:0.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:12px 14px;min-width:260px;max-width:340px;font-size:12px;color:#0a0a0a;line-height:1.5;pointer-events:none}
+#tooltip-overlay strong{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#171717;margin-bottom:6px}
+#tooltip-overlay ul{padding-left:14px;margin:4px 0 0}
+#tooltip-overlay li{margin-bottom:3px}
+.info-popover{display:none}
+.nav-dropdown-menu{display:none;}
+.nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown-menu:hover{display:block;}
+[data-card-body]{display:none;}
+.open>[data-card-body]{display:block;}
+.open>button [data-chevron]{transform:rotate(180deg);}
+@media print{aside,nav{display:none!important}main{padding:20px!important}[data-card-body]{display:block!important}.bg-primary{background:#171717!important;color:#fafafa!important;-webkit-print-color-adjust:exact}}
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        background: '#fafafa', foreground: '#0a0a0a', card: '#ffffff', 'card-foreground': '#0a0a0a',
+        primary: '#171717', 'primary-foreground': '#fafafa', secondary: '#f5f5f5', 'secondary-foreground': '#171717',
+        muted: '#f5f5f5', 'muted-foreground': '#737373', accent: '#f5f5f5', 'accent-foreground': '#171717',
+        destructive: '#ef4444', border: '#e5e5e5', input: '#e5e5e5', ring: '#0a0a0a',
+        sidebar: '#fafafa', 'sidebar-foreground': '#171717', 'sidebar-accent': '#f5f5f5',
+      },
+      borderRadius: { lg: '0.625rem', md: '0.5rem', sm: '0.375rem' }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-background text-foreground font-[-apple-system,BlinkMacSystemFont,'Inter',sans-serif] text-sm leading-relaxed">
+<!-- TOP NAV -->
+<nav class="sticky top-0 z-50 h-14 border-b border-border bg-card">
+  <div class="max-w-[1460px] mx-auto h-full flex items-center justify-between px-6">
+    <span class="text-sm font-semibold text-muted-foreground tracking-wide">Performance Plan</span>
+    <div class="hidden md:flex items-center gap-1">
+      <div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-foreground rounded-md transition-colors" style="border-bottom: 2px solid #ef4444">
+          Pre-LIT
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="intake.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Intake</a><a href="medical-records.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Med Records</a><a href="claims.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Claims</a><a href="pre-lit.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-foreground bg-accent rounded-md no-underline"><span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Pre-LIT</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Litigation
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="index.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Case Opening</a><a href="treatment-monitoring.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Treat. Monitoring</a><a href="written-discovery.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Written Discovery</a><a href="expert-deposition.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Arb &amp; Mediation</a><a href="trial.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Trial</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Support
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full right-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="litify-dev-summary.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Dev Summary</a><a href="scoring-review.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Scoring Review</a><a href="metrics.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Metrics</a>
+        </div>
+      </div>
+    </div>
+    <button id="nav-hamburger" class="md:hidden text-foreground" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mobile-nav" class="hidden md:hidden bg-card border-t border-border px-4 pb-3">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Pre-LIT</div><a href="intake.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Intake</a><a href="medical-records.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Med Records</a><a href="claims.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Claims</a><a href="pre-lit.html" class="block px-3 py-2 text-sm font-medium text-foreground bg-accent rounded-md no-underline">Pre-LIT</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Litigation</div><a href="index.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Case Opening</a><a href="treatment-monitoring.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Treat. Monitoring</a><a href="written-discovery.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Written Discovery</a><a href="expert-deposition.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Arb &amp; Mediation</a><a href="trial.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Trial</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Support</div><a href="litify-dev-summary.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Dev Summary</a><a href="scoring-review.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Scoring Review</a><a href="metrics.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Metrics</a>
+  </div>
+</nav>
+<div class="flex h-[calc(100vh-3.5rem)]">
+<aside class="hidden md:flex w-64 flex-col border-r border-border bg-card overflow-y-auto shrink-0">
+  <div class="px-5 pt-6 pb-4 border-b border-border">
+    <h2 class="text-xs font-bold text-foreground tracking-wide uppercase">Pre-LIT</h2>
+    <p class="text-[11px] text-muted-foreground mt-1">Performance Spec v1.0</p>
+  </div>
+  <div class="py-3">
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Sections</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('overview')">Overview</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('account-opening')">Account Opening</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('account-opening-0')">Client Orientation</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('account-opening-1')">Case Setup</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('account-opening-2')">Claim Activation</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('account-opening-3')">DOA Confirmation</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('account-opening-4')">Management Escalation</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('account-opening-5')">DOA/SOL Confirmation</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('account-opening-6')">Intake Completion Certification</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('treatment-mon')">Treatment Monitoring</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('treatment-mon-0')">Treatment Monitoring or Client Comm</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('treatment-mon-1')">Treatment Monitoring or Client Comm</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('treatment-mon-2')">Case Setup</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('treatment-mon-3')">Treatment Monitoring or Client Comm</a>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev')">Value Development</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-1-enter-value-development-sta')">1) Enter Value Development Stage</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-2-core-data-hygiene-baseline')">2) Core Data Hygiene Baseline</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-3-liability-of-o-leverage-bu')">3) Liability &of o Leverage Build (</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-4-coverage--recovery-path-n')">4) Coverage & Recovery Path (No Sur</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-5-liens-subrogation-collate')">5) Liens, Subrogation, Collateral S</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-6-treatment--medical-story-b')">6) Treatment & Medical Story Build </a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-7-specials--economic-losses-')">7) Specials & Economic Losses (Comp</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-8-client-profile--cooperatio')">8) Client Profile / Cooperation Ind</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-9-settlement-thesis--negotia')">9) Settlement Thesis + Negotiation </a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-10-value-development-quality-')">10) Value Development Quality Contr</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('value-dev-11-stage-exit-advance-to-dem')">11) Stage Exit: Advance to Demand R</a>
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Admin</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('approval')">Approval & Notes</a>
+  </div>
+</aside>
+
+<main id="main-scroll" class="flex-1 overflow-y-auto">
+<div class="max-w-7xl px-6 lg:px-10 py-10 mx-auto">
+
+<!-- PAGE HEADER -->
+<div class="mb-10 border-b-4 border-[#ef4444] pb-8">
+  <h1 class="text-2xl font-bold text-foreground">Pre-LIT &mdash; Performance Specification</h1>
+  <p class="text-sm text-muted-foreground mt-1">Account Opening &nbsp;|&nbsp; Treatment Monitoring &nbsp;|&nbsp; Value Development</p>
+  <span class="inline-block mt-3 px-3 py-0.5 text-xs border border-border rounded-full text-muted-foreground bg-muted">v1.0 &bull; April 2026</span>
+</div>
+
+<!-- LEGEND -->
+<div class="rounded-lg border border-border bg-card p-5 mb-8 flex flex-wrap gap-6">
+  <div>
+    <h4 class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Roles</h4>
+    <div class="flex flex-wrap gap-2">
+      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-purple-100 text-purple-700">Case Manager (CM)</span><span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-700">System Automation</span><span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-orange-100 text-orange-700">Management</span>
+    </div>
+  </div>
+</div>
+
+
+<section class="mb-8" id="overview">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Pre-LIT &mdash; Process Overview</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">Account Opening &nbsp;|&nbsp; Treatment Monitoring &nbsp;|&nbsp; Value Development</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-5">
+  <p class="text-sm text-muted-foreground">Pre-Litigation encompasses three key phases: securing the client and evidence during Account Opening, maintaining treatment continuity during Treatment Monitoring, and building case value through systematic Value Development.</p>
+</div>
+</section>
+
+<section class="mb-8" id="account-opening">
+<div class="bg-gradient-to-r from-gray-800 to-gray-700 text-white px-6 py-4 rounded-t-lg mt-6">
+  <h2 class="text-lg font-bold">Account Opening</h2>
+  <p class="text-sm text-white/70 mt-0.5">Secure the client | Secure the insurance | Secure the evidence</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-4">
+<div id="account-opening-0"><div id="account-opening-0" class="rounded-lg border border-border bg-card mb-4 open">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Client Orientation <span class="ml-2 text-xs font-normal text-muted-foreground">18 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Orientation Appointment</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To complete the orienation appointment that has been set by Intake. This needs to be built as an action plan for multiple points up input - treatment, evidence, etc...</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V1, send SMS 1, send Email 1, mark &quot;Orientation Attempt 1&quot; complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM to never be late to OA</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">OA Reset Attempt 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To reset Orientation Appointment</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V2, send SMS 2, send Email 2, mark  &quot;Orientation Attempt 2 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">5 min from appt set time</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">OA Reset Attempt 3</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To reset Orientation Appointment</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V3, send SMS 3, send Email 3, mark  &quot;Orientation Attempt 3 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">15 min from appt set time</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">OA Reset Attempt 4</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To reset Orientation Appointment</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V4, send SMS 4, send Email 4, mark  &quot;Orientation Attempt 4 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">20 min from appt set time</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">OA Reset Attempt 5</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To reset Orientation Appointment</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V5, send SMS 5, send Email 5, mark  &quot;Orientation Attempt 5 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2 hours from appt set time</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">OA Reset Attempt 6</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To reset Orientation Appointment</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V6, send SMS 6, send Email 6, mark  &quot;Orientation Attempt 6 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">End of the second day from appts set time</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Back to Intake as MIA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To reset client communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case is routed back to Intake to re-establish communications</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Completion of the second day from appt set time</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Welcome SMS/Email</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Hi {{Client First Name}},
+
+Thank you for speaking with me today. I’m truly sorry you’re dealing with this. An accident can turn everything upside down in an instant — pain, medical appointments, missed work, car issues, and the stress of insurance calls can feel like it’s all happening at once. If you’re feeling overwhelmed, that’s completely normal.
+
+I also want you to know this: **we take what you’re going through personally.** At BJB, we don’t view you as a file number. You trusted us at a vulnerable moment, and we take that responsibility seriously. Our job is to step in, protect you, and fight to make sure you are treated fairly — especially by insurance companies that are trained to minimize and delay claims.
+
+Having the right partner matters in a situation like this because the early steps after an accident can have a real impact on the outcome. **Small delays, missed details, or gaps in treatment can be used against you.** Our role is to keep your case organized, keep momentum, and build the strongest possible claim so you don’t have to navigate this alone.
+
+### What happens now
+
+Your case is now active and your BJB team has already begun working on your behalf. We will immediately focus on:
+• protecting important deadlines and requirements
+• notifying the insurance companies that we represent you
+• opening and managing the necessary claims
+• gathering evidence and documentation that supports your injuries and losses
+• guiding you through the medical and case-building process step-by-step
+
+### What we need from you right away (this keeps your case moving fast)
+
+To prevent avoidable delays and keep your case strong from day one, please send us the following as soon as possible. You can reply to this email or text them to us — whichever is easiest:
+
+• a photo of your driver’s license
+• a photo of your auto insurance card (front and back)
+• any pictures of the vehicles and/or your injuries
+• any hospital or urgent care paperwork
+• the police report, if you already have it
+
+If you don’t have something yet, that’s okay — tell us what you’re missing and we’ll help you get it.
+
+### A quick truth about how cases get stronger (and why it matters)
+
+Insurance companies look for reasons to reduce what they pay. The strongest cases are the ones with consistent treatment, strong documentation, and steady communication.
+
+The best way you can help us protect the value of your case is to:
+✔ attend all scheduled medical appointments
+✔ follow your doctors’ recommendations
+✔ let us know immediately if anything changes with your symptoms or treatment
+✔ respond when we reach out (even a quick reply helps)
+✔ tell us before speaking with an insurance adjuster
+
+If you ever have trouble scheduling treatment, getting transportation, or gathering documents, please tell us right away. We can often help solve the problem quickly — and it prevents small issues from becoming major delays.
+
+### What you can expect going forward
+
+Here’s what the process typically looks like, and what we will be doing at each stage:
+
+1. **Early case setup (now):** we establish representation, open claims, and gather the critical documents needed to move quickly.
+2. **Treatment &amp; documentation phase:** your health comes first. As you treat, we track progress, collect records and bills, and document how this has impacted your life and work.
+3. **Case-building &amp; evaluation:** we assess liability, coverage, and medical support to determine how to position your claim for the strongest possible result.
+4. **Demand &amp; negotiation (when appropriate):** once the case is properly documented, we prepare a demand and negotiate aggressively for a fair outcome.
+5. **Resolution path:** many cases resolve through negotiation; if the carrier is not reasonable, we will advise you on the best next steps and fight accordingly.
+
+Throughout the process, our goal is to keep you informed without overwhelming you. You will hear from us regularly, and you can always reach out if something feels unclear or urgent.
+
+### One last important note
+
+If your phone number, email, address, employment, or medical providers change at any point, please notify us immediately. Staying connected and up to date keeps your case moving and prevents delays.
+
+Again, {{Client First Name}}, thank you for trusting BJB. We are here to carry the legal burden so you can focus on healing. We will work hard, stay on top of the details, and fight to pursue the strongest possible outcome for you.
+
+Warmly,
+{{Sender Name}}
+Brandon J. Broderick (BJB)
+{{Phone}} | {{Email}}</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Automated template sent</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Immediately after the OA has completed</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Information Portal Upload</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain ID,Health Ins Info, accident or injury photos/videos, witnesses? ER/hospital location, auto policy deck page, police report number or police report, discharge papers received?</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Request Attempt 1, if recieved mark &quot;Complete&quot;, if not mark &quot;Request 1 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10 min from completion of the OA</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Information Portal Upload</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain ID,Health Ins Info, accident or injury photos/videos, witnesses? ER/hospital location, auto policy deck page, police report number or police report, discharge papers received?</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Request Attempt 2, if recieved mark &quot;Complete&quot;, if not mark &quot;Request 1 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Morning after completion of the OA</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Information Portal Upload</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain ID,Health Ins Info, accident or injury photos/videos, witnesses? ER/hospital location, auto policy deck page, police report number or police report, discharge papers received?</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Request Attempt 3, if recieved mark &quot;Complete&quot;, if not mark &quot;Request 1 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">The second morning after completion of the OA</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Doc Upload Reset Call Attempt 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To discuss the requests and determine why no response</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop Reset V1, send SMS Reset 1, send Email Reset 1, mark &quot;Doc Upload Reset Call Attempt 1 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 5 at 4pm / Class 2: Day 15 at 4pm / Class 3: Day 30 at 4pm</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Doc Upload Reset Call Attempt 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To discuss the requests and determine why no response</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop Reset V2, send SMS Reset 2, send Email Reset 2, mark &quot;Doc Upload Reset Call Attempt 2 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 6 at 10am / Class 2: Day 16 at 4pm / Class 3: Day 35 at 10am</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Doc Upload Reset Call Attempt 3</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To discuss the requests and determine why no response</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop Reset V3, send SMS Reset 3, send Email Reset 3, mark &quot;Doc Upload Reset Call Attempt 3 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 6 at 4pm / Class 2: Day 17 at 10am / Class 3: Day 40 at 10am</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Doc Upload Reset Call Attempt 4</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To discuss the requests and determine why no response</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop Reset V4, send SMS Reset 4, send Email Reset 4, mark &quot;Doc Upload Reset Call Attempt 4 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 7 at 10am / Class 2: Day 20 at 10am / Class 3: Day 45 at 10am</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Doc Upload Reset Call Attempt 5</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To discuss the requests and determine why no response</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop Reset V5, send SMS Reset 5, send Email Reset 5, mark &quot;Doc Upload Reset Call Attempt 5 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 7 at 1pm / Class 2: Day 25 at 4pm / Class 3: Day 50 at 1pm</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Doc Upload Reset Call Attempt 6</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To discuss the requests and determine why no response</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop Reset V6, send SMS Reset 6, send Email Reset 6, mark &quot;Doc Upload Reset Call Attempt 6 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 7 at 4pm / Class 2: Day 25 at 4pm / Class 3: Day 60 at 4pm</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Client Orientation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Back to Intake</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To reset client communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case is routed back to Intake to re-establish communications</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">End of active day</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="account-opening-1"><div id="account-opening-1" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Case Setup <span class="ml-2 text-xs font-normal text-muted-foreground">5 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Clent Profile Scoring
+
+It would be required that these scores be re-scored or a “No Change” score entered, every time a case manager progressed a case. Again, this is only for the case profile. These dials would be shown in a dashboard at the top of every matter panel view. 
+
+Any thoughts? Additions? Revisions? 
+
+“What to do” box: 
+•        “If Demand-Ready % &lt; X → add demand sprint + records chase”
+•        “If gaps &gt; X → treatment monitoring protocol triggers”
+•        “If liability score low → early lit evaluation”
+
+Why: dashboards fail when they don’t tell leaders what decision to make.
+
+“Top 10 Action List” widget
+•        A live list that updates daily:
+o        Oldest demands not sent
+o        Highest value cases missing records
+o        Top cases with expiring deadlines
+o        Top 10 stalled negotiations
+o        Top 10 clients at churn risk
+
+Why: leaders want a to-do list, not just charts.
+
+“Owner + Due Date” columns everywhere
+•        Every stalled condition should show:
+o        Assigned owner
+o        Due date / SLA
+o        Days overdue
+
+Why: this turns reporting into accountability.
+
+Segmentation filters that matter
+•        At minimum:
+o        Office / region
+o        Case manager / attorney
+o        Injury severity tier
+o        Coverage tier (limits confirmed vs unknown)
+o        Marketing source (calls vs referral vs web)
+
+Why: performance is always hiding inside segments.
+
+Leading indicators (not just outcomes)
+•        Outcomes are lagging. Add early warning metrics:
+o        Contact rate (client reached within X hours)
+o        Treatment start within X days
+o        Records request within X days
+o        Coverage confirmed within X days
+o        Demand package quality score
+
+Why: you can’t manage what already happened.
+
+“Data Trust Meter”
+•        A small badge for each panel:
+o        % required fields complete
+o        % stale data (not updated in 14/30 days)
+o        missing policy limits, DOI, adjuster, etc.
+
+Why: protects against “inaccurate truth” and keeps scorecards defensible.
+
+Settlement forecast, not just settlement results
+•        A section that projects:
+o        Expected settlements by week
+o        Expected dollars by week
+o        Confidence rating (based on completeness + leverage)
+
+
+Each becomes a 1–5 score, or Green/Yellow/Red, grouped so it’s easy to implement in Litify:
+
+Reachability and responsiveness
+
+* **Contactability** (answers calls/texts/emails; working numbers)
+* **Response time** (same day / 24–48 hrs / 3–7 days / rarely)
+* **Follow-through on requests** (docs, signatures, forms, IDs)
+* **Appointment reliability** (shows up, cancels, no-shows)
+
+Engagement and cooperation
+
+* **Engagement level** (proactive vs passive vs resistant)
+* **Trust / alignment with firm strategy** (coaches well, buys in)
+* **Consistency of story** (stable facts vs shifting details)
+* **Transparency** (discloses prior injuries, claims, treatment, meds)
+
+Treatment behavior and medical credibility
+
+* **Treatment consistency** (steady care vs gaps)
+* **Compliance with care plan** (PT completion, referrals, home exercise)
+* **Escalation readiness** (willingness for injections/diagnostics/surgery when appropriate)
+* **Treatment documentation strength** (providers, notes, diagnoses support claims)
+
+Risk and stability factors
+
+* **Life stability** (housing, job, phone access—impacts follow-up/treatment)
+* **Behavioral volatility** (high-conflict, impulsive, unpredictable)
+* **Social media risk** (posts that contradict injuries/limitations)
+* **Prior claims/litigation history risk** (frequency, patterns)
+
+Settlement posture and expectations
+
+* **Expectation realism** (reasonable vs inflated vs hostile)
+* **Patience / timeline tolerance** (can handle process duration)
+* **Authority / decision readiness** (can make decisions, consults others, delays)
+* **Negotiation temperament** (calm vs emotional vs combative)
+
+Administrative / compliance readiness
+
+* **Documentation readiness** (IDs, insurance cards, wage proof, bills)
+* **Signature reliability** (DocuSign completion speed/accuracy)
+* **Communication preference clarity** (best channel/time; language needs)
+* **Rules adherence** (keeps appointments, avoids prohibited contact, follows guidance)
+
+Case-strength adjacent client factors
+
+* **Witness/evidence cooperation** (helps obtain photos, recordings, contacts)
+* **Damage narrative clarity** (articulates limitations and impact consistently)
+* **Employment/wage loss cooperation** (supports verification, provides records)
+* **Prior medical disclosure quality** (complete history vs surprises later)
+
+And then add a single flag: **“Intervention Required”** (Yes/No) with reason dropdown (can’t reach, missed treatment, unrealistic demands, conflict, etc.).&quot;</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Input all needed info for below: 
+
+“What to do” box: 
+•        “If Demand-Ready % &lt; X → add demand sprint + records chase”
+•        “If gaps &gt; X → treatment monitoring protocol triggers”
+•        “If liability score low → early lit evaluation”
+
+“Top 10 Action List” widget
+•        A live list that updates daily:
+o        Oldest demands not sent
+o        Highest value cases missing records
+o        Top cases with expiring deadlines
+o        Top 10 stalled negotiations
+o        Top 10 clients at churn risk
+
+“Owner + Due Date” columns everywhere
+•        Every stalled condition should show:
+o        Assigned owner
+o        Due date / SLA
+o        Days overdue
+
+Segmentation filters that matter
+•        At minimum:
+o        Office / region
+o        Case manager / attorney
+o        Injury severity tier
+o        Coverage tier (limits confirmed vs unknown)
+o        Marketing source (calls vs referral vs web)
+
+“Data Trust Meter”
+•        A small badge for each panel:
+o        % required fields complete
+o        % stale data (not updated in 14/30 days)
+o        missing policy limits, DOI, adjuster, etc.
+
+Settlement forecast, not just settlement results
+•        A section that projects:
+o        Expected settlements by week
+o        Expected dollars by week
+o        Confidence rating (based on completeness + leverage)
+
+Reachability and responsiveness
+
+* **Contactability** (answers calls/texts/emails; working numbers)
+* **Response time** (same day / 24–48 hrs / 3–7 days / rarely)
+* **Follow-through on requests** (docs, signatures, forms, IDs)
+* **Appointment reliability** (shows up, cancels, no-shows)
+
+Engagement and cooperation
+
+* **Engagement level** (proactive vs passive vs resistant)
+* **Trust / alignment with firm strategy** (coaches well, buys in)
+* **Consistency of story** (stable facts vs shifting details)
+* **Transparency** (discloses prior injuries, claims, treatment, meds)
+
+Treatment behavior and medical credibility
+
+* **Treatment consistency** (steady care vs gaps)
+* **Compliance with care plan** (PT completion, referrals, home exercise)
+* **Escalation readiness** (willingness for injections/diagnostics/surgery when appropriate)
+* **Treatment documentation strength** (providers, notes, diagnoses support claims)
+
+Risk and stability factors
+
+* **Life stability** (housing, job, phone access—impacts follow-up/treatment)
+* **Behavioral volatility** (high-conflict, impulsive, unpredictable)
+* **Social media risk** (posts that contradict injuries/limitations)
+* **Prior claims/litigation history risk** (frequency, patterns)
+
+Settlement posture and expectations
+
+* **Expectation realism** (reasonable vs inflated vs hostile)
+* **Patience / timeline tolerance** (can handle process duration)
+* **Authority / decision readiness** (can make decisions, consults others, delays)
+* **Negotiation temperament** (calm vs emotional vs combative)
+
+Administrative / compliance readiness
+
+* **Documentation readiness** (IDs, insurance cards, wage proof, bills)
+* **Signature reliability** (DocuSign completion speed/accuracy)
+* **Communication preference clarity** (best channel/time; language needs)
+* **Rules adherence** (keeps appointments, avoids prohibited contact, follows guidance)
+
+Case-strength adjacent client factors
+
+* **Witness/evidence cooperation** (helps obtain photos, recordings, contacts)
+* **Damage narrative clarity** (articulates limitations and impact consistently)
+* **Employment/wage loss cooperation** (supports verification, provides records)
+* **Prior medical disclosure quality** (complete history vs surprises later)
+
+And then add a single flag: **“Intervention Required”** (Yes/No) with reason dropdown (can’t reach, missed treatment, unrealistic demands, conflict, etc.).&quot;</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when SOL is approved and BI Limites are obtained</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Liability Profile Scoring System
+
+Defense Pressure &amp; Settlement Leverage Model
+
+Purpose
+
+This model measures:
+
+1. How difficult it is for the defense to escape fault
+2. How predictable a jury outcome would be
+3. How expensive and risky it is for the carrier to fight
+
+When measured consistently, these scores become powerful predictors of:
+settlement timing
+offer quality
+litigation necessity
+attorney resource allocation
+
+STRUCTURE OF THE MODEL
+
+We produce TWO SCORES, not one.
+
+Liability Strength Index (LSI)
+
+Pure fault + proof.
+
+Settlement Leverage Index (SLI)
+
+LSI + coverage + venue + defense exposure + readiness.
+
+This prevents confusion between:
+“Is liability strong?”
+vs
+“Will they pay?”
+
+CATEGORY SCORING WITH RUBRICS (1–5)
+
+Each category must be scored using objective anchors.
+
+Fault Clarity (Weight: 25%)
+
+Can the defense reasonably dispute responsibility?
+
+**5** – Clear statutory violation OR admission + no adverse facts
+**4** – Strong police support + minor disputes
+**3** – Balanced versions, arguable both ways
+**2** – Real comp neg exposure
+**1** – Defense narrative stronger
+
+2) Evidence Strength (20%)
+
+Objective, permanent proof.
+
+**5** – Video/body cam + photos + consistency
+**3** – Some documentation but gaps
+**1** – Testimonial only / preservation problems
+
+3) Witness Profile (10%)
+
+**5** – Neutral independent + secured
+**3** – Passenger/related
+**1** – None or hostile
+
+4) Police / Official Documentation (10%)
+
+**5** – Supports client, diagram + notes
+**3** – Neutral
+**1** – Unfavorable or weak
+
+5) Comparative Negligence Exposure (10%)
+
+**5** – None
+**3** – Possible arguments
+**1** – Serious shared fault risk
+
+Settlement Leverage Add-Ons
+
+These influence payment behavior, not fault itself.
+
+6) Coverage &amp; Collectability (10%)
+
+**5** – Limits known, umbrella, employer
+**3** – Standard coverage
+**1** – Asset or policy issues
+
+7) Defendant / Jury Optics (5%)
+
+**5** – Commercial / bad actor
+**1** – Highly sympathetic defendant
+
+8) Defense Escape Routes (5%)
+
+How many ways can they fight?
+
+Includes:
+* Causation gaps
+* Delay in treatment
+* Prior injury
+* Recorded statements
+* Social media
+* SIU posture
+
+**5** – Very limited
+**1** – Many viable attacks
+
+9) Documentation Readiness (5%)
+
+Can we present immediately?
+
+**5** – Organized, authenticated, demand-ready
+**1** – Disorganized, missing items
+
+WEIGHTED OUTPUTS
+
+### Liability Strength Index (LSI)
+
+Categories 1–5 → weighted → score out of 100.
+
+### Settlement Leverage Index (SLI)
+
+LSI + categories 6–9 → score out of 100.
+
+DATA HYGIENE GATE (CRITICAL)
+
+No score can be considered final unless minimum information exists.
+
+Track **Liability Score Completeness %**:
+
+Required inputs:
+✔ Police report status
+✔ Citation/admission
+✔ Witness status
+✔ Photo/video existence
+✔ Coverage verification
+✔ Comp neg review
+
+If missing → system shows **PROVISIONAL**.
+
+AUTOMATIC ACTION TRIGGERS
+80–100
+Early limits strategy
+Leadership visibility
+Rapid demand
+60–79
+Normal demand cycle
+Evidence strengthening
+40–59
+Liability development sprint
+Supervisor review
+&lt;40
+Early litigation consult
+Client expectation management
+
+REASON CODES (EXECUTIVE GOLD)
+Every score should display:
+•        Top Strength Drivers
+o        Example: citation + video
+•        Top Weakness Drivers
+o        Example: treatment delay
+•        Most Valuable Missing Item
+o        Example: independent witness statement
+
+GOVERNANCE &amp; OWNERSHIP
+To prevent opinion scoring:
+| Stage         | Who Scores          |
+| Intake        | Provisional         |
+| Early pre-lit | Case manager update |
+| Pre-demand    | Attorney validation |
+| New evidence  | Mandatory re-score  |
+
+WHAT LEADERSHIP SEES
+Instead of anecdotes, they get:
+•        which cases should settle fast
+•        which deserve premium push
+•        which need more development
+•        which are trending toward litigation
+•        where attorneys should spend time
+
+WHY THIS IS ELITE
+Because it is:
+•        Standardized
+•        evidence-based
+•        weighted
+•        repeatable
+•        auditable
+•        operationally actionable
+
+Not vibes.
+Not opinions.
+Predictive pressure modeling.</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Liability setup and scoring</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when SOL is approved and BI Limites are obtained</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Policy &amp; Collectability Scoring System
+
+Transportation 
+No insurance, auto or health - will it work to give a letter of protection (LOP)
+
+Recovery Power &amp; Payment Predictability Model
+
+Purpose
+
+This system measures:
+•        How much insurance money is realistically available
+•        How difficult it will be to access it
+•        How motivated the carrier is to pay
+•        Whether litigation will be required to unlock value
+
+This predicts:
+•        ceiling of recovery
+•        negotiation leverage
+•        reserve behavior
+•        likelihood of tender
+•        time to settlement
+
+STRUCTURE OF THE MODEL
+
+Again — we produce TWO SCORES.
+
+Coverage Strength Index (CSI)
+
+How good the available coverage is.
+
+Recovery Difficulty Index (RDI)
+
+How hard it will be to extract payment.
+
+Because:
+•        High limits + impossible carrier = frustration
+•        Moderate limits + easy carrier = fast money
+
+CATEGORY SCORING (1–5 RUBRICS)
+
+Objective anchors. No guessing.
+
+1) Policy Limits Adequacy (Weight: 25%)
+
+Are limits appropriate relative to damages?
+
+5 – Clearly insufficient vs exposure (pressure to tender)
+4 – Near likely value
+3 – Might be tight
+2 – Plenty of room
+1 – Excessively high / low urgency
+
+2) Coverage Verification Status (15%)
+
+How certain are we?
+
+5 – Dec page or written confirmation
+4 – Carrier verbally confirmed
+3 – Likely but not documented
+2 – Disputed
+1 – Unknown
+
+3) Additional Policy Potential (10%)
+
+Stacking opportunity.
+
+Umbrella
+Employer
+Vehicle owner
+Commercial
+Additional insured
+
+5 – Strong multi-layer
+1 – Single small policy
+
+4) Carrier Tender Behavior (10%)
+
+Historical behavior.
+
+5 – Known tender carrier
+3 – Mixed
+1 – Chronic fighters
+
+5) Defendant Collectability Outside Insurance (5%)
+
+Assets, business backing, etc.
+
+Recovery Difficulty Add-Ons
+
+These influence how painful payment will be.
+
+6) Reservation of Rights / Coverage Defenses (10%)
+
+5 – None
+1 – Serious issues
+
+7) UM/UIM Complexity (10%)
+
+Offsets, exhaustion, consent issues.
+
+8) Lien &amp; Subrogation Pressure (5%)
+
+High liens = reduced net → negotiation complications.
+
+9) Multi-Party Allocation Risk (5%)
+
+More claimants = less predictability.
+
+10) Documentation Readiness (5%)
+
+Proof of coverage demand-ready?
+
+WEIGHTED OUTPUTS
+Coverage Strength Index (CSI)
+
+How big the money bucket is.
+
+Recovery Difficulty Index (RDI)
+
+How hard it will be to reach into it.
+
+DATA HYGIENE GATE
+
+Score is PROVISIONAL unless:
+
+•        carrier identified
+•        policy type known
+•        limits confirmed or requested
+•        UM/UIM status known
+•        other insureds evaluated
+
+AUTOMATED ACTION TRIGGERS
+High CSI + Low RDI
+
+→ fast demand
+→ leadership visibility
+→ tender strategy
+
+High CSI + High RDI
+
+→ litigation planning
+→ aggressive discovery
+
+Low CSI
+
+→ explore stacking
+→ underinsured strategy
+
+REASON CODES
+
+Always show:
+
+What helps us
+•        Example: umbrella confirmed
+
+What hurts us
+•        Example: ROR letter
+
+What we need
+•        Example: dec page pending
+
+GOVERNANCE
+Moment                        Who Updates
+Intake                        provisional
+Account opening        verified
+Pre-demand                attorney validation
+Discovery                update required
+
+Leadership can now see:
+•        where big recoveries live
+•        where collection risk exists
+•        where litigation is necessary
+•        expected negotiation resistance
+•        portfolio exposure
+
+WHY THIS IS ELITE
+
+Because now you can predict:
+•        reserve movements
+•        carrier behavior
+•        settlement speed
+•        whether demand will hit limits
+•        where attorneys must intervene</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Policy setup and scoring</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when SOL is approved and BI Limites are obtained</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Treatment Strength Index (TSI)
+
+A structured way to rate the **quality, seriousness, credibility, and profitability** of medical treatment.
+
+You can use 1–5 scales, color ratings, or weighted points.
+
+Body parts are experiencing pain
+Pain levels
+New injury or an excacerbated injury
+Fracture or a scar
+
+
+
+The 5 Master Treatment Scores (Leadership View)
+
+1. **Medical Severity**
+2. **Treatment Consistency**
+3. **Provider Credibility**
+4. **Objective Proof**
+5. **Future Exposure**
+
+From these, you can instantly see:
+
+✔ High-value files
+✔ Jury-worthy cases
+✔ Soft or defensive cases
+✔ Cases needing development
+✔ Where adjusters will fight
+✔ Where they will fold
+
+---
+
+---
+
+# 1) Medical Severity Score
+
+How serious does the injury appear?
+
+### Measure
+
+* ER visit
+* Ambulance transport
+* Hospital admission
+* Surgery performed
+* Injections performed
+* Surgical recommendation
+* Specialist involvement
+* Permanent injury opinion
+* Disability rating
+* Disfigurement/scarring
+
+### Scoring idea
+
+1 = strains/sprains only
+3 = imaging + specialist
+5 = surgery / permanent impairment
+
+### Why defense cares
+
+Severity = verdict risk.
+
+---
+
+---
+
+# 2) Treatment Consistency Score
+
+Does the client look disciplined and credible?
+
+### Measure
+
+* Gap in treatment
+* Missed appointments
+* Self-discharge
+* Following referrals
+* Compliance with PT/chiro
+* Compliance with home care
+* Delay before first visit
+* Stopped early
+* Completed plan
+
+### Scoring idea
+
+5 = continuous, compliant
+1 = inconsistent, long gaps
+
+### Why defense cares
+
+Gaps = causation attack.
+
+---
+
+---
+
+# 3) Provider Credibility Score
+
+Are the doctors believable or “mills”?
+
+### Measure
+
+* Board certified specialist
+* Reputation in venue
+* Treating vs hired gun
+* Litigation history
+* Quality of notes
+* Conservative vs aggressive care
+* Surgery center reputation
+* Radiology group credibility
+
+### Scoring idea
+
+5 = highly respected providers
+1 = known defense targets
+
+### Why defense cares
+
+Bad doctors reduce value.
+
+---
+
+---
+
+# 4) Objective Proof Score
+
+What evidence exists beyond complaints of pain?
+
+### Measure
+
+* MRI findings
+* EMG/NCV confirmation
+* Radiology support
+* Range-of-motion testing
+* Surgical findings
+* Visible injury
+* Hardware installed
+* Diagnostic consistency
+* Prior vs post imaging
+
+### Scoring idea
+
+5 = strong objective confirmation
+1 = subjective pain only
+
+### Why defense cares
+
+Objective proof = hard to argue.
+
+---
+
+---
+
+# 5) Future Exposure Score
+
+What future damages exist?
+
+### Measure
+
+* Surgery recommended but not done
+* Lifetime care
+* Permanent restrictions
+* Loss of earning capacity
+* Future injections
+* Degenerative worsening
+* Long-term therapy
+* Repeat procedures
+
+### Scoring idea
+
+5 = significant future cost
+1 = resolved injury
+
+### Why defense cares
+
+Future damages multiply value.
+
+---
+
+---
+
+# 🧠 Advanced Treatment Intelligence (Elite Level)
+
+Top firms go deeper.
+
+---
+
+## 6) Causation Defensibility
+
+* Prior similar injuries
+* Prior treatment
+* Degenerative findings
+* Delayed complaints
+* Mechanism of injury vs damage
+* Treaters addressing causation
+
+---
+
+## 7) Client Presentation Risk
+
+* Social media exposure
+* Surveillance risk
+* Employment contradictions
+* Activity level vs complaints
+
+---
+
+## 8) Economic Efficiency
+
+* Total meds vs expected value
+* Treatment inflation
+* Funding involvement
+* Lien complexity
+
+---
+
+## 9) Jury Appeal Factor
+
+* Likeability
+* Suffering narrative
+* Visible hardship
+* Family impact
+
+---
+
+---
+
+# 💥 The Treatment Risk vs Power Matrix
+
+When you combine severity + proof + consistency, you get:
+
+| Score  | Meaning             |
+| ------ | ------------------- |
+| Green  | Pay premium         |
+| Yellow | Negotiate hard      |
+| Red    | Defense will attack |
+
+---
+
+---
+
+# 🎯 What Executives &amp; Negotiators Want to See
+
+### Show them:
+
+✔ Which cases justify high demands
+✔ Which need more care
+✔ Which should move faster
+✔ Which should be monitored
+✔ Where attorney involvement is required
+✔ Where to expect lowball offers
+
+---
+
+---
+
+# 📊 Example Executive Dashboard Output
+
+* Avg Treatment Strength: 4.2
+* % Surgery Cases: 28%
+* % With Gaps: 17%
+* % With Objective Proof: 64%
+* Cases With Future Exposure: 41%
+
+That’s management intelligence.
+
+---
+
+---
+
+# 🧩 How This Lives in Litify
+
+You create:
+
+### Required fields
+
+* Surgery Y/N
+* Injection Y/N
+* Gap &gt; 30 days Y/N
+* MRI confirmed Y/N
+* Specialist Y/N
+* Future care Y/N
+
+### Auto scoring
+
+System calculates the Treatment Strength Index.
+
+### Rollups
+
+* Per case manager
+* Per attorney
+* Per office
+* Per month
+* Per carrier
+
+Now performance is visible.
+
+---
+
+---
+
+# ⚡ Why this changes the firm
+
+Without scoring → opinions.
+With scoring → strategy.
+
+It lets you:
+
+✔ Set negotiation posture
+✔ Allocate resources
+✔ Forecast revenue
+✔ Identify weak files early
+✔ Coach staff
+✔ Defend decisions</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment setup and scoring</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when SOL is approved and BI Limites are obtained</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Comprehensive Case Performance Index (CPI)
+
+
+“How strong is this file as a business asset?”
+This index measures how efficiently, profitably, and strategically viable the case is — independent of liability, policy, treatment, or client personality.
+
+The 7 Pillars of the Case Performance Index
+Each scored 0–20
+Total = 0–140
+Converted to 0–100 if preferred
+
+Economic Efficiency Score
+(Is this case economically viable relative to internal cost?)
+This measures the operational cost-to-value relationship.
+Score Factors:
+Staff hours invested to date
+Estimated future labor hours
+Vendor costs incurred
+Lien complexity burden
+Case age relative to value band
+Projected cost-to-resolution ratio
+High Score:
+✔ Low labor relative to expected fee
+✔ Clean file, limited administrative drain
+Low Score:
+✖ High labor drain
+✖ Complex admin or lien burden
+✖ Aging with unclear upside
+This protects margin.
+
+Momentum &amp; Velocity Score
+(Is this case moving at the proper operational speed?)
+This is not treatment scoring. It measures system flow.
+Score Factors:
+Time in current stage vs benchmark
+Time since last meaningful milestone
+Stage regression events
+Number of reopenings or rework loops
+Idle days without forward movement
+Bottleneck frequency
+High Score:
+✔ Smooth stage progression
+✔ No rework
+✔ Minimal stagnation
+Low Score:
+✖ Repeated task reopening
+✖ Files drifting
+✖ Chronic delays
+This predicts inventory health.
+
+File Integrity &amp; Organization Score
+(How structurally clean is the file?)
+Not data hygiene — structural readiness.
+Score Factors:
+Required documents present
+Internal summaries up to date
+Chronology built
+Evidence cataloged
+Attachments properly indexed
+Demand materials partially staged
+No “search hunting” required
+High Score:
+✔ Clean, professional file
+✔ Easy for claims or lit to absorb
+Low Score:
+✖ Disorganized
+✖ Missing summaries
+✖ Hard to interpret quickly
+This reduces friction between departments.
+
+Defense Friction Index
+(How difficult will this case be to settle?)
+This is not liability strength — it measures resistance probability.
+Score Factors:
+Carrier reputation for delay
+Prior defense posture trends
+Adjuster responsiveness history
+SIU involvement signals
+Recorded statement issues
+Early denials or partial denials
+Defense counsel aggressiveness (if known)
+High Score:
+✔ Cooperative carrier
+✔ Predictable adjuster
+Low Score:
+✖ SIU heavy
+✖ Known stall tactics
+✖ Aggressive defense strategy
+This predicts negotiation time and litigation conversion likelihood.
+
+Strategic Priority Score
+(Does this case matter beyond dollars?)
+This is portfolio strategy modeling.
+Score Factors:
+Case type firm wants to expand
+Venue expansion importance
+Carrier pattern testing opportunity
+Precedent-building value
+Marketing synergy potential
+Referral source importance
+Relationship value
+High Score:
+✔ Strategic case
+✔ Aligns with firm growth targets
+Low Score:
+✖ Isolated or non-strategic
+This helps allocate attorney time intelligently.
+
+Risk Exposure Score
+(What internal risk does this case carry?)
+Not liability — operational/legal risk.
+Score Factors:
+Statute proximity
+Missed internal deadlines
+Compliance exposure
+Client complaint probability
+Ethical complexity flags
+Record gaps that could create malpractice exposure
+Supervisory audit flags
+High Score:
+✔ Clean compliance posture
+Low Score:
+✖ Deadline compression
+✖ Prior missed obligations
+✖ Documentation weakness
+This is your early-warning system.
+
+Negotiation Readiness Index
+(How close is this case to true leverage?)
+This is not treatment scoring — it measures readiness to monetize.
+Score Factors:
+Demand components assembled
+Internal settlement thesis drafted
+Value band confidence level
+Lien picture clarity
+Specials complete
+Defense counterarguments pre-modeled
+Authority conversation prepped
+High Score:
+✔ File could go to negotiation tomorrow
+Low Score:
+✖ Still conceptual
+✖ Value unclear
+This predicts revenue timing.
+
+Output: Case Classification Bands
+After scoring:
+120–140 → Prime Asset
+High value, high efficiency, low friction
+95–119 → Strong Performer
+Minor friction, strong margin potential
+70–94 → Manage Closely
+Some inefficiency or delay risk
+45–69 → At Risk
+Margin erosion or stagnation
+Below 45 → Intervention Required
+Escalate, restructure, or re-evaluate
+
+Executive Roll-Up View
+This index allows leadership to see:
+Portfolio efficiency
+Margin exposure
+Friction clusters
+Revenue velocity
+Resource allocation needs
+Department-level drag patterns
+
+Why This Is Different From Your Other Scoring Systems
+This index does NOT measure:
+Client behavior
+Fault strength
+Policy limits
+Medical severity
+It measures:
+👉 Operational profitability
+👉 Flow efficiency
+👉 Structural quality
+👉 Strategic importance
+👉 Internal risk
+👉 Monetization readiness
+This turns your case inventory into a managed investment portfolio.</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case scoring</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when SOL is approved and BI Limites are obtained</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="account-opening-2"><div id="account-opening-2" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Claim Activation <span class="ml-2 text-xs font-normal text-muted-foreground">13 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File PIP; UIM/UM claim</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Filed with carrier</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call insuracnce company claim dept / file the claim with adjuster / Mark &quot;Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 3 business hours from the moment client doc upload / once completed mark &quot;Completed&quot;</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Send PIP; UIM/UM LOR</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Sent to carrier</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Automated template sent</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 3 business hours from the moment client doc upload / once completed mark &quot;Completed&quot;</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">TORT Analysis Team</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Analyzing municipality involvement and need for NOC</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Analyzing, preserving NOC compliance</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Review case details, confirm defendant municipality - Y/N, if yes, system sends automated NOC, if no, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 3 business hours from the moment client doc upload / once completed mark &quot;Completed&quot;</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File BI claim</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Filed with carrier</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call insuracnce company claim dept / file the claim with adjuster / Mark &quot;Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 3 business hours from the moment client doc upload / once completed mark &quot;Completed&quot;</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Send BI LOR, BI limits letter</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Send to carrier</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Automated template sent</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 3 business hours from the moment client doc upload / once completed mark &quot;Completed&quot;</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Health insurance subrogation carrier on notice</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Send to carrier</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed  Mark &quot;Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 3 business hours from the moment client doc upload / once completed mark &quot;Completed&quot;</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Send HIPPA release</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Send to ER/care provider</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed  Mark &quot;Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 3 business hours from the moment client doc upload / once completed mark &quot;Completed&quot;</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow Up Call Attempt</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain BI limits</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow up Call Attempt 1, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 day, 9 am, from BI Limits Request Letter make the BI Limits Follow up Call Attempt 1, mark complete</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow Up Call Attempt</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain BI limits</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow up Call Attempt 2, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 day, 1pm, from BI Limits Request Letter make the BI Limits Follow up Call Attempt 2, mark complete</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow Up Call Attempt</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain BI limits</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow up Call Attempt 3, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 day, 4pm, from BI Limits Request Letter make the BI Limits Follow up Call Attempt 3, mark complete</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow Up Call Attempt</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain BI limits</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow up Call Attempt 1, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2 day, 9 am, from BI Limits Request Letter make the BI Limits Follow up Call Attempt 4, mark complete</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow Up Call Attempt</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain BI limits</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow up Call Attempt 2, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2 day, 1pm, from BI Limits Request Letter make the BI Limits Follow up Call Attempt 5, mark complete</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claim Activation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CAA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow Up Call Attempt</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain BI limits</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow up Call Attempt 3, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">2 day, 4pm, from BI Limits Request Letter make the BI Limits Follow up Call Attempt 6, mark complete</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="account-opening-3"><div id="account-opening-3" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">DOA Confirmation <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">DOA Confirmation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Confirm DOA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Establish accurate SOL</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Submit Intake Questionare, Police Report, Initial Treatment Record, mark &quot;Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 3 business hours from the moment client doc upload / once completed mark &quot;Completed&quot;</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="account-opening-4"><div id="account-opening-4" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Management Escalation <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Management Escalation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">BI Limits Follow Up Management Escalation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Obtain BI limits</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System automatically sends alert and notification to management that this is blocked</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">At the end of day 2</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="account-opening-5"><div id="account-opening-5" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">DOA/SOL Confirmation <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">DOA/SOL Confirmation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Leadership</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Approving SOL</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Approving SOL</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Reviewing case DOA and related SOL. DOA confirmed-Y/N; If no, inputted DOA, If no, decline approval; If yes, approve system generated SOL, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed no later than 12 hours from timestamp of DOA confirmation submittal / once completed mark &quot;Completed&quot;</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="account-opening-6"><div id="account-opening-6" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Intake Completion Certification <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Completion Certification</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Completion Certification</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Intake Completion Certification</td><td class="px-3 py-2.5 text-xs border-b border-border align-top whitespace-pre-line">✔ contact established
+✔ documents requested
+✔ claims initiated
+✔ provider direction
+✔ authorizations moving</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+</div></section>
+
+<section class="mb-8" id="treatment-mon">
+<div class="bg-gradient-to-r from-gray-800 to-gray-700 text-white px-6 py-4 rounded-t-lg mt-6">
+  <h2 class="text-lg font-bold">Treatment Monitoring</h2>
+  <p class="text-sm text-white/70 mt-0.5">Protect the continuity | Build the record | Prevent the gaps</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-4">
+<div id="treatment-mon-0"><div id="treatment-mon-0" class="rounded-lg border border-border bg-card mb-4 open">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Treatment Monitoring or Client Communication <span class="ml-2 text-xs font-normal text-muted-foreground">8 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication Call Attempt 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Update or Client Contact/Update</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V1, send SMS 1, send Email 1, mark &quot;Treatment Monitoring or Client Communication Call Attempt 1&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 30 at 4pm / Class 2: Day 15 at 4pm / Class 3: Day 30 at 4pm</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication Call Attempt 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Update or Client Contact/Update</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V2, send SMS 2, send Email 2, mark &quot;Treatment Monitoring or Client Communication Call Attempt 2&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 31 at 10am / Class 2: Day 16 at 4pm / Class 3: Day 35 at 10am</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication Call Attempt 3</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Update or Client Contact/Update</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V3, send SMS 3, send Email 3, mark &quot;Treatment Monitoring or Client Communication Call Attempt 3&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 31 at 4pm / Class 2: Day 17 at 10am / Class 3: Day 40 at 10am</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Send Contact Letter 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Re-establish Contact</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If no contact by the beginning of the 5th day, the letter is automatically sent by the system</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 32 at 10am / Class 2: Day 20 at 10am / Class 3: Day 45 at 10am</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication Call Attempt 4</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Update or Client Contact/Update</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V7, send SMS 7, send Email 7, mark &quot;Call Attempt 7 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 32 at 1pm / Class 2: Day 25 at 4pm / Class 3: Day 50 at 1pm</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication Call Attempt 5</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Update or Client Contact/Update</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V8, send SMS 8, send Email 8, mark &quot;Call Attempt 8 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 32 at 4pm / Class 2: Day 25 at 4pm / Class 3: Day 60 at 4pm</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication Call Attempt 6</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Update or Client Contact/Update</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V9, send SMS 9, send Email 9, mark &quot;Call Attempt 9 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Class 1: Day 32 at 4pm / Class 2: Day 25 at 4pm / Class 3: Day 60 at 4pm</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">System Automation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Back to Intake as MIA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To reset client communication</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case is routed back to Intake to re-establish communications and set the Treatment Monitoring or Client Comm Appt</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">End of active day</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="treatment-mon-1"><div id="treatment-mon-1" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Treatment Monitoring or Client Communication Appointment <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment Monitoring or Client Communication Appointment</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Appointment</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Pre-Lit Treatment Monitoring Appointment Agenda (Case Manager)
+1) Open + Set the Tone (60 seconds)
+Goal: reassure the client, establish control, and set expectations.
+“I’m calling to check in on how you’re doing, make sure treatment is moving the right way, and remove any obstacles.”
+Confirm best contact method + best time window (call/text/email).
+2) Identity + Contact Confirmation (30 seconds)
+Confirm phone(s), email, address
+Confirm emergency contact (if your firm uses it)
+Confirm preferred language / accessibility needs
+3) Client Wellbeing Check (Empathy + Signal Capture) (60–90 seconds)
+“How are you feeling this week compared to last week—better, worse, same?”
+“What symptoms are the biggest problem right now?”
+“Anything new or concerning since we last spoke?”
+(Log symptoms and “trend” as improving/stable/worsening.)
+4) Treatment Status Snapshot (2–3 minutes)
+Current care
+Who are you treating with right now? (providers + locations)
+How often are you going each week?
+What was your last appointment date?
+What is the next appointment date?
+Diagnostics
+Any MRI/X-ray/CT/EMG? Where and when?
+Results known? (If yes, summary; if no, request release / follow-up plan)
+Plan of care
+What did the doctor say is next?
+Any referrals pending? (ortho, neuro, pain mgmt, PT, chiro)
+5) Compliance + Continuity Check (1–2 minutes)
+This is where cases lose value.
+Any gaps in treatment since the incident? Why?
+Any missed appointments? Why?
+Any barriers right now? (transportation, work schedule, childcare, cost, fear)
+Resolve barriers
+Transportation help?
+Telehealth option?
+Alternate provider closer to home?
+Schedule strategy?
+6) Value Development Questions (without sounding “salesy”) (2 minutes)
+“What activities are you still unable to do normally?”
+“What movements cause pain?”
+“How is this affecting work, sleep, driving, household duties?”
+(This becomes future narrative support.)
+7) Insurance / Billing / Records Readiness (2–3 minutes)
+Confirm all of the below are moving:
+PIP / MedPay / BI claims opened and active
+Health insurance info confirmed (DOL + current)
+Any liens expected? Medicaid/Medicare? (flag if yes)
+Authorizations signed and on file
+Medical records requests: what’s been requested vs received vs outstanding
+Records chase plan
+“I’m going to request records from X and follow up by Y date.”
+8) Client Behavior / Cooperation Signals (30–60 seconds)
+Quick internal scoring inputs:
+Responsiveness (easy/moderate/hard to reach)
+Follow-through (high/medium/low)
+Reliability (keeps appts, returns docs)
+(You can log this as a “Client Cooperation Index” note.)
+9) Next Steps + Commitments (60–90 seconds)
+Lock clear action items:
+Client commitments (appointments, documents, forms)
+Firm commitments (records requests, provider calls, claim follow-ups)
+Confirm next check-in date/time window
+Use a close like:
+“If anything changes—new symptoms, new provider, missed appointments—call or text us immediately. We stay proactive so your case stays strong.”
+10) Closing (15 seconds)
+“You’re doing the right things. We’ll stay on top of this with you.”
+
+After-Call Required Logging (Litify / Case Notes)
+Log these fields every time (standardize it):
+Symptom trend (better/same/worse)
+Current providers + next appointment dates
+Diagnostics status (ordered/scheduled/completed/results pending)
+Treatment gaps + reason
+Barriers + resolution plan
+Records outstanding + follow-up date
+Client cooperation rating
+Next check-in scheduled
+
+Automatic Escalation Triggers (Notify Supervisor/Attorney)
+Escalate immediately if:
+treatment stopped or &gt;14–21 day gap with no plan
+surgery recommended/refused
+new accident or re-injury
+client mentions surveillance/insurance contact
+inconsistent story or credibility concern
+major symptom worsening (esp neuro symptoms)
+Medicaid/Medicare involved and not previously identified</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">No less than every 30 days from SOL</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="treatment-mon-2"><div id="treatment-mon-2" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Case Setup <span class="ml-2 text-xs font-normal text-muted-foreground">4 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Clent Profile Scoring
+
+It would be required that these scores be re-scored or a “No Change” score entered, every time a case manager progressed a case. Again, this is only for the case profile. These dials would be shown in a dashboard at the top of every matter panel view. 
+
+Any thoughts? Additions? Revisions? 
+
+“What to do” box: 
+•        “If Demand-Ready % &lt; X → add demand sprint + records chase”
+•        “If gaps &gt; X → treatment monitoring protocol triggers”
+•        “If liability score low → early lit evaluation”
+
+Why: dashboards fail when they don’t tell leaders what decision to make.
+
+“Top 10 Action List” widget
+•        A live list that updates daily:
+o        Oldest demands not sent
+o        Highest value cases missing records
+o        Top cases with expiring deadlines
+o        Top 10 stalled negotiations
+o        Top 10 clients at churn risk
+
+Why: leaders want a to-do list, not just charts.
+
+“Owner + Due Date” columns everywhere
+•        Every stalled condition should show:
+o        Assigned owner
+o        Due date / SLA
+o        Days overdue
+
+Why: this turns reporting into accountability.
+
+Segmentation filters that matter
+•        At minimum:
+o        Office / region
+o        Case manager / attorney
+o        Injury severity tier
+o        Coverage tier (limits confirmed vs unknown)
+o        Marketing source (calls vs referral vs web)
+
+Why: performance is always hiding inside segments.
+
+Leading indicators (not just outcomes)
+•        Outcomes are lagging. Add early warning metrics:
+o        Contact rate (client reached within X hours)
+o        Treatment start within X days
+o        Records request within X days
+o        Coverage confirmed within X days
+o        Demand package quality score
+
+Why: you can’t manage what already happened.
+
+“Data Trust Meter”
+•        A small badge for each panel:
+o        % required fields complete
+o        % stale data (not updated in 14/30 days)
+o        missing policy limits, DOI, adjuster, etc.
+
+Why: protects against “inaccurate truth” and keeps scorecards defensible.
+
+Settlement forecast, not just settlement results
+•        A section that projects:
+o        Expected settlements by week
+o        Expected dollars by week
+o        Confidence rating (based on completeness + leverage)
+
+
+Each becomes a 1–5 score, or Green/Yellow/Red, grouped so it’s easy to implement in Litify:
+
+Reachability and responsiveness
+
+* **Contactability** (answers calls/texts/emails; working numbers)
+* **Response time** (same day / 24–48 hrs / 3–7 days / rarely)
+* **Follow-through on requests** (docs, signatures, forms, IDs)
+* **Appointment reliability** (shows up, cancels, no-shows)
+
+Engagement and cooperation
+
+* **Engagement level** (proactive vs passive vs resistant)
+* **Trust / alignment with firm strategy** (coaches well, buys in)
+* **Consistency of story** (stable facts vs shifting details)
+* **Transparency** (discloses prior injuries, claims, treatment, meds)
+
+Treatment behavior and medical credibility
+
+* **Treatment consistency** (steady care vs gaps)
+* **Compliance with care plan** (PT completion, referrals, home exercise)
+* **Escalation readiness** (willingness for injections/diagnostics/surgery when appropriate)
+* **Treatment documentation strength** (providers, notes, diagnoses support claims)
+
+Risk and stability factors
+
+* **Life stability** (housing, job, phone access—impacts follow-up/treatment)
+* **Behavioral volatility** (high-conflict, impulsive, unpredictable)
+* **Social media risk** (posts that contradict injuries/limitations)
+* **Prior claims/litigation history risk** (frequency, patterns)
+
+Settlement posture and expectations
+
+* **Expectation realism** (reasonable vs inflated vs hostile)
+* **Patience / timeline tolerance** (can handle process duration)
+* **Authority / decision readiness** (can make decisions, consults others, delays)
+* **Negotiation temperament** (calm vs emotional vs combative)
+
+Administrative / compliance readiness
+
+* **Documentation readiness** (IDs, insurance cards, wage proof, bills)
+* **Signature reliability** (DocuSign completion speed/accuracy)
+* **Communication preference clarity** (best channel/time; language needs)
+* **Rules adherence** (keeps appointments, avoids prohibited contact, follows guidance)
+
+Case-strength adjacent client factors
+
+* **Witness/evidence cooperation** (helps obtain photos, recordings, contacts)
+* **Damage narrative clarity** (articulates limitations and impact consistently)
+* **Employment/wage loss cooperation** (supports verification, provides records)
+* **Prior medical disclosure quality** (complete history vs surprises later)
+
+And then add a single flag: **“Intervention Required”** (Yes/No) with reason dropdown (can’t reach, missed treatment, unrealistic demands, conflict, etc.).&quot;</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Input all needed info for below: 
+
+“What to do” box: 
+•        “If Demand-Ready % &lt; X → add demand sprint + records chase”
+•        “If gaps &gt; X → treatment monitoring protocol triggers”
+•        “If liability score low → early lit evaluation”
+
+“Top 10 Action List” widget
+•        A live list that updates daily:
+o        Oldest demands not sent
+o        Highest value cases missing records
+o        Top cases with expiring deadlines
+o        Top 10 stalled negotiations
+o        Top 10 clients at churn risk
+
+“Owner + Due Date” columns everywhere
+•        Every stalled condition should show:
+o        Assigned owner
+o        Due date / SLA
+o        Days overdue
+
+Segmentation filters that matter
+•        At minimum:
+o        Office / region
+o        Case manager / attorney
+o        Injury severity tier
+o        Coverage tier (limits confirmed vs unknown)
+o        Marketing source (calls vs referral vs web)
+
+“Data Trust Meter”
+•        A small badge for each panel:
+o        % required fields complete
+o        % stale data (not updated in 14/30 days)
+o        missing policy limits, DOI, adjuster, etc.
+
+Settlement forecast, not just settlement results
+•        A section that projects:
+o        Expected settlements by week
+o        Expected dollars by week
+o        Confidence rating (based on completeness + leverage)
+
+Reachability and responsiveness
+
+* **Contactability** (answers calls/texts/emails; working numbers)
+* **Response time** (same day / 24–48 hrs / 3–7 days / rarely)
+* **Follow-through on requests** (docs, signatures, forms, IDs)
+* **Appointment reliability** (shows up, cancels, no-shows)
+
+Engagement and cooperation
+
+* **Engagement level** (proactive vs passive vs resistant)
+* **Trust / alignment with firm strategy** (coaches well, buys in)
+* **Consistency of story** (stable facts vs shifting details)
+* **Transparency** (discloses prior injuries, claims, treatment, meds)
+
+Treatment behavior and medical credibility
+
+* **Treatment consistency** (steady care vs gaps)
+* **Compliance with care plan** (PT completion, referrals, home exercise)
+* **Escalation readiness** (willingness for injections/diagnostics/surgery when appropriate)
+* **Treatment documentation strength** (providers, notes, diagnoses support claims)
+
+Risk and stability factors
+
+* **Life stability** (housing, job, phone access—impacts follow-up/treatment)
+* **Behavioral volatility** (high-conflict, impulsive, unpredictable)
+* **Social media risk** (posts that contradict injuries/limitations)
+* **Prior claims/litigation history risk** (frequency, patterns)
+
+Settlement posture and expectations
+
+* **Expectation realism** (reasonable vs inflated vs hostile)
+* **Patience / timeline tolerance** (can handle process duration)
+* **Authority / decision readiness** (can make decisions, consults others, delays)
+* **Negotiation temperament** (calm vs emotional vs combative)
+
+Administrative / compliance readiness
+
+* **Documentation readiness** (IDs, insurance cards, wage proof, bills)
+* **Signature reliability** (DocuSign completion speed/accuracy)
+* **Communication preference clarity** (best channel/time; language needs)
+* **Rules adherence** (keeps appointments, avoids prohibited contact, follows guidance)
+
+Case-strength adjacent client factors
+
+* **Witness/evidence cooperation** (helps obtain photos, recordings, contacts)
+* **Damage narrative clarity** (articulates limitations and impact consistently)
+* **Employment/wage loss cooperation** (supports verification, provides records)
+* **Prior medical disclosure quality** (complete history vs surprises later)
+
+And then add a single flag: **“Intervention Required”** (Yes/No) with reason dropdown (can’t reach, missed treatment, unrealistic demands, conflict, etc.).&quot;</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when Treatment Monitoring or Client Communication Appointment Is Completed</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Liability Profile Scoring System
+
+Defense Pressure &amp; Settlement Leverage Model
+
+Purpose
+
+This model measures:
+
+1. How difficult it is for the defense to escape fault
+2. How predictable a jury outcome would be
+3. How expensive and risky it is for the carrier to fight
+
+When measured consistently, these scores become powerful predictors of:
+settlement timing
+offer quality
+litigation necessity
+attorney resource allocation
+
+STRUCTURE OF THE MODEL
+
+We produce TWO SCORES, not one.
+
+Liability Strength Index (LSI)
+
+Pure fault + proof.
+
+Settlement Leverage Index (SLI)
+
+LSI + coverage + venue + defense exposure + readiness.
+
+This prevents confusion between:
+“Is liability strong?”
+vs
+“Will they pay?”
+
+CATEGORY SCORING WITH RUBRICS (1–5)
+
+Each category must be scored using objective anchors.
+
+Fault Clarity (Weight: 25%)
+
+Can the defense reasonably dispute responsibility?
+
+**5** – Clear statutory violation OR admission + no adverse facts
+**4** – Strong police support + minor disputes
+**3** – Balanced versions, arguable both ways
+**2** – Real comp neg exposure
+**1** – Defense narrative stronger
+
+2) Evidence Strength (20%)
+
+Objective, permanent proof.
+
+**5** – Video/body cam + photos + consistency
+**3** – Some documentation but gaps
+**1** – Testimonial only / preservation problems
+
+3) Witness Profile (10%)
+
+**5** – Neutral independent + secured
+**3** – Passenger/related
+**1** – None or hostile
+
+4) Police / Official Documentation (10%)
+
+**5** – Supports client, diagram + notes
+**3** – Neutral
+**1** – Unfavorable or weak
+
+5) Comparative Negligence Exposure (10%)
+
+**5** – None
+**3** – Possible arguments
+**1** – Serious shared fault risk
+
+Settlement Leverage Add-Ons
+
+These influence payment behavior, not fault itself.
+
+6) Coverage &amp; Collectability (10%)
+
+**5** – Limits known, umbrella, employer
+**3** – Standard coverage
+**1** – Asset or policy issues
+
+7) Defendant / Jury Optics (5%)
+
+**5** – Commercial / bad actor
+**1** – Highly sympathetic defendant
+
+8) Defense Escape Routes (5%)
+
+How many ways can they fight?
+
+Includes:
+* Causation gaps
+* Delay in treatment
+* Prior injury
+* Recorded statements
+* Social media
+* SIU posture
+
+**5** – Very limited
+**1** – Many viable attacks
+
+9) Documentation Readiness (5%)
+
+Can we present immediately?
+
+**5** – Organized, authenticated, demand-ready
+**1** – Disorganized, missing items
+
+WEIGHTED OUTPUTS
+
+### Liability Strength Index (LSI)
+
+Categories 1–5 → weighted → score out of 100.
+
+### Settlement Leverage Index (SLI)
+
+LSI + categories 6–9 → score out of 100.
+
+DATA HYGIENE GATE (CRITICAL)
+
+No score can be considered final unless minimum information exists.
+
+Track **Liability Score Completeness %**:
+
+Required inputs:
+✔ Police report status
+✔ Citation/admission
+✔ Witness status
+✔ Photo/video existence
+✔ Coverage verification
+✔ Comp neg review
+
+If missing → system shows **PROVISIONAL**.
+
+AUTOMATIC ACTION TRIGGERS
+80–100
+Early limits strategy
+Leadership visibility
+Rapid demand
+60–79
+Normal demand cycle
+Evidence strengthening
+40–59
+Liability development sprint
+Supervisor review
+&lt;40
+Early litigation consult
+Client expectation management
+
+REASON CODES (EXECUTIVE GOLD)
+Every score should display:
+•        Top Strength Drivers
+o        Example: citation + video
+•        Top Weakness Drivers
+o        Example: treatment delay
+•        Most Valuable Missing Item
+o        Example: independent witness statement
+
+GOVERNANCE &amp; OWNERSHIP
+To prevent opinion scoring:
+| Stage         | Who Scores          |
+| Intake        | Provisional         |
+| Early pre-lit | Case manager update |
+| Pre-demand    | Attorney validation |
+| New evidence  | Mandatory re-score  |
+
+WHAT LEADERSHIP SEES
+Instead of anecdotes, they get:
+•        which cases should settle fast
+•        which deserve premium push
+•        which need more development
+•        which are trending toward litigation
+•        where attorneys should spend time
+
+WHY THIS IS ELITE
+Because it is:
+•        Standardized
+•        evidence-based
+•        weighted
+•        repeatable
+•        auditable
+•        operationally actionable
+
+Not vibes.
+Not opinions.
+Predictive pressure modeling.</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Liability setup and scoring</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when Treatment Monitoring or Client Communication Appointment Is Completed</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Policy &amp; Collectability Scoring System
+
+Transportation 
+No insurance, auto or health - will it work to give a letter of protection (LOP)
+
+Recovery Power &amp; Payment Predictability Model
+
+Purpose
+
+This system measures:
+•        How much insurance money is realistically available
+•        How difficult it will be to access it
+•        How motivated the carrier is to pay
+•        Whether litigation will be required to unlock value
+
+This predicts:
+•        ceiling of recovery
+•        negotiation leverage
+•        reserve behavior
+•        likelihood of tender
+•        time to settlement
+
+STRUCTURE OF THE MODEL
+
+Again — we produce TWO SCORES.
+
+Coverage Strength Index (CSI)
+
+How good the available coverage is.
+
+Recovery Difficulty Index (RDI)
+
+How hard it will be to extract payment.
+
+Because:
+•        High limits + impossible carrier = frustration
+•        Moderate limits + easy carrier = fast money
+
+CATEGORY SCORING (1–5 RUBRICS)
+
+Objective anchors. No guessing.
+
+1) Policy Limits Adequacy (Weight: 25%)
+
+Are limits appropriate relative to damages?
+
+5 – Clearly insufficient vs exposure (pressure to tender)
+4 – Near likely value
+3 – Might be tight
+2 – Plenty of room
+1 – Excessively high / low urgency
+
+2) Coverage Verification Status (15%)
+
+How certain are we?
+
+5 – Dec page or written confirmation
+4 – Carrier verbally confirmed
+3 – Likely but not documented
+2 – Disputed
+1 – Unknown
+
+3) Additional Policy Potential (10%)
+
+Stacking opportunity.
+
+Umbrella
+Employer
+Vehicle owner
+Commercial
+Additional insured
+
+5 – Strong multi-layer
+1 – Single small policy
+
+4) Carrier Tender Behavior (10%)
+
+Historical behavior.
+
+5 – Known tender carrier
+3 – Mixed
+1 – Chronic fighters
+
+5) Defendant Collectability Outside Insurance (5%)
+
+Assets, business backing, etc.
+
+Recovery Difficulty Add-Ons
+
+These influence how painful payment will be.
+
+6) Reservation of Rights / Coverage Defenses (10%)
+
+5 – None
+1 – Serious issues
+
+7) UM/UIM Complexity (10%)
+
+Offsets, exhaustion, consent issues.
+
+8) Lien &amp; Subrogation Pressure (5%)
+
+High liens = reduced net → negotiation complications.
+
+9) Multi-Party Allocation Risk (5%)
+
+More claimants = less predictability.
+
+10) Documentation Readiness (5%)
+
+Proof of coverage demand-ready?
+
+WEIGHTED OUTPUTS
+Coverage Strength Index (CSI)
+
+How big the money bucket is.
+
+Recovery Difficulty Index (RDI)
+
+How hard it will be to reach into it.
+
+DATA HYGIENE GATE
+
+Score is PROVISIONAL unless:
+
+•        carrier identified
+•        policy type known
+•        limits confirmed or requested
+•        UM/UIM status known
+•        other insureds evaluated
+
+AUTOMATED ACTION TRIGGERS
+High CSI + Low RDI
+
+→ fast demand
+→ leadership visibility
+→ tender strategy
+
+High CSI + High RDI
+
+→ litigation planning
+→ aggressive discovery
+
+Low CSI
+
+→ explore stacking
+→ underinsured strategy
+
+REASON CODES
+
+Always show:
+
+What helps us
+•        Example: umbrella confirmed
+
+What hurts us
+•        Example: ROR letter
+
+What we need
+•        Example: dec page pending
+
+GOVERNANCE
+Moment                        Who Updates
+Intake                        provisional
+Account opening        verified
+Pre-demand                attorney validation
+Discovery                update required
+
+Leadership can now see:
+•        where big recoveries live
+•        where collection risk exists
+•        where litigation is necessary
+•        expected negotiation resistance
+•        portfolio exposure
+
+WHY THIS IS ELITE
+
+Because now you can predict:
+•        reserve movements
+•        carrier behavior
+•        settlement speed
+•        whether demand will hit limits
+•        where attorneys must intervene</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Policy setup and scoring</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when Treatment Monitoring or Client Communication Appointment Is Completed</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Setup</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">CM</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Treatment Strength Index (TSI)
+
+A structured way to rate the **quality, seriousness, credibility, and profitability** of medical treatment.
+
+You can use 1–5 scales, color ratings, or weighted points.
+
+Body parts are experiencing pain
+Pain levels
+New injury or an excacerbated injury
+Fracture or a scar
+
+
+
+The 5 Master Treatment Scores (Leadership View)
+
+1. **Medical Severity**
+2. **Treatment Consistency**
+3. **Provider Credibility**
+4. **Objective Proof**
+5. **Future Exposure**
+
+From these, you can instantly see:
+
+✔ High-value files
+✔ Jury-worthy cases
+✔ Soft or defensive cases
+✔ Cases needing development
+✔ Where adjusters will fight
+✔ Where they will fold
+
+---
+
+---
+
+# 1) Medical Severity Score
+
+How serious does the injury appear?
+
+### Measure
+
+* ER visit
+* Ambulance transport
+* Hospital admission
+* Surgery performed
+* Injections performed
+* Surgical recommendation
+* Specialist involvement
+* Permanent injury opinion
+* Disability rating
+* Disfigurement/scarring
+
+### Scoring idea
+
+1 = strains/sprains only
+3 = imaging + specialist
+5 = surgery / permanent impairment
+
+### Why defense cares
+
+Severity = verdict risk.
+
+---
+
+---
+
+# 2) Treatment Consistency Score
+
+Does the client look disciplined and credible?
+
+### Measure
+
+* Gap in treatment
+* Missed appointments
+* Self-discharge
+* Following referrals
+* Compliance with PT/chiro
+* Compliance with home care
+* Delay before first visit
+* Stopped early
+* Completed plan
+
+### Scoring idea
+
+5 = continuous, compliant
+1 = inconsistent, long gaps
+
+### Why defense cares
+
+Gaps = causation attack.
+
+---
+
+---
+
+# 3) Provider Credibility Score
+
+Are the doctors believable or “mills”?
+
+### Measure
+
+* Board certified specialist
+* Reputation in venue
+* Treating vs hired gun
+* Litigation history
+* Quality of notes
+* Conservative vs aggressive care
+* Surgery center reputation
+* Radiology group credibility
+
+### Scoring idea
+
+5 = highly respected providers
+1 = known defense targets
+
+### Why defense cares
+
+Bad doctors reduce value.
+
+---
+
+---
+
+# 4) Objective Proof Score
+
+What evidence exists beyond complaints of pain?
+
+### Measure
+
+* MRI findings
+* EMG/NCV confirmation
+* Radiology support
+* Range-of-motion testing
+* Surgical findings
+* Visible injury
+* Hardware installed
+* Diagnostic consistency
+* Prior vs post imaging
+
+### Scoring idea
+
+5 = strong objective confirmation
+1 = subjective pain only
+
+### Why defense cares
+
+Objective proof = hard to argue.
+
+---
+
+---
+
+# 5) Future Exposure Score
+
+What future damages exist?
+
+### Measure
+
+* Surgery recommended but not done
+* Lifetime care
+* Permanent restrictions
+* Loss of earning capacity
+* Future injections
+* Degenerative worsening
+* Long-term therapy
+* Repeat procedures
+
+### Scoring idea
+
+5 = significant future cost
+1 = resolved injury
+
+### Why defense cares
+
+Future damages multiply value.
+
+---
+
+---
+
+# 🧠 Advanced Treatment Intelligence (Elite Level)
+
+Top firms go deeper.
+
+---
+
+## 6) Causation Defensibility
+
+* Prior similar injuries
+* Prior treatment
+* Degenerative findings
+* Delayed complaints
+* Mechanism of injury vs damage
+* Treaters addressing causation
+
+---
+
+## 7) Client Presentation Risk
+
+* Social media exposure
+* Surveillance risk
+* Employment contradictions
+* Activity level vs complaints
+
+---
+
+## 8) Economic Efficiency
+
+* Total meds vs expected value
+* Treatment inflation
+* Funding involvement
+* Lien complexity
+
+---
+
+## 9) Jury Appeal Factor
+
+* Likeability
+* Suffering narrative
+* Visible hardship
+* Family impact
+
+---
+
+---
+
+# 💥 The Treatment Risk vs Power Matrix
+
+When you combine severity + proof + consistency, you get:
+
+| Score  | Meaning             |
+| ------ | ------------------- |
+| Green  | Pay premium         |
+| Yellow | Negotiate hard      |
+| Red    | Defense will attack |
+
+---
+
+---
+
+# 🎯 What Executives &amp; Negotiators Want to See
+
+### Show them:
+
+✔ Which cases justify high demands
+✔ Which need more care
+✔ Which should move faster
+✔ Which should be monitored
+✔ Where attorney involvement is required
+✔ Where to expect lowball offers
+
+---
+
+---
+
+# 📊 Example Executive Dashboard Output
+
+* Avg Treatment Strength: 4.2
+* % Surgery Cases: 28%
+* % With Gaps: 17%
+* % With Objective Proof: 64%
+* Cases With Future Exposure: 41%
+
+That’s management intelligence.
+
+---
+
+---
+
+# 🧩 How This Lives in Litify
+
+You create:
+
+### Required fields
+
+* Surgery Y/N
+* Injection Y/N
+* Gap &gt; 30 days Y/N
+* MRI confirmed Y/N
+* Specialist Y/N
+* Future care Y/N
+
+### Auto scoring
+
+System calculates the Treatment Strength Index.
+
+### Rollups
+
+* Per case manager
+* Per attorney
+* Per office
+* Per month
+* Per carrier
+
+Now performance is visible.
+
+---
+
+---
+
+# ⚡ Why this changes the firm
+
+Without scoring → opinions.
+With scoring → strategy.
+
+It lets you:
+
+✔ Set negotiation posture
+✔ Allocate resources
+✔ Forecast revenue
+✔ Identify weak files early
+✔ Coach staff
+✔ Defend decisions</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Treatment setup and scoring</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete and then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">To be completed 1 hour from when Treatment Monitoring or Client Communication Appointment Is Completed</td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+<div id="treatment-mon-3"><div id="treatment-mon-3" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Treatment Monitoring or Client Communication Appointment 1 Is Now Completed
+(Repeat the above process for each Appt until treatment is completed or Ready For Demand) <span class="ml-2 text-xs font-normal text-muted-foreground">29 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Columns I recommend:</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Department</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Current Stage</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Current Tasks</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">What triggers movement today</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Problems created</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Proposed Stage</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Required Gate Criteria</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Mandatory Data</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">SLA / Time Expectation</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">What becomes measurable</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Leadership visibility gained</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">TORT Eval</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Hospital Records</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Compensation linkage opportunity</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">OPRA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Policy Limits</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">IME&#x27;s - EUO&#x27;s</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">DOA</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Case Checkpoint</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Requesting interm lien from carrier</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Request PIP ledger</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Touchpoint with the client</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Need a progress scale here</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">RFD</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Requesting final lien from carrier</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Requesting final PIP ledger from carrier</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Need a progress scale here</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Prep</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Package Out</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">C/F</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Very rare; only if settlement team cant settle</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Litigation Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If goes to litigation, then litigation review</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settled</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"></td></tr></tbody>
+</table></div>
+  </div>
+</div></div>
+</div></section>
+
+<section class="mb-8" id="value-dev">
+<div class="bg-gradient-to-r from-gray-800 to-gray-700 text-white px-6 py-4 rounded-t-lg mt-6">
+  <h2 class="text-lg font-bold">Value Development</h2>
+  <p class="text-sm text-white/70 mt-0.5">Build case value through systematic evidence and documentation</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-4">
+<div id="value-dev-1-enter-value-development-sta" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">1) Enter Value Development Stage <span class="ml-2 text-xs font-normal text-muted-foreground">4 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Confirm Stage Entry + Assign Owner</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Immediately upon stage entry (same day)</div><div class="text-xs text-foreground mb-0.5">Run “Value Development Kickoff” (Task Bundle)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Same day as stage entry (or next business day)</div></div>
+  </div>
+</div>
+<div id="value-dev-2-core-data-hygiene-baseline" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">2) Core Data Hygiene Baseline <span class="ml-2 text-xs font-normal text-muted-foreground">12 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Verify Client Demographics + Contact Methods (phone/email/address)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–1 of stage entry; repeat if bounce/unreachable</div><div class="text-xs text-foreground mb-0.5">Verify Incident Facts (DOL, DOI, location, jurisdiction, vehicles, parties)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–1</div><div class="text-xs text-foreground mb-0.5">Verify Liability Type + Theory (rear-end, left turn, red light, etc.)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–1</div><div class="text-xs text-foreground mb-0.5">Verify Insurance Parties + Claim Numbers (BI/PIP/MedPay/UM-UIM if applicable)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–2</div><div class="text-xs text-foreground mb-0.5">Confirm All Known Providers List (name/location/phone/fax/DOS range)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–2; update weekly during stage</div><div class="text-xs text-foreground mb-0.5">Confirm Authorizations Present + Valid (HIPAA/records releases)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–2 (before record requests)</div></div>
+  </div>
+</div>
+<div id="value-dev-3-liability-of-o-leverage-bu" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">3) Liability &of o Leverage Build (Prof Fault) <span class="ml-2 text-xs font-normal text-muted-foreground">30 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Request Police Report</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–2 (immediately if not already ordered)</div><div class="text-xs text-foreground mb-0.5">Obtain Police Report + Upload + Index</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: As soon as available (set follow-up every 7 days until received)</div><div class="text-xs text-foreground mb-0.5">Police Report Analysis (Narrative/Diagram/Citations/Witnesses/Contrib Neg Flags)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Within 24 hours of receipt</div><div class="text-xs text-foreground mb-0.5">Request 911 Call / CAD / Dispatch Logs (if indicated)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–7 (trigger if contested liability, serious injury, unclear report)</div><div class="text-xs text-foreground mb-0.5">Request Bodycam / Dashcam / Surveillance Footage (if indicated)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10 (trigger if footage likely exists; expedite for retention risk)</div><div class="text-xs text-foreground mb-0.5">Collect Scene Photos / Vehicle Photos / Injury Photos from Client</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–3 (earlier is better); re-request if incomplete (48-hour follow-up)</div><div class="text-xs text-foreground mb-0.5">Request Property Damage Documents (estimate, photos, total loss, repair invoices)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–7</div><div class="text-xs text-foreground mb-0.5">Assess Property Damage Consistency (PD severity vs injury narrative)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Within 24 hours of PD docs received</div><div class="text-xs text-foreground mb-0.5">Identify Witnesses (from report + client)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–3</div><div class="text-xs text-foreground mb-0.5">Witness Outreach Attempt #1</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 1–5</div><div class="text-xs text-foreground mb-0.5">Witness Outreach Attempt #2</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: 48–72 hours after attempt #1</div><div class="text-xs text-foreground mb-0.5">Witness Outreach Attempt #3</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: 48–72 hours after attempt #2</div><div class="text-xs text-foreground mb-0.5">Capture Witness Statement Summary + Upload</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Immediately upon contact</div><div class="text-xs text-foreground mb-0.5">Run “Defense Risk Scan” (comparative negligence, seatbelt, speed, causation flags)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 3–10; repeat if new facts arise</div><div class="text-xs text-foreground mb-0.5">Draft Internal Liability Narrative (1-page)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: After police report + photos are in (target Day 7–14)</div></div>
+  </div>
+</div>
+<div id="value-dev-4-coverage--recovery-path-n" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">4) Coverage & Recovery Path (No Surprises Later) <span class="ml-2 text-xs font-normal text-muted-foreground">16 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Request BI Declarations Page / Limits Confirmation (written)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–2</div><div class="text-xs text-foreground mb-0.5">Follow-Up Limits Request #1</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 7 if no response</div><div class="text-xs text-foreground mb-0.5">Follow-Up Limits Request #2 (escalation to supervisor / certified method if needed)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 14 if still no response</div><div class="text-xs text-foreground mb-0.5">Confirm BI Adjuster Identity + Contact + Diary Expectations</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–3</div><div class="text-xs text-foreground mb-0.5">Confirm UM/UIM Applicability (client policy, household, stacking rules as applicable)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10 (earlier if low BI limits suspected)</div><div class="text-xs text-foreground mb-0.5">Confirm PIP/MedPay Status (open/paid/exhaustion trajectory)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10 and then every 30 days while active</div><div class="text-xs text-foreground mb-0.5">Document Coverage Issues / Disputes + Escalation Owner</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Immediately upon discovery</div><div class="text-xs text-foreground mb-0.5">Set Coverage Strategy Notes (BI-only vs BI+UM/UIM path)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Once BI limits confirmed or documented refusal (target Day 14–21)</div></div>
+  </div>
+</div>
+<div id="value-dev-5-liens-subrogation-collate" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">5) Liens, Subrogation, Collateral Source Control <span class="ml-2 text-xs font-normal text-muted-foreground">18 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Identify Health Insurance on Date of Loss + Current (carrier + plan type)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–5</div><div class="text-xs text-foreground mb-0.5">Determine Lien Risk Type (Medicare / Medicaid / ERISA / hospital lien / WC overlap)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10</div><div class="text-xs text-foreground mb-0.5">Send Health Subrogation Notice</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 3–10 (once carrier confirmed)</div><div class="text-xs text-foreground mb-0.5">Send Medicare MSP / Conditional Payment Initiation (if applicable)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10 (trigger immediately if Medicare likely)</div><div class="text-xs text-foreground mb-0.5">Send Medicaid / State Lien Notice (if applicable)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10</div><div class="text-xs text-foreground mb-0.5">Send ERISA Plan Notice (if applicable)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 7–14</div><div class="text-xs text-foreground mb-0.5">Create Lien Tracker Record (holder, contact, status, expected turnaround)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Same day as first notice sent</div><div class="text-xs text-foreground mb-0.5">Lien Follow-Up Cycle</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Every 14–21 days until statements received/updated</div><div class="text-xs text-foreground mb-0.5">Net Recovery Forecast v1 (rough banding)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: After initial lien type is known and coverage limits are known (target Day 21–30)</div></div>
+  </div>
+</div>
+<div id="value-dev-6-treatment--medical-story-b" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">6) Treatment & Medical Story Build (Not Just Tracking) <span class="ml-2 text-xs font-normal text-muted-foreground">24 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Treatment Status Check-In Call (treating Y/N, frequency, next appt, barriers)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–3 of stage entry; then every 14 days minimum</div><div class="text-xs text-foreground mb-0.5">Document Treatment Gaps + Reason + Fix Plan</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Same day gap is identified</div><div class="text-xs text-foreground mb-0.5">Barrier Resolution Task (transportation/scheduling/cost/fear)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Immediately upon identification; re-check within 7 days</div><div class="text-xs text-foreground mb-0.5">Request Imaging Reports (MRI/X-ray/CT/EMG)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Within 24–72 hours of learning imaging occurred or is scheduled</div><div class="text-xs text-foreground mb-0.5">Request Imaging Films (if your demand style uses films)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Once report confirms significant findings or if contested causation expected</div><div class="text-xs text-foreground mb-0.5">Request PT Notes + Discharge Summaries</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Every 30 days while active PT; immediately upon discharge</div><div class="text-xs text-foreground mb-0.5">Request Treating Provider Notes (office notes)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Every 30–45 days per provider while treating</div><div class="text-xs text-foreground mb-0.5">Update Medical Chronology (visit-by-visit, complaints, findings, plan)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Weekly or bi-weekly; immediately after major events (MRI, injections, surgery consult)</div><div class="text-xs text-foreground mb-0.5">Log Objective Findings Register (imaging findings, ROM deficits, neuro deficits)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Within 48 hours of receipt of objective evidence</div><div class="text-xs text-foreground mb-0.5">Escalation Review: Shots / Surgery / Specialist Referral</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Trigger upon recommendation, failure of conservative care, or plateau</div><div class="text-xs text-foreground mb-0.5">Causation/Prognosis Provider Identification (who can speak best to case)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 14–30; earlier for high-severity cases</div><div class="text-xs text-foreground mb-0.5">Record Retrieval QC (are records complete, legible, consistent dates/providers)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Within 72 hours of each record batch received</div></div>
+  </div>
+</div>
+<div id="value-dev-7-specials--economic-losses-" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">7) Specials & Economic Losses (Complete + Provable) <span class="ml-2 text-xs font-normal text-muted-foreground">22 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Provider List Audit (compare client-reported vs records vs bills)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 7–14; repeat monthly</div><div class="text-xs text-foreground mb-0.5">Request Itemized Bills + Ledgers from Each Provider</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 7–21 (or earlier if treatment ended)</div><div class="text-xs text-foreground mb-0.5">Bills Follow-Up Cycle</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Every 14 days until received</div><div class="text-xs text-foreground mb-0.5">Build/Update Specials Tracker (provider, DOS, billed, paid, balance)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Start Day 7–14; update weekly/bi-weekly</div><div class="text-xs text-foreground mb-0.5">Wage Loss Intake: Work Status + Time Missed + Restrictions</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10 (earlier if out of work)</div><div class="text-xs text-foreground mb-0.5">Wage Loss Document Request to Client (pay stubs/tax/1099 schedule)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Same day as wage loss intake</div><div class="text-xs text-foreground mb-0.5">Employer Verification Request (missed time, rate, position, dates, restrictions)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 3–10 after wage loss confirmed</div><div class="text-xs text-foreground mb-0.5">Disability Note / Work Restriction Documentation Request</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10 after restrictions identified</div><div class="text-xs text-foreground mb-0.5">Out-of-Pocket Expense Log Initiation</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 0–10; update every client check-in</div><div class="text-xs text-foreground mb-0.5">Household Services Impact Capture (if applicable)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 14–30; earlier if high-impact injury</div><div class="text-xs text-foreground mb-0.5">Future Wage Impairment Flag (if applicable)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Trigger upon long restrictions, surgery recommendation, or permanency discussions</div></div>
+  </div>
+</div>
+<div id="value-dev-8-client-profile--cooperatio" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">8) Client Profile / Cooperation Index (Predict Delay + Risk) <span class="ml-2 text-xs font-normal text-muted-foreground">10 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Responsiveness Rating (calls/text/email success)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Each touchpoint; minimum every 14 days</div><div class="text-xs text-foreground mb-0.5">Appointment Adherence Rating (no-shows/cancels/reschedules)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Each time an appointment is missed/rescheduled</div><div class="text-xs text-foreground mb-0.5">Document Return Behavior Rating</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Each doc request cycle</div><div class="text-xs text-foreground mb-0.5">Stability Flags (number changes, missed contacts, inconsistent availability)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Immediately upon occurrence</div><div class="text-xs text-foreground mb-0.5">Update Client Cooperation Index</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Every 14 days or at major change</div></div>
+  </div>
+</div>
+<div id="value-dev-9-settlement-thesis--negotia" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">9) Settlement Thesis + Negotiation Posture (Internal Build) <span class="ml-2 text-xs font-normal text-muted-foreground">14 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Draft Case Theme (5–8 sentence “why they pay” story)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: After liability narrative + early medical chronology exist (target Day 14–30)</div><div class="text-xs text-foreground mb-0.5">Draft Damages Narrative (before/after, functional loss, life impact)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 21–45; update after major medical developments</div><div class="text-xs text-foreground mb-0.5">Draft Defense Arguments List (likely attacks)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 14–30</div><div class="text-xs text-foreground mb-0.5">Draft Rebuttals (facts/records to neutralize defense points)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Within 7 days of defense arguments list</div><div class="text-xs text-foreground mb-0.5">Identify Comparable Outcomes (internal comps if available)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Day 30–45 or once injury trajectory is clear</div><div class="text-xs text-foreground mb-0.5">Set Negotiation Anchor Range (internal only)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Once specials + objective findings + coverage are known (target Day 45–60)</div><div class="text-xs text-foreground mb-0.5">Settlement Thesis v1 (one-page internal summary)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Before Demand Readiness stage entry</div></div>
+  </div>
+</div>
+<div id="value-dev-10-value-development-quality-" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">10) Value Development Quality Control (Gate Readiness Prep) <span class="ml-2 text-xs font-normal text-muted-foreground">16 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Run “Value Development QC Checklist”</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Weekly for active cases in stage; mandatory before stage exit</div><div class="text-xs text-foreground mb-0.5">Confirm Evidence Baseline Complete or Documented Unavailable</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: At QC; prior to exit</div><div class="text-xs text-foreground mb-0.5">Confirm Treatment Status Updated within Last 14 Days</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: At QC; prior to exit</div><div class="text-xs text-foreground mb-0.5">Confirm Specials Tracker Started + All Known Providers Entered</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: At QC; prior to exit</div><div class="text-xs text-foreground mb-0.5">Confirm Coverage Limits Obtained OR Refusal Documented + Escalated</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: At QC; prior to exit</div><div class="text-xs text-foreground mb-0.5">Confirm Liens/Subro Initiated OR Documented N/A</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: At QC; prior to exit</div><div class="text-xs text-foreground mb-0.5">Confirm Internal Settlement Thesis Drafted</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: At QC; prior to exit</div><div class="text-xs text-foreground mb-0.5">Confirm Data Completeness for Mandatory Fields</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: At QC; prior to exit</div></div>
+  </div>
+</div>
+<div id="value-dev-11-stage-exit-advance-to-dem" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">11) Stage Exit: Advance to Demand Readiness <span class="ml-2 text-xs font-normal text-muted-foreground">17 items</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="space-y-0.5"><div class="text-xs text-foreground mb-0.5">Manager Review for Exit Approval (if required by your model)</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Immediately after QC passes</div><div class="text-xs text-foreground mb-0.5">Advance Stage to Demand Readiness</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Same day approval is obtained</div><div class="text-xs text-foreground mb-0.5">Create “Demand Readiness Kickoff” Task Bundle</div><div class="text-xs text-blue-600 italic ml-4 mb-1">When: Immediately upon stage advancement</div><div class="text-xs text-foreground mb-0.5">Litify Quick Actions (Build These as Task Bundles)</div><div class="text-xs text-foreground mb-0.5">Value Development Kickoff</div><div class="text-xs text-foreground mb-0.5">Liability Evidence Pack</div><div class="text-xs text-foreground mb-0.5">Defense Risk Scan</div><div class="text-xs text-foreground mb-0.5">Coverage Verification</div><div class="text-xs text-foreground mb-0.5">Lien &amp; Subrogation Launch</div><div class="text-xs text-foreground mb-0.5">Treatment Status Check-In</div><div class="text-xs text-foreground mb-0.5">Specials &amp; Provider Audit</div><div class="text-xs text-foreground mb-0.5">Economic Loss Packet</div><div class="text-xs text-foreground mb-0.5">Settlement Thesis Drafted</div><div class="text-xs text-foreground mb-0.5">Value Development QC</div></div>
+  </div>
+</div>
+</div></section>
+
+<section class="mb-12" id="approval">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg mt-10">
+  <h2 class="text-lg font-bold">Approval &amp; Notes</h2>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-6">
+  <div class="flex items-center gap-3 mb-4">
+    <span class="text-xs text-muted-foreground" id="sync-status">Connecting&hellip;</span>
+  </div>
+  <div class="space-y-3">
+    <label class="flex items-start gap-3 p-3 rounded-md border border-border hover:bg-muted/30 transition-colors cursor-pointer">
+      <input type="checkbox" id="chk-prelit-ao" data-key="prelit-ao" class="mt-0.5 accent-[#171717]">
+      <div><span class="text-sm font-medium text-foreground">Account Opening Approved</span><br><span class="text-xs text-muted-foreground" id="chk-prelit-ao-date"></span></div>
+    </label>    <label class="flex items-start gap-3 p-3 rounded-md border border-border hover:bg-muted/30 transition-colors cursor-pointer">
+      <input type="checkbox" id="chk-prelit-tm" data-key="prelit-tm" class="mt-0.5 accent-[#171717]">
+      <div><span class="text-sm font-medium text-foreground">Treatment Monitoring Approved</span><br><span class="text-xs text-muted-foreground" id="chk-prelit-tm-date"></span></div>
+    </label>    <label class="flex items-start gap-3 p-3 rounded-md border border-border hover:bg-muted/30 transition-colors cursor-pointer">
+      <input type="checkbox" id="chk-prelit-vd" data-key="prelit-vd" class="mt-0.5 accent-[#171717]">
+      <div><span class="text-sm font-medium text-foreground">Value Development Approved</span><br><span class="text-xs text-muted-foreground" id="chk-prelit-vd-date"></span></div>
+    </label>
+  </div>
+  <div class="mt-6">
+    <label class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Management Notes</label>
+    <textarea id="mgmt-notes" class="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[80px]" placeholder="Add notes here..."></textarea>
+  </div>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<script>
+function navTo(id){
+  var el=document.getElementById(id);var main=document.getElementById('main-scroll');
+  if(el&&main){var mR=main.getBoundingClientRect();var eR=el.getBoundingClientRect();main.scrollTo({top:main.scrollTop+eR.top-mR.top-10,behavior:'smooth'});}
+}
+
+(function(){
+  var sections=['overview','account-opening','account-opening-0','account-opening-1','account-opening-2','account-opening-3','account-opening-4','account-opening-5','account-opening-6','treatment-mon','treatment-mon-0','treatment-mon-1','treatment-mon-2','treatment-mon-3','value-dev','value-dev-1-enter-value-development-sta','value-dev-2-core-data-hygiene-baseline','value-dev-3-liability-of-o-leverage-bu','value-dev-4-coverage--recovery-path-n','value-dev-5-liens-subrogation-collate','value-dev-6-treatment--medical-story-b','value-dev-7-specials--economic-losses-','value-dev-8-client-profile--cooperatio','value-dev-9-settlement-thesis--negotia','value-dev-10-value-development-quality-','value-dev-11-stage-exit-advance-to-dem','approval'];
+  var links=document.querySelectorAll('.sidebar-link');
+  var main=document.getElementById('main-scroll');if(!main)return;
+  function spy(){var current='';sections.forEach(function(id){var el=document.getElementById(id);if(el){var r=el.getBoundingClientRect();var mR=main.getBoundingClientRect();if(r.top-mR.top<=120)current=id;}});
+  links.forEach(function(l){l.classList.remove('bg-accent','text-accent-foreground');var oc=l.getAttribute('onclick')||'';if(oc.indexOf("'"+current+"'")>-1)l.classList.add('bg-accent','text-accent-foreground');});};
+  main.addEventListener('scroll',spy);
+})();
+
+document.addEventListener('click',function(e){var mn=document.getElementById('mobile-nav');var nb=document.getElementById('nav-hamburger');if(mn&&!mn.classList.contains('hidden')&&!mn.contains(e.target)&&e.target!==nb&&!nb.contains(e.target))mn.classList.add('hidden');});
+</script>
+
+<script type="module">
+import { neon } from 'https://esm.sh/@neondatabase/serverless';
+
+const sql = neon('postgresql://neondb_owner:npg_rwK4vVmAyzG5@ep-mute-cloud-aik2rpsg.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require');
+const PAGE_ID = 'pre-lit';
+const statusEl = document.getElementById('sync-status');
+const notesEl = document.getElementById('mgmt-notes');
+const checkboxes = document.querySelectorAll('input[type="checkbox"][data-key]');
+
+function setStatus(text, color) {
+  if (statusEl) { statusEl.textContent = text; statusEl.style.color = color || '#737373'; }
+}
+
+let saveTimer = null;
+function debounceSave(ms = 500) {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, ms);
+}
+
+async function ensureTable() {
+  await sql\`CREATE TABLE IF NOT EXISTS spec_approvals (
+    page_id TEXT PRIMARY KEY,
+    checkboxes JSONB NOT NULL DEFAULT '{}',
+    notes TEXT DEFAULT '',
+    updated_at TIMESTAMPTZ DEFAULT now()
+  )\`;
+}
+
+function gatherState() {
+  const cbState = {};
+  checkboxes.forEach(cb => {
+    const key = cb.dataset.key;
+    const dateSpan = document.getElementById(cb.id + '-date');
+    cbState[key] = {
+      checked: cb.checked,
+      date: dateSpan ? dateSpan.textContent : ''
+    };
+  });
+  return { checkboxes: cbState, notes: notesEl ? notesEl.value : '' };
+}
+
+async function saveState() {
+  try {
+    setStatus('Saving...', '#737373');
+    const state = gatherState();
+    await sql\`INSERT INTO spec_approvals (page_id, checkboxes, notes, updated_at)
+      VALUES (${PAGE_ID}, ${JSON.stringify(state.checkboxes)}, ${state.notes}, now())
+      ON CONFLICT (page_id) DO UPDATE SET
+        checkboxes = ${JSON.stringify(state.checkboxes)},
+        notes = ${state.notes},
+        updated_at = now()\`;
+    setStatus('\u2713 Saved', '#2e7d32');
+  } catch (e) {
+    console.error('Save failed:', e);
+    setStatus('\u26A0 Save failed', '#c62828');
+  }
+}
+
+async function loadState() {
+  try {
+    await ensureTable();
+    const rows = await sql\`SELECT checkboxes, notes FROM spec_approvals WHERE page_id = ${PAGE_ID}\`;
+    if (rows.length > 0) {
+      const { checkboxes: cbData, notes } = rows[0];
+      if (cbData) {
+        checkboxes.forEach(cb => {
+          const key = cb.dataset.key;
+          if (cbData[key]) {
+            cb.checked = cbData[key].checked || false;
+            const dateSpan = document.getElementById(cb.id + '-date');
+            if (dateSpan) dateSpan.textContent = cbData[key].date || '';
+          }
+        });
+      }
+      if (notesEl && notes) notesEl.value = notes;
+    }
+    setStatus('\u2713 Synced', '#2e7d32');
+  } catch (e) {
+    console.error('Load failed:', e);
+    setStatus('\u26A0 Offline (local only)', '#c62828');
+  }
+}
+
+checkboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    const dateSpan = document.getElementById(cb.id + '-date');
+    if (dateSpan) {
+      dateSpan.textContent = cb.checked ? 'Approved: ' + new Date().toLocaleString() : '';
+    }
+    debounceSave(300);
+  });
+});
+
+if (notesEl) {
+  notesEl.addEventListener('input', () => debounceSave(500));
+}
+
+loadState();
+</script>
+
+</body>
+</html>

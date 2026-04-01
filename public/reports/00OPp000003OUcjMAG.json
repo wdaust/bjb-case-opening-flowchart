@@ -1,0 +1,774 @@
+{
+  "reportId": "00OPp000003OUcjMAG",
+  "reportName": "Discovery Trackers",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Record Count",
+      "value": 8455
+    }
+  ],
+  "groupings": [
+    {
+      "key": "Brian Lehrer",
+      "label": "Brian Lehrer",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 675
+        }
+      ]
+    },
+    {
+      "key": "Lisa Lehrer",
+      "label": "Lisa Lehrer",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 528
+        }
+      ]
+    },
+    {
+      "key": "Gregory Shaffer",
+      "label": "Gregory Shaffer",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 475
+        }
+      ]
+    },
+    {
+      "key": "Paul F Romano",
+      "label": "Paul F Romano",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 407
+        }
+      ]
+    },
+    {
+      "key": "Christopher Karounos",
+      "label": "Christopher Karounos",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 405
+        }
+      ]
+    },
+    {
+      "key": "Paul A Krauss",
+      "label": "Paul A Krauss",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 379
+        }
+      ]
+    },
+    {
+      "key": "Stephen Mennella",
+      "label": "Stephen Mennella",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 373
+        }
+      ]
+    },
+    {
+      "key": "Eric Plantier",
+      "label": "Eric Plantier",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 368
+        }
+      ]
+    },
+    {
+      "key": "Matthew Futerfas",
+      "label": "Matthew Futerfas",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 341
+        }
+      ]
+    },
+    {
+      "key": "Raymond Carroll",
+      "label": "Raymond Carroll",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 321
+        }
+      ]
+    },
+    {
+      "key": "John VanDyken",
+      "label": "John VanDyken",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 305
+        }
+      ]
+    },
+    {
+      "key": "Melissa Perrotta Marinelli",
+      "label": "Melissa Perrotta Marinelli",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 285
+        }
+      ]
+    },
+    {
+      "key": "Marc Borden",
+      "label": "Marc Borden",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 277
+        }
+      ]
+    },
+    {
+      "key": "Jason Richman",
+      "label": "Jason Richman",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 258
+        }
+      ]
+    },
+    {
+      "key": "William Firth",
+      "label": "William Firth",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 256
+        }
+      ]
+    },
+    {
+      "key": "Mark Grodberg",
+      "label": "Mark Grodberg",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 243
+        }
+      ]
+    },
+    {
+      "key": "David Rehe",
+      "label": "David Rehe",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 198
+        }
+      ]
+    },
+    {
+      "key": "Bianca Pagani",
+      "label": "Bianca Pagani",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 197
+        }
+      ]
+    },
+    {
+      "key": "Richard Embden",
+      "label": "Richard Embden",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 190
+        }
+      ]
+    },
+    {
+      "key": "Ryan Veilleux",
+      "label": "Ryan Veilleux",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 186
+        }
+      ]
+    },
+    {
+      "key": "Joel Moore",
+      "label": "Joel Moore",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 178
+        }
+      ]
+    },
+    {
+      "key": "Bruce Cantin",
+      "label": "Bruce Cantin",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 155
+        }
+      ]
+    },
+    {
+      "key": "Martha Vasquez",
+      "label": "Martha Vasquez",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 141
+        }
+      ]
+    },
+    {
+      "key": "Jason Zajdel",
+      "label": "Jason Zajdel",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 119
+        }
+      ]
+    },
+    {
+      "key": "Brian Banasiak",
+      "label": "Brian Banasiak",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 118
+        }
+      ]
+    },
+    {
+      "key": "Chris Bradley",
+      "label": "Chris Bradley",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 114
+        }
+      ]
+    },
+    {
+      "key": "George Saba",
+      "label": "George Saba",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 111
+        }
+      ]
+    },
+    {
+      "key": "Matthew Broderick",
+      "label": "Matthew Broderick",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 92
+        }
+      ]
+    },
+    {
+      "key": "Andrew Dellaripa",
+      "label": "Andrew Dellaripa",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 89
+        }
+      ]
+    },
+    {
+      "key": "Austin Qi",
+      "label": "Austin Qi",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 89
+        }
+      ]
+    },
+    {
+      "key": "Todd Greenwell",
+      "label": "Todd Greenwell",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 68
+        }
+      ]
+    },
+    {
+      "key": "Anthony Vindigni",
+      "label": "Anthony Vindigni",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 66
+        }
+      ]
+    },
+    {
+      "key": "Robert Davant",
+      "label": "Robert Davant",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 66
+        }
+      ]
+    },
+    {
+      "key": "Heath Murphy",
+      "label": "Heath Murphy",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 49
+        }
+      ]
+    },
+    {
+      "key": "Mark Dumas",
+      "label": "Mark Dumas",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 46
+        }
+      ]
+    },
+    {
+      "key": "John Carucci",
+      "label": "John Carucci",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 44
+        }
+      ]
+    },
+    {
+      "key": "Jerry Lindheim",
+      "label": "Jerry Lindheim",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 38
+        }
+      ]
+    },
+    {
+      "key": "Jamel Williams",
+      "label": "Jamel Williams",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 29
+        }
+      ]
+    },
+    {
+      "key": "Andrew Nirchio",
+      "label": "Andrew Nirchio",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 23
+        }
+      ]
+    },
+    {
+      "key": "Kierst Aubrey",
+      "label": "Kierst Aubrey",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 18
+        }
+      ]
+    },
+    {
+      "key": "Ryan Broderick",
+      "label": "Ryan Broderick",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 11
+        }
+      ]
+    },
+    {
+      "key": "Kayleen Steele",
+      "label": "Kayleen Steele",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "key": "Stephen Gontkosky",
+      "label": "Stephen Gontkosky",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 9
+        }
+      ]
+    },
+    {
+      "key": "Eason Recto",
+      "label": "Eason Recto",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "key": "Stephen Devine",
+      "label": "Stephen Devine",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "key": "William Wallis",
+      "label": "William Wallis",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "key": "Gary Stone",
+      "label": "Gary Stone",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 7
+        }
+      ]
+    },
+    {
+      "key": "Dan Jalil",
+      "label": "Dan Jalil",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "key": "Candice Rios",
+      "label": "Candice Rios",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "key": "Devin Diaz",
+      "label": "Devin Diaz",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "key": "Ellen Gemberling",
+      "label": "Ellen Gemberling",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "key": "Kyrsty Rider",
+      "label": "Kyrsty Rider",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "key": "Litify Services",
+      "label": "Litify Services",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "key": "Lyra Fragasso",
+      "label": "Lyra Fragasso",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "key": "Peter Rodocker",
+      "label": "Peter Rodocker",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "key": "BJB Test",
+      "label": "BJB Test",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "key": "Christopher Leeds",
+      "label": "Christopher Leeds",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "key": "Roya Namvar",
+      "label": "Roya Namvar",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "key": "Catherine Rodriguez",
+      "label": "Catherine Rodriguez",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Celia Cabrera",
+      "label": "Celia Cabrera",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Cheryl Seriale",
+      "label": "Cheryl Seriale",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Elizabeth Sundy",
+      "label": "Elizabeth Sundy",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Koren Whitehouse",
+      "label": "Koren Whitehouse",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "MaryLina De La Rosa",
+      "label": "MaryLina De La Rosa",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Mayra Suazo",
+      "label": "Mayra Suazo",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Taniqua Williams",
+      "label": "Taniqua Williams",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Tiffany Sims",
+      "label": "Tiffany Sims",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Cassandra Spanato",
+      "label": "Cassandra Spanato",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Dakota Garcia",
+      "label": "Dakota Garcia",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Diana Sparks",
+      "label": "Diana Sparks",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Isha Lopez",
+      "label": "Isha Lopez",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Jeanne Gormley",
+      "label": "Jeanne Gormley",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Jocelyn Brown",
+      "label": "Jocelyn Brown",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "LSAP Services",
+      "label": "LSAP Services",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Mayling Malave",
+      "label": "Mayling Malave",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Soraia Almeida",
+      "label": "Soraia Almeida",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": false
+}

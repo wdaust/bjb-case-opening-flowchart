@@ -1,0 +1,1282 @@
+{
+  "reportId": "00OPp000003OOCLMA4",
+  "reportName": "Resolutions",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Record Count",
+      "value": 11783
+    },
+    {
+      "label": "Settlement/Verdict Amount",
+      "value": 772826507.04
+    },
+    {
+      "label": "Net Attorney Fee",
+      "value": 315857217.37
+    }
+  ],
+  "groupings": [
+    {
+      "key": "Adam Greenspan",
+      "label": "Adam Greenspan",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4944
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 167930347.49
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 66568971.35
+        }
+      ]
+    },
+    {
+      "key": "Paul F Romano",
+      "label": "Paul F Romano",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 190
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 48098610.69
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 15988472.53
+        }
+      ]
+    },
+    {
+      "key": "Gregory Shaffer",
+      "label": "Gregory Shaffer",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 474
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 44586386.35
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 49156216.18
+        }
+      ]
+    },
+    {
+      "key": "Marc Borden",
+      "label": "Marc Borden",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 434
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 42853603.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 14082381.61
+        }
+      ]
+    },
+    {
+      "key": "Kevin Kruse",
+      "label": "Kevin Kruse",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 133
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 29425277.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 9714126.03
+        }
+      ]
+    },
+    {
+      "key": "Eric Plantier",
+      "label": "Eric Plantier",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 307
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 28608413.93
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 8953459.83
+        }
+      ]
+    },
+    {
+      "key": "Raymond Carroll",
+      "label": "Raymond Carroll",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 189
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 28066001.41
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 8876857.02
+        }
+      ]
+    },
+    {
+      "key": "Brian Lehrer",
+      "label": "Brian Lehrer",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 335
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 27804078.54
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 8596288.44
+        }
+      ]
+    },
+    {
+      "key": "Lisa Lehrer",
+      "label": "Lisa Lehrer",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 178
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 25725666.61
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 7996146.24
+        }
+      ]
+    },
+    {
+      "key": "Anthony Vindigni",
+      "label": "Anthony Vindigni",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 238
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 24197931.13
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 9246959.19
+        }
+      ]
+    },
+    {
+      "key": "Brian Banasiak",
+      "label": "Brian Banasiak",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 292
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 23714092.98
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 7682644.79
+        }
+      ]
+    },
+    {
+      "key": "Matthew Futerfas",
+      "label": "Matthew Futerfas",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 216
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 21295642.67
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 6868468.82
+        }
+      ]
+    },
+    {
+      "key": "Paul A Krauss",
+      "label": "Paul A Krauss",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 184
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 21056275.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 6832582.72
+        }
+      ]
+    },
+    {
+      "key": "Stephen Mennella",
+      "label": "Stephen Mennella",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 281
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 19755069.19
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 6390863.35
+        }
+      ]
+    },
+    {
+      "key": "Bianca Pagani",
+      "label": "Bianca Pagani",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 211
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 18966850.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 6093362.03
+        }
+      ]
+    },
+    {
+      "key": "John VanDyken",
+      "label": "John VanDyken",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 260
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 18587653.69
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 5984781.56
+        }
+      ]
+    },
+    {
+      "key": "Christopher Karounos",
+      "label": "Christopher Karounos",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 102
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 17483721.85
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 5638996.38
+        }
+      ]
+    },
+    {
+      "key": "Richard Embden",
+      "label": "Richard Embden",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 179
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 15428444.28
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 5003404.9
+        }
+      ]
+    },
+    {
+      "key": "David Rehe",
+      "label": "David Rehe",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 136
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 15207875.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 4735775.63
+        }
+      ]
+    },
+    {
+      "key": "Melissa Perrotta Marinelli",
+      "label": "Melissa Perrotta Marinelli",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 221
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 14785000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 4872709.25
+        }
+      ]
+    },
+    {
+      "key": "Jason Richman",
+      "label": "Jason Richman",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 110
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 14591699.42
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 4640009.09
+        }
+      ]
+    },
+    {
+      "key": "Chris Bradley",
+      "label": "Chris Bradley",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 168
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 14176782.97
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 4825727.87
+        }
+      ]
+    },
+    {
+      "key": "Bruce Cantin",
+      "label": "Bruce Cantin",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 187
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 11819602.66
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 3803185.12
+        }
+      ]
+    },
+    {
+      "key": "Darren Goldberger",
+      "label": "Darren Goldberger",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 224
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 11197716.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 3617947.62
+        }
+      ]
+    },
+    {
+      "key": "Martha Vasquez",
+      "label": "Martha Vasquez",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 112
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 7805700.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 3123724.83
+        }
+      ]
+    },
+    {
+      "key": "William Firth",
+      "label": "William Firth",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 112
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 7339824.87
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 2389433.2
+        }
+      ]
+    },
+    {
+      "key": "Heath Murphy",
+      "label": "Heath Murphy",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 168
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 6885758.94
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 2101908.97
+        }
+      ]
+    },
+    {
+      "key": "Paul R Romano",
+      "label": "Paul R Romano",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 68
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 6119186.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 11838935.62
+        }
+      ]
+    },
+    {
+      "key": "Ryan Veilleux",
+      "label": "Ryan Veilleux",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 130
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 4915073.95
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 1505291.26
+        }
+      ]
+    },
+    {
+      "key": "Ana Romero-Bosch",
+      "label": "Ana Romero-Bosch",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 64
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 2826192.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 941000.24
+        }
+      ]
+    },
+    {
+      "key": "Paul K Krauss",
+      "label": "Paul K Krauss",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 48
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 2715060.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 1088148.8
+        }
+      ]
+    },
+    {
+      "key": "Alan Albert",
+      "label": "Alan Albert",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 69
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 2547511.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 808167.49
+        }
+      ]
+    },
+    {
+      "key": "Brandon Broderick",
+      "label": "Brandon Broderick",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 23
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 2419500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 1175036.68
+        }
+      ]
+    },
+    {
+      "key": "Liz Flack",
+      "label": "Liz Flack",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 93
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 2318250.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 767315.03
+        }
+      ]
+    },
+    {
+      "key": "Mark Grodberg",
+      "label": "Mark Grodberg",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 28
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 2235000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 735855.06
+        }
+      ]
+    },
+    {
+      "key": "Katia Damaso",
+      "label": "Katia Damaso",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 128
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 2056574.39
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 671502.81
+        }
+      ]
+    },
+    {
+      "key": "Bianca Cuellar",
+      "label": "Bianca Cuellar",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 52
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 1874600.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 799525.24
+        }
+      ]
+    },
+    {
+      "key": "Ronald Rosa",
+      "label": "Ronald Rosa",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 58
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 1736500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 576949.98
+        }
+      ]
+    },
+    {
+      "key": "John Carucci",
+      "label": "John Carucci",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 16
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 1532080.92
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 612832.37
+        }
+      ]
+    },
+    {
+      "key": "Matthew Villani",
+      "label": "Matthew Villani",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 14
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 1306000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 430980.0
+        }
+      ]
+    },
+    {
+      "key": "Janna Sheiman",
+      "label": "Janna Sheiman",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 64
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 1149300.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 382168.98
+        }
+      ]
+    },
+    {
+      "key": "Christopher Leeds",
+      "label": "Christopher Leeds",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 28
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 1117900.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 387471.82
+        }
+      ]
+    },
+    {
+      "key": "Todd Greenwell",
+      "label": "Todd Greenwell",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 58
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 1109603.12
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 416022.67
+        }
+      ]
+    },
+    {
+      "key": "Sami Zeka",
+      "label": "Sami Zeka",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 17
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 940000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 326772.07
+        }
+      ]
+    },
+    {
+      "key": "Stephen Devine",
+      "label": "Stephen Devine",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 17
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 910000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 338121.03
+        }
+      ]
+    },
+    {
+      "key": "Jason Zajdel",
+      "label": "Jason Zajdel",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 25
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 748000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 297733.34
+        }
+      ]
+    },
+    {
+      "key": "David K",
+      "label": "David K",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 18
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 633000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 376000.02
+        }
+      ]
+    },
+    {
+      "key": "William Peck",
+      "label": "William Peck",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 577500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 184002.43
+        }
+      ]
+    },
+    {
+      "key": "Ahmad D",
+      "label": "Ahmad D",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 576200.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 190382.25
+        }
+      ]
+    },
+    {
+      "key": "Gary Matano",
+      "label": "Gary Matano",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 11
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 532500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 2146908.33
+        }
+      ]
+    },
+    {
+      "key": "Joel Moore",
+      "label": "Joel Moore",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 30
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 526900.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 165240.18
+        }
+      ]
+    },
+    {
+      "key": "Robert Florke",
+      "label": "Robert Florke",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 14
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 504499.99
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 163331.07
+        }
+      ]
+    },
+    {
+      "key": "Todd Drayton",
+      "label": "Todd Drayton",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 309500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 103166.67
+        }
+      ]
+    },
+    {
+      "key": "Margaret McKenna",
+      "label": "Margaret McKenna",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 10
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 253000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 908595.0
+        }
+      ]
+    },
+    {
+      "key": "Thailary Lim",
+      "label": "Thailary Lim",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 169300.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 56433.33
+        }
+      ]
+    },
+    {
+      "key": "Austin Qi",
+      "label": "Austin Qi",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 137000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 45194.62
+        }
+      ]
+    },
+    {
+      "key": "Rob Johnson",
+      "label": "Rob Johnson",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 132500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 44166.66
+        }
+      ]
+    },
+    {
+      "key": "Addi Hansen",
+      "label": "Addi Hansen",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 100000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 3333333.33
+        }
+      ]
+    },
+    {
+      "key": "Robert Davant",
+      "label": "Robert Davant",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 100000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 40000.0
+        }
+      ]
+    },
+    {
+      "key": "Peter Rodocker",
+      "label": "Peter Rodocker",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 77500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 29808.37
+        }
+      ]
+    },
+    {
+      "key": "Roya Namvar",
+      "label": "Roya Namvar",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 50000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 16386.7
+        }
+      ]
+    },
+    {
+      "key": "Andrew Nirchio",
+      "label": "Andrew Nirchio",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 45000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 15000.0
+        }
+      ]
+    },
+    {
+      "key": "Dan Jalil",
+      "label": "Dan Jalil",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 40000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 15059.44
+        }
+      ]
+    },
+    {
+      "key": "George Saba",
+      "label": "George Saba",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 35500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 14200.0
+        }
+      ]
+    },
+    {
+      "key": "Michelle Tullio",
+      "label": "Michelle Tullio",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 35000.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 11425.6
+        }
+      ]
+    },
+    {
+      "key": "Mark Dumas",
+      "label": "Mark Dumas",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 12500.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 4166.67
+        }
+      ]
+    },
+    {
+      "key": "Jonathan Angelo",
+      "label": "Jonathan Angelo",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 8750.0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 2916.66
+        }
+      ]
+    },
+    {
+      "key": "Marc Garbar",
+      "label": "Marc Garbar",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 15
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 25000.0
+        }
+      ]
+    },
+    {
+      "key": "Melanie Hernandez",
+      "label": "Melanie Hernandez",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 43
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 69205.0
+        }
+      ]
+    },
+    {
+      "key": "Buket Ozsahin",
+      "label": "Buket Ozsahin",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 7
+        },
+        {
+          "label": "Settlement/Verdict Amount",
+          "value": 0
+        },
+        {
+          "label": "Net Attorney Fee",
+          "value": 12060.0
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": false
+}

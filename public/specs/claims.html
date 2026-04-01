@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claims &mdash; Litify Dev Specification</title>
+<style>
+#tooltip-overlay{position:absolute;z-index:9999;background:#fff;border:1px solid #e5e5e5;border-radius:0.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:12px 14px;min-width:260px;max-width:340px;font-size:12px;color:#0a0a0a;line-height:1.5;pointer-events:none}
+#tooltip-overlay strong{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:#171717;margin-bottom:6px}
+#tooltip-overlay ul{padding-left:14px;margin:4px 0 0}
+#tooltip-overlay li{margin-bottom:3px}
+.info-popover{display:none}
+.nav-dropdown-menu{display:none;}
+.nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown-menu:hover{display:block;}
+[data-card-body]{display:none;}
+.open>[data-card-body]{display:block;}
+.open>button [data-chevron]{transform:rotate(180deg);}
+@media print{aside,nav{display:none!important}main{padding:20px!important}[data-card-body]{display:block!important}.bg-primary{background:#171717!important;color:#fafafa!important;-webkit-print-color-adjust:exact}}
+</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        background: '#fafafa', foreground: '#0a0a0a', card: '#ffffff', 'card-foreground': '#0a0a0a',
+        primary: '#171717', 'primary-foreground': '#fafafa', secondary: '#f5f5f5', 'secondary-foreground': '#171717',
+        muted: '#f5f5f5', 'muted-foreground': '#737373', accent: '#f5f5f5', 'accent-foreground': '#171717',
+        destructive: '#ef4444', border: '#e5e5e5', input: '#e5e5e5', ring: '#0a0a0a',
+        sidebar: '#fafafa', 'sidebar-foreground': '#171717', 'sidebar-accent': '#f5f5f5',
+      },
+      borderRadius: { lg: '0.625rem', md: '0.5rem', sm: '0.375rem' }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-background text-foreground font-[-apple-system,BlinkMacSystemFont,'Inter',sans-serif] text-sm leading-relaxed">
+<!-- TOP NAV -->
+<nav class="sticky top-0 z-50 h-14 border-b border-border bg-card">
+  <div class="max-w-[1460px] mx-auto h-full flex items-center justify-between px-6">
+    <span class="text-sm font-semibold text-muted-foreground tracking-wide">Performance Plan</span>
+    <div class="hidden md:flex items-center gap-1">
+      <div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-foreground rounded-md transition-colors" style="border-bottom: 2px solid #ef4444">
+          Pre-LIT
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="intake.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Intake</a><a href="medical-records.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Med Records</a><a href="claims.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-foreground bg-accent rounded-md no-underline"><span class="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0"></span>Claims</a><a href="pre-lit.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Pre-LIT</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Litigation
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full left-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="index.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Case Opening</a><a href="treatment-monitoring.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Treat. Monitoring</a><a href="written-discovery.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Written Discovery</a><a href="expert-deposition.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Arb &amp; Mediation</a><a href="trial.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Trial</a>
+        </div>
+      </div><div class="nav-dropdown relative">
+        <button class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground rounded-md transition-colors">
+          Support
+          <svg class="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="nav-dropdown-menu absolute top-full right-0 mt-1 py-1 bg-card border border-border rounded-lg shadow-lg min-w-[180px] z-[60]">
+          <a href="litify-dev-summary.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Dev Summary</a><a href="scoring-review.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Scoring Review</a><a href="metrics.html" class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-muted-foreground rounded-md hover:bg-accent hover:text-accent-foreground transition-colors no-underline"><span class="w-1.5 h-1.5 shrink-0"></span>Metrics</a>
+        </div>
+      </div>
+    </div>
+    <button id="nav-hamburger" class="md:hidden text-foreground" onclick="document.getElementById('mobile-nav').classList.toggle('hidden')">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+  <div id="mobile-nav" class="hidden md:hidden bg-card border-t border-border px-4 pb-3">
+    <div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Pre-LIT</div><a href="intake.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Intake</a><a href="medical-records.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Med Records</a><a href="claims.html" class="block px-3 py-2 text-sm font-medium text-foreground bg-accent rounded-md no-underline">Claims</a><a href="pre-lit.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Pre-LIT</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Litigation</div><a href="index.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Case Opening</a><a href="treatment-monitoring.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Treat. Monitoring</a><a href="written-discovery.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Written Discovery</a><a href="expert-deposition.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Expert &amp; Deposition</a><a href="arbitration-mediation.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Arb &amp; Mediation</a><a href="trial.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Trial</a><div class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mt-2 mb-1 px-3">Support</div><a href="litify-dev-summary.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Dev Summary</a><a href="scoring-review.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Scoring Review</a><a href="metrics.html" class="block px-3 py-2 text-sm font-medium text-muted-foreground rounded-md no-underline">Metrics</a>
+  </div>
+</nav>
+<div class="flex h-[calc(100vh-3.5rem)]">
+<aside class="hidden md:flex w-64 flex-col border-r border-border bg-card overflow-y-auto shrink-0">
+  <div class="px-5 pt-6 pb-4 border-b border-border">
+    <h2 class="text-xs font-bold text-foreground tracking-wide uppercase">Claims</h2>
+    <p class="text-[11px] text-muted-foreground mt-1">Performance Spec v1.0</p>
+  </div>
+  <div class="py-3">
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Phases</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('overview')">Overview</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-0')">Ready for Demand Review</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-1')">Demand Drafting</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-2')">Demand Package Assembly</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-3')">Demand Send</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-4')">Demand Out</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-5')">Demand Verification</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-6')">Demand Follow Up</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-7')">Settlement Negotiations Initiated</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-8')">Settlement Negotiations: Stage 1</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-9')">Settlement Negotiations: Stage 2</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-10')">Settlement Negotiations: Stage 3</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-11')">Settlement Negotiations: Stage 4</a>
+    <a class="sidebar-link block px-5 pl-7 py-1.5 text-xs text-muted-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('claims-12')">Settlement / Litigation Decision</a>
+    <div class="px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Admin</div>
+    <a class="sidebar-link block px-5 py-1.5 text-xs font-semibold text-foreground cursor-pointer hover:bg-accent hover:text-accent-foreground transition-colors" onclick="navTo('approval')">Approval & Notes</a>
+  </div>
+</aside>
+
+<main id="main-scroll" class="flex-1 overflow-y-auto">
+<div class="max-w-7xl px-6 lg:px-10 py-10 mx-auto">
+
+<!-- PAGE HEADER -->
+<div class="mb-10 border-b-4 border-[#ef4444] pb-8">
+  <h1 class="text-2xl font-bold text-foreground">Claims &mdash; Performance Specification</h1>
+  <p class="text-sm text-muted-foreground mt-1">Demand Review &nbsp;|&nbsp; Drafting &nbsp;|&nbsp; Follow-Up &nbsp;|&nbsp; Negotiations &nbsp;|&nbsp; Settlement</p>
+  <span class="inline-block mt-3 px-3 py-0.5 text-xs border border-border rounded-full text-muted-foreground bg-muted">v1.0 &bull; April 2026</span>
+</div>
+
+<!-- LEGEND -->
+<div class="rounded-lg border border-border bg-card p-5 mb-8 flex flex-wrap gap-6">
+  <div>
+    <h4 class="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Roles</h4>
+    <div class="flex flex-wrap gap-2">
+      <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-orange-100 text-orange-700">Demand Coordinator</span><span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-purple-100 text-purple-700">Claims Manager</span>
+    </div>
+  </div>
+</div>
+
+
+<section class="mb-8" id="overview">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg">
+  <h2 class="text-lg font-bold">Claims &mdash; Process Overview</h2>
+  <p class="text-sm text-primary-foreground/70 mt-0.5">Demand Review &nbsp;|&nbsp; Drafting &nbsp;|&nbsp; Follow-Up &nbsp;|&nbsp; Negotiations &nbsp;|&nbsp; Settlement</p>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-5">
+  <p class="text-sm text-muted-foreground">The Claims department manages the full demand lifecycle from file review through settlement or litigation decision. Each phase includes structured review checklists and escalating SLAs.</p>
+</div>
+</section>
+<section class="mb-4" id="claims-0"><div id="claims-0" class="rounded-lg border border-border bg-card mb-4 open">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Ready for Demand Review <span class="ml-2 text-xs font-normal text-muted-foreground">21 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Liability - Demand Ready</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Liability</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is liability clearly established?</li><li class="text-xs">Are there comparative negligence issues?</li><li class="text-xs">Do we have police report and supporting evidence?</li><li class="text-xs">Are there liability risks?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request police report - upload</li><li class="text-xs">Request incident report - upload</li><li class="text-xs">Request photos/videos from client - upload</li><li class="text-xs">Request witness statements - upload</li><li class="text-xs">Confirm liability decision with adjuster</li><li class="text-xs">Escalate liability concerns to management</li><li class="text-xs">Document liability weaknesses for demand drafting</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Liability - Demand Deficiencies 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Liability</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is liability clearly established?</li><li class="text-xs">Are there comparative negligence issues?</li><li class="text-xs">Do we have police report and supporting evidence?</li><li class="text-xs">Are there liability risks?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request police report - upload</li><li class="text-xs">Request incident report - upload</li><li class="text-xs">Request photos/videos from client - upload</li><li class="text-xs">Request witness statements - upload</li><li class="text-xs">Confirm liability decision with adjuster</li><li class="text-xs">Escalate liability concerns to management</li><li class="text-xs">Document liability weaknesses for demand drafting</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Resolve demand deficiencies, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Liability - Demand Deficiencies 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Liability</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is liability clearly established?</li><li class="text-xs">Are there comparative negligence issues?</li><li class="text-xs">Do we have police report and supporting evidence?</li><li class="text-xs">Are there liability risks?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request police report - upload</li><li class="text-xs">Request incident report - upload</li><li class="text-xs">Request photos/videos from client - upload</li><li class="text-xs">Request witness statements - upload</li><li class="text-xs">Confirm liability decision with adjuster</li><li class="text-xs">Escalate liability concerns to management</li><li class="text-xs">Document liability weaknesses for demand drafting</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Route case back to CM for complex demand deficiency resolution, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Treatment - Demand Ready</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Treatment</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is treatment complete or near completion?</li><li class="text-xs">Are there gaps in treatment?</li><li class="text-xs">Are there upcoming procedures?</li><li class="text-xs">Does treatment support injury claim?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Contact client to confirm treatment status</li><li class="text-xs">Request updated treatment schedule</li><li class="text-xs">Document treatment gaps explanation</li><li class="text-xs">Follow up with providers for additional treatment</li><li class="text-xs">Delay demand until treatment stabilizes</li><li class="text-xs">Escalate to case manager for treatment follow-up</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Treatment - Demand Deficiencies 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Treatment</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is treatment complete or near completion?</li><li class="text-xs">Are there gaps in treatment?</li><li class="text-xs">Are there upcoming procedures?</li><li class="text-xs">Does treatment support injury claim?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Contact client to confirm treatment status</li><li class="text-xs">Request updated treatment schedule</li><li class="text-xs">Document treatment gaps explanation</li><li class="text-xs">Follow up with providers for additional treatment</li><li class="text-xs">Delay demand until treatment stabilizes</li><li class="text-xs">Escalate to case manager for treatment follow-up</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Resolve demand deficiencies, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Treatment - Demand Deficiencies 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Treatment</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is treatment complete or near completion?</li><li class="text-xs">Are there gaps in treatment?</li><li class="text-xs">Are there upcoming procedures?</li><li class="text-xs">Does treatment support injury claim?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Contact client to confirm treatment status</li><li class="text-xs">Request updated treatment schedule</li><li class="text-xs">Document treatment gaps explanation</li><li class="text-xs">Follow up with providers for additional treatment</li><li class="text-xs">Delay demand until treatment stabilizes</li><li class="text-xs">Escalate to case manager for treatment follow-up</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Route case back to CM for complex demand deficiency resolution, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Records - Demand Ready</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Records</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Do we have records from all providers?</li><li class="text-xs">Are records complete and legible?</li><li class="text-xs">Do records support causation?</li><li class="text-xs">Are there prior injury concerns?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request missing records</li><li class="text-xs">Re-request incomplete records</li><li class="text-xs">Request narrative report (if needed)</li><li class="text-xs">Flag prior injuries for attorney review</li><li class="text-xs">Assign medical records team follow-up</li><li class="text-xs">Verify all providers accounted for</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Records - Demand Deficiencies 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Records</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Do we have records from all providers?</li><li class="text-xs">Are records complete and legible?</li><li class="text-xs">Do records support causation?</li><li class="text-xs">Are there prior injury concerns?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request missing records</li><li class="text-xs">Re-request incomplete records</li><li class="text-xs">Request narrative report (if needed)</li><li class="text-xs">Flag prior injuries for attorney review</li><li class="text-xs">Assign medical records team follow-up</li><li class="text-xs">Verify all providers accounted for</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Resolve demand deficiencies, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Records - Demand Deficiencies 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Records</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Do we have records from all providers?</li><li class="text-xs">Are records complete and legible?</li><li class="text-xs">Do records support causation?</li><li class="text-xs">Are there prior injury concerns?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request missing records</li><li class="text-xs">Re-request incomplete records</li><li class="text-xs">Request narrative report (if needed)</li><li class="text-xs">Flag prior injuries for attorney review</li><li class="text-xs">Assign medical records team follow-up</li><li class="text-xs">Verify all providers accounted for</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Route case back to CM for complex demand deficiency resolution, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Bills - Demand Ready</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Bills</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Do we have bills from all providers?</li><li class="text-xs">Are bills itemized?</li><li class="text-xs">Do bills match treatment providers?</li><li class="text-xs">Are total specials calculated?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request missing billing</li><li class="text-xs">Request itemized billing</li><li class="text-xs">Match bills to treatment providers</li><li class="text-xs">Calculate updated specials</li><li class="text-xs">Identify liens or balances</li><li class="text-xs">Assign billing follow-up task</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Bills - Demand Deficiencies 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Bills</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Do we have bills from all providers?</li><li class="text-xs">Are bills itemized?</li><li class="text-xs">Do bills match treatment providers?</li><li class="text-xs">Are total specials calculated?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request missing billing</li><li class="text-xs">Request itemized billing</li><li class="text-xs">Match bills to treatment providers</li><li class="text-xs">Calculate updated specials</li><li class="text-xs">Identify liens or balances</li><li class="text-xs">Assign billing follow-up task</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Resolve demand deficiencies, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Bills - Demand Deficiencies 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Bills</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Do we have bills from all providers?</li><li class="text-xs">Are bills itemized?</li><li class="text-xs">Do bills match treatment providers?</li><li class="text-xs">Are total specials calculated?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request missing billing</li><li class="text-xs">Request itemized billing</li><li class="text-xs">Match bills to treatment providers</li><li class="text-xs">Calculate updated specials</li><li class="text-xs">Identify liens or balances</li><li class="text-xs">Assign billing follow-up task</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Route case back to CM for complex demand deficiency resolution, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Damanges - Demand Ready</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Damages</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Are lost wages documented?</li><li class="text-xs">Are out-of-pocket expenses documented?</li><li class="text-xs">Are future treatment recommendations identified?</li><li class="text-xs">Is there evidence of permanent injury?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request wage verification from employer</li><li class="text-xs">Request disability notes from provider</li><li class="text-xs">Request client expense documentation</li><li class="text-xs">Flag future treatment recommendations</li><li class="text-xs">Request permanency narrative (if applicable)</li><li class="text-xs">Assign economic damages follow-up</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Damages - Demand Deficiencies 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Damages</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Are lost wages documented?</li><li class="text-xs">Are out-of-pocket expenses documented?</li><li class="text-xs">Are future treatment recommendations identified?</li><li class="text-xs">Is there evidence of permanent injury?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request wage verification from employer</li><li class="text-xs">Request disability notes from provider</li><li class="text-xs">Request client expense documentation</li><li class="text-xs">Flag future treatment recommendations</li><li class="text-xs">Request permanency narrative (if applicable)</li><li class="text-xs">Assign economic damages follow-up</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Resolve demand deficiencies, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Damages - Demand Deficiencies 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Damages</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Are lost wages documented?</li><li class="text-xs">Are out-of-pocket expenses documented?</li><li class="text-xs">Are future treatment recommendations identified?</li><li class="text-xs">Is there evidence of permanent injury?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Request wage verification from employer</li><li class="text-xs">Request disability notes from provider</li><li class="text-xs">Request client expense documentation</li><li class="text-xs">Flag future treatment recommendations</li><li class="text-xs">Request permanency narrative (if applicable)</li><li class="text-xs">Assign economic damages follow-up</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Route case back to CM for complex demand deficiency resolution, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Insurance - Demand Ready</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Insurance</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is correct carrier identified?</li><li class="text-xs">Is claim number confirmed?</li><li class="text-xs">Is adjuster contact confirmed?</li><li class="text-xs">Are policy limits known?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Contact carrier for claim info</li><li class="text-xs">Confirm adjuster contact</li><li class="text-xs">Request policy limits disclosure</li><li class="text-xs">Verify coverage available</li><li class="text-xs">Document insurance details in file</li><li class="text-xs">Assign insurance follow-up task</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Insurance - Demand Deficiencies 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Insurance</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is correct carrier identified?</li><li class="text-xs">Is claim number confirmed?</li><li class="text-xs">Is adjuster contact confirmed?</li><li class="text-xs">Are policy limits known?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Contact carrier for claim info</li><li class="text-xs">Confirm adjuster contact</li><li class="text-xs">Request policy limits disclosure</li><li class="text-xs">Verify coverage available</li><li class="text-xs">Document insurance details in file</li><li class="text-xs">Assign insurance follow-up task</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Resolve demand deficiencies, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Insurance - Demand Deficiencies 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Insurance</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Is correct carrier identified?</li><li class="text-xs">Is claim number confirmed?</li><li class="text-xs">Is adjuster contact confirmed?</li><li class="text-xs">Are policy limits known?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Contact carrier for claim info</li><li class="text-xs">Confirm adjuster contact</li><li class="text-xs">Request policy limits disclosure</li><li class="text-xs">Verify coverage available</li><li class="text-xs">Document insurance details in file</li><li class="text-xs">Assign insurance follow-up task</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Route case back to CM for complex demand deficiency resolution, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Client - Demand Ready</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Client Confirmation</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Has client confirmed treatment complete?</li><li class="text-xs">Has client confirmed no additional providers?</li><li class="text-xs">Has client confirmed no additional damages?</li><li class="text-xs">Has client been updated on demand timing?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Call client to confirm treatment status</li><li class="text-xs">Send client confirmation email/text</li><li class="text-xs">Confirm all providers with client</li><li class="text-xs">Confirm lost wages and damages</li><li class="text-xs">Update client on demand timeline</li><li class="text-xs">Document client confirmation in file</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Client - Demand Deficiencies 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Client Confirmation</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Has client confirmed treatment complete?</li><li class="text-xs">Has client confirmed no additional providers?</li><li class="text-xs">Has client confirmed no additional damages?</li><li class="text-xs">Has client been updated on demand timing?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Call client to confirm treatment status</li><li class="text-xs">Send client confirmation email/text</li><li class="text-xs">Confirm all providers with client</li><li class="text-xs">Confirm lost wages and damages</li><li class="text-xs">Update client on demand timeline</li><li class="text-xs">Document client confirmation in file</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Resolve demand deficiencies, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Ready for Demand Review</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">File Review: Client - Demand Deficiencies 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><span class="font-semibold text-xs">Client Confirmation</span><div class="mt-2"><span class="font-semibold text-xs text-blue-700">Questions:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Has client confirmed treatment complete?</li><li class="text-xs">Has client confirmed no additional providers?</li><li class="text-xs">Has client confirmed no additional damages?</li><li class="text-xs">Has client been updated on demand timing?</li></ul></div><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><div class="mt-2"><span class="font-semibold text-xs text-orange-700">Follow-Up Tasks:</span><ul class="list-disc pl-4 mt-1 space-y-0.5"><li class="text-xs">Call client to confirm treatment status</li><li class="text-xs">Send client confirmation email/text</li><li class="text-xs">Confirm all providers with client</li><li class="text-xs">Confirm lost wages and damages</li><li class="text-xs">Update client on demand timeline</li><li class="text-xs">Document client confirmation in file</li></ul></div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Route case back to CM for complex demand deficiency resolution, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 min from being assigned</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-1"><div id="claims-1" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Demand Drafting <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Drafting</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Drafting</td><td class="px-3 py-2.5 text-xs border-b border-border align-top whitespace-pre-line">Draft demand letter
+Summarize liability
+Summarize treatment timeline
+Highlight key injuries
+Highlight permanency (if applicable)
+Include specials summary
+Include demand amount (if firm policy allows)</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-2"><div id="claims-2" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Demand Package Assembly <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Package Assembly</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Package Assembly</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Demand Coord assembles:
+
+Demand letter
+Medical records
+Bills
+Police report
+Photos
+Wage loss documentation
+Supporting exhibits
+Verify:
+Documents labeled properly
+PDF merged correctly
+Pages legible
+Exhibits referenced properly</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-3"><div id="claims-3" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Demand Send <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Send</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Send</td><td class="px-3 py-2.5 text-xs border-b border-border align-top whitespace-pre-line">Send via:
+
+Email
+Carrier portal
+Mail (if required)
+
+Confirm delivery
+Upload sent confirmation
+Record demand amount
+Record date sent</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 hour from being assigned</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-4"><div id="claims-4" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Demand Out <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Out</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Out</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Track carrier / email response</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 day from the Demand being sent</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-5"><div id="claims-5" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Demand Verification <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Verification</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Verification</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Verify demand package recieved and in process.
+
+Description:
+The demand has been sent and initial contact with the adjuster has occurred. The carrier is reviewing the demand package and evaluating exposure.
+
+What&#x27;s Happening:
+
+Demand sent
+Adjuster acknowledges receipt
+File under review
+Liability and damages evaluation underway
+
+Operational Focus:
+
+Confirm receipt
+Establish adjuster relationship
+Confirm review timeline
+Set follow-up cadence</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">3 days from the Demand being sent</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-6"><div id="claims-6" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Demand Follow Up <span class="ml-2 text-xs font-normal text-muted-foreground">20 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V1, send Email 1, mark &quot;Call Attempt 1 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">7 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V2, send Email 2, mark &quot;Call Attempt 2 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">14 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 3</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V3, send Email 3, mark &quot;Call Attempt 3 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">21 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 4</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V4, send Email 4, mark &quot;Call Attempt 4 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">28 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 5</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V5, send Email 5, mark &quot;Call Attempt 5 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">35 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 6</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V6, send Email 6, mark &quot;Call Attempt 6 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">42 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 7</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V7, send Email 7, mark &quot;Call Attempt 7 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">49 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 8</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V8, send Email 8, mark &quot;Call Attempt 8 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">56 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 9</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V9, send Email 9, mark &quot;Call Attempt 9 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">63 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 10</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V10, send Email 10, mark &quot;Call Attempt 10 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">70 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 11</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V11, send Email 11, mark &quot;Call Attempt 11 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">77 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 12</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V12, send Email 12, mark &quot;Call Attempt 12 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">84 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 13</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V13, send Email 13, mark &quot;Call Attempt 13 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">91 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 14</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V14, send Email 14, mark &quot;Call Attempt 14 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">98 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 15</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V15, send Email 15, mark &quot;Call Attempt 15 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">105 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 16</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V16, send Email 16, mark &quot;Call Attempt 16 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">112 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 17</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V17, send Email 17, mark &quot;Call Attempt 17 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">119 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 18</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V18, send Email 18, mark &quot;Call Attempt 18 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">126 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 19</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V19, send Email 19, mark &quot;Call Attempt 19 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">133 days from the Demand being sent</td></tr><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Call Attempt 20</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Follow Up</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">If connected, mark &quot;Complete&quot;, if not connected, drop V20, send Email 15, mark &quot;Call Attempt 15 Complete&quot;</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">140 days from the Demand being sent</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-7"><div id="claims-7" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Settlement Negotiations Initiated <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations Initiated</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Demand Coordinator</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations Initiated</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations Initiated</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Set the appointment or transfer the call, then mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 min from established contact</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-8"><div id="claims-8" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Settlement Negotiations: Stage 1 <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations: Stage 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claims Manager</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations: Stage 1</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Settlement Negotiations: Stage 1
+
+Stage 1 — Active Negotiation
+
+Description:
+The demand has been received and negotiations have begun. The carrier is reviewing the file and initial discussions are underway.
+
+What&#x27;s Happening:
+
+Demand acknowledged
+Adjuster reviewing file
+Initial negotiation discussions begin
+Possible request for additional information
+
+Operational Focus:
+
+Establish negotiation cadence
+Confirm review timeline
+Begin positioning case value
+Maintain communication pressure</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete the negotiation stage, mark complete or if another discussion is needed, set the appointment, and then mark &quot;Restart Demand Follow Up&quot;, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">10 days from established contact</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-9"><div id="claims-9" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Settlement Negotiations: Stage 2 <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations: Stage 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claims Manager</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations: Stage 2</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Settlement Negotiations: Stage 2
+
+Stage 2 — Offer Exchange
+
+Description:
+The carrier has made an offer and both sides are actively negotiating toward resolution.
+
+What&#x27;s Happening:
+
+First offer received
+Counter-offers exchanged
+Case value being negotiated
+Adjuster evaluating authority
+
+Operational Focus:
+
+Track offer movement
+Strengthen negotiating position
+Provide supplemental documentation
+Push negotiation momentum</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete the negotiation stage, mark complete or if another discussion is needed, set the appointment, and then mark &quot;Restart Demand Follow Up&quot;, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">20 days from established contact</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-10"><div id="claims-10" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Settlement Negotiations: Stage 3 <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations: Stage 3</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claims Manager</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations: Stage 3</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Settlement Negotiations: Stage 3
+
+Stage 3 — Authority / Advanced Negotiation
+
+Description:
+Negotiations have escalated internally within the carrier and the matter is approaching resolution.
+
+What&#x27;s Happening:
+
+Supervisor involvement
+Authority requests submitted
+Final valuation discussions
+Settlement range narrowing
+
+Operational Focus:
+
+Apply settlement pressure
+Emphasize litigation risk
+Push for authority approval
+Prepare for resolution</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete the negotiation stage, mark complete or if another discussion is needed, set the appointment, and then mark &quot;Restart Demand Follow Up&quot;, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">30 days from established contact</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-11"><div id="claims-11" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Settlement Negotiations: Stage 4 <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations: Stage 4</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claims Manager</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement Negotiations: Stage 4</td><td class="px-3 py-2.5 text-xs border-b border-border align-top"><div class="max-h-40 overflow-y-auto whitespace-pre-line">Settlement Negotiations: Stage 4
+
+Stage 4 — Resolution
+
+Description:
+Negotiations conclude either through settlement or litigation.
+
+What&#x27;s Happening:
+
+Settlement reached OR
+Negotiation impasse
+Litigation decision made
+
+Operational Focus:
+
+Confirm settlement
+Send release
+Transition to litigation if necessary</div></td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Complete the negotiation stage, mark complete or if another discussion is needed, set the appointment, and then mark &quot;Restart Demand Follow Up&quot;, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">40 days from established contact</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+<section class="mb-4" id="claims-12"><div id="claims-12" class="rounded-lg border border-border bg-card mb-4">
+  <button onclick="this.parentElement.classList.toggle('open')" class="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-muted/30 transition-colors rounded-t-lg">
+    <span class="text-sm font-semibold text-foreground">Settlement / Litigation Decision <span class="ml-2 text-xs font-normal text-muted-foreground">1 tasks</span></span>
+    <svg data-chevron class="w-4 h-4 text-muted-foreground transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+  <div data-card-body class="px-5 pb-5">
+    <div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead><tr><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Quick Action Panel</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Assigned To</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Task</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Objective</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">Function</th><th class="px-3 py-2 text-left text-[11px] font-bold uppercase tracking-wider text-muted-foreground bg-muted/50 border-b border-border">SLA</th></tr></thead>
+<tbody><tr class="hover:bg-muted/30 transition-colors"><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement / Litigation Decision</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Claims Management</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement / Litigation Decision</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Settlement / Litigation Decision</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">Once completed, mark complete</td><td class="px-3 py-2.5 text-xs border-b border-border align-top">1 day from completed negotiation</td></tr></tbody>
+</table></div>
+  </div>
+</div></section>
+
+<section class="mb-12" id="approval">
+<div class="bg-primary text-primary-foreground px-6 py-4 rounded-t-lg mt-10">
+  <h2 class="text-lg font-bold">Approval &amp; Notes</h2>
+</div>
+<div class="border border-t-0 border-border rounded-b-lg bg-card p-6">
+  <div class="flex items-center gap-3 mb-4">
+    <span class="text-xs text-muted-foreground" id="sync-status">Connecting&hellip;</span>
+  </div>
+  <div class="space-y-3">
+    <label class="flex items-start gap-3 p-3 rounded-md border border-border hover:bg-muted/30 transition-colors cursor-pointer">
+      <input type="checkbox" id="chk-claims-approved" data-key="claims-approved" class="mt-0.5 accent-[#171717]">
+      <div><span class="text-sm font-medium text-foreground">Claims Process Approved</span><br><span class="text-xs text-muted-foreground" id="chk-claims-approved-date"></span></div>
+    </label>
+  </div>
+  <div class="mt-6">
+    <label class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Management Notes</label>
+    <textarea id="mgmt-notes" class="mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm min-h-[80px]" placeholder="Add notes here..."></textarea>
+  </div>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<script>
+function navTo(id){
+  var el=document.getElementById(id);var main=document.getElementById('main-scroll');
+  if(el&&main){var mR=main.getBoundingClientRect();var eR=el.getBoundingClientRect();main.scrollTo({top:main.scrollTop+eR.top-mR.top-10,behavior:'smooth'});}
+}
+
+(function(){
+  var sections=['overview','claims-0','claims-1','claims-2','claims-3','claims-4','claims-5','claims-6','claims-7','claims-8','claims-9','claims-10','claims-11','claims-12','approval'];
+  var links=document.querySelectorAll('.sidebar-link');
+  var main=document.getElementById('main-scroll');if(!main)return;
+  function spy(){var current='';sections.forEach(function(id){var el=document.getElementById(id);if(el){var r=el.getBoundingClientRect();var mR=main.getBoundingClientRect();if(r.top-mR.top<=120)current=id;}});
+  links.forEach(function(l){l.classList.remove('bg-accent','text-accent-foreground');var oc=l.getAttribute('onclick')||'';if(oc.indexOf("'"+current+"'")>-1)l.classList.add('bg-accent','text-accent-foreground');});};
+  main.addEventListener('scroll',spy);
+})();
+
+document.addEventListener('click',function(e){var mn=document.getElementById('mobile-nav');var nb=document.getElementById('nav-hamburger');if(mn&&!mn.classList.contains('hidden')&&!mn.contains(e.target)&&e.target!==nb&&!nb.contains(e.target))mn.classList.add('hidden');});
+</script>
+
+<script type="module">
+import { neon } from 'https://esm.sh/@neondatabase/serverless';
+
+const sql = neon('postgresql://neondb_owner:npg_rwK4vVmAyzG5@ep-mute-cloud-aik2rpsg.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require');
+const PAGE_ID = 'claims';
+const statusEl = document.getElementById('sync-status');
+const notesEl = document.getElementById('mgmt-notes');
+const checkboxes = document.querySelectorAll('input[type="checkbox"][data-key]');
+
+function setStatus(text, color) {
+  if (statusEl) { statusEl.textContent = text; statusEl.style.color = color || '#737373'; }
+}
+
+let saveTimer = null;
+function debounceSave(ms = 500) {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, ms);
+}
+
+async function ensureTable() {
+  await sql\`CREATE TABLE IF NOT EXISTS spec_approvals (
+    page_id TEXT PRIMARY KEY,
+    checkboxes JSONB NOT NULL DEFAULT '{}',
+    notes TEXT DEFAULT '',
+    updated_at TIMESTAMPTZ DEFAULT now()
+  )\`;
+}
+
+function gatherState() {
+  const cbState = {};
+  checkboxes.forEach(cb => {
+    const key = cb.dataset.key;
+    const dateSpan = document.getElementById(cb.id + '-date');
+    cbState[key] = {
+      checked: cb.checked,
+      date: dateSpan ? dateSpan.textContent : ''
+    };
+  });
+  return { checkboxes: cbState, notes: notesEl ? notesEl.value : '' };
+}
+
+async function saveState() {
+  try {
+    setStatus('Saving...', '#737373');
+    const state = gatherState();
+    await sql\`INSERT INTO spec_approvals (page_id, checkboxes, notes, updated_at)
+      VALUES (${PAGE_ID}, ${JSON.stringify(state.checkboxes)}, ${state.notes}, now())
+      ON CONFLICT (page_id) DO UPDATE SET
+        checkboxes = ${JSON.stringify(state.checkboxes)},
+        notes = ${state.notes},
+        updated_at = now()\`;
+    setStatus('\u2713 Saved', '#2e7d32');
+  } catch (e) {
+    console.error('Save failed:', e);
+    setStatus('\u26A0 Save failed', '#c62828');
+  }
+}
+
+async function loadState() {
+  try {
+    await ensureTable();
+    const rows = await sql\`SELECT checkboxes, notes FROM spec_approvals WHERE page_id = ${PAGE_ID}\`;
+    if (rows.length > 0) {
+      const { checkboxes: cbData, notes } = rows[0];
+      if (cbData) {
+        checkboxes.forEach(cb => {
+          const key = cb.dataset.key;
+          if (cbData[key]) {
+            cb.checked = cbData[key].checked || false;
+            const dateSpan = document.getElementById(cb.id + '-date');
+            if (dateSpan) dateSpan.textContent = cbData[key].date || '';
+          }
+        });
+      }
+      if (notesEl && notes) notesEl.value = notes;
+    }
+    setStatus('\u2713 Synced', '#2e7d32');
+  } catch (e) {
+    console.error('Load failed:', e);
+    setStatus('\u26A0 Offline (local only)', '#c62828');
+  }
+}
+
+checkboxes.forEach(cb => {
+  cb.addEventListener('change', () => {
+    const dateSpan = document.getElementById(cb.id + '-date');
+    if (dateSpan) {
+      dateSpan.textContent = cb.checked ? 'Approved: ' + new Date().toLocaleString() : '';
+    }
+    debounceSave(300);
+  });
+});
+
+if (notesEl) {
+  notesEl.addEventListener('input', () => debounceSave(500));
+}
+
+loadState();
+</script>
+
+</body>
+</html>

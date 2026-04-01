@@ -60,29 +60,51 @@ export function useSalesforceReport<T = ReportSummaryResponse | DashboardRespons
     setError(null);
 
     try {
-      const endpoint = type === 'dashboard' ? 'get-dashboard' : 'get-report';
-      const params = new URLSearchParams({ id });
-      if (type === 'report') params.set('mode', mode);
+      let result: T | null = null;
+      let fetched: string | null = null;
 
-      const res = await fetch(`${API_BASE}/${endpoint}?${params}`, {
-        signal: controller.signal,
-      });
+      // Try live Salesforce API first
+      try {
+        const endpoint = type === 'dashboard' ? 'get-dashboard' : 'get-report';
+        const params = new URLSearchParams({ id });
+        if (type === 'report') params.set('mode', mode);
 
-      const json = await res.json() as SfApiResponse<T>;
+        const res = await fetch(`${API_BASE}/${endpoint}?${params}`, {
+          signal: controller.signal,
+        });
 
-      if (!json.ok) {
-        throw new Error(json.error ?? `API error (${res.status})`);
+        const json = await res.json() as SfApiResponse<T>;
+
+        if (!json.ok) {
+          throw new Error(json.error ?? `API error (${res.status})`);
+        }
+
+        result = json.data;
+        fetched = json.fetchedAt;
+      } catch (apiErr) {
+        if (apiErr instanceof DOMException && apiErr.name === 'AbortError') throw apiErr;
+
+        // Fall back to static JSON for reports and dashboards
+        const staticRes = await fetch(`${import.meta.env.BASE_URL}reports/${id}.json`, {
+          signal: controller.signal,
+        });
+        if (staticRes.ok) {
+          result = await staticRes.json() as T;
+          fetched = 'static export';
+        }
+
+        if (!result) throw apiErr;
       }
 
       const entry: CacheEntry<T> = {
-        data: json.data,
-        fetchedAt: json.fetchedAt,
+        data: result,
+        fetchedAt: fetched ?? new Date().toISOString(),
         cachedAt: Date.now(),
       };
       cache.set(cacheKey, entry);
 
-      setData(json.data);
-      setLastFetched(json.fetchedAt);
+      setData(result);
+      setLastFetched(fetched);
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') return;
       setError(err instanceof Error ? err.message : 'Unknown error');

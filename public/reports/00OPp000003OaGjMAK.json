@@ -1,0 +1,1642 @@
+{
+  "reportId": "00OPp000003OaGjMAK",
+  "reportName": "Matters Universe",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Record Count",
+      "value": 66350
+    },
+    {
+      "label": "Open",
+      "value": 22748
+    },
+    {
+      "label": "Closed",
+      "value": 39063
+    }
+  ],
+  "groupings": [
+    {
+      "key": "Settlement",
+      "label": "Settlement",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 16858
+        },
+        {
+          "label": "Open",
+          "value": 6260
+        },
+        {
+          "label": "Closed",
+          "value": 10584
+        }
+      ]
+    },
+    {
+      "key": "No Stage",
+      "label": "No Stage",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 9708
+        },
+        {
+          "label": "Open",
+          "value": 4143
+        },
+        {
+          "label": "Closed",
+          "value": 5536
+        }
+      ]
+    },
+    {
+      "key": "File Review",
+      "label": "File Review",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8146
+        },
+        {
+          "label": "Open",
+          "value": 4261
+        },
+        {
+          "label": "Closed",
+          "value": 3884
+        }
+      ]
+    },
+    {
+      "key": "Accounts Opening",
+      "label": "Accounts Opening",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 6351
+        },
+        {
+          "label": "Open",
+          "value": 1684
+        },
+        {
+          "label": "Closed",
+          "value": 4179
+        }
+      ]
+    },
+    {
+      "key": "Case Checkpoint",
+      "label": "Case Checkpoint",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4455
+        },
+        {
+          "label": "Open",
+          "value": 926
+        },
+        {
+          "label": "Closed",
+          "value": 3321
+        }
+      ]
+    },
+    {
+      "key": "Package Out",
+      "label": "Package Out",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4120
+        },
+        {
+          "label": "Open",
+          "value": 810
+        },
+        {
+          "label": "Closed",
+          "value": 3122
+        }
+      ]
+    },
+    {
+      "key": "Settled",
+      "label": "Settled",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2712
+        },
+        {
+          "label": "Open",
+          "value": 219
+        },
+        {
+          "label": "Closed",
+          "value": 2425
+        }
+      ]
+    },
+    {
+      "key": "REF - Active",
+      "label": "REF - Active",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1539
+        },
+        {
+          "label": "Open",
+          "value": 2
+        },
+        {
+          "label": "Closed",
+          "value": 54
+        }
+      ]
+    },
+    {
+      "key": "Deps / Med Exams / Narratives",
+      "label": "Deps / Med Exams / Narratives",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1043
+        },
+        {
+          "label": "Open",
+          "value": 228
+        },
+        {
+          "label": "Closed",
+          "value": 783
+        }
+      ]
+    },
+    {
+      "key": "Ready for Demand",
+      "label": "Ready for Demand",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 994
+        },
+        {
+          "label": "Open",
+          "value": 409
+        },
+        {
+          "label": "Closed",
+          "value": 560
+        }
+      ]
+    },
+    {
+      "key": "Discovery",
+      "label": "Discovery",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 841
+        },
+        {
+          "label": "Open",
+          "value": 475
+        },
+        {
+          "label": "Closed",
+          "value": 322
+        }
+      ]
+    },
+    {
+      "key": "Opening",
+      "label": "Opening",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 792
+        },
+        {
+          "label": "Open",
+          "value": 425
+        },
+        {
+          "label": "Closed",
+          "value": 284
+        }
+      ]
+    },
+    {
+      "key": "Case Opening",
+      "label": "Case Opening",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 784
+        },
+        {
+          "label": "Open",
+          "value": 356
+        },
+        {
+          "label": "Closed",
+          "value": 406
+        }
+      ]
+    },
+    {
+      "key": "REF - Settled",
+      "label": "REF - Settled",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 771
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 84
+        }
+      ]
+    },
+    {
+      "key": "C/F",
+      "label": "C/F",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 662
+        },
+        {
+          "label": "Open",
+          "value": 85
+        },
+        {
+          "label": "Closed",
+          "value": 513
+        }
+      ]
+    },
+    {
+      "key": "Written Discovery",
+      "label": "Written Discovery",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 632
+        },
+        {
+          "label": "Open",
+          "value": 72
+        },
+        {
+          "label": "Closed",
+          "value": 553
+        }
+      ]
+    },
+    {
+      "key": "File Opening",
+      "label": "File Opening",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 585
+        },
+        {
+          "label": "Open",
+          "value": 97
+        },
+        {
+          "label": "Closed",
+          "value": 436
+        }
+      ]
+    },
+    {
+      "key": "Active with New Firm",
+      "label": "Active with New Firm",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 568
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 19
+        }
+      ]
+    },
+    {
+      "key": "Treatment",
+      "label": "Treatment",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 550
+        },
+        {
+          "label": "Open",
+          "value": 316
+        },
+        {
+          "label": "Closed",
+          "value": 53
+        }
+      ]
+    },
+    {
+      "key": "Demand Prep",
+      "label": "Demand Prep",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 515
+        },
+        {
+          "label": "Open",
+          "value": 132
+        },
+        {
+          "label": "Closed",
+          "value": 367
+        }
+      ]
+    },
+    {
+      "key": "Closed / Rejected",
+      "label": "Closed / Rejected",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 365
+        },
+        {
+          "label": "Open",
+          "value": 354
+        },
+        {
+          "label": "Closed",
+          "value": 11
+        }
+      ]
+    },
+    {
+      "key": "Arbitration / Settlement Conference",
+      "label": "Arbitration / Settlement Conference",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 336
+        },
+        {
+          "label": "Open",
+          "value": 41
+        },
+        {
+          "label": "Closed",
+          "value": 283
+        }
+      ]
+    },
+    {
+      "key": "Trial",
+      "label": "Trial",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 298
+        },
+        {
+          "label": "Open",
+          "value": 40
+        },
+        {
+          "label": "Closed",
+          "value": 252
+        }
+      ]
+    },
+    {
+      "key": "10 - Settlement",
+      "label": "10 - Settlement",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 294
+        },
+        {
+          "label": "Open",
+          "value": 74
+        },
+        {
+          "label": "Closed",
+          "value": 220
+        }
+      ]
+    },
+    {
+      "key": "Permanency",
+      "label": "Permanency",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 286
+        },
+        {
+          "label": "Open",
+          "value": 219
+        },
+        {
+          "label": "Closed",
+          "value": 65
+        }
+      ]
+    },
+    {
+      "key": "Filed",
+      "label": "Filed",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 275
+        },
+        {
+          "label": "Open",
+          "value": 200
+        },
+        {
+          "label": "Closed",
+          "value": 75
+        }
+      ]
+    },
+    {
+      "key": "01 - File Opening",
+      "label": "01 - File Opening",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 267
+        },
+        {
+          "label": "Open",
+          "value": 19
+        },
+        {
+          "label": "Closed",
+          "value": 229
+        }
+      ]
+    },
+    {
+      "key": "Settlement Negotiations",
+      "label": "Settlement Negotiations",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 223
+        },
+        {
+          "label": "Open",
+          "value": 190
+        },
+        {
+          "label": "Closed",
+          "value": 32
+        }
+      ]
+    },
+    {
+      "key": "Pending Review",
+      "label": "Pending Review",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 200
+        },
+        {
+          "label": "Open",
+          "value": 200
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Closed - BJB Not Pursuing Fee",
+      "label": "Closed - BJB Not Pursuing Fee",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 118
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "05 - Litigation Opening",
+      "label": "05 - Litigation Opening",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 98
+        },
+        {
+          "label": "Open",
+          "value": 59
+        },
+        {
+          "label": "Closed",
+          "value": 36
+        }
+      ]
+    },
+    {
+      "key": "04 - Negotiation",
+      "label": "04 - Negotiation",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 72
+        },
+        {
+          "label": "Open",
+          "value": 17
+        },
+        {
+          "label": "Closed",
+          "value": 53
+        }
+      ]
+    },
+    {
+      "key": "07 - Depositions",
+      "label": "07 - Depositions",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 70
+        },
+        {
+          "label": "Open",
+          "value": 68
+        },
+        {
+          "label": "Closed",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "On Hold",
+      "label": "On Hold",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 66
+        },
+        {
+          "label": "Open",
+          "value": 66
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "06 - Written Discovery",
+      "label": "06 - Written Discovery",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 64
+        },
+        {
+          "label": "Open",
+          "value": 54
+        },
+        {
+          "label": "Closed",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "key": "Closed - BJB Fee Collected",
+      "label": "Closed - BJB Fee Collected",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 63
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Attorney Review",
+      "label": "Attorney Review",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 50
+        },
+        {
+          "label": "Open",
+          "value": 49
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "03 - Awaiting Response to Notice",
+      "label": "03 - Awaiting Response to Notice",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 47
+        },
+        {
+          "label": "Open",
+          "value": 13
+        },
+        {
+          "label": "Closed",
+          "value": 31
+        }
+      ]
+    },
+    {
+      "key": "SwF",
+      "label": "SwF",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 42
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 42
+        }
+      ]
+    },
+    {
+      "key": "02 - Preparation of Notice",
+      "label": "02 - Preparation of Notice",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 42
+        },
+        {
+          "label": "Open",
+          "value": 6
+        },
+        {
+          "label": "Closed",
+          "value": 34
+        }
+      ]
+    },
+    {
+      "key": "Litigation Review",
+      "label": "Litigation Review",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 41
+        },
+        {
+          "label": "Open",
+          "value": 30
+        },
+        {
+          "label": "Closed",
+          "value": 9
+        }
+      ]
+    },
+    {
+      "key": "Preparation of Notice",
+      "label": "Preparation of Notice",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 38
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 38
+        }
+      ]
+    },
+    {
+      "key": "REF - Turned Down",
+      "label": "REF - Turned Down",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 34
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "key": "Litigation Opening",
+      "label": "Litigation Opening",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 26
+        },
+        {
+          "label": "Open",
+          "value": 7
+        },
+        {
+          "label": "Closed",
+          "value": 18
+        }
+      ]
+    },
+    {
+      "key": "Deps/Med Exams/Expert Reports",
+      "label": "Deps/Med Exams/Expert Reports",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 24
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 24
+        }
+      ]
+    },
+    {
+      "key": "Settled with New Firm - BJB Fee Pending (AR)",
+      "label": "Settled with New Firm - BJB Fee Pending (AR)",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 22
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "SOL Call",
+      "label": "SOL Call",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 21
+        },
+        {
+          "label": "Open",
+          "value": 21
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Negotiation",
+      "label": "Negotiation",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 21
+        },
+        {
+          "label": "Open",
+          "value": 4
+        },
+        {
+          "label": "Closed",
+          "value": 17
+        }
+      ]
+    },
+    {
+      "key": "Filing",
+      "label": "Filing",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 19
+        },
+        {
+          "label": "Open",
+          "value": 18
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Phone Calls",
+      "label": "Phone Calls",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 19
+        },
+        {
+          "label": "Open",
+          "value": 19
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "10 - Mark Designated as Mediator",
+      "label": "10 - Mark Designated as Mediator",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 15
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 15
+        }
+      ]
+    },
+    {
+      "key": "Appeals",
+      "label": "Appeals",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 12
+        },
+        {
+          "label": "Open",
+          "value": 11
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "08 - Summary Judgment",
+      "label": "08 - Summary Judgment",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 11
+        },
+        {
+          "label": "Open",
+          "value": 5
+        },
+        {
+          "label": "Closed",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "key": "Settled / Award / Withdrawn",
+      "label": "Settled / Award / Withdrawn",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 11
+        },
+        {
+          "label": "Open",
+          "value": 11
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Closed/Lost",
+      "label": "Closed/Lost",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 10
+        },
+        {
+          "label": "Open",
+          "value": 1
+        },
+        {
+          "label": "Closed",
+          "value": 9
+        }
+      ]
+    },
+    {
+      "key": "Awaiting Response to Notice",
+      "label": "Awaiting Response to Notice",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 10
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "key": "Arbitration/Settlement Conference",
+      "label": "Arbitration/Settlement Conference",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 8
+        }
+      ]
+    },
+    {
+      "key": "New",
+      "label": "New",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8
+        },
+        {
+          "label": "Open",
+          "value": 8
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Settled with New Firm - Fee in Dispute",
+      "label": "Settled with New Firm - Fee in Dispute",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 8
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Closed/Won",
+      "label": "Closed/Won",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 7
+        },
+        {
+          "label": "Open",
+          "value": 7
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Summary Judgment",
+      "label": "Summary Judgment",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 7
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 7
+        }
+      ]
+    },
+    {
+      "key": "Pre-Filing",
+      "label": "Pre-Filing",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 6
+        },
+        {
+          "label": "Open",
+          "value": 5
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Pre-Suit Settlement Negotiations",
+      "label": "Pre-Suit Settlement Negotiations",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "key": "REF - Client Withdrew",
+      "label": "REF - Client Withdrew",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Pleadings",
+      "label": "Pleadings",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        },
+        {
+          "label": "Open",
+          "value": 4
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Deposition",
+      "label": "Deposition",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 5
+        },
+        {
+          "label": "Open",
+          "value": 5
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Demand",
+      "label": "Demand",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4
+        },
+        {
+          "label": "Open",
+          "value": 1
+        },
+        {
+          "label": "Closed",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "key": "Settlement Conference & Trial",
+      "label": "Settlement Conference & Trial",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "key": "Pending Hearing",
+      "label": "Pending Hearing",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 4
+        },
+        {
+          "label": "Open",
+          "value": 4
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Missing Documents",
+      "label": "Missing Documents",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        },
+        {
+          "label": "Open",
+          "value": 3
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "04 - Response rcvd from def",
+      "label": "04 - Response rcvd from def",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "key": "09 - Trial",
+      "label": "09 - Trial",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        },
+        {
+          "label": "Open",
+          "value": 1
+        },
+        {
+          "label": "Closed",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Records Requested",
+      "label": "Records Requested",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        },
+        {
+          "label": "Open",
+          "value": 2
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Demand Package Out",
+      "label": "Demand Package Out",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        },
+        {
+          "label": "Open",
+          "value": 3
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Mediation",
+      "label": "Mediation",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 3
+        },
+        {
+          "label": "Open",
+          "value": 3
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Depositions",
+      "label": "Depositions",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Delivered",
+      "label": "Delivered",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        },
+        {
+          "label": "Open",
+          "value": 2
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Settled With Friendlies",
+      "label": "Settled With Friendlies",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "Client Treating",
+      "label": "Client Treating",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Filed, awaiting hearing date",
+      "label": "Filed, awaiting hearing date",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 2
+        },
+        {
+          "label": "Open",
+          "value": 2
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Resolved- AR",
+      "label": "Resolved- AR",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 1
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Filing Approval",
+      "label": "Filing Approval",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 1
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "07 - Administrative Agencies",
+      "label": "07 - Administrative Agencies",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Intake",
+      "label": "Intake",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "04 - Response Rcvd from Def",
+      "label": "04 - Response Rcvd from Def",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "REF - Conflict",
+      "label": "REF - Conflict",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Closed - No Recovery with New Firm",
+      "label": "Closed - No Recovery with New Firm",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 0
+        }
+      ]
+    },
+    {
+      "key": "Treatment Checkpoint",
+      "label": "Treatment Checkpoint",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "settled",
+      "label": "settled",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "Settlement - Litigation",
+      "label": "Settlement - Litigation",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        },
+        {
+          "label": "Open",
+          "value": 0
+        },
+        {
+          "label": "Closed",
+          "value": 1
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": false
+}
