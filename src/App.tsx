@@ -36,6 +36,10 @@ import TrialTracker from './pages/mockups/TrialTracker.tsx';
 import TrialScoring from './pages/mockups/TrialScoring.tsx';
 import TrialMetrics from './pages/mockups/TrialMetrics.tsx';
 import TrialMatter from './pages/mockups/TrialMatter.tsx';
+import IntakeMatter from './pages/mockups/IntakeMatter.tsx';
+import MedRecordsMatter from './pages/mockups/MedRecordsMatter.tsx';
+import ClaimsMatter from './pages/mockups/ClaimsMatter.tsx';
+import PreLitMatter from './pages/mockups/PreLitMatter.tsx';
 import ControlTower from './pages/ControlTower.tsx';
 import AltControlTower from './pages/AltControlTower.tsx';
 import CallTeamDashboard from './pages/CallTeamDashboard.tsx';
@@ -56,6 +60,9 @@ import TopNavMockup from './pages/TopNavMockup.tsx';
 import SpecViewer from './pages/SpecViewer.tsx';
 import DeptDashboard from './pages/DeptDashboard.tsx';
 import TechProjects from './pages/TechProjects.tsx';
+import Reports from './pages/Reports.tsx';
+import ReportDetail from './pages/ReportDetail.tsx';
+import Analytics from './pages/Analytics.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 
@@ -135,9 +142,16 @@ export default function App() {
             <Route path="performance-infrastructure/mockups/trial-scoring" element={<TrialScoring />} />
             <Route path="performance-infrastructure/mockups/trial-metrics" element={<TrialMetrics />} />
             <Route path="performance-infrastructure/mockups/trial-matter" element={<TrialMatter />} />
+            <Route path="performance-infrastructure/mockups/intake-matter" element={<IntakeMatter />} />
+            <Route path="performance-infrastructure/mockups/medrec-matter" element={<MedRecordsMatter />} />
+            <Route path="performance-infrastructure/mockups/claims-matter" element={<ClaimsMatter />} />
+            <Route path="performance-infrastructure/mockups/prelit-matter" element={<PreLitMatter />} />
             <Route path="dept/:deptId/:pageId" element={<DeptDashboard />} />
             <Route path="specs/:page?" element={<SpecViewer />} />
             <Route path="tech-projects" element={<TechProjects />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="reports/:reportId" element={<ReportDetail />} />
+            <Route path="analytics" element={<Analytics />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>

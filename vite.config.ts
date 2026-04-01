@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  base: '/bjb-case-opening-flowchart/',
+  base: '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

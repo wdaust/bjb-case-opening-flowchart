@@ -4,6 +4,38 @@ import { cn } from '../utils/cn.ts';
 
 const cards = [
   {
+    id: 'intake-matter',
+    title: 'Intake Matter Record',
+    description:
+      'Consolidated Litify-style matter record combining all 5 intake tasks, scoring systems, and metrics into a single tabbed view with shared state and path bar navigation.',
+    color: 'text-sky-500 bg-sky-500/10',
+    to: '/performance-infrastructure/mockups/intake-matter',
+  },
+  {
+    id: 'prelit-matter',
+    title: 'Pre-LIT Matter Record',
+    description:
+      'Consolidated Litify-style matter record combining all 22 tasks across client orientation, case setup, evidence, insurance, treatment monitoring, value dev, and demand readiness.',
+    color: 'text-emerald-500 bg-emerald-500/10',
+    to: '/performance-infrastructure/mockups/prelit-matter',
+  },
+  {
+    id: 'medrec-matter',
+    title: 'Medical Records Matter Record',
+    description:
+      'Consolidated Litify-style matter record combining all 24 tasks across records request, follow-up, submission, and QA review into a single tabbed view with shared state.',
+    color: 'text-pink-500 bg-pink-500/10',
+    to: '/performance-infrastructure/mockups/medrec-matter',
+  },
+  {
+    id: 'claims-matter',
+    title: 'Claims Matter Record',
+    description:
+      'Consolidated Litify-style matter record combining all 30 tasks across demand review, drafting, and negotiation into a single tabbed view with shared state and path bar navigation.',
+    color: 'text-orange-500 bg-orange-500/10',
+    to: '/performance-infrastructure/mockups/claims-matter',
+  },
+  {
     id: 'co-matter',
     title: 'Case Opening Matter Record',
     description:

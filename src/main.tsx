@@ -6,7 +6,7 @@ import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter basename="/bjb-case-opening-flowchart/">
+    <BrowserRouter basename="/">
       <App />
     </BrowserRouter>
   </StrictMode>,

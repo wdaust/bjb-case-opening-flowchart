@@ -2,10 +2,14 @@ import { Link } from 'react-router-dom';
 import { cn } from '../../utils/cn.ts';
 
 const matterTabs = [
+  { id: 'intake-matter', label: 'Intake', to: '/performance-infrastructure/mockups/intake-matter' },
+  { id: 'prelit-matter', label: 'Pre-LIT', to: '/performance-infrastructure/mockups/prelit-matter' },
+  { id: 'medrec-matter', label: 'Med Records', to: '/performance-infrastructure/mockups/medrec-matter' },
+  { id: 'claims-matter', label: 'Claims', to: '/performance-infrastructure/mockups/claims-matter' },
   { id: 'co-matter', label: 'Case Opening', to: '/performance-infrastructure/mockups/co-matter' },
-  { id: 'tm-matter', label: 'Treatment Monitoring', to: '/performance-infrastructure/mockups/tm-matter' },
+  { id: 'tm-matter', label: 'Treatment Mon', to: '/performance-infrastructure/mockups/tm-matter' },
   { id: 'disc-matter', label: 'Discovery', to: '/performance-infrastructure/mockups/disc-matter' },
-  { id: 'exp-matter', label: 'Expert & Deposition', to: '/performance-infrastructure/mockups/exp-matter' },
+  { id: 'exp-matter', label: 'Expert & Depo', to: '/performance-infrastructure/mockups/exp-matter' },
   { id: 'arbmed-matter', label: 'Arb/Med', to: '/performance-infrastructure/mockups/arbmed-matter' },
   { id: 'trial-matter', label: 'Trial', to: '/performance-infrastructure/mockups/trial-matter' },
 ] as const;

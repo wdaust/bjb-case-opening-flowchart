@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Setup Scoring — Litify Case Opening</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: #f1f5f9; }
+  .gauge-ring { transition: stroke-dashoffset 1s ease; }
+  .card-hover { transition: all 0.2s ease; }
+  .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+  .fade-in { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Case Header Bar -->
+<header class="bg-gradient-to-r from-[#0d1b4a] to-[#1a237e] text-white shadow-lg sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center font-bold text-lg">L</div>
+      <div>
+        <h1 class="text-lg font-bold leading-tight">Martinez v. Johnson Trucking</h1>
+        <p class="text-indigo-200 text-sm">Matter #2026-PI-00847 &middot; Case Setup Phase</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-400 text-white">Case Setup</span>
+      <div class="text-right">
+        <div class="text-xs text-indigo-200">SLA Deadline</div>
+        <div class="text-sm font-semibold">1 hr from SOL approval</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6">
+
+  <!-- Overall Progress -->
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h2 class="text-xl font-bold text-slate-800">Case Setup Scoring Dashboard</h2>
+        <p class="text-sm text-slate-500">Tasks N–R &middot; Complete all 5 scoring systems</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <span class="text-2xl font-bold text-[#1a237e]" id="completedCount">0</span>
+          <span class="text-sm text-slate-500"> / 5 complete</span>
+        </div>
+        <div class="w-48 bg-slate-200 rounded-full h-3 hidden sm:block">
+          <div id="overallProgress" class="bg-[#1a237e] h-3 rounded-full transition-all duration-500" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scoring Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5" id="scoringGrid">
+
+    <!-- Card N: Client Profile Scoring -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 card-hover overflow-hidden" id="card-N">
+      <div class="h-1.5 bg-[#1a237e]"></div>
+      <div class="p-5">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <span class="text-xs font-semibold text-[#1a237e] bg-indigo-50 px-2 py-0.5 rounded">N</span>
+            <h3 class="font-bold text-slate-800 mt-1">Client Profile Scoring</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Legal Asst / Para</p>
+          </div>
+          <span class="status-badge text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-600" id="status-N">Not Started</span>
+        </div>
+
+        <!-- Gauge -->
+        <div class="flex justify-center mb-4">
+          <div class="relative w-32 h-32">
+            <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#1a237e" stroke-width="10" stroke-linecap="round"
+                class="gauge-ring" id="gauge-N"
+                stroke-dasharray="314" stroke-dashoffset="314"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="text-2xl font-bold text-slate-800" id="score-N">—</span>
+              <span class="text-xs text-slate-400">/ 100</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-500 mb-3">Composite client scoring: communication, compliance, credibility, cooperation factors</p>
+        <p class="text-xs text-slate-400 mb-4">SLA: 1 hour from SOL approval &amp; BI limits obtained</p>
+
+        <div class="flex gap-2">
+          <button onclick="startScoring('N', 72)" class="start-btn flex-1 px-3 py-2 bg-[#1a237e] hover:bg-[#0d1b4a] text-white rounded-lg text-sm font-semibold transition">
+            Begin Scoring
+          </button>
+          <button onclick="completeScoring('N')" class="complete-btn hidden flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition">
+            Mark Complete
+          </button>
+        </div>
+        <p class="completed-msg hidden text-xs text-green-600 mt-2 font-semibold" id="completed-N"></p>
+      </div>
+    </div>
+
+    <!-- Card O: Liability Profile Scoring -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 card-hover overflow-hidden" id="card-O">
+      <div class="h-1.5 bg-[#1a237e]"></div>
+      <div class="p-5">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <span class="text-xs font-semibold text-[#1a237e] bg-indigo-50 px-2 py-0.5 rounded">O</span>
+            <h3 class="font-bold text-slate-800 mt-1">Liability Profile Scoring</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Legal Asst / Para</p>
+          </div>
+          <span class="status-badge text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-600" id="status-O">Not Started</span>
+        </div>
+
+        <div class="flex justify-center mb-4">
+          <div class="relative w-32 h-32">
+            <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#1a237e" stroke-width="10" stroke-linecap="round"
+                class="gauge-ring" id="gauge-O"
+                stroke-dasharray="314" stroke-dashoffset="314"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="text-2xl font-bold text-slate-800" id="score-O">—</span>
+              <span class="text-xs text-slate-400">/ 100</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-500 mb-3">Defense Pressure &amp; Settlement Leverage Model — fault escape difficulty, jury predictability, carrier risk</p>
+        <p class="text-xs text-slate-400 mb-4">SLA: 1 hour from SOL approval &amp; BI limits obtained</p>
+
+        <div class="flex gap-2">
+          <button onclick="startScoring('O', 85)" class="start-btn flex-1 px-3 py-2 bg-[#1a237e] hover:bg-[#0d1b4a] text-white rounded-lg text-sm font-semibold transition">
+            Begin Scoring
+          </button>
+          <button onclick="completeScoring('O')" class="complete-btn hidden flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition">
+            Mark Complete
+          </button>
+        </div>
+        <p class="completed-msg hidden text-xs text-green-600 mt-2 font-semibold" id="completed-O"></p>
+      </div>
+    </div>
+
+    <!-- Card P: Policy & Collectability Scoring -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 card-hover overflow-hidden" id="card-P">
+      <div class="h-1.5 bg-[#1a237e]"></div>
+      <div class="p-5">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <span class="text-xs font-semibold text-[#1a237e] bg-indigo-50 px-2 py-0.5 rounded">P</span>
+            <h3 class="font-bold text-slate-800 mt-1">Policy &amp; Collectability Scoring</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Legal Asst / Para</p>
+          </div>
+          <span class="status-badge text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-600" id="status-P">Not Started</span>
+        </div>
+
+        <div class="flex justify-center mb-4">
+          <div class="relative w-32 h-32">
+            <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#1a237e" stroke-width="10" stroke-linecap="round"
+                class="gauge-ring" id="gauge-P"
+                stroke-dasharray="314" stroke-dashoffset="314"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="text-2xl font-bold text-slate-800" id="score-P">—</span>
+              <span class="text-xs text-slate-400">/ 100</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-500 mb-3">Recovery Power &amp; Payment Predictability Model — insurance availability, access difficulty, collection outlook</p>
+        <p class="text-xs text-slate-400 mb-4">SLA: 1 hour from SOL approval &amp; BI limits obtained</p>
+
+        <div class="flex gap-2">
+          <button onclick="startScoring('P', 63)" class="start-btn flex-1 px-3 py-2 bg-[#1a237e] hover:bg-[#0d1b4a] text-white rounded-lg text-sm font-semibold transition">
+            Begin Scoring
+          </button>
+          <button onclick="completeScoring('P')" class="complete-btn hidden flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition">
+            Mark Complete
+          </button>
+        </div>
+        <p class="completed-msg hidden text-xs text-green-600 mt-2 font-semibold" id="completed-P"></p>
+      </div>
+    </div>
+
+    <!-- Card Q: Treatment Strength Index -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 card-hover overflow-hidden" id="card-Q">
+      <div class="h-1.5 bg-[#1a237e]"></div>
+      <div class="p-5">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <span class="text-xs font-semibold text-[#1a237e] bg-indigo-50 px-2 py-0.5 rounded">Q</span>
+            <h3 class="font-bold text-slate-800 mt-1">Treatment Strength Index (TSI)</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Legal Asst / Para</p>
+          </div>
+          <span class="status-badge text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-600" id="status-Q">Not Started</span>
+        </div>
+
+        <div class="flex justify-center mb-4">
+          <div class="relative w-32 h-32">
+            <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#1a237e" stroke-width="10" stroke-linecap="round"
+                class="gauge-ring" id="gauge-Q"
+                stroke-dasharray="314" stroke-dashoffset="314"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="text-2xl font-bold text-slate-800" id="score-Q">—</span>
+              <span class="text-xs text-slate-400">/ 100</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-500 mb-3">Quality, seriousness, credibility &amp; profitability rating of medical treatment</p>
+        <p class="text-xs text-slate-400 mb-4">SLA: 1 hour from SOL approval &amp; BI limits obtained</p>
+
+        <div class="flex gap-2">
+          <button onclick="startScoring('Q', 58)" class="start-btn flex-1 px-3 py-2 bg-[#1a237e] hover:bg-[#0d1b4a] text-white rounded-lg text-sm font-semibold transition">
+            Begin Scoring
+          </button>
+          <button onclick="completeScoring('Q')" class="complete-btn hidden flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition">
+            Mark Complete
+          </button>
+        </div>
+        <p class="completed-msg hidden text-xs text-green-600 mt-2 font-semibold" id="completed-Q"></p>
+      </div>
+    </div>
+
+    <!-- Card R: Comprehensive Case Performance Index -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 card-hover overflow-hidden md:col-span-2 xl:col-span-2" id="card-R">
+      <div class="h-1.5 bg-gradient-to-r from-[#1a237e] to-[#3949ab]"></div>
+      <div class="p-5">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <span class="text-xs font-semibold text-[#1a237e] bg-indigo-50 px-2 py-0.5 rounded">R</span>
+            <h3 class="font-bold text-slate-800 mt-1">Comprehensive Case Performance Index (CPI)</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Legal Asst / Para &middot; 7-Pillar Composite Score</p>
+          </div>
+          <span class="status-badge text-xs px-2 py-0.5 rounded-full bg-slate-200 text-slate-600" id="status-R">Not Started</span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-6">
+          <div class="flex justify-center">
+            <div class="relative w-36 h-36">
+              <svg class="w-36 h-36 -rotate-90" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#e2e8f0" stroke-width="10"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#1a237e" stroke-width="10" stroke-linecap="round"
+                  class="gauge-ring" id="gauge-R"
+                  stroke-dasharray="314" stroke-dashoffset="314"/>
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="text-3xl font-bold text-slate-800" id="score-R">—</span>
+                <span class="text-xs text-slate-400">/ 100</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex-1 min-w-[200px]">
+            <p class="text-sm text-slate-600 mb-3">"How strong is this file as a business asset?" — measures efficiency, profitability, and strategic viability.</p>
+            <div class="text-xs text-slate-500 space-y-1">
+              <p><strong>7 Pillars:</strong> Each scored 0–20 &middot; Total: 0–140 converted to 0–100</p>
+              <p>Combines all scoring systems into a single case health metric</p>
+            </div>
+            <p class="text-xs text-slate-400 mt-2">SLA: 1 hour from SOL approval &amp; BI limits obtained</p>
+          </div>
+        </div>
+
+        <div class="flex gap-2 mt-4">
+          <button onclick="startScoring('R', 71)" class="start-btn flex-1 px-3 py-2 bg-[#1a237e] hover:bg-[#0d1b4a] text-white rounded-lg text-sm font-semibold transition">
+            Begin Scoring
+          </button>
+          <button onclick="completeScoring('R')" class="complete-btn hidden flex-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition">
+            Mark Complete
+          </button>
+        </div>
+        <p class="completed-msg hidden text-xs text-green-600 mt-2 font-semibold" id="completed-R"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- What To Do Box -->
+  <div class="mt-6 bg-white rounded-xl shadow-sm border border-slate-200 p-5" id="whatToDoBox">
+    <h3 class="font-bold text-slate-800 mb-3 flex items-center gap-2">
+      <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Dynamic Recommendations
+    </h3>
+    <p class="text-sm text-slate-500 mb-3">Based on completed scoring, the system generates case-specific guidance:</p>
+    <div id="recommendations" class="space-y-2">
+      <p class="text-sm text-slate-400 italic">Complete scoring systems to generate recommendations...</p>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="mt-6 bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+    <h3 class="font-bold text-slate-800 mb-3">Mockup Navigation</h3>
+    <div class="flex flex-wrap gap-2">
+      <a href="client-contact.html" class="text-sm text-slate-600 hover:text-[#1565c0] hover:bg-blue-50 px-3 py-2 rounded transition">Client Contact</a>
+      <span class="text-sm font-semibold text-[#1a237e] bg-indigo-50 px-3 py-2 rounded">Case Setup Scoring (current)</span>
+      <a href="task-tracker.html" class="text-sm text-slate-600 hover:text-slate-800 hover:bg-slate-50 px-3 py-2 rounded transition">Full Task Tracker</a>
+    </div>
+  </div>
+</main>
+
+<script>
+const scores = {};
+let completed = 0;
+
+function startScoring(id, score) {
+  scores[id] = score;
+  const card = document.getElementById('card-' + id);
+  const gauge = document.getElementById('gauge-' + id);
+  const scoreEl = document.getElementById('score-' + id);
+  const statusEl = document.getElementById('status-' + id);
+
+  // Animate gauge
+  const offset = 314 - (314 * score / 100);
+  gauge.style.strokeDashoffset = offset;
+  scoreEl.textContent = score;
+
+  // Update status
+  statusEl.textContent = 'In Progress';
+  statusEl.className = 'status-badge text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700';
+
+  // Show complete button, hide start
+  card.querySelector('.start-btn').classList.add('hidden');
+  card.querySelector('.complete-btn').classList.remove('hidden');
+
+  // Color gauge based on score
+  if (score >= 75) gauge.style.stroke = '#16a34a';
+  else if (score >= 50) gauge.style.stroke = '#eab308';
+  else gauge.style.stroke = '#dc2626';
+}
+
+function completeScoring(id) {
+  const card = document.getElementById('card-' + id);
+  const statusEl = document.getElementById('status-' + id);
+  const completedEl = document.getElementById('completed-' + id);
+
+  statusEl.textContent = 'Complete';
+  statusEl.className = 'status-badge text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700';
+
+  card.querySelector('.complete-btn').classList.add('hidden');
+  completedEl.textContent = 'Completed ' + new Date().toLocaleString();
+  completedEl.classList.remove('hidden');
+
+  // Add green border
+  card.classList.remove('border-slate-200');
+  card.classList.add('border-green-300');
+
+  completed++;
+  document.getElementById('completedCount').textContent = completed;
+  document.getElementById('overallProgress').style.width = (completed / 5 * 100) + '%';
+
+  updateRecommendations();
+}
+
+function updateRecommendations() {
+  const box = document.getElementById('recommendations');
+  const recs = [];
+
+  if (scores.N && scores.N < 70) recs.push({ text: 'Client Profile score is low — consider enhanced communication protocol and compliance monitoring.', color: 'text-amber-700', bg: 'bg-amber-50' });
+  if (scores.O && scores.O >= 80) recs.push({ text: 'Strong liability profile — defense has limited escape routes. Position for aggressive settlement posture.', color: 'text-green-700', bg: 'bg-green-50' });
+  if (scores.P && scores.P < 70) recs.push({ text: 'If Demand-Ready % < threshold — add demand sprint + records chase protocol.', color: 'text-amber-700', bg: 'bg-amber-50' });
+  if (scores.Q && scores.Q < 60) recs.push({ text: 'Treatment Strength is below threshold — trigger treatment monitoring protocol.', color: 'text-red-700', bg: 'bg-red-50' });
+  if (scores.Q && scores.Q >= 60) recs.push({ text: 'Treatment documentation is adequate — maintain current treatment monitoring cadence.', color: 'text-green-700', bg: 'bg-green-50' });
+  if (scores.R) recs.push({ text: 'CPI score of ' + scores.R + '/100 — case viability assessment: ' + (scores.R >= 70 ? 'Strong file, proceed with full litigation strategy.' : 'Monitor closely, consider early evaluation.'), color: scores.R >= 70 ? 'text-green-700' : 'text-amber-700', bg: scores.R >= 70 ? 'bg-green-50' : 'bg-amber-50' });
+
+  if (completed >= 3 && !recs.length) {
+    recs.push({ text: 'Multiple scoring systems complete. Review composite data for case strategy alignment.', color: 'text-blue-700', bg: 'bg-blue-50' });
+  }
+
+  if (recs.length) {
+    box.innerHTML = recs.map(r =>
+      '<div class="flex items-start gap-2 p-2.5 rounded-lg ' + r.bg + '">' +
+      '<svg class="w-4 h-4 ' + r.color + ' mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>' +
+      '<p class="text-sm ' + r.color + '">' + r.text + '</p></div>'
+    ).join('');
+  }
+}
+</script>
+
+</body>
+</html>
