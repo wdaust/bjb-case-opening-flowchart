@@ -88,8 +88,8 @@ function ResolutionTimingTab() {
     return Object.entries(map)
       .map(([attorney, bandCounts]) => ({ attorney, ...bandCounts }))
       .sort((a, b) => {
-        const aTotal = bands.reduce((s, band) => s + ((a as Record<string, number>)[band] || 0), 0);
-        const bTotal = bands.reduce((s, band) => s + ((b as Record<string, number>)[band] || 0), 0);
+        const aTotal = bands.reduce((s, band) => s + ((a as unknown as Record<string, number>)[band] || 0), 0);
+        const bTotal = bands.reduce((s, band) => s + ((b as unknown as Record<string, number>)[band] || 0), 0);
         return bTotal - aTotal;
       })
       .slice(0, 15);
@@ -130,7 +130,7 @@ function ResolutionTimingTab() {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="quarter" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v} days`, 'Avg']} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number | undefined) => [`${v ?? 0} days`, 'Avg']} />
                 <Bar dataKey="avgDays" fill="#6366f1" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -168,7 +168,7 @@ function ResolutionTimingTab() {
                 <tr key={row.attorney} className="border-t border-border">
                   <td className="py-2 px-3 text-foreground font-medium whitespace-nowrap">{row.attorney}</td>
                   {bands.map(band => {
-                    const val = (row as Record<string, number | string>)[band] as number || 0;
+                    const val = (row as unknown as Record<string, number | string>)[band] as number || 0;
                     const maxVal = 40;
                     const intensity = Math.min(val / maxVal, 1);
                     const colorIdx = Math.min(Math.floor(intensity * (HEATMAP_COLORS.length - 1)), HEATMAP_COLORS.length - 1);
@@ -273,7 +273,7 @@ function ComplaintFilingTab() {
                   outerRadius={100}
                   dataKey="value"
                   nameKey="name"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                   labelLine={false}
                 >
                   {statusBreakdown.map((_, i) => <Cell key={i} fill={donutColors[i % donutColors.length]} />)}
@@ -292,7 +292,7 @@ function ComplaintFilingTab() {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="team" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                 <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`${v} days`, 'Avg']} />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number | undefined) => [`${v ?? 0} days`, 'Avg']} />
                 <Bar dataKey="avgDays" fill="#f59e0b" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -437,8 +437,8 @@ function InventorySnapshotTab() {
     return Object.entries(map)
       .map(([attorney, stageCounts]) => ({ attorney, ...stageCounts }))
       .sort((a, b) => {
-        const aT = stages.reduce((s, st) => s + ((a as Record<string, number>)[st] || 0), 0);
-        const bT = stages.reduce((s, st) => s + ((b as Record<string, number>)[st] || 0), 0);
+        const aT = stages.reduce((s, st) => s + ((a as unknown as Record<string, number>)[st] || 0), 0);
+        const bT = stages.reduce((s, st) => s + ((b as unknown as Record<string, number>)[st] || 0), 0);
         return bT - aT;
       })
       .slice(0, 15);
@@ -491,7 +491,7 @@ function InventorySnapshotTab() {
                   outerRadius={100}
                   dataKey="value"
                   nameKey="name"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                   labelLine={false}
                 >
                   {byPIStatus.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
@@ -515,7 +515,7 @@ function InventorySnapshotTab() {
                   outerRadius={100}
                   dataKey="value"
                   nameKey="name"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                   labelLine={false}
                 >
                   {byState.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
@@ -558,7 +558,7 @@ function InventorySnapshotTab() {
                   <tr key={row.attorney} className="border-t border-border">
                     <td className="py-1.5 px-2 text-foreground font-medium whitespace-nowrap text-xs">{row.attorney}</td>
                     {stages.map(stage => {
-                      const val = (row as Record<string, number | string>)[stage] as number || 0;
+                      const val = (row as unknown as Record<string, number | string>)[stage] as number || 0;
                       const intensity = Math.min(val / 20, 1);
                       const colorIdx = Math.min(Math.floor(intensity * (HEATMAP_COLORS.length - 1)), HEATMAP_COLORS.length - 1);
                       return (
