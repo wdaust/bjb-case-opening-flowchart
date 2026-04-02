@@ -2,7 +2,6 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from 'recharts';
-import { StatCard } from '../dashboard/StatCard.tsx';
 import { DashboardGrid } from '../dashboard/DashboardGrid.tsx';
 import type { DashboardComponent } from '../../types/salesforce.ts';
 import { cn } from '../../utils/cn.ts';
@@ -38,12 +37,13 @@ function MetricChart({ comp }: { comp: DashboardComponent }) {
     const titleLower = comp.title.toLowerCase();
     const isUrgent = val !== null && val > 0 && URGENCY_KEYWORDS.some(k => titleLower.includes(k));
     return (
-      <StatCard
-        label={comp.title}
-        value={val !== null ? val.toLocaleString() : '—'}
-        variant="glass"
-        className={isUrgent ? 'bg-red-500/10 border-l-2 border-l-red-500' : undefined}
-      />
+      <div className={cn(
+        "bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-xl p-4 h-full flex flex-col justify-center overflow-hidden",
+        isUrgent && "bg-red-500/10 border-l-2 border-l-red-500"
+      )}>
+        <p className="text-xs font-medium text-white/60 mb-2">{comp.title}</p>
+        <p className="text-3xl font-bold text-white">{val !== null ? val.toLocaleString() : '—'}</p>
+      </div>
     );
   }
 
@@ -55,11 +55,11 @@ function MetricChart({ comp }: { comp: DashboardComponent }) {
   if (comp.chartType.toLowerCase().includes('donut') || comp.chartType.toLowerCase().includes('pie')) {
     const dataKey = comp.columns[0] ?? 'val_0';
     return (
-      <div className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-xl p-4">
+      <div className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-xl p-4 h-full overflow-hidden">
         <p className="text-xs font-medium text-white/60 mb-3">{comp.title}</p>
         <ResponsiveContainer width="100%" height={200}>
           <PieChart>
-            <Pie data={chartData} dataKey={dataKey} nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={40} isAnimationActive={false}>
+            <Pie data={chartData} dataKey={dataKey} nameKey="name" cx="50%" cy="45%" outerRadius={75} innerRadius={38} isAnimationActive={false}>
               {chartData.map((entry, i) => (
                 <Cell key={i} fill={getRowColor(entry.name)} />
               ))}
@@ -76,7 +76,7 @@ function MetricChart({ comp }: { comp: DashboardComponent }) {
   }
 
   return (
-    <div className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-xl p-4">
+    <div className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded-xl p-4 h-full overflow-hidden">
       <p className="text-xs font-medium text-white/60 mb-3">{comp.title}</p>
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={chartData}>

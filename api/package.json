@@ -1,0 +1,17 @@
+{
+  "name": "bjb-optimus-api",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "func start",
+    "prestart": "npm run build"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.6.0",
+    "@neondatabase/serverless": "^1.0.2"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3"
+  }
+}
