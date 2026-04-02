@@ -12,7 +12,19 @@ interface Props {
   className?: string;
 }
 
-const COLORS = ['#22c55e', '#22c55ecc', '#22c55e99', '#22c55e66', '#22c55e33', '#555555', '#444444', '#333333'];
+const RED_KEYWORDS = ['overdue', 'late', 'not compliant', 'past due', 'no attempt', 'no service', 'missing'];
+const AMBER_KEYWORDS = ['15-30 days', 'pending', 'within 30 days', '0-14 days'];
+const GREEN_KEYWORDS = ['timely', 'compliant', 'completed', 'on track', 'connection'];
+
+function getRowColor(label: string): string {
+  const lower = label.toLowerCase();
+  if (RED_KEYWORDS.some(k => lower.includes(k))) return '#ef4444';
+  if (AMBER_KEYWORDS.some(k => lower.includes(k))) return '#f59e0b';
+  if (GREEN_KEYWORDS.some(k => lower.includes(k))) return '#22c55e';
+  return '#6b7280';
+}
+
+const URGENCY_KEYWORDS = ['missing', 'overdue', 'past due', 'no service', 'not served'];
 
 const tooltipStyle = {
   contentStyle: { backgroundColor: 'hsl(220,15%,10%)', border: '1px solid hsl(220,10%,20%)', borderRadius: 8, fontSize: 12 },
@@ -23,11 +35,14 @@ const tooltipStyle = {
 function MetricChart({ comp }: { comp: DashboardComponent }) {
   if (comp.rows.length === 1 && comp.rows[0].values.length === 1) {
     const val = comp.rows[0].values[0].value;
+    const titleLower = comp.title.toLowerCase();
+    const isUrgent = val !== null && val > 0 && URGENCY_KEYWORDS.some(k => titleLower.includes(k));
     return (
       <StatCard
         label={comp.title}
         value={val !== null ? val.toLocaleString() : '—'}
         variant="glass"
+        className={isUrgent ? 'bg-red-500/10 border-l-2 border-l-red-500' : undefined}
       />
     );
   }
@@ -44,13 +59,16 @@ function MetricChart({ comp }: { comp: DashboardComponent }) {
         <p className="text-xs font-medium text-white/60 mb-3">{comp.title}</p>
         <ResponsiveContainer width="100%" height={200}>
           <PieChart>
-            <Pie data={chartData} dataKey={dataKey} nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={40}>
-              {chartData.map((_, i) => (
-                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+            <Pie data={chartData} dataKey={dataKey} nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={40} isAnimationActive={false}>
+              {chartData.map((entry, i) => (
+                <Cell key={i} fill={getRowColor(entry.name)} />
               ))}
             </Pie>
             <Tooltip {...tooltipStyle} />
-            <Legend wrapperStyle={{ fontSize: 11, color: '#a1a1aa' }} />
+            <Legend
+              wrapperStyle={{ fontSize: 10, color: '#a1a1aa' }}
+              formatter={(value: string) => value.length > 28 ? value.slice(0, 26) + '…' : value}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -65,8 +83,12 @@ function MetricChart({ comp }: { comp: DashboardComponent }) {
           <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#a1a1aa' }} />
           <YAxis tick={{ fontSize: 11, fill: '#a1a1aa' }} />
           <Tooltip {...tooltipStyle} />
-          {comp.columns.map((col, i) => (
-            <Bar key={col} dataKey={col} fill={COLORS[i % COLORS.length]} radius={[4, 4, 0, 0]} />
+          {comp.columns.map((col) => (
+            <Bar key={col} dataKey={col} radius={[4, 4, 0, 0]}>
+              {chartData.map((entry, j) => (
+                <Cell key={j} fill={getRowColor(entry.name)} />
+              ))}
+            </Bar>
           ))}
         </BarChart>
       </ResponsiveContainer>

@@ -7,7 +7,39 @@ import { RefreshIndicator } from '../components/reports/RefreshIndicator.tsx';
 import { useSalesforceReport } from '../hooks/useSalesforceReport.ts';
 import type { ReportSummaryResponse, DashboardResponse, ReportConfig } from '../types/salesforce.ts';
 import { REPORT_MAP } from '../config/reports.ts';
-import { ArrowLeft, ExternalLink, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Loader2, AlertCircle, AlertTriangle } from 'lucide-react';
+
+const ALERT_KEYWORDS = ['overdue', 'late', 'missing', 'not compliant', 'no attempt', 'past due', 'no service'];
+
+function AlertBanner({ components }: { components: import('../types/salesforce.ts').DashboardComponent[] }) {
+  const flagged: { label: string; value: number }[] = [];
+  for (const comp of components) {
+    for (const row of comp.rows) {
+      const lower = row.label.toLowerCase();
+      if (ALERT_KEYWORDS.some(k => lower.includes(k))) {
+        const total = row.values.reduce((sum, v) => sum + (v.value ?? 0), 0);
+        if (total > 0) flagged.push({ label: row.label, value: total });
+      }
+    }
+  }
+  if (flagged.length === 0) return null;
+  const totalItems = flagged.reduce((sum, f) => sum + f.value, 0);
+  return (
+    <div className="flex flex-wrap items-center gap-2 px-4 py-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-sm">
+      <AlertTriangle size={16} className="text-amber-500 shrink-0" />
+      <span className="font-medium text-amber-200">
+        {totalItems.toLocaleString()} items need attention across {flagged.length} categories
+      </span>
+      <div className="flex flex-wrap gap-1.5 ml-auto">
+        {flagged.map(f => (
+          <span key={f.label} className="px-2 py-0.5 rounded-full text-xs bg-amber-500/20 text-amber-300 whitespace-nowrap">
+            {f.label}: {f.value.toLocaleString()}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function ReportContent({ config }: { config: ReportConfig }) {
   const { data, loading, error, refresh, lastFetched } = useSalesforceReport({
@@ -52,6 +84,7 @@ function ReportContent({ config }: { config: ReportConfig }) {
     const d = data as DashboardResponse;
     return (
       <div className="space-y-6">
+        <AlertBanner components={d.components} />
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">{d.components.length} dashboard components</p>
           <RefreshIndicator lastFetched={lastFetched} loading={loading} onRefresh={refresh} />
