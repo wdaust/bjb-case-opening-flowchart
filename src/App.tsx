@@ -64,6 +64,7 @@ import TechProjects from './pages/TechProjects.tsx';
 import Reports from './pages/Reports.tsx';
 import ReportDetail from './pages/ReportDetail.tsx';
 import Analytics from './pages/Analytics.tsx';
+import Insights from './pages/Insights.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 
@@ -154,6 +155,7 @@ export default function App() {
             <Route path="reports" element={<Reports />} />
             <Route path="reports/:reportId" element={<ReportDetail />} />
             <Route path="analytics" element={<Analytics />} />
+            <Route path="insights" element={<Insights />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>

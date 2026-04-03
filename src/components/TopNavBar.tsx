@@ -11,6 +11,7 @@ const mainLinks = [
 
 const moreLinks = [
   { label: 'Analytics', to: '/analytics' },
+  { label: 'Insights', to: '/insights' },
   { label: 'Reports', to: '/reports' },
   { label: 'Litify Spec', to: '/specs' },
 ];
