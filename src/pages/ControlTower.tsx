@@ -1,55 +1,35 @@
 import { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { OptimusIntro } from '../components/OptimusIntro';
 import { cn } from '../utils/cn';
-import {
-  getControlTowerData, getActiveCases, getUpcomingDeadlines, stageLabels,
-  getTopStageAgeMetrics, getPreLitStageAgeMetrics, parentStageLabels,
-  getWeeklyExitsByStage, getOverdueTasksByStage, getWeeklyThroughput,
-  type ParentStage,
-} from '../data/mockData';
-import type { SubStageCount, Stage } from '../data/mockData';
-import { calculateFirmLCI, getEscalations } from '../data/lciEngine';
 import { StatCard } from '../components/dashboard/StatCard';
-import { StageBar } from '../components/dashboard/StageBar';
-import { StageAgeGauges } from '../components/dashboard/StageAgeGauges';
-import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
-import { EscalationBanner } from '../components/dashboard/EscalationBanner';
+import { DataTable, type Column } from '../components/dashboard/DataTable';
 import { HeroSection } from '../components/dashboard/HeroSection';
 import { HeroTitle } from '../components/dashboard/HeroTitle';
 import { HeroSummaryTicker } from '../components/dashboard/HeroSummaryTicker';
-import { ScoreGauge } from '../components/scoring/ScoreGauge';
-import { useCountUp } from '../hooks/useCountUp';
+import { useSalesforceReport } from '../hooks/useSalesforceReport';
+import { Loader2, RefreshCw } from 'lucide-react';
+import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 
-// ── Palette — green monochrome ──────────────────────────────────────────
-// Categorical shades (bright → muted greens + grays)
+// ── Report IDs ────────────────────────────────────────────────────────
+const MATTERS_ID     = '00OPp000003OaGjMAK';
+const RESOLUTIONS_ID = '00OPp000003OOCLMA4';
+const STATS_ID       = '01ZPp0000015Ug1MAE';
+const TIMING_ID      = '01ZPp0000015dGHMAY';
+const DISCOVERY_ID   = '00OPp000003OUcjMAG';
+const EXPERTS_ID     = '00OPp000003PLtxMAG';
+
+// ── Palette ───────────────────────────────────────────────────────────
 const GREEN = '#22c55e';
-const GREEN_80 = '#22c55ecc';
-const GREEN_60 = '#22c55e99';
-const GREEN_40 = '#22c55e66';
-const GREEN_20 = '#22c55e33';
-// Semantic severity (green → dim gray)
-const EMERALD = '#22c55e';
-const AMBER = '#555555';
-const RED = '#444444';
-const ROSE = '#333333';
-
-
-// ── Helpers ────────────────────────────────────────────────────────────
-function LegendDot({ color, label }: { color: string; label: string }) {
-  return (
-    <div className="flex items-center gap-1.5">
-      <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
-      <span className="text-[11px] text-muted-foreground">{label}</span>
-    </div>
-  );
-}
+const AMBER = '#f59e0b';
+const RED   = '#ef4444';
+const PINK  = '#ec4899';
+const INDIGO = '#6366f1';
 
 const tooltipStyle = {
   contentStyle: { backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, fontSize: 12 },
@@ -59,8 +39,79 @@ const tooltipStyle = {
 
 const hoverCard = "transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20";
 
+// ── Helpers ───────────────────────────────────────────────────────────
+function fmt$(n: number): string {
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
+  return `$${n.toLocaleString()}`;
+}
+
+function fmtNum(n: number): string {
+  return n.toLocaleString();
+}
+
+function getDashMetric(dash: DashboardResponse | null, title: string): number | null {
+  if (!dash) return null;
+  const comp = dash.components.find(c => c.title === title);
+  if (!comp || !comp.rows[0]) return null;
+  return comp.rows[0].values[0]?.value ?? null;
+}
+
+function getDashRows(dash: DashboardResponse | null, title: string) {
+  if (!dash) return [];
+  const comp = dash.components.find(c => c.title === title);
+  return comp?.rows ?? [];
+}
+
+function getTimingCompliance(dash: DashboardResponse | null, title: string): { timely: number; late: number } {
+  const rows = getDashRows(dash, title);
+  let timely = 0;
+  let late = 0;
+  for (const r of rows) {
+    const v = r.values[0]?.value ?? 0;
+    const lbl = r.label.toLowerCase();
+    if (lbl.includes('timely') || lbl.includes('compliant') || lbl.includes('under')) {
+      timely += v;
+    } else {
+      late += v;
+    }
+  }
+  return { timely, late };
+}
+
+function compliancePct(c: { timely: number; late: number }) {
+  const total = c.timely + c.late;
+  return total ? Math.round((c.timely / total) * 100) : 0;
+}
+
+function complianceColor(p: number) {
+  if (p >= 60) return 'text-green-400 border-green-500/30 bg-green-500/10';
+  if (p >= 30) return 'text-amber-400 border-amber-500/30 bg-amber-500/10';
+  return 'text-red-400 border-red-500/30 bg-red-500/10';
+}
+
+function LegendDot({ color, label }: { color: string; label: string }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
+      <span className="text-[11px] text-muted-foreground">{label}</span>
+    </div>
+  );
+}
+
+// ── Attorney row type ─────────────────────────────────────────────────
+interface AttorneyRow {
+  name: string;
+  cases: number;
+  settlement: number;
+  avgSettlement: number;
+  netFee: number;
+  feePercent: number;
+}
+
+// ── Main Component ────────────────────────────────────────────────────
 export default function ControlTower() {
-  const navigate = useNavigate();
   const [introPlayed, setIntroPlayed] = useState(
     () => sessionStorage.getItem('optimus-intro-played') === 'true',
   );
@@ -69,741 +120,550 @@ export default function ControlTower() {
     sessionStorage.setItem('optimus-intro-played', 'true');
     setIntroPlayed(true);
   };
-  const controlTowerData = getControlTowerData();
-  const topStageMetrics = getTopStageAgeMetrics();
-  const preLitMetrics = getPreLitStageAgeMetrics();
-  const activeCases = useMemo(() => getActiveCases(), []);
-  const allDeadlines = useMemo(() => getUpcomingDeadlines(90), []);
-  const firmLCI = useMemo(() => calculateFirmLCI(), []);
-  const escalations = useMemo(() => getEscalations(), []);
 
-  const formattedEV = `$${(controlTowerData.totalEV / 1_000_000).toFixed(1)}M`;
+  // ── Load all 6 reports in parallel ────────────────────────────────
+  const { data: mattersData, loading: mattersLoading, lastFetched: mattersTs, refresh: refreshMatters } =
+    useSalesforceReport<ReportSummaryResponse>({ id: MATTERS_ID, type: 'report' });
+  const { data: resData, loading: resLoading, lastFetched: resTs, refresh: refreshRes } =
+    useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report' });
+  const { data: statsData, loading: statsLoading, lastFetched: statsTs, refresh: refreshStats } =
+    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
+  const { data: timingData, loading: timingLoading, lastFetched: timingTs, refresh: refreshTiming } =
+    useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
+  const { data: discData, loading: discLoading, lastFetched: discTs, refresh: refreshDisc } =
+    useSalesforceReport<ReportSummaryResponse>({ id: DISCOVERY_ID, type: 'report' });
+  const { data: expertsData, loading: expertsLoading, lastFetched: expertsTs, refresh: refreshExperts } =
+    useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
 
-  // Compute derived metrics
-  const preLitCases = activeCases.filter(c => c.parentStage === "pre-lit");
-  const litCases = activeCases.filter(c => c.parentStage === "lit");
-  const totalAttorneys = new Set(activeCases.map(c => c.attorney)).size;
-  const avgPerAttorney = totalAttorneys > 0 ? Math.round(activeCases.length / totalAttorneys) : 0;
+  const allLoading = mattersLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
 
-  const preLitSla = preLitCases.length > 0
-    ? Math.round(preLitCases.filter(c => c.riskFlags.includes("Over SLA")).length / preLitCases.length * 1000) / 10
-    : 0;
-  const litSla = litCases.length > 0
-    ? Math.round(litCases.filter(c => c.riskFlags.includes("Over SLA")).length / litCases.length * 1000) / 10
-    : 0;
+  // ── Section 1: Hero KPIs from Matters Universe + Resolutions + Stats ──
+  const totalMatters = (mattersData?.grandTotals.find(g => g.label === 'Record Count')?.value ?? 0) as number;
+  const openMatters = (mattersData?.grandTotals.find(g => g.label === 'Open')?.value ?? 0) as number;
+  const closedMatters = (mattersData?.grandTotals.find(g => g.label === 'Closed')?.value ?? 0) as number;
 
-  const stalledCases = activeCases.filter(c => c.riskFlags.includes("Silent stall"));
-  const stall7d = stalledCases.filter(c => {
-    const days = Math.ceil((new Date("2026-02-19").getTime() - new Date(c.lastActivityDate).getTime()) / 86400000);
-    return days >= 7 && days < 21;
-  }).length;
-  const stall21d = stalledCases.filter(c => {
-    const days = Math.ceil((new Date("2026-02-19").getTime() - new Date(c.lastActivityDate).getTime()) / 86400000);
-    return days >= 21;
-  }).length;
-  const avgStallDays = stalledCases.length > 0
-    ? Math.round(stalledCases.reduce((s, c) => s + Math.ceil((new Date("2026-02-19").getTime() - new Date(c.lastActivityDate).getTime()) / 86400000), 0) / stalledCases.length)
-    : 0;
+  const topOpenStages = useMemo(() => {
+    if (!mattersData) return [];
+    return mattersData.groupings
+      .filter(g => g.label !== 'No Stage')
+      .map(g => ({ label: g.label, open: (g.aggregates.find(a => a.label === 'Open')?.value ?? 0) as number }))
+      .sort((a, b) => b.open - a.open)
+      .slice(0, 3);
+  }, [mattersData]);
 
-  const totalExposure = activeCases.reduce((s, c) => s + c.exposureAmount, 0);
-  const avgEvPerCase = activeCases.length > 0 ? Math.round(controlTowerData.totalEV / activeCases.length) : 0;
-  const avgEvConfidence = activeCases.length > 0
-    ? Math.round(activeCases.reduce((s, c) => s + c.evConfidence, 0) / activeCases.length * 100)
-    : 0;
+  const njInventory = getDashMetric(statsData, 'NJ Lit Inventory') ?? 0;
+  const portfolioValue = getDashMetric(statsData, 'NJ Lit Inventory (Value)') ?? 0;
+  const totalSettlement = (resData?.grandTotals.find(g => g.label.includes('Settlement'))?.value ?? 0) as number;
+  const totalResolved = (resData?.grandTotals.find(g => g.label === 'Record Count')?.value ?? 0) as number;
+  const totalNetFee = (resData?.grandTotals.find(g => g.label.includes('Fee'))?.value ?? 0) as number;
 
-  // Row 2 metrics
-  const preLitAvgAge = controlTowerData.stageCounts.find(s => s.parentStage === "pre-lit")?.avgAge ?? 0;
-  const litAvgAge = controlTowerData.stageCounts.find(s => s.parentStage === "lit")?.avgAge ?? 0;
-  const preLitOver180 = preLitCases.filter(c => {
-    const days = Math.ceil((new Date("2026-02-19").getTime() - new Date(c.stageEntryDate).getTime()) / 86400000);
-    return days > 180;
-  }).length;
-  const litOver365 = litCases.filter(c => {
-    const days = Math.ceil((new Date("2026-02-19").getTime() - new Date(c.stageEntryDate).getTime()) / 86400000);
-    return days > 365;
-  }).length;
+  // ── Section 2: Matter Pipeline ────────────────────────────────────
+  const pipeline = useMemo(() => {
+    if (!mattersData) return [];
+    return mattersData.groupings
+      .filter(g => g.label !== 'No Stage')
+      .map(g => {
+        const total = (g.aggregates.find(a => a.label === 'Record Count')?.value ?? 0) as number;
+        const open = (g.aggregates.find(a => a.label === 'Open')?.value ?? 0) as number;
+        const closed = (g.aggregates.find(a => a.label === 'Closed')?.value ?? 0) as number;
+        return { stage: g.label, total, open, closed };
+      })
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 15);
+  }, [mattersData]);
 
-  const weeklyClosures = Math.round(controlTowerData.closedOut30d / 4.3);
-  const conversionRate = preLitCases.length > 0
-    ? Math.round(litCases.length / (preLitCases.length + litCases.length) * 100)
-    : 0;
+  // ── Section 3: NJ Lit Operations (Stats at a Glance) ──────────────
+  const missingTrackers = getDashMetric(statsData, 'Missing Discovery Trackers (NJ)') ?? 0;
+  const serviceGt3d = getDashMetric(statsData, 'NJ- Service Initiated >3 Days from COMP') ?? 0;
+  const noService35 = getDashMetric(statsData, 'No Service 35+ Days (NJ)') ?? 0;
+  const missingAnswers = getDashMetric(statsData, 'Missing All Ans, No Default (NJ)') ?? 0;
 
-  // Row 3 metrics
-  const solDeadlines = allDeadlines.filter(d => d.type === "SOL");
-  const sol7d = solDeadlines.filter(d => {
-    const days = Math.ceil((new Date(d.date).getTime() - new Date("2026-02-19").getTime()) / 86400000);
-    return days >= 0 && days < 7;
-  }).length;
-  const sol7to14 = solDeadlines.filter(d => {
-    const days = Math.ceil((new Date(d.date).getTime() - new Date("2026-02-19").getTime()) / 86400000);
-    return days >= 7 && days < 14;
-  }).length;
-  const sol14to30 = solDeadlines.filter(d => {
-    const days = Math.ceil((new Date(d.date).getTime() - new Date("2026-02-19").getTime()) / 86400000);
-    return days >= 14 && days <= 30;
-  }).length;
+  // Donut data: Negotiations
+  const negotiationsData = useMemo(() => {
+    const rows = getDashRows(statsData, 'NJ LIT - Negotiations');
+    return rows.map(r => {
+      const v = r.values[0]?.value ?? 0;
+      const lbl = r.label;
+      const isHealthy = lbl.toLowerCase().includes('connection within');
+      const isWarning = lbl.toLowerCase().includes('attempt within');
+      return { name: lbl, value: v, color: isHealthy ? GREEN : isWarning ? AMBER : RED };
+    });
+  }, [statsData]);
 
-  const overSlaCases = activeCases.filter(c => c.riskFlags.includes("Over SLA"));
-  const bothFlags = activeCases.filter(c => c.riskFlags.includes("Over SLA") && c.riskFlags.includes("Silent stall")).length;
+  // Donut data: Complaint Filing
+  const complaintFilingData = useMemo(() => {
+    const rows = getDashRows(statsData, 'Complaint Filing Dashboard (NJ LIT)');
+    return rows.map(r => {
+      const v = r.values[0]?.value ?? 0;
+      const lbl = r.label;
+      const isOverdue = lbl.toLowerCase().includes('overdue');
+      return { name: lbl, value: v, color: isOverdue ? RED : lbl.includes('Exception') ? AMBER : GREEN };
+    });
+  }, [statsData]);
 
-  // ── Donut 1: SLA Compliance ───────────────────────────────────────────
-  const slaComplianceData = useMemo(() => {
-    let onTrack = 0, warning = 0, overSla = 0;
-    for (const sc of controlTowerData.stageCounts) {
-      for (const sub of sc.substages) {
-        const onTrackCount = sub.count - sub.overSla;
-        const warningCount = Math.round(sub.overSla * 0.3);
-        onTrack += onTrackCount;
-        warning += warningCount;
-        overSla += sub.overSla - warningCount;
-      }
-      if (sc.substages.length === 0) {
-        onTrack += sc.count - sc.overSla;
-        overSla += sc.overSla;
-      }
-    }
-    const total = onTrack + warning + overSla;
-    const compliancePct = total > 0 ? Math.round((onTrack / total) * 100) : 0;
-    return {
-      data: [
-        { name: 'On-Track', value: onTrack, color: EMERALD },
-        { name: 'Warning', value: warning, color: AMBER },
-        { name: 'Over SLA', value: overSla, color: RED },
-      ],
-      compliancePct,
-    };
-  }, [controlTowerData]);
+  // Donut data: Form A Past Due
+  const formAPastDueData = useMemo(() => {
+    const rows = getDashRows(statsData, 'Form A Past Due (NJ)');
+    return rows.map(r => {
+      const v = r.values[0]?.value ?? 0;
+      const lbl = r.label;
+      const isOverdue30 = lbl.includes('30+') || lbl.includes('30-');
+      const isOverdue = lbl.toLowerCase().includes('overdue');
+      return { name: lbl, value: v, color: isOverdue30 ? RED : isOverdue ? AMBER : GREEN };
+    });
+  }, [statsData]);
 
-  // ── Donut 2: Next-Action Coverage ─────────────────────────────────────
-  const nextActionData = useMemo(() => {
-    const total = activeCases.length;
-    const covered = Math.round(total * 0.82);
-    const partial = Math.round(total * 0.11);
-    const none = total - covered - partial;
-    const coveragePct = total > 0 ? Math.round((covered / total) * 100) : 0;
-    return {
-      data: [
-        { name: 'Covered', value: covered, color: EMERALD },
-        { name: 'Partial', value: partial, color: AMBER },
-        { name: 'No Next Action', value: none, color: RED },
-      ],
-      coveragePct,
-    };
-  }, [activeCases]);
+  // Upcoming Events
+  const eventsData = useMemo(() => {
+    const rows = getDashRows(statsData, 'NJ ARB, MED, SET CONF or Trials');
+    return rows.map(r => ({
+      name: r.label,
+      count: r.values[0]?.value ?? 0,
+      value: r.values[1]?.value ?? 0,
+    }));
+  }, [statsData]);
 
-  // ── Donut 3: Case Risk Distribution ───────────────────────────────────
-  const caseRiskData = useMemo(() => {
-    let low = 0, medium = 0, high = 0, critical = 0;
-    for (const c of activeCases) {
-      const flagCount = c.riskFlags.length;
-      if (flagCount === 0) low++;
-      else if (flagCount === 1) medium++;
-      else if (flagCount === 2) high++;
-      else critical++;
-    }
-    return {
-      data: [
-        { name: 'Low Risk', value: low, color: EMERALD },
-        { name: 'Medium Risk', value: medium, color: AMBER },
-        { name: 'High Risk', value: high, color: RED },
-        { name: 'Critical', value: critical, color: ROSE },
-      ],
-      highRiskCount: high + critical,
-    };
-  }, [activeCases]);
+  // ── Section 4: Timing Compliance ──────────────────────────────────
+  const complaint = getTimingCompliance(timingData, 'Complaint Timing NJ');
+  const formA = getTimingCompliance(timingData, 'Form A Timing NJ in Days from Answer');
+  const formC = getTimingCompliance(timingData, 'Form C Timing NJ in Days from Answer');
+  const deps = getTimingCompliance(timingData, 'Dep Timing NJ in Days from Form A');
 
-  // ── Stacked Bar 1: Inventory by Case Type ─────────────────────────────
-  const inventoryBarData = useMemo(() => {
-    const parentStages: ParentStage[] = ['intake', 'pre-lit', 'lit'];
-    const ctSet = new Set(activeCases.map(c => c.caseType));
-    const cts = Array.from(ctSet).slice(0, 5);
-    return {
-      data: parentStages.map(ps => {
-        const psCases = activeCases.filter(c => c.parentStage === ps);
-        const row: Record<string, string | number> = { stage: parentStageLabels[ps], total: psCases.length };
-        cts.forEach(ct => { row[ct] = psCases.filter(c => c.caseType === ct).length; });
-        return row;
-      }),
-      caseTypes: cts,
-    };
-  }, [activeCases]);
+  const dedExtensions = getDashMetric(timingData, 'DED Extensions') ?? 0;
+  const njResolutions = getDashMetric(timingData, 'NJ Resolutions') ?? 0;
 
-  // ── Stacked Bar 2: Weekly Exits by Stage ──────────────────────────────
-  const weeklyExitsData = useMemo(() => getWeeklyExitsByStage(), []);
-  const totalWeeklyExits = useMemo(() => {
-    const last = weeklyExitsData[weeklyExitsData.length - 1];
-    return last ? last['Pre-Lit'] + last.Lit + last.Settled + last.Dismissed : 0;
-  }, [weeklyExitsData]);
+  // Complaint timing in days
+  const complaintDaysRows = getDashRows(timingData, 'Complaint Timing NJ in Days');
+  const complaintTimelyDays = complaintDaysRows.find(r => r.label.toLowerCase().includes('timely'))?.values[0]?.value ?? 0;
+  const complaintLateDays = complaintDaysRows.find(r => r.label.toLowerCase().includes('late'))?.values[0]?.value ?? 0;
 
-  // ── Stacked Bar 3: Overdue Tasks by Stage ─────────────────────────────
-  const overdueData = useMemo(() => getOverdueTasksByStage(), []);
-  const totalOverdue = useMemo(
-    () => overdueData.reduce((s, d) => s + d['1-7 days'] + d['8-14 days'] + d['15+ days'], 0),
-    [overdueData],
-  );
+  // ── Section 5: Resolution Performance ─────────────────────────────
+  const attorneys: AttorneyRow[] = useMemo(() => {
+    if (!resData) return [];
+    return resData.groupings.map(g => {
+      const cases = (g.aggregates.find(a => a.label === 'Record Count')?.value ?? 0) as number;
+      const settlement = (g.aggregates.find(a => a.label.includes('Settlement'))?.value ?? 0) as number;
+      const netFee = (g.aggregates.find(a => a.label.includes('Fee'))?.value ?? 0) as number;
+      return {
+        name: g.label,
+        cases,
+        settlement,
+        avgSettlement: cases ? settlement / cases : 0,
+        netFee,
+        feePercent: settlement ? (netFee / settlement) * 100 : 0,
+      };
+    }).sort((a, b) => b.settlement - a.settlement);
+  }, [resData]);
 
-  // ── Heat map data ─────────────────────────────────────────────────────
-  const heatMapSubstages: (SubStageCount & { parentStage: string })[] = controlTowerData.stageCounts
-    .filter(sc => sc.parentStage !== "intake")
-    .flatMap(sc => sc.substages.map(sub => ({ ...sub, parentStage: sc.parentStage })));
+  const top15Attorneys = attorneys.slice(0, 15);
+  const attorneyCount = attorneys.length;
+  const feeRatio = totalSettlement ? ((totalNetFee / totalSettlement) * 100).toFixed(1) : '0';
 
-  const getSimThroughput = (sub: SubStageCount) => {
-    const base = sub.count > 0 ? Math.round((sub.count / Math.max(sub.avgAge, 1)) * 7 * 10) / 10 : 0;
-    return Math.min(Math.max(base, 0.2), 8.0);
-  };
-  const getSimStall = (sub: SubStageCount) => {
-    const base = sub.count > 0 ? (sub.overSla / sub.count) * 0.4 + (Math.min(sub.avgAge, 300) / 300) * 0.2 : 0;
-    return Math.round(base * 1000) / 10;
-  };
-
-  type Severity = "good" | "warning" | "elevated" | "critical";
-
-  const severityClasses: Record<Severity, string> = {
-    good:     "bg-green-500/15 text-green-400 ring-green-500/25",
-    warning:  "bg-white/5 text-gray-300 ring-white/10",
-    elevated: "bg-white/8 text-gray-400 ring-white/12",
-    critical: "bg-white/10 text-gray-500 ring-white/15",
-  };
-
-  const getSeverity = (metric: string, value: number): Severity => {
-    switch (metric) {
-      case "avgAge":
-        return value < 30 ? "good" : value < 90 ? "warning" : value < 180 ? "elevated" : "critical";
-      case "overSla":
-        return value < 10 ? "good" : value < 25 ? "warning" : value < 50 ? "elevated" : "critical";
-      case "throughput":
-        return value > 3 ? "good" : value > 1 ? "warning" : "critical";
-      case "stall":
-        return value < 5 ? "good" : value < 15 ? "warning" : "critical";
-      default:
-        return "good";
-    }
-  };
-
-  const groups = (() => {
-    const result: { label: string; colSpan: number }[] = [];
-    let current: string | null = null;
-    let count = 0;
-    for (const sub of heatMapSubstages) {
-      const label = sub.parentStage === "pre-lit" ? "Pre-Lit" : "Litigation";
-      if (label !== current) {
-        if (current !== null) result.push({ label: current, colSpan: count });
-        current = label;
-        count = 1;
-      } else {
-        count++;
-      }
-    }
-    if (current !== null) result.push({ label: current, colSpan: count });
-    return result;
-  })();
-
-  const metricRows: {
-    key: string; label: string; unit: string; accentBorder: string;
-    getValue: (sub: SubStageCount) => number; format: (v: number) => string; metricKey: string;
-  }[] = [
-    { key: "avgAge", label: "Avg Age", unit: "days", accentBorder: "border-l-green-500/40", getValue: (sub) => sub.avgAge, format: (v) => `${v}`, metricKey: "avgAge" },
-    { key: "overSla", label: "Over-SLA", unit: "%", accentBorder: "border-l-green-500/25", getValue: (sub) => sub.count > 0 ? Math.round((sub.overSla / sub.count) * 1000) / 10 : 0, format: (v) => `${v}%`, metricKey: "overSla" },
-    { key: "throughput", label: "Throughput", unit: "/wk", accentBorder: "border-l-green-500/60", getValue: (sub) => getSimThroughput(sub), format: (v) => `${v}`, metricKey: "throughput" },
-    { key: "stall", label: "Stall", unit: "%", accentBorder: "border-l-gray-500/40", getValue: (sub) => getSimStall(sub), format: (v) => `${v}%`, metricKey: "stall" },
+  const attorneyColumns: Column<AttorneyRow>[] = [
+    { key: 'name', label: 'Attorney', sortable: true },
+    { key: 'cases', label: 'Cases', sortable: true, render: r => fmtNum(r.cases), className: 'text-right' },
+    { key: 'settlement', label: 'Settlement', sortable: true, render: r => fmt$(r.settlement), className: 'text-right' },
+    { key: 'avgSettlement', label: 'Avg/Case', sortable: true, render: r => fmt$(r.avgSettlement), className: 'text-right' },
+    { key: 'netFee', label: 'Net Fee', sortable: true, render: r => fmt$(r.netFee), className: 'text-right' },
+    { key: 'feePercent', label: 'Fee %', sortable: true, render: r => `${r.feePercent.toFixed(1)}%`, className: 'text-right' },
   ];
 
-  const abbreviateStage = (stage: string) =>
-    stageLabels[stage as Stage]
-      .replace("Treatment Monitoring", "Treat Mon")
-      .replace("Account Opening", "Acct Open")
-      .replace("Value Development", "Val Dev")
-      .replace("Demand Readiness", "Dem Ready")
-      .replace("Resolution Pending", "Res Pend")
-      .replace("Case Opening", "Case Open")
-      .replace("Expert & Deposition", "Exp & Dep")
-      .replace("Arbitration/Mediation", "Arb/Med");
+  // ── Section 6: Workload Distribution ──────────────────────────────
+  const discoveryTop15 = useMemo(() => {
+    if (!discData) return [];
+    return discData.groupings
+      .map(g => ({ name: g.label, count: (g.aggregates[0]?.value ?? 0) as number }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 15);
+  }, [discData]);
 
-  // Sparkline data from weekly throughput
-  const weeklyThroughput = useMemo(() => getWeeklyThroughput(), []);
-  const inventorySparkline = weeklyThroughput.map(w => w.newIn);
-  const newInSparkline = weeklyThroughput.map(w => w.closedOut);
-  const overSlaSparkline = weeklyThroughput.map(w => w.overSla);
+  const discTotal = (discData?.grandTotals[0]?.value ?? 0) as number;
 
-  // Animated KPI values
-  const totalActiveAnimated = useCountUp(controlTowerData.totalActive, 800);
-  const newIn30dAnimated = useCountUp(340, 800);
-  const overSlaPctAnimated = useCountUp(controlTowerData.overSlaPct, 800, 1);
+  const expertsTop15 = useMemo(() => {
+    if (!expertsData) return [];
+    return expertsData.groupings
+      .map(g => ({ name: g.label, count: (g.aggregates[0]?.value ?? 0) as number }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 15);
+  }, [expertsData]);
 
-  // On-SLA percentage for ticker
-  const onSlaPct = Math.round(100 - controlTowerData.overSlaPct);
+  const expertsTotal = (expertsData?.grandTotals[0]?.value ?? 0) as number;
+
+  // ── Refresh all reports ───────────────────────────────────────────
+  const refreshAll = () => {
+    refreshMatters();
+    refreshRes();
+    refreshStats();
+    refreshTiming();
+    refreshDisc();
+    refreshExperts();
+  };
+
+  // timestamps used in footer section directly
+
+  // ── Loading state ─────────────────────────────────────────────────
+  if (allLoading) {
+    return (
+      <div className="flex-1 overflow-auto p-6">
+        {!introPlayed && <OptimusIntro onComplete={handleIntroComplete} />}
+        <div className="flex flex-col items-center justify-center h-96 gap-3">
+          <Loader2 size={32} className="animate-spin text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">Loading 6 Salesforce reports...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
       {!introPlayed && <OptimusIntro onComplete={handleIntroComplete} />}
-      {/* ── Glassmorphic Command Header ──────────────────────── */}
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 1: Hero + KPI Cards
+          ═══════════════════════════════════════════════════════════════ */}
       <HeroSection>
-        {/* Zone 1: Title Row */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <HeroTitle title="Optimus Control Tower" subtitle="Firm-Wide Command Center" />
           <HeroSummaryTicker
-            totalCases={controlTowerData.totalActive}
-            onSlaPct={onSlaPct}
-            lciScore={firmLCI.score}
+            items={[
+              { label: 'matters', value: fmtNum(totalMatters) },
+              { label: 'open', value: fmtNum(openMatters) },
+              { label: 'settlements', value: fmt$(totalSettlement) },
+            ]}
           />
         </div>
 
-        {/* Zone 2: Filter Bar (glass-skinned) */}
-        <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-          <FilterBar variant="glass" />
-        </div>
-
-        {/* Escalation Banner (unchanged) */}
-        {escalations.length > 0 && (
-          <EscalationBanner escalations={escalations} />
-        )}
-
-        {/* Zone 3: KPI Cards (4-col glassmorphic) */}
         <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
           <DashboardGrid cols={4}>
-            {/* LCI Gauge Card — green border + pulse glow */}
-            <div
-              className={cn(
-                "rounded-xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-sm p-5 flex flex-col items-center justify-center gap-2 cursor-pointer gradient-border",
-                "border-t-2 border-t-green-500 animate-pulse-glow",
-                hoverCard,
-              )}
-              onClick={() => navigate('/lci-report')}
-            >
-              <ScoreGauge score={firmLCI.score} maxScore={100} size={90} label="Firm LCI" />
-              <span className={cn(
-                'text-xs font-semibold px-2 py-0.5 rounded-full',
-                firmLCI.band === 'green' ? 'bg-green-500/15 text-green-400'
-                  : firmLCI.band === 'amber' ? 'bg-white/10 text-gray-400'
-                  : 'bg-white/10 text-gray-500',
-              )}>
-                {firmLCI.band === 'green' ? 'Healthy' : firmLCI.band === 'amber' ? 'Watch' : 'Critical'}
-              </span>
-            </div>
             <StatCard
-              label="Total Active Inventory"
-              value={totalActiveAnimated}
-              delta="+30 vs 30d ago"
-              deltaType="positive"
+              label="Total Matters"
+              value={fmtNum(totalMatters)}
               variant="glass"
-              sparklineData={inventorySparkline}
               className={hoverCard}
               subMetrics={[
-                { label: "Pre-Lit", value: preLitCases.length, deltaType: "neutral" },
-                { label: "Lit", value: litCases.length, deltaType: "neutral" },
-                { label: "Avg/attorney", value: avgPerAttorney, deltaType: "neutral" },
+                { label: "Open", value: fmtNum(openMatters), deltaType: "neutral" },
+                { label: "Closed", value: fmtNum(closedMatters), deltaType: "neutral" },
               ]}
             />
             <StatCard
-              label="New In (30d)"
-              value={newIn30dAnimated}
-              delta="+12% vs prior 30d"
-              deltaType="positive"
+              label="Open Inventory"
+              value={fmtNum(openMatters)}
               variant="glass"
-              sparklineData={newInSparkline}
+              className={hoverCard}
+              subMetrics={topOpenStages.map(s => ({
+                label: s.label,
+                value: fmtNum(s.open),
+                deltaType: "neutral" as const,
+              }))}
+            />
+            <StatCard
+              label="Portfolio Value"
+              value={fmt$(portfolioValue)}
+              variant="glass"
               className={hoverCard}
               subMetrics={[
-                { label: "Avg days to intake", value: "4.2d", deltaType: "positive" },
-                { label: "Reopen rate", value: "2.1%", deltaType: "neutral" },
-                { label: "Net trend (7d)", value: "+8", deltaType: "positive" },
+                { label: "NJ Lit count", value: fmtNum(njInventory), deltaType: "neutral" },
               ]}
             />
             <StatCard
-              label="Over-SLA %"
-              value={`${overSlaPctAnimated}%`}
-              delta="by stage"
-              deltaType={controlTowerData.overSlaPct > 10 ? "negative" : "positive"}
-              onClick={() => navigate('/inventory-health')}
+              label="Settlement Revenue"
+              value={fmt$(totalSettlement)}
               variant="glass"
-              sparklineData={overSlaSparkline}
               className={hoverCard}
               subMetrics={[
-                { label: "Pre-Lit SLA%", value: `${preLitSla}%`, deltaType: preLitSla > 20 ? "negative" : "positive" },
-                { label: "Lit SLA%", value: `${litSla}%`, deltaType: litSla > 20 ? "negative" : "positive" },
-                { label: "Worst stage", value: "Discovery", deltaType: "negative" },
+                { label: "Resolved", value: fmtNum(totalResolved), deltaType: "neutral" },
+                { label: "Net fees", value: fmt$(totalNetFee), deltaType: "neutral" },
               ]}
             />
           </DashboardGrid>
         </div>
       </HeroSection>
 
-      <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '0ms', animationFillMode: 'forwards' }}>
-        <SectionHeader title="Inventory by Stage" />
-        <StageBar parentStages={controlTowerData.stageCounts} />
-        <StageAgeGauges litMetrics={topStageMetrics} preLitMetrics={preLitMetrics} />
-      </div>
-
-      {/* Row 2 — Velocity & Throughput */}
-      <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '150ms', animationFillMode: 'forwards' }}>
-        <DashboardGrid cols={4}>
-          <StatCard
-            label="Silent Stall %"
-            value={`${controlTowerData.stallPct}%`}
-            delta="no activity 21d+"
-            deltaType={controlTowerData.stallPct > 5 ? "negative" : "positive"}
-            onClick={() => navigate('/inventory-health')}
-            className={hoverCard}
-            subMetrics={[
-              { label: "7d stall", value: stall7d, deltaType: "negative" },
-              { label: "21d+ stall", value: stall21d, deltaType: "negative" },
-              { label: "Avg stall days", value: `${avgStallDays}d`, deltaType: "negative" },
-            ]}
-          />
-          <StatCard
-            label="Realizable EV"
-            value={formattedEV}
-            delta="+3.2% vs last month"
-            deltaType="positive"
-            variant="hero"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Avg EV/case", value: `$${(avgEvPerCase / 1000).toFixed(0)}K`, deltaType: "neutral" },
-              { label: "Total exposure", value: `$${(totalExposure / 1_000_000).toFixed(1)}M`, deltaType: "neutral" },
-              { label: "EV confidence", value: `${avgEvConfidence}%`, deltaType: avgEvConfidence > 50 ? "positive" : "negative" },
-            ]}
-          />
-          <StatCard
-            label="Avg Days in Pre-Lit"
-            value={`${preLitAvgAge}d`}
-            delta="all pre-lit cases"
-            deltaType="neutral"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Median days", value: `${Math.round(preLitAvgAge * 0.85)}d`, deltaType: "neutral" },
-              { label: "Cases > 180d", value: preLitOver180, deltaType: preLitOver180 > 50 ? "negative" : "neutral" },
-              { label: "Throughput/wk", value: "4.2", deltaType: "positive" },
-            ]}
-          />
-          <StatCard
-            label="Avg Days in Lit"
-            value={`${litAvgAge}d`}
-            delta="all lit cases"
-            deltaType="neutral"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Median days", value: `${Math.round(litAvgAge * 0.85)}d`, deltaType: "neutral" },
-              { label: "Cases > 365d", value: litOver365, deltaType: litOver365 > 20 ? "negative" : "neutral" },
-              { label: "Throughput/wk", value: "3.1", deltaType: "positive" },
-            ]}
-          />
-        </DashboardGrid>
-      </div>
-
-      {/* Row 3 — Risk & Operational */}
-      <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
-        <DashboardGrid cols={4}>
-          <StatCard
-            label="Weekly Closures"
-            value={weeklyClosures}
-            delta={`${controlTowerData.closedOut30d}/30d`}
-            deltaType="positive"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Settled", value: Math.round(weeklyClosures * 0.65), deltaType: "positive" },
-              { label: "Pre-Lit avg", value: "195d", deltaType: "neutral" },
-              { label: "Lit avg", value: "412d", deltaType: "negative" },
-            ]}
-          />
-          <StatCard
-            label="Conversion Rate"
-            value={`${conversionRate}%`}
-            delta="Pre-Lit → Lit"
-            deltaType="neutral"
-            className={hoverCard}
-            subMetrics={[
-              { label: "This month", value: `${conversionRate}%`, deltaType: "neutral" },
-              { label: "Last month", value: `${conversionRate - 2}%`, deltaType: "neutral" },
-              { label: "3mo trend", value: "+1.5%", deltaType: "positive" },
-            ]}
-          />
-          <StatCard
-            label="Upcoming SOL (30d)"
-            value={solDeadlines.filter(d => {
-              const days = Math.ceil((new Date(d.date).getTime() - new Date("2026-02-19").getTime()) / 86400000);
-              return days >= 0 && days <= 30;
-            }).length}
-            delta="statute of limitations"
-            deltaType="negative"
-            className={hoverCard}
-            subMetrics={[
-              { label: "< 7 days", value: sol7d, deltaType: sol7d > 0 ? "negative" : "positive" },
-              { label: "7-14 days", value: sol7to14, deltaType: sol7to14 > 3 ? "negative" : "neutral" },
-              { label: "14-30 days", value: sol14to30, deltaType: "neutral" },
-            ]}
-          />
-          <StatCard
-            label="Cases at Risk"
-            value={overSlaCases.length + stalledCases.length - bothFlags}
-            delta="over-SLA + stalled"
-            deltaType="negative"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Over-SLA", value: overSlaCases.length, deltaType: "negative" },
-              { label: "Stalled", value: stalledCases.length, deltaType: "negative" },
-              { label: "Both flags", value: bothFlags, deltaType: "negative" },
-            ]}
-          />
-        </DashboardGrid>
-      </div>
-
-      {/* ── Donut Charts (LCF Framework) ───────────────────────────────── */}
-      <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
-        <SectionHeader title="LCF Framework Metrics" subtitle="SLA compliance, next-action coverage, and risk distribution" />
-        <DashboardGrid cols={3}>
-          {/* Donut 1: SLA Compliance */}
-          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-            <div className="text-sm font-semibold text-foreground">SLA Compliance by Stage</div>
-            <p className="text-xs text-muted-foreground mt-0.5">% of cases within SLA targets</p>
-            <div className="flex items-center gap-4 mt-3">
-              <div className="shrink-0">
-                <div className="text-3xl font-bold text-foreground">{slaComplianceData.compliancePct}%</div>
-                <div className="text-xs text-muted-foreground mt-0.5">compliant</div>
-              </div>
-              <div className="flex-1 h-[140px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={slaComplianceData.data} cx="50%" cy="50%" innerRadius={35} outerRadius={60} dataKey="value" stroke="none" paddingAngle={2}>
-                      {slaComplianceData.data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                    </Pie>
-                    <RechartsTooltip {...tooltipStyle} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="flex gap-3 mt-2">
-              {slaComplianceData.data.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
-            </div>
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 2: Matter Pipeline (horizontal stacked bar)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section>
+        <SectionHeader title="Matter Pipeline" subtitle="Top 15 stages by volume — Open vs Closed" />
+        <div className={cn("bg-white/[0.04] border border-white/[0.08] rounded-xl p-5", hoverCard)}>
+          <ResponsiveContainer width="100%" height={Math.max(400, pipeline.length * 32)}>
+            <BarChart data={pipeline} layout="vertical" margin={{ left: 160, right: 30, top: 10, bottom: 10 }}>
+              <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
+              <YAxis type="category" dataKey="stage" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} width={150} />
+              <RechartsTooltip {...tooltipStyle} />
+              <Bar dataKey="open" stackId="a" fill={AMBER} name="Open" />
+              <Bar dataKey="closed" stackId="a" fill={GREEN} name="Closed" radius={[0, 4, 4, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+          <div className="flex gap-6 mt-3 text-xs text-muted-foreground">
+            <LegendDot color={AMBER} label="Open" />
+            <LegendDot color={GREEN} label="Closed" />
           </div>
-
-          {/* Donut 2: Next-Action Coverage */}
-          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-            <div className="text-sm font-semibold text-foreground">Next-Action Coverage</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Cases with defined next actions</p>
-            <div className="flex items-center gap-4 mt-3">
-              <div className="shrink-0">
-                <div className="text-3xl font-bold text-foreground">{nextActionData.coveragePct}%</div>
-                <div className="text-xs text-muted-foreground mt-0.5">covered</div>
-              </div>
-              <div className="flex-1 h-[140px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={nextActionData.data} cx="50%" cy="50%" innerRadius={35} outerRadius={60} dataKey="value" stroke="none" paddingAngle={2}>
-                      {nextActionData.data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                    </Pie>
-                    <RechartsTooltip {...tooltipStyle} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="flex gap-3 mt-2">
-              {nextActionData.data.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
-            </div>
-          </div>
-
-          {/* Donut 3: Case Risk Distribution */}
-          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-            <div className="text-sm font-semibold text-foreground">Case Risk Distribution</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Risk levels based on flag density</p>
-            <div className="flex items-center gap-4 mt-3">
-              <div className="shrink-0">
-                <div className="text-3xl font-bold text-foreground">{caseRiskData.highRiskCount}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">high-risk cases</div>
-              </div>
-              <div className="flex-1 h-[140px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={caseRiskData.data} cx="50%" cy="50%" innerRadius={35} outerRadius={60} dataKey="value" stroke="none" paddingAngle={2}>
-                      {caseRiskData.data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                    </Pie>
-                    <RechartsTooltip {...tooltipStyle} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-2">
-              {caseRiskData.data.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
-            </div>
-          </div>
-        </DashboardGrid>
-      </div>
-
-      {/* ── Stacked Bar Charts (LCF Framework) ─────────────────────────── */}
-      <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '500ms', animationFillMode: 'forwards' }}>
-        <SectionHeader title="Operational Analytics" subtitle="Inventory breakdown, stage throughput, and overdue task density" />
-        <DashboardGrid cols={3}>
-          {/* Stacked Bar 1: Inventory by Case Type */}
-          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-            <div className="text-sm font-semibold text-foreground">Inventory by Stage & Case Type</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Active cases grouped by parent stage</p>
-            <div className="flex items-start gap-4 mt-3">
-              <div className="shrink-0">
-                <div className="text-3xl font-bold text-foreground">{activeCases.length.toLocaleString()}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">total inventory</div>
-                <div className="text-lg font-semibold text-muted-foreground mt-2">{avgPerAttorney}</div>
-                <div className="text-xs text-muted-foreground">avg/attorney</div>
-              </div>
-              <div className="flex-1 h-[140px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={inventoryBarData.data} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                    <XAxis dataKey="stage" tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                    <YAxis hide />
-                    <RechartsTooltip {...tooltipStyle} />
-                    {inventoryBarData.caseTypes.map((ct, i) => (
-                      <Bar key={ct} dataKey={ct} stackId="a" fill={[GREEN, GREEN_80, GREEN_60, GREEN_40, GREEN_20][i % 5]} radius={i === inventoryBarData.caseTypes.length - 1 ? [3, 3, 0, 0] : undefined} />
-                    ))}
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-3 mt-2">
-              {inventoryBarData.caseTypes.map((ct, i) => <LegendDot key={ct} color={[GREEN, GREEN_80, GREEN_60, GREEN_40, GREEN_20][i % 5]} label={ct} />)}
-            </div>
-          </div>
-
-          {/* Stacked Bar 2: Weekly Exits by Stage */}
-          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-            <div className="text-sm font-semibold text-foreground">Stage Throughput (Weekly Exits)</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Cases exiting each stage per week</p>
-            <div className="flex items-start gap-4 mt-3">
-              <div className="shrink-0">
-                <div className="text-3xl font-bold text-foreground">{totalWeeklyExits}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">exits/week</div>
-                <div className="text-lg font-semibold text-green-500 mt-2">+4.2%</div>
-                <div className="text-xs text-muted-foreground">trend</div>
-              </div>
-              <div className="flex-1 h-[140px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={weeklyExitsData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                    <XAxis dataKey="week" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                    <YAxis hide />
-                    <RechartsTooltip {...tooltipStyle} />
-                    <Bar dataKey="Pre-Lit" stackId="a" fill={GREEN_40} />
-                    <Bar dataKey="Lit" stackId="a" fill={GREEN_60} />
-                    <Bar dataKey="Settled" stackId="a" fill={GREEN} />
-                    <Bar dataKey="Dismissed" stackId="a" fill={GREEN_20} radius={[3, 3, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="flex gap-3 mt-2">
-              <LegendDot color={GREEN_40} label="Pre-Lit" />
-              <LegendDot color={GREEN_60} label="Lit" />
-              <LegendDot color={GREEN} label="Settled" />
-              <LegendDot color={GREEN_20} label="Dismissed" />
-            </div>
-          </div>
-
-          {/* Stacked Bar 3: Overdue Tasks by Stage */}
-          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-            <div className="text-sm font-semibold text-foreground">Overdue Tasks by Stage</div>
-            <p className="text-xs text-muted-foreground mt-0.5">Task overdue density in top bottleneck stages</p>
-            <div className="flex items-start gap-4 mt-3">
-              <div className="shrink-0">
-                <div className="text-3xl font-bold text-foreground">{totalOverdue}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">overdue tasks</div>
-              </div>
-              <div className="flex-1 h-[140px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={overdueData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                    <XAxis dataKey="stage" tick={{ fontSize: 9, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                    <YAxis hide />
-                    <RechartsTooltip {...tooltipStyle} />
-                    <Bar dataKey="1-7 days" stackId="a" fill={GREEN_60} />
-                    <Bar dataKey="8-14 days" stackId="a" fill={GREEN_40} />
-                    <Bar dataKey="15+ days" stackId="a" fill={GREEN_20} radius={[3, 3, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="flex gap-3 mt-2">
-              <LegendDot color={GREEN_60} label="1-7 days" />
-              <LegendDot color={GREEN_40} label="8-14 days" />
-              <LegendDot color={GREEN_20} label="15+ days" />
-            </div>
-          </div>
-        </DashboardGrid>
-      </div>
-
-      {/* ── Bottleneck Detector ─────────────────────────────────────────── */}
-      <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '600ms', animationFillMode: 'forwards' }}>
-        <SectionHeader
-          title="Bottleneck Detector"
-          subtitle="Heat map by sub-stage — severity-coded metrics"
-        />
-        <div className={cn("rounded-xl border border-border bg-card p-5 overflow-x-auto", hoverCard)}>
-          <div className="flex items-center gap-4 mb-4 text-xs text-muted-foreground">
-            <span className="font-medium text-foreground">Severity</span>
-            {([
-              { label: "Good", cls: "bg-green-500/15 ring-1 ring-green-500/25" },
-              { label: "Warning", cls: "bg-white/5 ring-1 ring-white/10" },
-              { label: "Elevated", cls: "bg-white/8 ring-1 ring-white/12" },
-              { label: "Critical", cls: "bg-white/10 ring-1 ring-white/15" },
-            ] as const).map(({ label, cls }) => (
-              <span key={label} className="flex items-center gap-1.5">
-                <span className={cn("inline-block w-3 h-3 rounded", cls)} />
-                {label}
-              </span>
-            ))}
-          </div>
-
-          <table className="w-full text-sm" style={{ borderSpacing: "4px 4px", borderCollapse: "separate" }}>
-            <thead>
-              <tr>
-                <th className="sticky left-0 bg-card z-10" />
-                {groups.map((g) => (
-                  <th key={g.label} colSpan={g.colSpan} className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground pb-1">
-                    {g.label}
-                  </th>
-                ))}
-              </tr>
-              <tr>
-                <th className="text-left text-muted-foreground font-medium p-2 min-w-[120px] sticky left-0 bg-card z-10" />
-                {heatMapSubstages.map((sub) => (
-                  <th
-                    key={sub.stage}
-                    className="text-center font-medium p-2 cursor-pointer hover:text-foreground text-muted-foreground whitespace-nowrap text-xs"
-                    onClick={() => navigate(`/stage/${sub.stage}`)}
-                  >
-                    {abbreviateStage(sub.stage)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {metricRows.map((row, rowIdx) => (
-                <tr key={row.key} className={rowIdx % 2 === 1 ? "bg-muted/30 dark:bg-muted/10" : ""}>
-                  <td
-                    className={cn(
-                      "text-left text-foreground font-semibold p-2 sticky left-0 bg-card z-10 whitespace-nowrap border-l-[3px]",
-                      row.accentBorder,
-                      rowIdx % 2 === 1 && "bg-muted/30 dark:bg-muted/10",
-                    )}
-                  >
-                    {row.label} <span className="text-muted-foreground font-normal text-xs">({row.unit})</span>
-                  </td>
-                  {heatMapSubstages.map((sub) => {
-                    const v = row.getValue(sub);
-                    const severity = getSeverity(row.metricKey, v);
-                    return (
-                      <td
-                        key={sub.stage}
-                        className={cn(
-                          "text-center p-2 cursor-pointer rounded-lg font-bold tabular-nums transition-all duration-200",
-                          "hover:scale-105 hover:brightness-110 hover:ring-1 hover:shadow-sm",
-                          severityClasses[severity],
-                        )}
-                        onClick={() => navigate(`/stage/${sub.stage}`)}
-                      >
-                        {row.format(v)}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
-      </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 3: NJ Litigation Operations
+          ═══════════════════════════════════════════════════════════════ */}
+      <section>
+        <SectionHeader title="NJ Litigation Operations" subtitle="Stats at a Glance — alerts, negotiations, compliance, events" />
+
+        {/* Row 1: Alert cards */}
+        <DashboardGrid cols={5}>
+          <StatCard label="NJ Lit Inventory" value={fmtNum(njInventory)} deltaType="neutral" className={hoverCard} />
+          <StatCard
+            label="Missing Disc. Trackers"
+            value={missingTrackers}
+            deltaType={missingTrackers <= 5 ? "positive" : "negative"}
+            delta={missingTrackers <= 5 ? "low" : "needs attention"}
+            className={hoverCard}
+          />
+          <StatCard
+            label="Service >3d from COMP"
+            value={serviceGt3d}
+            deltaType={serviceGt3d > 20 ? "negative" : "neutral"}
+            className={hoverCard}
+          />
+          <StatCard
+            label="No Service 35+ Days"
+            value={noService35}
+            deltaType="negative"
+            className={hoverCard}
+          />
+          <StatCard
+            label="Missing Answers"
+            value={missingAnswers}
+            deltaType="negative"
+            className={hoverCard}
+          />
+        </DashboardGrid>
+
+        {/* Row 2: Donut charts */}
+        <div className="mt-4">
+          <DashboardGrid cols={3}>
+            {/* Negotiations donut */}
+            <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+              <div className="text-sm font-semibold text-foreground">NJ LIT — Negotiations</div>
+              <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(negotiationsData.reduce((s, d) => s + d.value, 0))} total matters</p>
+              <div className="h-[180px] mt-3">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={negotiationsData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} dataKey="value" stroke="none" paddingAngle={1}>
+                      {negotiationsData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                    </Pie>
+                    <RechartsTooltip {...tooltipStyle} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {negotiationsData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
+              </div>
+            </div>
+
+            {/* Complaint Filing donut */}
+            <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+              <div className="text-sm font-semibold text-foreground">Complaint Filing (NJ LIT)</div>
+              <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(complaintFilingData.reduce((s, d) => s + d.value, 0))} total</p>
+              <div className="h-[180px] mt-3">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={complaintFilingData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} dataKey="value" stroke="none" paddingAngle={1}>
+                      {complaintFilingData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                    </Pie>
+                    <RechartsTooltip {...tooltipStyle} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {complaintFilingData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
+              </div>
+            </div>
+
+            {/* Form A Past Due donut */}
+            <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+              <div className="text-sm font-semibold text-foreground">Form A Past Due (NJ)</div>
+              <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(formAPastDueData.reduce((s, d) => s + d.value, 0))} total</p>
+              <div className="h-[180px] mt-3">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={formAPastDueData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} dataKey="value" stroke="none" paddingAngle={1}>
+                      {formAPastDueData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                    </Pie>
+                    <RechartsTooltip {...tooltipStyle} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {formAPastDueData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
+              </div>
+            </div>
+          </DashboardGrid>
+        </div>
+
+        {/* Row 3: Upcoming Events */}
+        {eventsData.length > 0 && (
+          <div className="mt-4">
+            <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+              <div className="text-sm font-semibold text-foreground mb-3">Upcoming Events — ARB, MED, SET CONF, Trials</div>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={eventsData} margin={{ top: 10, right: 30, bottom: 10, left: 10 }}>
+                  <XAxis dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <YAxis yAxisId="count" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <YAxis yAxisId="value" orientation="right" tickFormatter={v => fmt$(v)} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
+                  <RechartsTooltip {...tooltipStyle} formatter={((v: number | undefined, name?: string) => (name === 'value' ? fmt$(v ?? 0) : fmtNum(v ?? 0))) as never} />
+                  <Bar yAxisId="count" dataKey="count" fill={INDIGO} name="Cases" radius={[4, 4, 0, 0]} barSize={40} />
+                  <Bar yAxisId="value" dataKey="value" fill={GREEN} name="Value" radius={[4, 4, 0, 0]} barSize={40} />
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="flex gap-4 mt-2">
+                <LegendDot color={INDIGO} label="Cases" />
+                <LegendDot color={GREEN} label="Portfolio Value" />
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 4: Timing Compliance
+          ═══════════════════════════════════════════════════════════════ */}
+      <section>
+        <SectionHeader title="Timing Compliance" subtitle="NJ PI — percentage meeting compliance windows" />
+
+        {/* Row 1: Compliance cards */}
+        <DashboardGrid cols={4}>
+          {([
+            { label: 'Complaint Filing', data: complaint },
+            { label: 'Form A', data: formA },
+            { label: 'Form C', data: formC },
+            { label: 'Depositions', data: deps },
+          ] as const).map(({ label, data }) => {
+            const p = compliancePct(data);
+            return (
+              <div key={label} className={cn('rounded-xl border p-5 text-center', complianceColor(p), hoverCard)}>
+                <p className="text-xs font-medium opacity-70 mb-1">{label}</p>
+                <p className="text-4xl font-bold">{p}%</p>
+                <p className="text-[11px] mt-1 opacity-60">
+                  {fmtNum(data.timely)} timely / {fmtNum(data.timely + data.late)} total
+                </p>
+              </div>
+            );
+          })}
+        </DashboardGrid>
+
+        {/* Row 2: DED Extensions, NJ Resolutions, Complaint Avg Days */}
+        <div className="mt-4">
+          <DashboardGrid cols={3}>
+            <StatCard label="DED Extensions" value={fmtNum(dedExtensions)} deltaType="neutral" className={hoverCard} />
+            <StatCard label="NJ Resolutions" value={fmtNum(njResolutions)} deltaType="neutral" className={hoverCard} />
+            <StatCard
+              label="Complaint Avg Days"
+              value={`${complaintTimelyDays}d`}
+              delta={`${complaintLateDays}d when late`}
+              deltaType="negative"
+              className={hoverCard}
+              subMetrics={[
+                { label: "Timely avg", value: `${complaintTimelyDays}d`, deltaType: "positive" },
+                { label: "Late avg", value: `${complaintLateDays}d`, deltaType: "negative" },
+              ]}
+            />
+          </DashboardGrid>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 5: Resolution Performance
+          ═══════════════════════════════════════════════════════════════ */}
+      <section>
+        <SectionHeader title="Resolution Performance" subtitle="Settlement outcomes across all attorneys" />
+
+        <DashboardGrid cols={4}>
+          <StatCard label="Total Resolutions" value={fmtNum(totalResolved)} variant="glass" className={hoverCard} />
+          <StatCard label="Settlement Total" value={fmt$(totalSettlement)} variant="glass" className={hoverCard} />
+          <StatCard
+            label="Net Fees"
+            value={fmt$(totalNetFee)}
+            delta={`${feeRatio}% fee ratio`}
+            deltaType="neutral"
+            variant="glass"
+            className={hoverCard}
+          />
+          <StatCard label="Attorneys" value={attorneyCount} variant="glass" className={hoverCard} />
+        </DashboardGrid>
+
+        <div className="mt-4">
+          <DataTable
+            data={top15Attorneys}
+            columns={attorneyColumns}
+            keyField="name"
+            maxRows={15}
+          />
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 6: Workload Distribution
+          ═══════════════════════════════════════════════════════════════ */}
+      <section>
+        <SectionHeader title="Workload Distribution" subtitle="Discovery trackers and unserved experts — top 15 by volume" />
+
+        <DashboardGrid cols={2}>
+          {/* Discovery Trackers */}
+          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+            <div className="text-sm font-semibold text-foreground">Discovery Trackers</div>
+            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(discTotal)} total across {discData?.groupings.length ?? 0} owners</p>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={discoveryTop15} layout="vertical" margin={{ left: 120, right: 20, top: 10, bottom: 10 }}>
+                <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+                <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 10 }} width={110} />
+                <RechartsTooltip {...tooltipStyle} />
+                <Bar dataKey="count" fill={INDIGO} radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Experts Not Served */}
+          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+            <div className="text-sm font-semibold text-foreground">Experts Not Served</div>
+            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(expertsTotal)} total across {expertsData?.groupings.length ?? 0} owners</p>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={expertsTop15} layout="vertical" margin={{ left: 120, right: 20, top: 10, bottom: 10 }}>
+                <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+                <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 10 }} width={110} />
+                <RechartsTooltip {...tooltipStyle} />
+                <Bar dataKey="count" fill={PINK} radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </DashboardGrid>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 7: Data Freshness Footer
+          ═══════════════════════════════════════════════════════════════ */}
+      <footer className="flex items-center justify-between border-t border-border pt-4 pb-2 text-xs text-muted-foreground">
+        <div className="flex flex-wrap gap-4">
+          {[
+            { label: 'Matters', ts: mattersTs },
+            { label: 'Resolutions', ts: resTs },
+            { label: 'Stats', ts: statsTs },
+            { label: 'Timing', ts: timingTs },
+            { label: 'Discovery', ts: discTs },
+            { label: 'Experts', ts: expertsTs },
+          ].map(({ label, ts }) => (
+            <span key={label}>
+              <span className="font-medium">{label}:</span>{' '}
+              {ts ? (ts === 'static export' ? 'static' : new Date(ts).toLocaleTimeString()) : '—'}
+            </span>
+          ))}
+        </div>
+        <button
+          onClick={refreshAll}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border bg-card hover:bg-accent transition-colors text-foreground text-xs font-medium"
+        >
+          <RefreshCw size={12} />
+          Refresh All
+        </button>
+      </footer>
     </div>
   );
 }

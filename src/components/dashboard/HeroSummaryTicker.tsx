@@ -1,22 +1,13 @@
-import { useCountUp } from '../../hooks/useCountUp';
-
-interface Props {
-  totalCases: number;
-  onSlaPct: number;
-  lciScore: number;
+interface TickerItem {
+  label: string;
+  value: string | number;
 }
 
-export function HeroSummaryTicker({ totalCases, onSlaPct, lciScore }: Props) {
-  const casesDisplay = useCountUp(totalCases, 800);
-  const slaDisplay = useCountUp(onSlaPct, 800, 0);
-  const lciDisplay = useCountUp(lciScore, 800, 1);
+interface Props {
+  items: TickerItem[];
+}
 
-  const items = [
-    { label: 'active cases', value: casesDisplay },
-    { label: 'on-SLA', value: `${slaDisplay}%` },
-    { label: 'LCI', value: lciDisplay },
-  ];
-
+export function HeroSummaryTicker({ items }: Props) {
   return (
     <div className="hidden md:flex items-center gap-3 text-sm">
       {items.map((item, i) => (
@@ -34,9 +25,9 @@ export function HeroSummaryTicker({ totalCases, onSlaPct, lciScore }: Props) {
       ))}
       <span
         className="animate-fade-in opacity-0 text-xs text-white/30"
-        style={{ animationDelay: '800ms', animationFillMode: 'forwards' }}
+        style={{ animationDelay: `${200 + items.length * 200}ms`, animationFillMode: 'forwards' }}
       >
-        Updated 2m ago
+        Live
       </span>
     </div>
   );
