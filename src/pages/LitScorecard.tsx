@@ -108,7 +108,7 @@ function CompletionByAttorneyChart({ data }: { data: LitScorecardData }) {
             <YAxis type="category" dataKey="name" tick={{ fill: '#ccc', fontSize: 10 }} width={75} />
             <Tooltip
               contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 8, fontSize: 12 }}
-              formatter={(value: number) => [`${value}%`, 'Completion']}
+              formatter={(value: number | undefined) => [`${value ?? 0}%`, 'Completion']}
             />
             <Bar dataKey="pct" radius={[0, 4, 4, 0]}>
               {chartData.map((_, i) => (
@@ -149,7 +149,7 @@ function TopPerformersChart({ data }: { data: LitScorecardData }) {
               <YAxis domain={[0, 100]} tick={{ fill: '#888', fontSize: 11 }} />
               <Tooltip
                 contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 8, fontSize: 12 }}
-                formatter={(value: number) => [value, 'KPI Score']}
+                formatter={(value: number | undefined) => [value ?? 0, 'KPI Score']}
               />
               <Bar dataKey="score" radius={[4, 4, 0, 0]}>
                 {chartData.map((_, i) => (
@@ -200,7 +200,7 @@ function KpiDistributionChart({ data }: { data: LitScorecardData }) {
               <YAxis tick={{ fill: '#888', fontSize: 11 }} allowDecimals={false} />
               <Tooltip
                 contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 8, fontSize: 12 }}
-                formatter={(value: number) => [value, 'Attorneys']}
+                formatter={(value: number | undefined) => [value ?? 0, 'Attorneys']}
               />
               <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                 {buckets.map((b, i) => (

@@ -256,7 +256,7 @@ export default function Insights() {
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis type="number" tickFormatter={v => fmt$(v)} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
               <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} width={110} />
-              <Tooltip formatter={(v: number) => fmt$(v)} contentStyle={tooltipStyle} />
+              <Tooltip formatter={(v: number | undefined) => fmt$(v ?? 0)} contentStyle={tooltipStyle} />
               <Bar dataKey="settlement" radius={[0, 4, 4, 0]}>
                 {top15.map((entry, i) => (
                   <Cell
