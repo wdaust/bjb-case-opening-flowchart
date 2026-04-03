@@ -4,7 +4,7 @@ import { Menu, X, LogOut, ChevronDown } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
 
 const mainLinks = [
-  { label: 'LDN', to: '/control-tower' },
+  { label: 'LDM', to: '/control-tower' },
   { label: 'LIT Scorecard', to: '/lit-scorecard' },
   { label: 'MOS', to: '/performance-infrastructure/mos' },
 ];
