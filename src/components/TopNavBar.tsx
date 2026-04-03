@@ -73,10 +73,9 @@ export function TopNavBar() {
           ))}
 
           {/* More dropdown */}
-          <div ref={moreRef} className="relative">
+          <div ref={moreRef} className="relative" onMouseEnter={() => setMoreOpen(true)} onMouseLeave={() => setMoreOpen(false)}>
             <button
               onClick={() => setMoreOpen(o => !o)}
-              onMouseEnter={() => setMoreOpen(true)}
               className={cn(
                 'text-sm font-medium transition-colors inline-flex items-center gap-1',
                 moreIsActive ? 'text-white' : 'text-gray-500 hover:text-gray-300',
@@ -88,9 +87,9 @@ export function TopNavBar() {
 
             {moreOpen && (
               <div
-                className="absolute top-full left-0 mt-2 w-44 rounded-lg border border-[#2a2a2a] bg-black/95 backdrop-blur shadow-xl py-1"
-                onMouseLeave={() => setMoreOpen(false)}
+                className="absolute top-full left-0 pt-2 w-44"
               >
+                <div className="rounded-lg border border-[#2a2a2a] bg-black/95 backdrop-blur shadow-xl py-1">
                 {moreLinks.map(link => (
                   <NavLink
                     key={link.to}
@@ -108,6 +107,7 @@ export function TopNavBar() {
                     {link.label}
                   </NavLink>
                 ))}
+                </div>
               </div>
             )}
           </div>
