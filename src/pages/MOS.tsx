@@ -221,49 +221,6 @@ const MEETINGS: MeetingTab[] = [
   },
 ];
 
-// ─── LIT Scorecard data ─────────────────────────────────────────────────────
-
-const LIT_ATTORNEYS = [
-  'Bianca Pagani', 'Chris Bradley', 'Christopher Karounos', 'Eric Plantier',
-  'Lisa Lehrer', 'Paul F Romano', 'Raymond Carroll', 'Stephen Devine',
-  'Stephen Mennella', 'Brian Lehrer', 'David Rehe', 'Gregory Shaffer',
-  'Heath Murphy', 'John VanDyken', 'Marc Borden', 'Matthew Futerfas',
-  'Paul A Krauss', 'Bruce Cantin', 'Jason Richman', 'George Sabo',
-  'Joel Moore', 'John Carucci', 'Mark Grodberg', 'Martha Vasquez',
-  'Melissa Perrotta Marinelli', 'Ryan Veilleux', 'Todd Greenwell', 'William Firth',
-];
-
-const SCORECARD_KPIS: { key: string; label: string }[] = [
-  { key: 'active-cases', label: 'Total Active Cases' },
-  { key: 'settlements', label: 'Attorney Unit Settlements ($)' },
-  { key: 'settlements-pct-goal', label: 'Settlements % to Goal' },
-  { key: 'avg-settlement', label: 'Avg Settlement Value ($)' },
-  { key: 'tod-days', label: 'TOD (Assigned → Resolution) Days' },
-  { key: 'days-to-complaint', label: 'Avg Days: Assignment → Complaint Filed' },
-  { key: 'filed-30-days', label: '% Filed ≤ 30 Days of Assignment' },
-  { key: 'days-to-service', label: 'Avg Days: Filed → Service Completed' },
-  { key: 'service-30-days', label: '% Service Completed ≤ 30 Days of Filed' },
-  { key: 'answers-filed', label: 'All Answers Filed %' },
-  { key: 'defaults-timely', label: 'Defaults Entered Timely %' },
-  { key: 'plaintiff-disc', label: 'Plaintiff Discovery Served Timely %' },
-  { key: 'defense-disc', label: 'Defense Discovery Received Timely %' },
-  { key: '10day-letter', label: '10-Day Letter Sent When Past Due %' },
-  { key: 'motions-compel', label: 'Motions to Compel Filed When Required %' },
-  { key: 'days-to-motion', label: 'Avg Days: Past-Due → Motion Filed' },
-  { key: 'motions-granted', label: 'Motions Granted / Substantially Granted %' },
-  { key: 'ded-extensions', label: 'DED Extensions (#)' },
-  { key: 'depos-1yr', label: 'Client Depos Completed ≤ 1 Year of Answer %' },
-  { key: 'depos-180', label: 'Client Deps Outstanding 180+ Days (#)' },
-  { key: 'expert-reports', label: 'Expert Reports Served Timely %' },
-  { key: 'mediation', label: 'Mediation Scheduled When Eligible %' },
-  { key: 'trial-ready', label: 'Trial-Ready Checklist Completion %' },
-  { key: 'data-completeness', label: 'Data Completeness Score %' },
-  { key: 'client-service', label: 'Client Service Score' },
-  { key: 'sds-completion', label: 'SDS Completion %' },
-  { key: 'overall-kpi', label: 'Overall KPI Score (0-100)' },
-];
-
-type LitScorecardData = Record<string, string>;
 
 // ─── Debounced save ──────────────────────────────────────────────────────────
 
@@ -427,112 +384,21 @@ function MeetingSummary({ meeting, weeklyData }: { meeting: MeetingTab; weeklyDa
   );
 }
 
-// ─── LIT Scorecard table ────────────────────────────────────────────────────
-
-function LitScorecardSummary({ data }: { data: LitScorecardData }) {
-  const totalCells = LIT_ATTORNEYS.length * SCORECARD_KPIS.length;
-  const filled = Object.values(data).filter(v => v?.trim()).length;
-  return (
-    <DashboardGrid cols={3} className="mb-6">
-      <StatCard label="Total Attorneys" value={LIT_ATTORNEYS.length} variant="glass" />
-      <StatCard label="KPIs Tracked" value={SCORECARD_KPIS.length} variant="glass" />
-      <StatCard
-        label="Data Completion"
-        value={`${filled}/${totalCells}`}
-        delta={totalCells > 0 ? `${Math.round((filled / totalCells) * 100)}%` : '0%'}
-        deltaType={filled / totalCells > 0.5 ? 'positive' : 'negative'}
-        variant="glass"
-      />
-    </DashboardGrid>
-  );
-}
-
-function LitScorecardTable({
-  data,
-  onCellChange,
-}: {
-  data: LitScorecardData;
-  onCellChange: (key: string, value: string) => void;
-}) {
-  return (
-    <div className="overflow-x-auto rounded-lg border border-border">
-      <table className="text-xs w-full" style={{ minWidth: SCORECARD_KPIS.length * 110 + 180 }}>
-        <thead>
-          <tr className="border-b border-border bg-muted/50 sticky top-0 z-10">
-            <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 bg-muted/50 z-20 min-w-[180px]">
-              Attorney
-            </th>
-            {SCORECARD_KPIS.map(kpi => (
-              <th
-                key={kpi.key}
-                className="text-center py-2 px-2 font-medium text-muted-foreground whitespace-nowrap min-w-[110px]"
-                title={kpi.label}
-              >
-                {kpi.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {LIT_ATTORNEYS.map((attorney, aIdx) => (
-            <tr
-              key={aIdx}
-              className={cn(
-                "border-b border-border last:border-0 transition-colors",
-                aIdx % 2 === 0 ? "bg-card" : "bg-table-stripe",
-              )}
-            >
-              <td className="py-1.5 px-3 font-medium whitespace-nowrap sticky left-0 bg-inherit z-10 min-w-[180px]">
-                {attorney}
-              </td>
-              {SCORECARD_KPIS.map(kpi => {
-                const cellKey = `lit-scorecard:${aIdx}:${kpi.key}`;
-                return (
-                  <td key={kpi.key} className="py-0.5 px-0.5">
-                    <input
-                      type="text"
-                      value={data[cellKey] ?? ''}
-                      onChange={e => onCellChange(cellKey, e.target.value)}
-                      className={cn(
-                        "w-full text-center text-xs py-1 px-1 rounded bg-transparent border border-transparent",
-                        "focus:border-primary/40 focus:bg-primary/5 focus:outline-none transition-colors",
-                        "hover:border-border",
-                      )}
-                      placeholder="—"
-                    />
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
 
 // ─── Main page ───────────────────────────────────────────────────────────────
-
-const LIT_SCORECARD_TAB = 'lit-scorecard';
 
 export default function MOS() {
   const [activeTab, setActiveTab] = useState(MEETINGS[0].id);
   const [weeklyData, setWeeklyData] = useState<WeeklyData>({});
-  const [litData, setLitData] = useState<LitScorecardData>({});
   const [loaded, setLoaded] = useState(false);
   const syncStatus = useDebouncedSave('mos-kpi-scorecard', weeklyData, loaded);
-  const litSyncStatus = useDebouncedSave('mos-lit-scorecard', litData, loaded);
 
   // Init DB & load
   useEffect(() => {
     (async () => {
       await initDb();
-      const [saved, savedLit] = await Promise.all([
-        loadGenericSection<WeeklyData>('mos-kpi-scorecard'),
-        loadGenericSection<LitScorecardData>('mos-lit-scorecard'),
-      ]);
+      const saved = await loadGenericSection<WeeklyData>('mos-kpi-scorecard');
       if (saved) setWeeklyData(saved);
-      if (savedLit) setLitData(savedLit);
       setLoaded(true);
     })();
   }, []);
@@ -541,13 +407,7 @@ export default function MOS() {
     setWeeklyData(prev => ({ ...prev, [key]: value }));
   }, []);
 
-  const handleLitCellChange = useCallback((key: string, value: string) => {
-    setLitData(prev => ({ ...prev, [key]: value }));
-  }, []);
-
   const activeMeeting = MEETINGS.find(m => m.id === activeTab);
-  const isLitTab = activeTab === LIT_SCORECARD_TAB;
-  const currentSyncStatus = isLitTab ? litSyncStatus : syncStatus;
 
   return (
     <div className="p-6 max-w-full mx-auto space-y-4">
@@ -557,9 +417,9 @@ export default function MOS() {
           subtitle="KPI Scorecard — Update metrics weekly for each meeting"
         />
         <div className="flex items-center gap-2 text-xs text-muted-foreground shrink-0">
-          {currentSyncStatus === 'saving' && <><Loader2 size={14} className="animate-spin" /> Saving...</>}
-          {currentSyncStatus === 'saved' && <><CheckCircle size={14} className="text-green-500" /> Saved</>}
-          {currentSyncStatus === 'error' && <><AlertCircle size={14} className="text-red-400" /> Save failed</>}
+          {syncStatus === 'saving' && <><Loader2 size={14} className="animate-spin" /> Saving...</>}
+          {syncStatus === 'saved' && <><CheckCircle size={14} className="text-green-500" /> Saved</>}
+          {syncStatus === 'error' && <><AlertCircle size={14} className="text-red-400" /> Save failed</>}
         </div>
       </div>
 
@@ -582,38 +442,13 @@ export default function MOS() {
             )}
           </button>
         ))}
-        <button
-          onClick={() => setActiveTab(LIT_SCORECARD_TAB)}
-          className={cn(
-            "px-4 py-2.5 text-sm font-medium transition-colors relative",
-            isLitTab
-              ? "text-primary"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-        >
-          LIT Scorecard
-          {isLitTab && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t" />
-          )}
-        </button>
       </div>
 
-      {/* Active meeting / LIT Scorecard */}
+      {/* Active meeting */}
       {!loaded ? (
         <div className="flex items-center justify-center py-20 gap-3 text-muted-foreground">
           <Loader2 size={20} className="animate-spin" />
           Loading scorecard data...
-        </div>
-      ) : isLitTab ? (
-        <div className="space-y-4">
-          <div>
-            <h2 className="text-base font-semibold text-white">LIT Attorney Scorecard</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Individual attorney KPI tracking — 28 attorneys × 27 metrics</p>
-          </div>
-
-          <LitScorecardSummary data={litData} />
-
-          <LitScorecardTable data={litData} onCellChange={handleLitCellChange} />
         </div>
       ) : activeMeeting ? (
         <div className="space-y-4">

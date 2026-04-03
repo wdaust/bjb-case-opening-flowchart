@@ -45,6 +45,7 @@ import AltControlTower from './pages/AltControlTower.tsx';
 import CallTeamDashboard from './pages/CallTeamDashboard.tsx';
 import ProviderNetwork from './pages/ProviderNetwork.tsx';
 import MOS from './pages/MOS.tsx';
+import LitScorecard from './pages/LitScorecard.tsx';
 import StageCommand from './pages/StageCommand.tsx';
 import InventoryHealth from './pages/InventoryHealth.tsx';
 import RiskRadar from './pages/RiskRadar.tsx';
@@ -94,6 +95,7 @@ export default function App() {
             <Route path="top-nav-mockup" element={<TopNavMockup />} />
             <Route index element={<Navigate to="/control-tower" replace />} />
 <Route path="control-tower" element={<ControlTower />} />
+            <Route path="lit-scorecard" element={<LitScorecard />} />
             <Route path="stage/:stageId" element={<StageCommand />} />
             <Route path="inventory-health" element={<InventoryHealth />} />
             <Route path="risk-radar" element={<RiskRadar />} />
