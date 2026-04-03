@@ -22,8 +22,8 @@ tailwind.config = {
 }
 </script>
 <style>
-@media print{aside,nav,.search-bar{display:none!important}main{padding:20px!important}.nav-dropdown-menu{display:none;margin-top:0;}
-.nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown-menu:hover{display:block;}.nav-dropdown-menu::before{content:"";position:absolute;top:-8px;left:0;right:0;height:8px;}
+@media print{aside,nav,.search-bar{display:none!important}main{padding:20px!important}.nav-dropdown-menu{display:none;}
+.nav-dropdown.open>.nav-dropdown-menu{display:block;}
 [data-card-body]{display:block!important}.bg-primary{background:#171717!important;color:#fafafa!important;-webkit-print-color-adjust:exact}}
 .search-highlight{background:#fef3c7;outline:2px solid #d97706;border-radius:2px}
 </style>
@@ -875,5 +875,6 @@ function doSearch(query){
   countEl.classList.remove('hidden');
 }
 </script>
+<script>document.addEventListener("click",function(e){var btn=e.target.closest(".nav-dropdown>button");var allDropdowns=document.querySelectorAll(".nav-dropdown");if(btn){e.preventDefault();var parent=btn.parentElement;var wasOpen=parent.classList.contains("open");allDropdowns.forEach(function(d){d.classList.remove("open")});if(!wasOpen)parent.classList.add("open")}else if(!e.target.closest(".nav-dropdown-menu")){allDropdowns.forEach(function(d){d.classList.remove("open")})}});</script>
 </body>
 </html>

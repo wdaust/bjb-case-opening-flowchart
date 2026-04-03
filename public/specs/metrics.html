@@ -148,5 +148,6 @@ window.submitFeedback=async function(){
 
 loadFeedback();
 </script>
+<script>document.addEventListener("click",function(e){var btn=e.target.closest(".nav-dropdown>button");var allDropdowns=document.querySelectorAll(".nav-dropdown");if(btn){e.preventDefault();var parent=btn.parentElement;var wasOpen=parent.classList.contains("open");allDropdowns.forEach(function(d){d.classList.remove("open")});if(!wasOpen)parent.classList.add("open")}else if(!e.target.closest(".nav-dropdown-menu")){allDropdowns.forEach(function(d){d.classList.remove("open")})}});</script>
 </body>
 </html>

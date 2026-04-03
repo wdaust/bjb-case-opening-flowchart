@@ -6,8 +6,8 @@
 <title>Scoring Optimization &mdash; All-Phase Management Recommendation</title>
 <style>
 #tooltip-overlay{position:absolute;z-index:9999;background:#fff;border:1px solid #e5e5e5;border-radius:0.5rem;box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:12px 14px;min-width:260px;max-width:340px;font-size:12px;color:#0a0a0a;line-height:1.5;pointer-events:none}
-.nav-dropdown-menu{display:none;margin-top:0;}
-.nav-dropdown:hover .nav-dropdown-menu,.nav-dropdown-menu:hover{display:block;}.nav-dropdown-menu::before{content:"";position:absolute;top:-8px;left:0;right:0;height:8px;}
+.nav-dropdown-menu{display:none;}
+.nav-dropdown.open>.nav-dropdown-menu{display:block;}
 [data-card-body]{display:none;}
 .open>[data-card-body]{display:block;}
 .open>button [data-chevron]{transform:rotate(180deg);}
@@ -2535,5 +2535,6 @@ function navTo(id){
 document.addEventListener('click',function(e){var mn=document.getElementById('mobile-nav');var nb=document.getElementById('nav-hamburger');if(mn&&!mn.classList.contains('hidden')&&!mn.contains(e.target)&&e.target!==nb&&!nb.contains(e.target))mn.classList.add('hidden');});
 </script>
 
+<script>document.addEventListener("click",function(e){var btn=e.target.closest(".nav-dropdown>button");var allDropdowns=document.querySelectorAll(".nav-dropdown");if(btn){e.preventDefault();var parent=btn.parentElement;var wasOpen=parent.classList.contains("open");allDropdowns.forEach(function(d){d.classList.remove("open")});if(!wasOpen)parent.classList.add("open")}else if(!e.target.closest(".nav-dropdown-menu")){allDropdowns.forEach(function(d){d.classList.remove("open")})}});</script>
 </body>
 </html>
