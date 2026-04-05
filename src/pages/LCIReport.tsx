@@ -187,6 +187,10 @@ export default function LCIReport() {
       </div>
 
       {/* Section 2: Composite Score Summary */}
+      <SectionHeader
+        title="Composite Score"
+        info="Overall Litigation Control Index combining four weighted layers into a single 0-100 score."
+      />
       <div className="rounded-xl border border-border bg-card p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           {/* Left: Gauge + Band */}
@@ -244,6 +248,7 @@ export default function LCIReport() {
         <SectionHeader
           title="4-Layer Breakdown"
           subtitle="Expand each layer to view individual metrics"
+          info="Individual layer scores with metric details. Expand to see current values vs targets."
           actions={
             <button
               type="button"
@@ -339,7 +344,7 @@ export default function LCIReport() {
 
       {/* Section 4: Red/Amber Alerts */}
       <div>
-        <SectionHeader title="Metrics Needing Attention" />
+        <SectionHeader title="Metrics Needing Attention" info="Red and amber metrics that are underperforming against their targets." />
         <MetricAlertBanner alerts={alerts} />
         <div className="mt-4">
           <DashboardGrid cols={4}>
@@ -353,7 +358,7 @@ export default function LCIReport() {
 
       {/* Section 5: Attorney Leaderboard */}
       <div>
-        <SectionHeader title="Attorney Leaderboard" subtitle="From Resolutions report — settlement performance" />
+        <SectionHeader title="Attorney Leaderboard" subtitle="From Resolutions report — settlement performance" info="Attorneys ranked by composite LCI score. Top and bottom performers highlighted." />
         <DashboardGrid cols={2}>
           {/* Top Performers */}
           <div className="rounded-xl border border-border bg-card p-4">

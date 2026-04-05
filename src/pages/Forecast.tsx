@@ -139,6 +139,7 @@ export default function Forecast() {
         { label: 'Forecast & Yield' },
       ]} />
 
+      <SectionHeader title="Top KPIs" info="Portfolio settlement value, total settlements, net fees, and open pipeline count." />
       <DashboardGrid cols={4}>
         <StatCard label="Portfolio Value" value={fmt$(totalSettlement)} />
         <StatCard label="Total Settlements" value={fmt$(totalSettlement)} />
@@ -155,7 +156,7 @@ export default function Forecast() {
 
         {/* Tab 1: Resolution Outcomes */}
         <TabsContent value="resolution-outcomes" className="space-y-4">
-          <SectionHeader title="Resolution Outcomes" subtitle="Top 15 attorneys by settlement amount" />
+          <SectionHeader title="Resolution Outcomes" subtitle="Top 15 attorneys by settlement amount" info="Top 15 attorneys ranked by total settlement value from resolved matters." />
           <div className="rounded-lg border border-border bg-card p-4">
             <ResponsiveContainer width="100%" height={400}>
               <BarChart data={top15} margin={{ bottom: 80 }}>
@@ -186,7 +187,7 @@ export default function Forecast() {
 
         {/* Tab 2: Pipeline by Stage */}
         <TabsContent value="pipeline-stage" className="space-y-4">
-          <SectionHeader title="Pipeline by Stage" subtitle="Open matters by litigation stage" />
+          <SectionHeader title="Pipeline by Stage" subtitle="Open matters by litigation stage" info="Open matters distributed across litigation stages showing pipeline depth." />
           <div className="rounded-lg border border-border bg-card p-4">
             <ResponsiveContainer width="100%" height={Math.max(300, pipelineStages.length * 40)}>
               <BarChart data={pipelineStages} layout="vertical" margin={{ left: 120 }}>
@@ -212,7 +213,7 @@ export default function Forecast() {
 
         {/* Tab 3: Attorney Performance */}
         <TabsContent value="attorney-performance" className="space-y-4">
-          <SectionHeader title="Attorney Performance" subtitle="Resolution metrics by attorney" />
+          <SectionHeader title="Attorney Performance" subtitle="Resolution metrics by attorney" info="Full attorney roster with resolution count, settlement totals, averages, fees, and fee percentages." />
           <DataTable
             data={attorneyRows}
             columns={attorneyColumns}

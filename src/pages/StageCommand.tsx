@@ -139,7 +139,7 @@ export default function StageCommand() {
         <Breadcrumbs crumbs={crumbs} />
         <FilterBar />
 
-        <SectionHeader title={`${stageLabels[stage]} Substages`} />
+        <SectionHeader title={`${stageLabels[stage]} Substages`} info="Substage breakdown showing open, closed, and total matters for each substage." />
         <DataTable
           data={rows}
           columns={subColumns}
@@ -202,7 +202,7 @@ export default function StageCommand() {
 
         {/* ── Tab 1: Overview ── */}
         <TabsContent value="overview" className="space-y-4 pt-4">
-          <SectionHeader title={`${stageLabels[stage]} Overview`} />
+          <SectionHeader title={`${stageLabels[stage]} Overview`} info="Stage-level open count, average compliance rate, and discovery tracker total." />
           <DashboardGrid cols={3}>
             <StatCard label="Open Matters" value={fmtNum(openCount)} />
             <StatCard
@@ -216,7 +216,7 @@ export default function StageCommand() {
 
         {/* ── Tab 2: Compliance ── */}
         <TabsContent value="compliance" className="space-y-4 pt-4">
-          <SectionHeader title="Timing Compliance" />
+          <SectionHeader title="Timing Compliance" info="Timing compliance rates for complaint filing, Form A, Form C, and depositions." />
           <DashboardGrid cols={2}>
             {[
               { label: 'Complaint Filing', data: complaintComp },
@@ -246,7 +246,7 @@ export default function StageCommand() {
 
         {/* ── Tab 3: Workload ── */}
         <TabsContent value="workload" className="space-y-4 pt-4">
-          <SectionHeader title="Attorney Distribution" subtitle="From Discovery report" />
+          <SectionHeader title="Attorney Distribution" subtitle="From Discovery report" info="Attorney workload distribution based on discovery tracker assignments." />
           <div className="rounded-lg border border-border bg-card p-4">
             <ResponsiveContainer width="100%" height={Math.max(200, workloadData.length * 32)}>
               <BarChart data={workloadData} layout="vertical">

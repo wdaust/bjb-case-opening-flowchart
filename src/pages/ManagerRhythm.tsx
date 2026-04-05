@@ -170,7 +170,7 @@ export default function ManagerRhythm() {
 
       <div className="space-y-6">
         <div className="space-y-4">
-          <SectionHeader title="Operating Scorecard" subtitle="Current snapshot from Salesforce" />
+          <SectionHeader title="Operating Scorecard" subtitle="Current snapshot from Salesforce" info="Current snapshot of key operational metrics against targets. Green = on target, amber = warning, red = off target." />
 
           {loading ? (
             <div className="bg-card border border-border rounded-xl p-6 space-y-3">
@@ -208,12 +208,12 @@ export default function ManagerRhythm() {
         </div>
 
         <div className="space-y-4">
-          <SectionHeader title="Issues List" subtitle="Open items requiring resolution" />
+          <SectionHeader title="Issues List" subtitle="Open items requiring resolution" info="Open operational issues requiring management attention and resolution tracking." />
           <DataTable columns={issueColumns} data={issues} keyField="id" />
         </div>
 
         <div className="space-y-4">
-          <SectionHeader title="To-Do Tracking" />
+          <SectionHeader title="To-Do Tracking" info="Action items with owners and due dates. Click to toggle completion status." />
           <div className="bg-card border border-border rounded-xl divide-y divide-border/50">
             {todos.map((todo, i) => (
               <div key={i} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 cursor-pointer" onClick={() => toggleTodo(i)}>

@@ -119,6 +119,7 @@ export default function AttorneyCockpit() {
       </div>
 
       {/* Hero StatCards */}
+      <SectionHeader title="Performance" subtitle={`Resolution metrics for ${selectedName}`} info="Selected attorney's resolved cases, total settlement, average per case, and net fee with fee ratio." />
       <DashboardGrid cols={4}>
         <StatCard
           label="Resolved Cases"
@@ -145,7 +146,7 @@ export default function AttorneyCockpit() {
       </DashboardGrid>
 
       {/* Workload Cards */}
-      <SectionHeader title="Workload" subtitle={`Current assignments for ${selectedName}`} />
+      <SectionHeader title="Workload" subtitle={`Current assignments for ${selectedName}`} info="Discovery tracker count and experts not served count for the selected attorney." />
       <DashboardGrid cols={2}>
         <div className="rounded-xl border border-border bg-card p-5">
           <p className="text-sm font-semibold text-foreground mb-1">Discovery Trackers</p>

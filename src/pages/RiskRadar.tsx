@@ -164,6 +164,7 @@ export default function RiskRadar() {
         ]}
       />
 
+      <SectionHeader title="Risk Signal Cards" info="Counts of matters with missing trackers, overdue service, missing answers, and DED extensions." />
       <DashboardGrid cols={4}>
         <StatCard label="Missing Trackers" value={missingTrackers != null ? fmtNum(missingTrackers) : '—'} />
         <StatCard label="No Service 35+" value={noService35 != null ? fmtNum(noService35) : '—'} />
@@ -179,7 +180,7 @@ export default function RiskRadar() {
         </TabsList>
 
         <TabsContent value="compliance" className="space-y-4 pt-4">
-          <SectionHeader title="Compliance" subtitle="Timing compliance across case lifecycle" />
+          <SectionHeader title="Compliance" subtitle="Timing compliance across case lifecycle" info="Timing compliance rates for four key milestones. Shows timely vs late counts and overall percentage." />
           <div className="grid grid-cols-2 gap-4">
             <ComplianceCard title="Complaint Filing Timing" data={timingData} />
             <ComplianceCard title="Form A Timing" data={timingData} />
@@ -189,7 +190,7 @@ export default function RiskRadar() {
         </TabsContent>
 
         <TabsContent value="operational" className="space-y-4 pt-4">
-          <SectionHeader title="Operational" subtitle="Breakdown of key operational metrics" />
+          <SectionHeader title="Operational" subtitle="Breakdown of key operational metrics" info="Breakdown of negotiation status, complaint filing progress, and Form A past-due matters." />
           <div className="grid grid-cols-3 gap-4">
             <PieSection title="Negotiations" data={statsData} />
             <PieSection title="Complaint Filing" data={statsData} />
@@ -198,7 +199,7 @@ export default function RiskRadar() {
         </TabsContent>
 
         <TabsContent value="events" className="space-y-4 pt-4">
-          <SectionHeader title="Events" subtitle="Event volume by category" />
+          <SectionHeader title="Events" subtitle="Event volume by category" info="Upcoming arbitration, mediation, and trial events by category." />
           {barData.length > 0 ? (
             <div className="rounded-lg border border-border bg-card p-4">
               <ResponsiveContainer width="100%" height={350}>

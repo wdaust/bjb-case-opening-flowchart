@@ -144,6 +144,7 @@ export default function Insights() {
       <SectionHeader
         title="Performance Insights"
         subtitle="Actionable metrics derived from 6 Salesforce reports"
+        info="Key performance indicators: settlements, average per case, NJ inventory, complaint timeliness, resolutions, and portfolio value."
       />
 
       {/* ── 1. Hero KPI Strip ──────────────────────────────────────── */}
@@ -188,7 +189,7 @@ export default function Insights() {
 
       {/* ── 2. Attorney Settlement Rankings ─────────────────────────── */}
       <section>
-        <SectionHeader title="Attorney Settlement Rankings" subtitle="Top 15 by total settlement amount" />
+        <SectionHeader title="Attorney Settlement Rankings" subtitle="Top 15 by total settlement amount" info="Attorneys ranked by total settlement value. Green = top quartile, amber = bottom quartile." />
         <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-5 mb-4">
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={top15} layout="vertical" margin={{ left: 120, right: 30, top: 10, bottom: 10 }}>
@@ -216,7 +217,7 @@ export default function Insights() {
 
       {/* ── 3. Discovery Workload Distribution ──────────────────────── */}
       <section>
-        <SectionHeader title="Discovery Workload Distribution" subtitle="Top 20 attorneys by tracker count — highlighted if above 75th percentile" />
+        <SectionHeader title="Discovery Workload Distribution" subtitle="Top 20 attorneys by tracker count — highlighted if above 75th percentile" info="Discovery tracker counts by attorney. Red highlights attorneys above the 75th percentile workload." />
         <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-5">
           <ResponsiveContainer width="100%" height={450}>
             <BarChart data={discoveryTop20} layout="vertical" margin={{ left: 120, right: 30, top: 10, bottom: 10 }}>
@@ -236,7 +237,7 @@ export default function Insights() {
 
       {/* ── 4. Case Pipeline Health ─────────────────────────────────── */}
       <section>
-        <SectionHeader title="Case Pipeline Health" subtitle="Open vs Closed by stage — high open ratios indicate bottlenecks" />
+        <SectionHeader title="Case Pipeline Health" subtitle="Open vs Closed by stage — high open ratios indicate bottlenecks" info="Open vs closed matters by stage showing pipeline flow and stage completion rates." />
         <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-5">
           <ResponsiveContainer width="100%" height={Math.max(300, pipeline.length * 36)}>
             <BarChart data={pipeline} layout="vertical" margin={{ left: 140, right: 30, top: 10, bottom: 10 }}>
@@ -257,7 +258,7 @@ export default function Insights() {
 
       {/* ── 5. NJ Timing Compliance ─────────────────────────────────── */}
       <section>
-        <SectionHeader title="NJ Timing Compliance" subtitle="Percentage meeting compliance windows" />
+        <SectionHeader title="NJ Timing Compliance" subtitle="Percentage meeting compliance windows" info="Percentage of NJ matters meeting timing deadlines for each compliance milestone." />
         <DashboardGrid cols={4}>
           {([
             { label: 'Complaint Filing', data: complaint },
@@ -284,6 +285,7 @@ export default function Insights() {
         <SectionHeader
           title="Experts Not Served — Concentration Risk"
           subtitle={`${fmtNum(expertsTotal)} total unserved across all experts`}
+          info="Expert service gaps concentrated by attorney. Higher counts indicate potential bottlenecks."
         />
         <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-5">
           <ResponsiveContainer width="100%" height={350}>

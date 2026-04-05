@@ -17,7 +17,8 @@ import { LCIBadge } from '../components/dashboard/LCIBadge';
 import { computeRealLCI, getRealEscalations } from '../data/lciEngineReal';
 import { EscalationBanner } from '../components/dashboard/EscalationBanner';
 import { loadHistory } from '../hooks/useMetricHistory';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Filter } from 'lucide-react';
+import { InfoTooltip } from '../components/dashboard/InfoTooltip';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
@@ -93,6 +94,33 @@ export default function ControlTower() {
     useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
 
   const allLoading = mattersLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
+
+  // ── Attorney filter ─────────────────────────────────────────────────
+  const [selectedAttorney, setSelectedAttorney] = useState<string>('all');
+
+  const attorneyList = useMemo(() => {
+    if (!resData) return [];
+    const names = resData.groupings.map(g => g.label).sort((a, b) => a.localeCompare(b));
+    return names;
+  }, [resData]);
+
+  const isFiltered = selectedAttorney !== 'all';
+
+  // Filtered groupings for attorney-filterable sections
+  const filteredResGroupings = useMemo(() => {
+    if (!resData || !isFiltered) return resData?.groupings ?? [];
+    return resData.groupings.filter(g => g.label === selectedAttorney);
+  }, [resData, isFiltered, selectedAttorney]);
+
+  const filteredDiscGroupings = useMemo(() => {
+    if (!discData || !isFiltered) return discData?.groupings ?? [];
+    return discData.groupings.filter(g => g.label === selectedAttorney);
+  }, [discData, isFiltered, selectedAttorney]);
+
+  const filteredExpertsGroupings = useMemo(() => {
+    if (!expertsData || !isFiltered) return expertsData?.groupings ?? [];
+    return expertsData.groupings.filter(g => g.label === selectedAttorney);
+  }, [expertsData, isFiltered, selectedAttorney]);
 
   const navigate = useNavigate();
 
@@ -249,10 +277,9 @@ export default function ControlTower() {
     [complaint, formA, formC, deps].reduce((s, c) => s + compliancePct(c), 0) / 4
   );
 
-  // ── Resolution Performance ──────────────────────────────────────────
+  // ── Resolution Performance (uses filtered groupings) ────────────────
   const attorneys: AttorneyRow[] = useMemo(() => {
-    if (!resData) return [];
-    return resData.groupings.map(g => {
+    return filteredResGroupings.map(g => {
       const cases = (g.aggregates.find(a => a.label === 'Record Count')?.value ?? 0) as number;
       const settlement = (g.aggregates.find(a => a.label.includes('Settlement'))?.value ?? 0) as number;
       const netFee = (g.aggregates.find(a => a.label.includes('Fee'))?.value ?? 0) as number;
@@ -265,7 +292,11 @@ export default function ControlTower() {
         feePercent: settlement ? (netFee / settlement) * 100 : 0,
       };
     }).sort((a, b) => b.settlement - a.settlement);
-  }, [resData]);
+  }, [filteredResGroupings]);
+
+  const filteredTotalSettlement = useMemo(() => attorneys.reduce((s, a) => s + a.settlement, 0), [attorneys]);
+  const filteredTotalResolved = useMemo(() => attorneys.reduce((s, a) => s + a.cases, 0), [attorneys]);
+  const filteredTotalNetFee = useMemo(() => attorneys.reduce((s, a) => s + a.netFee, 0), [attorneys]);
 
   const top15Attorneys = attorneys.slice(0, 15);
   const attorneyCount = attorneys.length;
@@ -280,27 +311,25 @@ export default function ControlTower() {
     { key: 'feePercent', label: 'Fee %', sortable: true, render: r => `${r.feePercent.toFixed(1)}%`, className: 'text-right' },
   ];
 
-  // ── Workload Distribution (top 8 for compact bars) ──────────────────
+  // ── Workload Distribution (uses filtered groupings) ─────────────────
   const discoveryTop15 = useMemo(() => {
-    if (!discData) return [];
-    return discData.groupings
+    return filteredDiscGroupings
       .map(g => ({ name: g.label, count: (g.aggregates[0]?.value ?? 0) as number }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 15);
-  }, [discData]);
+  }, [filteredDiscGroupings]);
 
-  const discTotal = (discData?.grandTotals[0]?.value ?? 0) as number;
+  const discTotal = useMemo(() => filteredDiscGroupings.reduce((s, g) => s + ((g.aggregates[0]?.value ?? 0) as number), 0), [filteredDiscGroupings]);
   const discTop8 = discoveryTop15.slice(0, 8);
 
   const expertsTop15 = useMemo(() => {
-    if (!expertsData) return [];
-    return expertsData.groupings
+    return filteredExpertsGroupings
       .map(g => ({ name: g.label, count: (g.aggregates[0]?.value ?? 0) as number }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 15);
-  }, [expertsData]);
+  }, [filteredExpertsGroupings]);
 
-  const expertsTotal = (expertsData?.grandTotals[0]?.value ?? 0) as number;
+  const expertsTotal = useMemo(() => filteredExpertsGroupings.reduce((s, g) => s + ((g.aggregates[0]?.value ?? 0) as number), 0), [filteredExpertsGroupings]);
   const expertsTop8 = expertsTop15.slice(0, 8);
 
   // ── Refresh all reports ───────────────────────────────────────────
@@ -361,13 +390,28 @@ export default function ControlTower() {
       <HeroSection>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <HeroTitle title="Optimus Control Tower" subtitle="LIT DISRUPTOR MODEL" />
-          <HeroSummaryTicker
-            items={[
-              { label: 'matters', value: fmtNum(totalMatters) },
-              { label: 'open', value: fmtNum(openMatters) },
-              { label: 'settlements', value: fmt$(totalSettlement) },
-            ]}
-          />
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 bg-white/[0.06] border border-white/[0.1] rounded-lg px-3 py-1.5">
+              <Filter size={14} className="text-muted-foreground" />
+              <select
+                value={selectedAttorney}
+                onChange={e => setSelectedAttorney(e.target.value)}
+                className="bg-transparent text-sm text-foreground border-none outline-none cursor-pointer appearance-none pr-4"
+              >
+                <option value="all" className="bg-zinc-900">All Attorneys</option>
+                {attorneyList.map(name => (
+                  <option key={name} value={name} className="bg-zinc-900">{name}</option>
+                ))}
+              </select>
+            </div>
+            <HeroSummaryTicker
+              items={[
+                { label: 'matters', value: fmtNum(totalMatters) },
+                { label: 'open', value: fmtNum(openMatters) },
+                { label: 'settlements', value: fmt$(totalSettlement) },
+              ]}
+            />
+          </div>
         </div>
 
         <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
@@ -381,7 +425,7 @@ export default function ControlTower() {
               )}
               onClick={() => navigate('/lci-report')}
             >
-              <p className="text-xs font-medium text-muted-foreground mb-2">Litigation Control Index</p>
+              <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">Litigation Control Index <InfoTooltip text="The Litigation Control Index scores overall portfolio health from 0-100 based on compliance, workload, and resolution metrics." /></p>
               <div className="flex items-center gap-3">
                 <ScoreGauge score={lci.score} maxScore={100} size={90} label="LCI" />
                 <div className="flex flex-col gap-1">
@@ -445,7 +489,7 @@ export default function ControlTower() {
           SECTION 2: Inventory by Stage (segmented bar)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="Inventory by Stage" subtitle="Open inventory proportional by stage" />
+        <SectionHeader title="Inventory by Stage" subtitle="Open inventory proportional by stage" info="Distribution of open matters across pre-litigation and litigation stages. Click a segment to drill into that stage." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <div className={cn("bg-white/[0.04] border border-white/[0.08] rounded-xl p-5", hoverCard)}>
           <div className="flex items-center h-14 w-full">
             {/* Pre-Lit group */}
@@ -504,7 +548,7 @@ export default function ControlTower() {
           SECTION 3: NJ Operations Velocity (4 cards)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="NJ Operations Velocity" subtitle="Key operational metrics for NJ litigation pipeline" />
+        <SectionHeader title="NJ Operations Velocity" subtitle="Key operational metrics for NJ litigation pipeline" info="Key operational metrics tracking NJ litigation inventory, missing discovery trackers, and service compliance." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <DashboardGrid cols={4}>
           <StatCard label="NJ Lit Inventory" value={fmtNum(njInventory)} deltaType="neutral" className={hoverCard} sparklineData={histNjInventory} anomaly={anomNjInventory ?? undefined} />
           <StatCard
@@ -537,7 +581,7 @@ export default function ControlTower() {
           SECTION 4: Risk Signals (4 cards)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="Risk Signals" subtitle="Items requiring attention across compliance and operations" />
+        <SectionHeader title="Risk Signals" subtitle="Items requiring attention across compliance and operations" info="Metrics highlighting cases requiring attention: missing answers, DED extensions, resolutions, and complaint timing." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <DashboardGrid cols={4}>
           <StatCard
             label="Missing Answers"
@@ -567,7 +611,7 @@ export default function ControlTower() {
           SECTION 5: NJ Operations Analytics (3 compact donuts)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="NJ Operations Analytics" subtitle="Negotiations, complaint filing, and form A compliance" />
+        <SectionHeader title="NJ Operations Analytics" subtitle="Negotiations, complaint filing, and form A compliance" info="Breakdown of negotiation status, complaint filing progress, and Form A past-due matters." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <DashboardGrid cols={3}>
           {/* Negotiations donut — compact layout */}
           {(() => {
@@ -657,7 +701,7 @@ export default function ControlTower() {
           ═══════════════════════════════════════════════════════════════ */}
       {eventsData.length > 0 && (
         <section>
-          <SectionHeader title="Upcoming Events" subtitle="ARB, MED, SET CONF, and Trials" />
+          <SectionHeader title="Upcoming Events" subtitle="ARB, MED, SET CONF, and Trials" info="Upcoming arbitrations, mediations, settlement conferences, and trials with associated portfolio value." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
           <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={eventsData} margin={{ top: 10, right: 30, bottom: 10, left: 10 }}>
@@ -681,7 +725,7 @@ export default function ControlTower() {
           SECTION 7: Timing Compliance (4 colored % cards)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="Timing Compliance" subtitle="NJ PI — percentage meeting compliance windows" />
+        <SectionHeader title="Timing Compliance" subtitle="NJ PI — percentage meeting compliance windows" info="Percentage of matters meeting timing benchmarks for complaint filing, Form A, Form C, and depositions." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <DashboardGrid cols={4}>
           {([
             { label: 'Complaint Filing', data: complaint },
@@ -707,7 +751,7 @@ export default function ControlTower() {
           SECTION 8: Operational Analytics (3-col compact bars)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="Operational Analytics" subtitle="Timing breakdown, discovery trackers, and expert coverage" />
+        <SectionHeader title="Operational Analytics" subtitle="Timing breakdown, discovery trackers, and expert coverage" info="Attorney-level workload distribution for timing compliance, discovery trackers, and expert service." />
         <DashboardGrid cols={3}>
           {/* Timing Compliance Breakdown */}
           <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
@@ -736,7 +780,7 @@ export default function ControlTower() {
           {/* Discovery Trackers */}
           <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
             <div className="text-sm font-semibold text-foreground">Discovery Trackers</div>
-            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(discTotal)} total across {discData?.groupings.length ?? 0} owners</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(discTotal)} total across {filteredDiscGroupings.length} owners</p>
             <div className="flex items-center gap-4 mt-3">
               <span className="text-3xl font-bold text-foreground">{fmtNum(discTotal)}</span>
               <div className="h-[140px] flex-1">
@@ -755,7 +799,7 @@ export default function ControlTower() {
           {/* Experts Not Served */}
           <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
             <div className="text-sm font-semibold text-foreground">Experts Not Served</div>
-            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(expertsTotal)} total across {expertsData?.groupings.length ?? 0} owners</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(expertsTotal)} total across {filteredExpertsGroupings.length} owners</p>
             <div className="flex items-center gap-4 mt-3">
               <span className="text-3xl font-bold text-foreground">{fmtNum(expertsTotal)}</span>
               <div className="h-[140px] flex-1">
@@ -777,20 +821,20 @@ export default function ControlTower() {
           SECTION 9: Resolution Performance
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="Resolution Performance" subtitle="Settlement outcomes across all attorneys" />
+        <SectionHeader title="Resolution Performance" subtitle={isFiltered ? `Filtered: ${selectedAttorney}` : "Settlement outcomes across all attorneys"} info="Attorney settlement performance ranked by total settlement value. Shows cases resolved, average per case, fees, and fee percentage." />
 
         <DashboardGrid cols={4}>
-          <StatCard label="Total Resolutions" value={fmtNum(totalResolved)} variant="glass" className={hoverCard} sparklineData={histTotalResolved} anomaly={anomTotalResolved ?? undefined} />
-          <StatCard label="Settlement Total" value={fmt$(totalSettlement)} variant="glass" className={hoverCard} sparklineData={histTotalSettlement} />
+          <StatCard label="Total Resolutions" value={fmtNum(isFiltered ? filteredTotalResolved : totalResolved)} variant="glass" className={hoverCard} sparklineData={isFiltered ? undefined : histTotalResolved} anomaly={isFiltered ? undefined : anomTotalResolved ?? undefined} />
+          <StatCard label="Settlement Total" value={fmt$(isFiltered ? filteredTotalSettlement : totalSettlement)} variant="glass" className={hoverCard} sparklineData={isFiltered ? undefined : histTotalSettlement} />
           <StatCard
             label="Net Fees"
-            value={fmt$(totalNetFee)}
-            delta={`${feeRatio}% fee ratio`}
+            value={fmt$(isFiltered ? filteredTotalNetFee : totalNetFee)}
+            delta={isFiltered ? undefined : `${feeRatio}% fee ratio`}
             deltaType="neutral"
             variant="glass"
             className={hoverCard}
-            sparklineData={histTotalNetFee}
-            anomaly={anomTotalNetFee ?? undefined}
+            sparklineData={isFiltered ? undefined : histTotalNetFee}
+            anomaly={isFiltered ? undefined : anomTotalNetFee ?? undefined}
           />
           <StatCard label="Attorneys" value={attorneyCount} variant="glass" className={hoverCard} />
         </DashboardGrid>

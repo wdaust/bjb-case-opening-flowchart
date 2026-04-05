@@ -3,6 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
+import { InfoTooltip } from '../components/dashboard/InfoTooltip';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { MATTERS_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID } from '../data/sfReportIds';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
@@ -45,12 +46,13 @@ const tooltipStyle = {
 
 // ── Card Shell ─────────────────────────────────────────────────────────
 function DashCard({
-  icon, title, unit, description, children,
+  icon, title, unit, description, info, children,
 }: {
   icon: React.ReactNode;
   title: string;
   unit: string;
   description: string;
+  info?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -59,6 +61,7 @@ function DashCard({
         <div className="flex items-center gap-2 text-sm font-semibold text-white">
           {icon}
           <span>{title}</span>
+          {info && <InfoTooltip text={info} />}
           <span className="text-zinc-500 font-normal">/ {unit}</span>
         </div>
         <p className="text-xs text-zinc-600 mt-0.5">{description}</p>
@@ -210,6 +213,7 @@ export default function AltControlTower() {
             title="Total Inventory"
             unit="cases"
             description="Active caseload across all stages"
+            info="Open matter count across all stages with bar chart breakdown."
           >
             <div className="flex items-start gap-6">
               <div className="shrink-0">
@@ -237,6 +241,7 @@ export default function AltControlTower() {
             title="Pre-Lit vs Lit"
             unit="%"
             description="Open matters categorized by litigation phase"
+            info="Distribution of open matters between pre-litigation and litigation phases."
           >
             <div className="flex items-center gap-4">
               <div className="shrink-0">
@@ -284,6 +289,7 @@ export default function AltControlTower() {
             title="Portfolio Value"
             unit="$"
             description="Total settlement and fee from resolved matters"
+            info="Total settlement value and net fees from resolved matters."
           >
             <div className="flex items-start gap-6">
               <div className="shrink-0">
@@ -323,6 +329,7 @@ export default function AltControlTower() {
             title="Top Stages"
             unit="cases"
             description="Top 8 stages by open matter count"
+            info="Stages with the highest concentration of open matters."
           >
             <div className="h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
@@ -363,6 +370,7 @@ export default function AltControlTower() {
             title="Compliance Overview"
             unit="%"
             description="Timing compliance across key filing milestones"
+            info="Timing compliance percentages for four key litigation milestones."
           >
             <div className="overflow-hidden rounded-lg border border-zinc-800">
               <table className="w-full text-xs">
@@ -396,6 +404,7 @@ export default function AltControlTower() {
             title="Top 5 Attorneys"
             unit="settlement"
             description="Highest-performing attorneys by total settlement"
+            info="Attorneys with the highest settlement totals from resolved matters."
           >
             <div className="overflow-hidden rounded-lg border border-zinc-800">
               <table className="w-full text-xs">

@@ -135,7 +135,7 @@ export default function TodaysExposure() {
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
-      <SectionHeader title="Today's Exposure" subtitle="Portfolio inventory, compliance, and key metrics" />
+      <SectionHeader title="Today's Exposure" subtitle="Portfolio inventory, compliance, and key metrics" info="Portfolio value, NJ inventory count, DED extensions, and NJ resolution totals." />
 
       {/* Top row -- 4 StatCards */}
       <DashboardGrid cols={4}>
@@ -169,7 +169,7 @@ export default function TodaysExposure() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Inventory by Stage -- vertical bar chart */}
         <div>
-          <SectionHeader title="Inventory by Stage" subtitle="Open matters grouped by stage" />
+          <SectionHeader title="Inventory by Stage" subtitle="Open matters grouped by stage" info="Open matter counts broken down by litigation stage." />
           <div className="rounded-lg border border-border bg-card p-4">
             {inventoryByStage.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
@@ -203,7 +203,7 @@ export default function TodaysExposure() {
 
         {/* Events -- horizontal bar chart */}
         <div>
-          <SectionHeader title="Events" subtitle="Event counts from stats dashboard" />
+          <SectionHeader title="Events" subtitle="Event counts from stats dashboard" info="Upcoming events (arbitrations, mediations, trials) by category." />
           <div className="rounded-lg border border-border bg-card p-4">
             {eventsData.length > 0 ? (
               <ResponsiveContainer width="100%" height={280}>
@@ -236,7 +236,7 @@ export default function TodaysExposure() {
       </div>
 
       {/* Compliance cards -- 2x2 grid */}
-      <SectionHeader title="Timing Compliance" subtitle="On-time performance across key milestones" />
+      <SectionHeader title="Timing Compliance" subtitle="On-time performance across key milestones" info="Compliance rates for complaint filing, Form A, Form C, and depositions." />
       <div className="grid grid-cols-2 gap-4">
         <ComplianceCard title="Complaint Filing" timely={complaintFiling.timely} late={complaintFiling.late} />
         <ComplianceCard title="Form A" timely={formA.timely} late={formA.late} />
@@ -245,6 +245,7 @@ export default function TodaysExposure() {
       </div>
 
       {/* Form A Past Due breakdown */}
+      <SectionHeader title="Form A Past Due" info="Breakdown of Form A matters that are past their due dates." />
       <Tabs defaultValue="form-a-past-due">
         <TabsList>
           <TabsTrigger value="form-a-past-due">Form A Past Due</TabsTrigger>

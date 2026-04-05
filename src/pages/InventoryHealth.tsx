@@ -122,6 +122,11 @@ export default function InventoryHealth() {
       />
 
       {/* ── KPI Cards ──────────────────────────────────────────── */}
+      <SectionHeader
+        title="KPI Cards"
+        subtitle=""
+        info="Open inventory total, missing tracker and answer counts, and overall compliance percentage."
+      />
       <DashboardGrid cols={4}>
         <StatCard label="Open Inventory" value={fmtNum(openInventory as number)} />
         <StatCard
@@ -154,6 +159,7 @@ export default function InventoryHealth() {
           <SectionHeader
             title="Stage Inventory"
             subtitle="Matters grouped by litigation stage"
+            info="Matter counts by stage showing open, closed, and total for each litigation stage."
           />
           <DataTable data={stageRows} columns={stageColumns} keyField="stage" />
         </TabsContent>
@@ -163,6 +169,7 @@ export default function InventoryHealth() {
           <SectionHeader
             title="Timing Compliance"
             subtitle="NJ timing compliance across key milestones"
+            info="Timing compliance rates plus operational metrics for negotiations and complaint filing."
           />
           <DashboardGrid cols={4}>
             {TIMING_LABELS.map(({ label, title }) => {
@@ -201,6 +208,7 @@ export default function InventoryHealth() {
           <SectionHeader
             title="Risk Indicators"
             subtitle="Metrics that signal operational risk"
+            info="Counts of matters with missing trackers, overdue service, and missing answers requiring attention."
           />
           <div className="grid gap-4 sm:grid-cols-3">
             {riskIndicators.map(({ label, value }) => {
