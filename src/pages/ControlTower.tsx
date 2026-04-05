@@ -14,7 +14,9 @@ import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { saveMetricSnapshots, useMetricHistory, detectAnomaly } from '../hooks/useMetricHistory';
 import { ScoreGauge } from '../components/scoring/ScoreGauge';
 import { LCIBadge } from '../components/dashboard/LCIBadge';
-import { computeRealLCI } from '../data/lciEngineReal';
+import { computeRealLCI, getRealEscalations } from '../data/lciEngineReal';
+import { EscalationBanner } from '../components/dashboard/EscalationBanner';
+import { loadHistory } from '../hooks/useMetricHistory';
 import { RefreshCw } from 'lucide-react';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
@@ -140,6 +142,9 @@ export default function ControlTower() {
     () => computeRealLCI({ resData, statsData, timingData, discData, expertsData }),
     [resData, statsData, timingData, discData, expertsData],
   );
+
+  // ── Escalations ────────────────────────────────────────────────────
+  const escalations = useMemo(() => getRealEscalations(lci, loadHistory()), [lci]);
 
   // ── Section 2: Inventory by Stage ───────────────────────────────────
   const pipeline = useMemo(() => {
@@ -420,6 +425,9 @@ export default function ControlTower() {
           </DashboardGrid>
         </div>
       </HeroSection>
+
+      {/* Active Escalations Banner */}
+      <EscalationBanner escalations={escalations} />
 
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 2: Inventory by Stage (horizontal stacked bar)

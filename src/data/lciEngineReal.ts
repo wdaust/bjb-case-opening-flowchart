@@ -76,7 +76,20 @@ interface MetricDef {
   higherIsBetter: boolean;
 }
 
-const LAYER_METRICS: MetricDef[][] = [
+export interface EscalationItem {
+  id: string;
+  metricName: string;
+  layerName: string;
+  currentValue: number;
+  target: number;
+  unit: string;
+  weeksInRed: number;
+  escalationLevel: 'unit-review' | 'manager' | 'vp' | 'executive';
+  owner: string;
+  office: string;
+}
+
+export const LAYER_METRICS: MetricDef[][] = [
   // Layer 0: Revenue Performance
   [
     { id: '0.1', name: 'Total Settlement $', unit: '$', target: 5_000_000, greenMin: 5_000_000, greenMax: 100_000_000, amberMin: 2_000_000, amberMax: 4_999_999, redMin: 0, redMax: 1_999_999, higherIsBetter: true },
@@ -251,6 +264,122 @@ export function computeAttorneyMetrics(resData: ReportSummaryResponse | null): A
       feeRatio: settlement ? (netFee / settlement) * 100 : 0,
     };
   }).sort((a, b) => b.settlement - a.settlement);
+}
+
+// ── Escalation Engine ─────────────────────────────────────────────────────
+
+const METRIC_HISTORY_KEY: Record<string, string> = {
+  'Complaint Compliance %': 'complaintPct',
+  'Form A Compliance %': 'formAPct',
+  'Form C Compliance %': 'formCPct',
+  'Deposition Compliance %': 'depsPct',
+  'NJ Lit Inventory': 'njInventory',
+  'No Service 35+ Days %': 'noService35',
+  'Missing Disc. Trackers %': 'missingTrackers',
+  'Missing Answers %': 'missingAnswers',
+  'Total Settlement $': 'totalSettlement',
+  'Resolved Cases': 'totalResolved',
+};
+
+function isInRedRange(value: number, def: MetricDef): boolean {
+  return computeBand(value, def) === 'red';
+}
+
+function weeksToLevel(weeks: number): EscalationItem['escalationLevel'] {
+  if (weeks <= 1) return 'unit-review';
+  if (weeks === 2) return 'manager';
+  if (weeks === 3) return 'vp';
+  return 'executive';
+}
+
+export function getRealEscalations(
+  lci: LCIResult,
+  snapshots: { date: string; metrics: Record<string, number> }[],
+): EscalationItem[] {
+  const escalations: EscalationItem[] = [];
+
+  // Build a flat lookup of MetricDef by metric name
+  const defByName = new Map<string, MetricDef>();
+  for (const layer of LAYER_METRICS) {
+    for (const def of layer) {
+      defByName.set(def.name, def);
+    }
+  }
+
+  for (const layer of lci.layers) {
+    for (const metric of layer.metrics) {
+      if (metric.band !== 'red') continue;
+
+      const def = defByName.get(metric.name);
+      if (!def) continue;
+
+      const histKey = METRIC_HISTORY_KEY[metric.name];
+
+      let weeksInRed = 1; // minimum 1 for currently-red
+
+      if (histKey && snapshots.length > 0) {
+        // Sort snapshots oldest-first
+        const sorted = [...snapshots].sort((a, b) => a.date.localeCompare(b.date));
+
+        // Group snapshots into calendar weeks (ending at the most recent snapshot)
+        // Walk backwards through weeks and count consecutive red weeks
+        const now = new Date(sorted[sorted.length - 1].date);
+        let weekStart = new Date(now);
+        weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of current week (Sunday)
+
+        let consecutiveRedWeeks = 0;
+        let checking = true;
+
+        while (checking && weekStart.getTime() >= new Date(sorted[0].date).getTime()) {
+          const weekEnd = new Date(weekStart);
+          weekEnd.setDate(weekEnd.getDate() + 6);
+          const weekStartStr = weekStart.toISOString().slice(0, 10);
+          const weekEndStr = weekEnd.toISOString().slice(0, 10);
+
+          // Find snapshots in this week
+          const weekSnapshots = sorted.filter(
+            s => s.date >= weekStartStr && s.date <= weekEndStr && s.metrics[histKey] !== undefined,
+          );
+
+          if (weekSnapshots.length === 0) {
+            // No data for this week — stop counting
+            break;
+          }
+
+          // Use the latest snapshot in the week
+          const latest = weekSnapshots[weekSnapshots.length - 1];
+          const val = latest.metrics[histKey];
+
+          if (isInRedRange(val, def)) {
+            consecutiveRedWeeks++;
+          } else {
+            checking = false;
+          }
+
+          // Move to previous week
+          weekStart.setDate(weekStart.getDate() - 7);
+        }
+
+        weeksInRed = Math.max(consecutiveRedWeeks, 1);
+      }
+
+      escalations.push({
+        id: `esc-${metric.id}`,
+        metricName: metric.name,
+        layerName: layer.name,
+        currentValue: metric.value,
+        target: metric.target,
+        unit: metric.unit,
+        weeksInRed,
+        escalationLevel: weeksToLevel(weeksInRed),
+        owner: 'Firm-wide',
+        office: 'NJ',
+      });
+    }
+  }
+
+  // Sort by weeksInRed descending (highest escalation first)
+  return escalations.sort((a, b) => b.weeksInRed - a.weeksInRed);
 }
 
 // ── Alert Metrics (red/amber) ───────────────────────────────────────────

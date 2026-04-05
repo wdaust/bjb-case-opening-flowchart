@@ -10,7 +10,7 @@ function getToday(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function loadHistory(): DailySnapshot[] {
+export function loadHistory(): DailySnapshot[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];

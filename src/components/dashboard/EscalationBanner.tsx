@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
-import { AlertTriangle, ChevronDown, ChevronUp, ChevronRight, ExternalLink } from 'lucide-react';
-import { attorneys } from '../../data/mockData';
-import type { EscalationItem } from '../../data/lciEngine';
+import { AlertTriangle, ChevronDown, ChevronUp, ChevronRight } from 'lucide-react';
+import type { EscalationItem } from '../../data/lciEngineReal';
 
 interface EscalationBannerProps {
   escalations: EscalationItem[];
@@ -75,7 +73,6 @@ function countByLevel(escalations: EscalationItem[]): string {
 export function EscalationBanner({ escalations, className }: EscalationBannerProps) {
   const [expanded, setExpanded] = useState(false);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  const navigate = useNavigate();
 
   if (escalations.length === 0) return null;
 
@@ -89,11 +86,6 @@ export function EscalationBanner({ escalations, className }: EscalationBannerPro
       else next.add(id);
       return next;
     });
-  };
-
-  const findAttorneyId = (ownerName: string): string | null => {
-    const att = attorneys.find(a => a.name === ownerName);
-    return att ? att.id : null;
   };
 
   const formatValue = (value: number, unit: string) => {
@@ -139,7 +131,6 @@ export function EscalationBanner({ escalations, className }: EscalationBannerPro
         <div className="border-t border-red-500/20 px-4 py-2 space-y-1">
           {visibleItems.map(esc => {
             const isItemExpanded = expandedItems.has(esc.id);
-            const attId = findAttorneyId(esc.owner);
             const steps = REMEDIATION_MAP[esc.layerName] ?? [
               'Review metric details and identify root cause',
               'Assign corrective action owner',
@@ -214,19 +205,6 @@ export function EscalationBanner({ escalations, className }: EscalationBannerPro
                       </ol>
                     </div>
 
-                    {attId && (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/attorney/${attId}`);
-                        }}
-                        className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
-                      >
-                        <ExternalLink size={12} />
-                        Go to {esc.owner}'s Dashboard
-                      </button>
-                    )}
                   </div>
                 )}
               </div>
