@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { OptimusIntro } from '../components/OptimusIntro';
 import { cn } from '../utils/cn';
 import { StatCard } from '../components/dashboard/StatCard';
@@ -8,8 +9,10 @@ import { DataTable, type Column } from '../components/dashboard/DataTable';
 import { HeroSection } from '../components/dashboard/HeroSection';
 import { HeroTitle } from '../components/dashboard/HeroTitle';
 import { HeroSummaryTicker } from '../components/dashboard/HeroSummaryTicker';
+import { ControlTowerSkeleton } from '../components/dashboard/ControlTowerSkeleton';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
-import { Loader2, RefreshCw } from 'lucide-react';
+import { saveMetricSnapshots, useMetricHistory, detectAnomaly } from '../hooks/useMetricHistory';
+import { RefreshCw } from 'lucide-react';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
@@ -136,6 +139,22 @@ export default function ControlTower() {
     useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
 
   const allLoading = mattersLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
+
+  const navigate = useNavigate();
+
+  // ── Metric History (must be before early return — rules of hooks) ────
+  const histTotalMatters     = useMetricHistory('totalMatters');
+  const histOpenMatters      = useMetricHistory('openMatters');
+  const histPortfolioValue   = useMetricHistory('portfolioValue');
+  const histTotalSettlement  = useMetricHistory('totalSettlement');
+  const histNjInventory      = useMetricHistory('njInventory');
+  const histMissingTrackers  = useMetricHistory('missingTrackers');
+  const histNoService35      = useMetricHistory('noService35');
+  const histMissingAnswers   = useMetricHistory('missingAnswers');
+  const histDedExtensions    = useMetricHistory('dedExtensions');
+  const histNjResolutions    = useMetricHistory('njResolutions');
+  const histTotalResolved    = useMetricHistory('totalResolved');
+  const histTotalNetFee      = useMetricHistory('totalNetFee');
 
   // ── Section 1: Hero KPIs from Matters Universe + Resolutions + Stats ──
   const totalMatters = (mattersData?.grandTotals.find(g => g.label === 'Record Count')?.value ?? 0) as number;
@@ -299,18 +318,42 @@ export default function ControlTower() {
     refreshExperts();
   };
 
-  // timestamps used in footer section directly
+  // ── Save daily metric snapshots ─────────────────────────────────
+  useEffect(() => {
+    if (allLoading) return;
+    saveMetricSnapshots({
+      totalMatters, openMatters, closedMatters, portfolioValue, njInventory,
+      totalSettlement, totalResolved, totalNetFee,
+      missingTrackers, serviceGt3d, noService35, missingAnswers,
+      dedExtensions, njResolutions,
+      complaintPct: compliancePct(complaint),
+      formAPct: compliancePct(formA),
+      formCPct: compliancePct(formC),
+      depsPct: compliancePct(deps),
+    });
+  }, [allLoading]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Anomaly detection ──────────────────────────────────────────────
+  const anomTotalMatters    = detectAnomaly(histTotalMatters, totalMatters);
+  const anomOpenMatters     = detectAnomaly(histOpenMatters, openMatters);
+  const anomPortfolioValue  = detectAnomaly(histPortfolioValue, portfolioValue);
+  const anomTotalSettlement = detectAnomaly(histTotalSettlement, totalSettlement);
+  const anomNjInventory     = detectAnomaly(histNjInventory, njInventory);
+  const anomMissingTrackers = detectAnomaly(histMissingTrackers, missingTrackers);
+  const anomNoService35     = detectAnomaly(histNoService35, noService35);
+  const anomMissingAnswers  = detectAnomaly(histMissingAnswers, missingAnswers);
+  const anomDedExtensions   = detectAnomaly(histDedExtensions, dedExtensions);
+  const anomNjResolutions   = detectAnomaly(histNjResolutions, njResolutions);
+  const anomTotalResolved   = detectAnomaly(histTotalResolved, totalResolved);
+  const anomTotalNetFee     = detectAnomaly(histTotalNetFee, totalNetFee);
 
   // ── Loading state ─────────────────────────────────────────────────
   if (allLoading) {
     return (
-      <div className="flex-1 overflow-auto p-6">
+      <>
         {!introPlayed && <OptimusIntro onComplete={handleIntroComplete} />}
-        <div className="flex flex-col items-center justify-center h-96 gap-3">
-          <Loader2 size={32} className="animate-spin text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Loading 6 Salesforce reports...</p>
-        </div>
-      </div>
+        <ControlTowerSkeleton />
+      </>
     );
   }
 
@@ -340,6 +383,8 @@ export default function ControlTower() {
               value={fmtNum(totalMatters)}
               variant="glass"
               className={hoverCard}
+              sparklineData={histTotalMatters}
+              anomaly={anomTotalMatters ?? undefined}
               subMetrics={[
                 { label: "Open", value: fmtNum(openMatters), deltaType: "neutral" },
                 { label: "Closed", value: fmtNum(closedMatters), deltaType: "neutral" },
@@ -350,6 +395,8 @@ export default function ControlTower() {
               value={fmtNum(openMatters)}
               variant="glass"
               className={hoverCard}
+              sparklineData={histOpenMatters}
+              anomaly={anomOpenMatters ?? undefined}
               subMetrics={topOpenStages.map(s => ({
                 label: s.label,
                 value: fmtNum(s.open),
@@ -361,6 +408,8 @@ export default function ControlTower() {
               value={fmt$(portfolioValue)}
               variant="glass"
               className={hoverCard}
+              sparklineData={histPortfolioValue}
+              anomaly={anomPortfolioValue ?? undefined}
               subMetrics={[
                 { label: "NJ Lit count", value: fmtNum(njInventory), deltaType: "neutral" },
               ]}
@@ -370,6 +419,8 @@ export default function ControlTower() {
               value={fmt$(totalSettlement)}
               variant="glass"
               className={hoverCard}
+              sparklineData={histTotalSettlement}
+              anomaly={anomTotalSettlement ?? undefined}
               subMetrics={[
                 { label: "Resolved", value: fmtNum(totalResolved), deltaType: "neutral" },
                 { label: "Net fees", value: fmt$(totalNetFee), deltaType: "neutral" },
@@ -390,8 +441,8 @@ export default function ControlTower() {
               <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
               <YAxis type="category" dataKey="stage" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} width={150} />
               <RechartsTooltip {...tooltipStyle} />
-              <Bar dataKey="open" stackId="a" fill={AMBER} name="Open" />
-              <Bar dataKey="closed" stackId="a" fill={GREEN} name="Closed" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="open" stackId="a" fill={AMBER} name="Open" cursor="pointer" onClick={(_d: unknown, idx: number) => { const stage = pipeline[idx]?.stage; if (stage) navigate(`/stage/${encodeURIComponent(stage)}`); }} />
+              <Bar dataKey="closed" stackId="a" fill={GREEN} name="Closed" radius={[0, 4, 4, 0]} cursor="pointer" onClick={(_d: unknown, idx: number) => { const stage = pipeline[idx]?.stage; if (stage) navigate(`/stage/${encodeURIComponent(stage)}`); }} />
             </BarChart>
           </ResponsiveContainer>
           <div className="flex gap-6 mt-3 text-xs text-muted-foreground">
@@ -409,13 +460,15 @@ export default function ControlTower() {
 
         {/* Row 1: Alert cards */}
         <DashboardGrid cols={5}>
-          <StatCard label="NJ Lit Inventory" value={fmtNum(njInventory)} deltaType="neutral" className={hoverCard} />
+          <StatCard label="NJ Lit Inventory" value={fmtNum(njInventory)} deltaType="neutral" className={hoverCard} sparklineData={histNjInventory} anomaly={anomNjInventory ?? undefined} />
           <StatCard
             label="Missing Disc. Trackers"
             value={missingTrackers}
             deltaType={missingTrackers <= 5 ? "positive" : "negative"}
             delta={missingTrackers <= 5 ? "low" : "needs attention"}
             className={hoverCard}
+            sparklineData={histMissingTrackers}
+            anomaly={anomMissingTrackers ?? undefined}
           />
           <StatCard
             label="Service >3d from COMP"
@@ -428,12 +481,16 @@ export default function ControlTower() {
             value={noService35}
             deltaType="negative"
             className={hoverCard}
+            sparklineData={histNoService35}
+            anomaly={anomNoService35 ?? undefined}
           />
           <StatCard
             label="Missing Answers"
             value={missingAnswers}
             deltaType="negative"
             className={hoverCard}
+            sparklineData={histMissingAnswers}
+            anomaly={anomMissingAnswers ?? undefined}
           />
         </DashboardGrid>
 
@@ -553,8 +610,8 @@ export default function ControlTower() {
         {/* Row 2: DED Extensions, NJ Resolutions, Complaint Avg Days */}
         <div className="mt-4">
           <DashboardGrid cols={3}>
-            <StatCard label="DED Extensions" value={fmtNum(dedExtensions)} deltaType="neutral" className={hoverCard} />
-            <StatCard label="NJ Resolutions" value={fmtNum(njResolutions)} deltaType="neutral" className={hoverCard} />
+            <StatCard label="DED Extensions" value={fmtNum(dedExtensions)} deltaType="neutral" className={hoverCard} sparklineData={histDedExtensions} anomaly={anomDedExtensions ?? undefined} />
+            <StatCard label="NJ Resolutions" value={fmtNum(njResolutions)} deltaType="neutral" className={hoverCard} sparklineData={histNjResolutions} anomaly={anomNjResolutions ?? undefined} />
             <StatCard
               label="Complaint Avg Days"
               value={`${complaintTimelyDays}d`}
@@ -577,8 +634,8 @@ export default function ControlTower() {
         <SectionHeader title="Resolution Performance" subtitle="Settlement outcomes across all attorneys" />
 
         <DashboardGrid cols={4}>
-          <StatCard label="Total Resolutions" value={fmtNum(totalResolved)} variant="glass" className={hoverCard} />
-          <StatCard label="Settlement Total" value={fmt$(totalSettlement)} variant="glass" className={hoverCard} />
+          <StatCard label="Total Resolutions" value={fmtNum(totalResolved)} variant="glass" className={hoverCard} sparklineData={histTotalResolved} anomaly={anomTotalResolved ?? undefined} />
+          <StatCard label="Settlement Total" value={fmt$(totalSettlement)} variant="glass" className={hoverCard} sparklineData={histTotalSettlement} />
           <StatCard
             label="Net Fees"
             value={fmt$(totalNetFee)}
@@ -586,6 +643,8 @@ export default function ControlTower() {
             deltaType="neutral"
             variant="glass"
             className={hoverCard}
+            sparklineData={histTotalNetFee}
+            anomaly={anomTotalNetFee ?? undefined}
           />
           <StatCard label="Attorneys" value={attorneyCount} variant="glass" className={hoverCard} />
         </DashboardGrid>
@@ -596,6 +655,7 @@ export default function ControlTower() {
             columns={attorneyColumns}
             keyField="name"
             maxRows={15}
+            onRowClick={(row) => navigate(`/attorney/${encodeURIComponent(row.name)}`)}
           />
         </div>
       </section>
@@ -616,7 +676,7 @@ export default function ControlTower() {
                 <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                 <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 10 }} width={110} />
                 <RechartsTooltip {...tooltipStyle} />
-                <Bar dataKey="count" fill={INDIGO} radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" fill={INDIGO} radius={[0, 4, 4, 0]} cursor="pointer" onClick={(_d: unknown, idx: number) => { const name = discoveryTop15[idx]?.name; if (name) navigate(`/attorney/${encodeURIComponent(name)}`); }} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -630,7 +690,7 @@ export default function ControlTower() {
                 <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
                 <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 10 }} width={110} />
                 <RechartsTooltip {...tooltipStyle} />
-                <Bar dataKey="count" fill={PINK} radius={[0, 4, 4, 0]} />
+                <Bar dataKey="count" fill={PINK} radius={[0, 4, 4, 0]} cursor="pointer" onClick={(_d: unknown, idx: number) => { const name = expertsTop15[idx]?.name; if (name) navigate(`/attorney/${encodeURIComponent(name)}`); }} />
               </BarChart>
             </ResponsiveContainer>
           </div>

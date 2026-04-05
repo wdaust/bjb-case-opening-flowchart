@@ -8,6 +8,12 @@ export interface SubMetric {
   deltaType?: "positive" | "negative" | "neutral";
 }
 
+export interface AnomalyBadge {
+  direction: 'up' | 'down';
+  pct: number;
+  severity: 'amber' | 'red';
+}
+
 interface Props {
   label: string;
   value: string | number;
@@ -15,18 +21,20 @@ interface Props {
   deltaType?: "positive" | "negative" | "neutral";
   sparklineData?: number[];
   subMetrics?: SubMetric[];
+  anomaly?: AnomalyBadge;
   onClick?: () => void;
   className?: string;
   variant?: "default" | "hero" | "glass";
 }
 
-export function StatCard({ label, value, delta, deltaType = "neutral", sparklineData, subMetrics, onClick, className, variant = "default" }: Props) {
+export function StatCard({ label, value, delta, deltaType = "neutral", sparklineData, subMetrics, anomaly, onClick, className, variant = "default" }: Props) {
   const isHero = variant === "hero";
   const isGlass = variant === "glass";
   return (
     <div
       onClick={onClick}
       className={cn(
+        "relative",
         "rounded-lg border p-4 transition-colors",
         isHero
           ? "bg-[hsl(220,15%,10%)] text-white border-[hsl(220,10%,18%)] dark:bg-[hsl(220,15%,13%)] dark:border-[hsl(220,10%,20%)]"
@@ -37,6 +45,16 @@ export function StatCard({ label, value, delta, deltaType = "neutral", sparkline
         className,
       )}
     >
+      {anomaly && (
+        <span className={cn(
+          "absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none",
+          anomaly.severity === 'red'
+            ? "bg-red-500/20 text-red-400"
+            : "bg-amber-500/20 text-amber-400",
+        )}>
+          {anomaly.direction === 'up' ? '↑' : '↓'} {anomaly.pct}%
+        </span>
+      )}
       <p className={cn("text-xs font-medium truncate mb-2", (isHero || isGlass) ? "text-white/60" : "text-muted-foreground")}>{label}</p>
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">

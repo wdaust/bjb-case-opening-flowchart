@@ -1,161 +1,118 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useMemo } from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from "recharts";
-import { cn } from "../utils/cn";
-import { Breadcrumbs } from "../components/dashboard/Breadcrumbs";
-import { DashboardGrid } from "../components/dashboard/DashboardGrid";
-import { StatCard } from "../components/dashboard/StatCard";
-import { SectionHeader } from "../components/dashboard/SectionHeader";
-import { DataTable, type Column } from "../components/dashboard/DataTable";
-import { LCIBadge } from "../components/dashboard/LCIBadge";
-import { ScoreGauge } from "../components/scoring/ScoreGauge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
-import { calculateAttorneyLCI } from "../data/lciEngine";
-import { getAttorneyCaseScoreAverages } from "../data/caseScoringGenerator";
-import {
-  attorneys,
-  getCasesByAttorney,
-  stageLabels,
-  parentStageOrder,
-  parentStageLabels,
-  getDaysInStage,
-  getSlaStatus,
-  getWeeklyThroughput,
-  type LitCase,
-} from "../data/mockData";
+import { useParams, useNavigate } from 'react-router-dom';
+import { useMemo } from 'react';
+import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
+import { DashboardGrid } from '../components/dashboard/DashboardGrid';
+import { StatCard } from '../components/dashboard/StatCard';
+import { SectionHeader } from '../components/dashboard/SectionHeader';
+import { useSalesforceReport } from '../hooks/useSalesforceReport';
+import { Skeleton } from '../components/ui/skeleton';
+import type { ReportSummaryResponse } from '../types/salesforce';
 
-const fmtCurrency = (n: number) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(n);
+// ── Report IDs (same as ControlTower) ──────────────────────────────
+const RESOLUTIONS_ID = '00OPp000003OOCLMA4';
+const DISCOVERY_ID   = '00OPp000003OUcjMAG';
+const EXPERTS_ID     = '00OPp000003PLtxMAG';
 
+// ── Helpers ─────────────────────────────────────────────────────────
+function fmt$(n: number): string {
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
+  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
+  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
+  return `$${n.toLocaleString()}`;
+}
+
+function fmtNum(n: number): string {
+  return n.toLocaleString();
+}
+
+// ── Main Component ──────────────────────────────────────────────────
 export default function AttorneyCockpit() {
   const { attorneyId } = useParams();
   const navigate = useNavigate();
 
-  const att = useMemo(() => {
-    if (attorneyId) {
-      return attorneys.find((a) => a.id === attorneyId) ?? attorneys[0];
-    }
-    return attorneys[0];
-  }, [attorneyId]);
+  // Load 3 reports
+  const { data: resData, loading: resLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report' });
+  const { data: discData, loading: discLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: DISCOVERY_ID, type: 'report' });
+  const { data: expertsData, loading: expertsLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
 
-  const attCases = useMemo(() => getCasesByAttorney(att.name), [att.name]);
-  const activeCases = useMemo(() => attCases.filter((c) => c.status === "active"), [attCases]);
-  const attorneyLCI = useMemo(() => calculateAttorneyLCI(att.id), [att.id]);
-  const avgCaseScores = useMemo(() => getAttorneyCaseScoreAverages(att.name), [att.name]);
+  const allLoading = resLoading || discLoading || expertsLoading;
 
-  const stageData = useMemo(() => {
-    const counts: Record<string, { stage: string; label: string; count: number }> = {};
-    for (const ps of parentStageOrder) {
-      counts[ps] = { stage: ps, label: parentStageLabels[ps], count: 0 };
-    }
-    for (const c of attCases) {
-      if (counts[c.parentStage]) counts[c.parentStage].count++;
-    }
-    return parentStageOrder.map((ps) => counts[ps]);
-  }, [attCases]);
+  // Build attorney list from Resolutions groupings
+  const attorneyList = useMemo(() => {
+    if (!resData) return [];
+    return resData.groupings
+      .map(g => g.label)
+      .sort((a, b) => a.localeCompare(b));
+  }, [resData]);
 
-  const weeklyData = useMemo(() => getWeeklyThroughput(), []);
+  // Resolve which attorney is selected (URL-decoded param or first in list)
+  const selectedName = attorneyId ? decodeURIComponent(attorneyId) : attorneyList[0] ?? '';
 
-  const highPriorityCases = useMemo(
-    () => [...activeCases].sort((a, b) => b.expectedValue - a.expectedValue),
-    [activeCases]
-  );
+  // ── Resolutions data for selected attorney ────────────────────────
+  const resGrouping = useMemo(() => {
+    if (!resData) return null;
+    return resData.groupings.find(g => g.label === selectedName) ?? null;
+  }, [resData, selectedName]);
 
-  const overdueCases = useMemo(() => {
-    const today = "2026-02-19";
-    return activeCases
-      .filter((c) => c.nextActionDue < today)
-      .map((c) => ({
-        ...c,
-        daysOverdue: Math.floor(
-          (new Date(today).getTime() - new Date(c.nextActionDue).getTime()) / 86400000
-        ),
-      }))
-      .sort((a, b) => b.daysOverdue - a.daysOverdue);
-  }, [activeCases]);
+  const cases = (resGrouping?.aggregates.find(a => a.label === 'Record Count')?.value ?? 0) as number;
+  const settlement = (resGrouping?.aggregates.find(a => a.label.includes('Settlement'))?.value ?? 0) as number;
+  const avgPerCase = cases ? settlement / cases : 0;
+  const netFee = (resGrouping?.aggregates.find(a => a.label.includes('Fee'))?.value ?? 0) as number;
 
-  type OverdueCase = LitCase & { daysOverdue: number };
+  // ── Discovery trackers for selected attorney ──────────────────────
+  const discGrouping = useMemo(() => {
+    if (!discData) return null;
+    return discData.groupings.find(g => g.label === selectedName) ?? null;
+  }, [discData, selectedName]);
 
-  const caseColumns: Column<LitCase>[] = [
-    { key: "id", label: "Case ID" },
-    { key: "title", label: "Title" },
-    {
-      key: "stage",
-      label: "Stage",
-      render: (row: LitCase) => stageLabels[row.stage],
-    },
-    {
-      key: "stageEntryDate",
-      label: "Days in Stage",
-      render: (row: LitCase) => getDaysInStage(row),
-    },
-    {
-      key: "slaTarget",
-      label: "SLA Status",
-      render: (row: LitCase) => {
-        const status = getSlaStatus(row);
-        return (
-          <span
-            className={cn(
-              "px-2 py-0.5 rounded-full text-xs font-medium",
-              status === "breach"
-                ? "bg-red-500/20 text-red-500"
-                : status === "warning"
-                ? "bg-amber-500/20 text-amber-500"
-                : "bg-emerald-500/20 text-emerald-500"
-            )}
-          >
-            {status}
-          </span>
-        );
-      },
-    },
-    {
-      key: "expectedValue",
-      label: "Expected Value",
-      render: (row: LitCase) => fmtCurrency(row.expectedValue),
-    },
-    {
-      key: "riskFlags",
-      label: "Risk Flags",
-      render: (row: LitCase) =>
-        row.riskFlags.length > 0 ? row.riskFlags.join(", ") : "—",
-    },
-  ];
+  const discoveryTrackers = (discGrouping?.aggregates[0]?.value ?? 0) as number;
 
-  const backlogColumns: Column<OverdueCase>[] = [
-    { key: "id", label: "Case ID" },
-    { key: "nextAction", label: "Next Action" },
-    { key: "nextActionDue", label: "Due Date" },
-    {
-      key: "daysOverdue",
-      label: "Days Overdue",
-      render: (row: OverdueCase) => (
-        <span className="text-red-500 font-medium">{row.daysOverdue}d</span>
-      ),
-    },
-  ];
+  // ── Experts not served for selected attorney ──────────────────────
+  const expertsGrouping = useMemo(() => {
+    if (!expertsData) return null;
+    return expertsData.groupings.find(g => g.label === selectedName) ?? null;
+  }, [expertsData, selectedName]);
+
+  const expertsUnserved = (expertsGrouping?.aggregates[0]?.value ?? 0) as number;
+
+  // ── Loading skeleton ──────────────────────────────────────────────
+  if (allLoading) {
+    return (
+      <div className="flex-1 overflow-auto p-6 space-y-6">
+        <Skeleton className="h-4 w-48" />
+        <Skeleton className="h-10 w-64" />
+        <DashboardGrid cols={4}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+              <Skeleton className="h-3 w-24 mb-3" />
+              <Skeleton className="h-8 w-32 mb-2" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+          ))}
+        </DashboardGrid>
+        <DashboardGrid cols={2}>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <Skeleton className="h-4 w-40 mb-2" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <Skeleton className="h-4 w-40 mb-2" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+        </DashboardGrid>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
       <Breadcrumbs
         crumbs={[
-          { label: "Control Tower", path: "/control-tower" },
-          { label: "Attorney Cockpit" },
+          { label: 'Control Tower', path: '/control-tower' },
+          { label: 'Attorney Cockpit' },
         ]}
       />
 
@@ -166,123 +123,62 @@ export default function AttorneyCockpit() {
         </label>
         <select
           id="attorney-select"
-          value={att.id}
-          onChange={(e) => navigate(`/attorney/${e.target.value}`)}
-          className="bg-card border border-border rounded-lg px-4 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[240px]"
+          value={selectedName}
+          onChange={(e) => navigate(`/attorney/${encodeURIComponent(e.target.value)}`)}
+          className="bg-card border border-border rounded-lg px-4 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring min-w-[280px]"
         >
-          {attorneys.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name} — {a.role}
-            </option>
+          {attorneyList.map(name => (
+            <option key={name} value={name}>{name}</option>
           ))}
         </select>
-        <LCIBadge score={attorneyLCI.score} />
       </div>
 
+      {/* Hero StatCards */}
       <DashboardGrid cols={4}>
-        <StatCard label="Case Count" value={att.caseCount} />
         <StatCard
-          label="Over SLA"
-          value={att.overSlaCount}
-          deltaType={att.overSlaCount > 0 ? "negative" : "neutral"}
+          label="Resolved Cases"
+          value={fmtNum(cases)}
+          variant="glass"
         />
         <StatCard
-          label="Silent Stalls"
-          value={att.stallCount}
-          deltaType={att.stallCount > 0 ? "negative" : "neutral"}
+          label="Total Settlement"
+          value={fmt$(settlement)}
+          variant="glass"
         />
         <StatCard
-          label="Next-Action Coverage"
-          value={`${(att.nextActionCoverage * 100).toFixed(0)}%`}
-          deltaType={att.nextActionCoverage > 0.9 ? "positive" : "neutral"}
+          label="Avg / Case"
+          value={fmt$(avgPerCase)}
+          variant="glass"
+        />
+        <StatCard
+          label="Net Fee"
+          value={fmt$(netFee)}
+          delta={settlement ? `${((netFee / settlement) * 100).toFixed(1)}% fee ratio` : undefined}
+          deltaType="neutral"
+          variant="glass"
         />
       </DashboardGrid>
 
-      {/* Portfolio Health */}
-      <div className="rounded-xl border border-border bg-card p-5">
-        <div className="flex items-center gap-3 mb-4">
-          <SectionHeader title="Portfolio Health" />
+      {/* Workload Cards */}
+      <SectionHeader title="Workload" subtitle={`Current assignments for ${selectedName}`} />
+      <DashboardGrid cols={2}>
+        <div className="rounded-xl border border-border bg-card p-5">
+          <p className="text-sm font-semibold text-foreground mb-1">Discovery Trackers</p>
+          <p className="text-3xl font-bold text-foreground">{fmtNum(discoveryTrackers)}</p>
+          <p className="text-xs text-muted-foreground mt-1">Open trackers assigned</p>
         </div>
-        <div className="flex flex-wrap items-center gap-6">
-          <ScoreGauge score={attorneyLCI.score} maxScore={100} size={80} label="LCI" />
-          {avgCaseScores.map(s => (
-            <div key={s.systemId} className="flex flex-col items-center">
-              <ScoreGauge score={s.percentage} maxScore={100} size={60} />
-              <span className="text-[10px] text-muted-foreground mt-1">{s.shortLabel}</span>
-              <span className="text-[10px] font-medium" style={{ color: s.bandColor }}>{s.percentage}%</span>
-            </div>
-          ))}
+        <div className="rounded-xl border border-border bg-card p-5">
+          <p className="text-sm font-semibold text-foreground mb-1">Experts Not Served</p>
+          <p className="text-3xl font-bold text-foreground">{fmtNum(expertsUnserved)}</p>
+          <p className="text-xs text-muted-foreground mt-1">Unserved experts assigned</p>
         </div>
-      </div>
+      </DashboardGrid>
 
-      <Tabs defaultValue="overview">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="high-priority">High Priority Cases</TabsTrigger>
-          <TabsTrigger value="backlog">Task Backlog</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="overview">
-          <div className="space-y-6">
-            <SectionHeader title="Portfolio by Stage" />
-            <div className="bg-card border border-border rounded-xl p-4">
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={stageData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="label" stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                  <YAxis stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} allowDecimals={false} />
-                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))" }} />
-                  <Bar dataKey="count" fill="#6366f1" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-
-            <SectionHeader title="Throughput Trend" subtitle="Exits per week (13-week trailing)" />
-            <div className="bg-card border border-border rounded-xl p-4">
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="week" stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-                  <YAxis stroke="hsl(var(--foreground))" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} allowDecimals={false} />
-                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--foreground))" }} />
-                  <Line type="monotone" dataKey="throughput" stroke="#10b981" strokeWidth={2} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="high-priority">
-          <div className="space-y-4">
-            <SectionHeader title="High Priority Cases" subtitle="High EV or high risk cases" />
-            <DataTable
-              columns={caseColumns}
-              data={highPriorityCases}
-              keyField="id"
-              onRowClick={(row) => navigate(`/case/${row.id}`)}
-              maxRows={20}
-            />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="backlog">
-          <div className="space-y-4">
-            <SectionHeader title="Task Backlog" />
-            {overdueCases.length > 0 ? (
-              <DataTable
-                columns={backlogColumns}
-                data={overdueCases}
-                keyField="id"
-                onRowClick={(row) => navigate(`/case/${row.id}`)}
-              />
-            ) : (
-              <div className="bg-card border border-border rounded-xl p-6 text-center text-muted-foreground">
-                No overdue tasks. All caught up!
-              </div>
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
+      {!resGrouping && selectedName && (
+        <div className="rounded-xl border border-border bg-card p-6 text-center text-muted-foreground">
+          No resolution data found for "{selectedName}".
+        </div>
+      )}
     </div>
   );
 }

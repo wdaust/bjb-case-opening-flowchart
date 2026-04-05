@@ -8,7 +8,7 @@ import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DataTable, type Column } from '../components/dashboard/DataTable';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { cn } from '../utils/cn';
-import { Loader2 } from 'lucide-react';
+import { InsightsSkeleton } from '../components/dashboard/InsightsSkeleton';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 
 // Report IDs
@@ -193,11 +193,7 @@ export default function Insights() {
 
   // ── Loading state ─────────────────────────────────────────────────
   if (allLoading) {
-    return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 size={32} className="animate-spin text-muted-foreground" />
-      </div>
-    );
+    return <InsightsSkeleton />;
   }
 
   return (
