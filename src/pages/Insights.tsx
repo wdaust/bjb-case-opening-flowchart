@@ -10,6 +10,7 @@ import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { cn } from '../utils/cn';
 import { InsightsSkeleton } from '../components/dashboard/InsightsSkeleton';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
+import { fmt$, fmtNum, getDashMetric, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
 
 // Report IDs
 const STATS_ID = '01ZPp0000015Ug1MAE';
@@ -26,50 +27,9 @@ const tooltipStyle = {
   color: 'hsl(var(--foreground))',
 };
 
-function fmt$(n: number): string {
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
-  return `$${n.toLocaleString()}`;
-}
-
-function fmtNum(n: number): string {
-  return n.toLocaleString();
-}
-
 function pct(n: number, d: number): string {
   if (d === 0) return '0%';
   return `${Math.round((n / d) * 100)}%`;
-}
-
-// ── helpers to pull values from dashboards ──────────────────────────
-function getDashMetric(dash: DashboardResponse | null, title: string): number | null {
-  if (!dash) return null;
-  const comp = dash.components.find(c => c.title === title);
-  if (!comp || !comp.rows[0]) return null;
-  return comp.rows[0].values[0]?.value ?? null;
-}
-
-function getDashRows(dash: DashboardResponse | null, title: string) {
-  if (!dash) return [];
-  const comp = dash.components.find(c => c.title === title);
-  return comp?.rows ?? [];
-}
-
-function getTimingCompliance(dash: DashboardResponse | null, title: string): { timely: number; late: number } {
-  const rows = getDashRows(dash, title);
-  let timely = 0;
-  let late = 0;
-  for (const r of rows) {
-    const v = r.values[0]?.value ?? 0;
-    const lbl = r.label.toLowerCase();
-    if (lbl.includes('timely') || lbl.includes('compliant') || lbl.includes('under')) {
-      timely += v;
-    } else {
-      late += v;
-    }
-  }
-  return { timely, late };
 }
 
 // ── Attorney row type ──────────────────────────────────────────────
@@ -169,16 +129,6 @@ export default function Insights() {
   const formC = getTimingCompliance(timingData, 'Form C Timing NJ in Days from Answer');
   const deps = getTimingCompliance(timingData, 'Dep Timing NJ in Days from Form A');
 
-  function compliancePct(c: { timely: number; late: number }) {
-    const total = c.timely + c.late;
-    return total ? Math.round((c.timely / total) * 100) : 0;
-  }
-
-  function complianceColor(p: number) {
-    if (p >= 60) return 'text-green-400 border-green-500/30 bg-green-500/10';
-    if (p >= 30) return 'text-amber-400 border-amber-500/30 bg-amber-500/10';
-    return 'text-red-400 border-red-500/30 bg-red-500/10';
-  }
 
   // ── Experts not served ────────────────────────────────────────────
   const expertsTop10 = useMemo(() => {

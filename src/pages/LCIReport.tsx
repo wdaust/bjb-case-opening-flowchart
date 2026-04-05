@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { ChevronDown, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { fmt$, fmtNum } from '../utils/sfHelpers';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
@@ -10,17 +10,25 @@ import { StatCard } from '../components/dashboard/StatCard';
 import { ScoreGauge } from '../components/scoring/ScoreGauge';
 import { LCIBadge } from '../components/dashboard/LCIBadge';
 import { MiniSparkline } from '../components/dashboard/MiniSparkline';
-import { EscalationBanner } from '../components/dashboard/EscalationBanner';
+import { MetricAlertBanner } from '../components/dashboard/MetricAlertBanner';
+import { Skeleton } from '../components/ui/skeleton';
+import { useSalesforceReport } from '../hooks/useSalesforceReport';
+import { saveMetricSnapshots, useMetricHistory } from '../hooks/useMetricHistory';
 import {
-  calculateFirmLCI,
-  calculateTeamLCI,
-  calculateAttorneyLCI,
-  getEscalations,
-  getTeams,
-  LAYER_DEFINITIONS,
+  computeRealLCI,
+  computeAttorneyMetrics,
+  getRedAmberMetrics,
+  REAL_LAYER_DEFINITIONS,
   type LCIBand,
-} from '../data/lciEngine';
-import { attorneys } from '../data/mockData';
+} from '../data/lciEngineReal';
+import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
+
+// ── Report IDs (same as ControlTower) ───────────────────────────────────
+const RESOLUTIONS_ID = '00OPp000003OOCLMA4';
+const STATS_ID       = '01ZPp0000015Ug1MAE';
+const TIMING_ID      = '01ZPp0000015dGHMAY';
+const DISCOVERY_ID   = '00OPp000003OUcjMAG';
+const EXPERTS_ID     = '00OPp000003PLtxMAG';
 
 function bandColor(band: LCIBand): string {
   if (band === 'green') return '#22c55e';
@@ -40,33 +48,115 @@ function bandBadgeClasses(band: LCIBand): string {
   return 'bg-red-500/15 text-red-600 dark:text-red-400';
 }
 
+function formatMetricValue(value: number, unit: string): string {
+  if (unit === '$') return fmt$(value);
+  if (unit === '%') return `${value.toFixed(1)}%`;
+  if (unit === 'days') return `${value}d`;
+  if (unit === 'count') return fmtNum(value);
+  return value.toFixed(1);
+}
+
+function formatTarget(target: number, unit: string): string {
+  if (unit === '$') return fmt$(target);
+  if (unit === '%') return `${target}%`;
+  if (unit === 'days') return `${target}d`;
+  if (unit === 'count') return fmtNum(target);
+  return `${target}`;
+}
+
+// ── Loading Skeleton ────────────────────────────────────────────────────
+
+function LCISkeleton() {
+  return (
+    <div className="flex-1 overflow-auto p-6 space-y-6">
+      <div>
+        <Skeleton className="h-4 w-48 mb-2" />
+        <Skeleton className="h-8 w-64" />
+      </div>
+      <Skeleton className="h-52 w-full rounded-xl" />
+      <div className="space-y-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <Skeleton key={i} className="h-14 w-full rounded-xl" />
+        ))}
+      </div>
+      <Skeleton className="h-32 w-full rounded-xl" />
+      <div className="grid grid-cols-2 gap-4">
+        <Skeleton className="h-64 rounded-xl" />
+        <Skeleton className="h-64 rounded-xl" />
+      </div>
+    </div>
+  );
+}
+
+// ── Main Component ──────────────────────────────────────────────────────
+
 export default function LCIReport() {
   const navigate = useNavigate();
   const [expandedLayers, setExpandedLayers] = useState<Set<number>>(new Set());
 
-  const firmLCI = useMemo(() => calculateFirmLCI(), []);
-  const escalations = useMemo(() => getEscalations(), []);
-  const teams = useMemo(() => getTeams(), []);
+  // ── Load 5 SF reports (no Matters needed for LCI) ────────────────────
+  const { data: resData, loading: resLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report' });
+  const { data: statsData, loading: statsLoading } =
+    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
+  const { data: timingData, loading: timingLoading } =
+    useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
+  const { data: discData, loading: discLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: DISCOVERY_ID, type: 'report' });
+  const { data: expertsData, loading: expertsLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
 
-  const teamLCIs = useMemo(
-    () => teams.map(team => ({ team, lci: calculateTeamLCI(team) })),
-    [teams],
+  const allLoading = resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
+
+  // ── Metric history hooks (before early return) ─────────────────────
+  const histComposite = useMetricHistory('lci-composite');
+  const histRevenue = useMetricHistory('lci-revenue');
+  const histTiming = useMetricHistory('lci-timing');
+  const histInventory = useMetricHistory('lci-inventory');
+  const histWorkload = useMetricHistory('lci-workload');
+
+  // ── Compute LCI ─────────────────────────────────────────────────────
+  const lci = useMemo(() => {
+    if (allLoading) return null;
+    return computeRealLCI({ resData, statsData, timingData, discData, expertsData });
+  }, [allLoading, resData, statsData, timingData, discData, expertsData]);
+
+  const alerts = useMemo(() => (lci ? getRedAmberMetrics(lci) : []), [lci]);
+
+  const attorneys = useMemo(() => computeAttorneyMetrics(resData), [resData]);
+
+  const topPerformers = useMemo(() => attorneys.slice(0, 10), [attorneys]);
+  const needsAttention = useMemo(
+    () => [...attorneys].reverse().filter(a => a.cases > 0).slice(0, 10),
+    [attorneys],
   );
 
-  const attorneyLCIs = useMemo(() => {
-    return attorneys.map(att => ({
-      ...att,
-      lci: calculateAttorneyLCI(att.id),
-    }));
-  }, []);
+  // ── Save metric snapshots ──────────────────────────────────────────
+  useEffect(() => {
+    if (!lci) return;
+    const snapshots: Record<string, number> = {
+      'lci-composite': lci.score,
+    };
+    for (const layer of lci.layers) {
+      const key = layer.name.toLowerCase().replace(/\s+/g, '-');
+      snapshots[`lci-${key}`] = layer.score;
+    }
+    saveMetricSnapshots(snapshots);
+  }, [lci]);
 
-  const sortedByScore = useMemo(
-    () => [...attorneyLCIs].sort((a, b) => b.lci.score - a.lci.score),
-    [attorneyLCIs],
-  );
+  // ── Layer health counts ────────────────────────────────────────────
+  const greenLayers = lci?.layers.filter(l => l.band === 'green').length ?? 0;
+  const amberLayers = lci?.layers.filter(l => l.band === 'amber').length ?? 0;
+  const redLayers = lci?.layers.filter(l => l.band === 'red').length ?? 0;
+  const totalMetrics = lci?.layers.reduce((sum, l) => sum + l.metrics.length, 0) ?? 0;
 
-  const topPerformers = sortedByScore.slice(0, 10);
-  const needsAttention = [...sortedByScore].reverse().slice(0, 10);
+  // ── Escalation stats ──────────────────────────────────────────────
+  const redAlerts = alerts.filter(a => a.band === 'red').length;
+  const amberAlerts = alerts.filter(a => a.band === 'amber').length;
+  const worstLayer = useMemo(() => {
+    if (!lci) return 'N/A';
+    return [...lci.layers].sort((a, b) => a.score - b.score)[0]?.name ?? 'N/A';
+  }, [lci]);
 
   const toggleLayer = (layerId: number) => {
     setExpandedLayers(prev => {
@@ -78,32 +168,20 @@ export default function LCIReport() {
   };
 
   const toggleAll = () => {
-    if (expandedLayers.size === LAYER_DEFINITIONS.length) {
+    if (expandedLayers.size === REAL_LAYER_DEFINITIONS.length) {
       setExpandedLayers(new Set());
     } else {
-      setExpandedLayers(new Set(LAYER_DEFINITIONS.map(l => l.id)));
+      setExpandedLayers(new Set(REAL_LAYER_DEFINITIONS.map(l => l.id)));
     }
   };
 
-  // Layer health counts
-  const greenLayers = firmLCI.layers.filter(l => l.band === 'green').length;
-  const amberLayers = firmLCI.layers.filter(l => l.band === 'amber').length;
-  const redLayers = firmLCI.layers.filter(l => l.band === 'red').length;
-  const totalMetrics = firmLCI.layers.reduce((sum, l) => sum + l.metrics.length, 0);
+  // ── Loading state ─────────────────────────────────────────────────
+  if (allLoading || !lci) {
+    return <LCISkeleton />;
+  }
 
-  // Escalation stats
-  const execEscalations = escalations.filter(e => e.escalationLevel === 'executive').length;
-  const avgWeeksInRed = escalations.length > 0
-    ? (escalations.reduce((s, e) => s + e.weeksInRed, 0) / escalations.length).toFixed(1)
-    : '0';
-  const layerEscCounts = escalations.reduce<Record<string, number>>((acc, e) => {
-    acc[e.layerName] = (acc[e.layerName] || 0) + 1;
-    return acc;
-  }, {});
-  const mostAffectedLayer = Object.entries(layerEscCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'N/A';
-
-  // Trend chart data
-  const trendData = firmLCI.trend.map((value, i) => ({ month: i + 1, value }));
+  // Trend sparkline data
+  const hasTrend = histComposite.length >= 3;
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
@@ -114,6 +192,7 @@ export default function LCIReport() {
           { label: 'LCI Report' },
         ]} />
         <h1 className="text-2xl font-bold text-foreground mt-2">Litigation Control Index Report</h1>
+        <p className="text-xs text-muted-foreground mt-1">Real-time composite score from 5 Salesforce reports</p>
       </div>
 
       {/* Section 2: Composite Score Summary */}
@@ -121,30 +200,25 @@ export default function LCIReport() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           {/* Left: Gauge + Band */}
           <div className="flex flex-col items-center gap-2">
-            <ScoreGauge score={firmLCI.score} maxScore={100} size={140} label="Firm LCI" />
-            <span className={cn('text-sm font-semibold px-3 py-1 rounded-full', bandBadgeClasses(firmLCI.band))}>
-              {bandLabel(firmLCI.band)}
+            <ScoreGauge score={lci.score} maxScore={100} size={140} label="Firm LCI" />
+            <span className={cn('text-sm font-semibold px-3 py-1 rounded-full', bandBadgeClasses(lci.band))}>
+              {bandLabel(lci.band)}
             </span>
           </div>
 
-          {/* Center: Trend Line */}
+          {/* Center: Trend */}
           <div className="flex flex-col items-center gap-1">
-            <p className="text-xs font-medium text-muted-foreground mb-1">12-Month Trend</p>
-            <ResponsiveContainer width="100%" height={80}>
-              <LineChart data={trendData}>
-                <XAxis dataKey="month" hide />
-                <YAxis domain={[60, 100]} hide />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke={bandColor(firmLCI.band)}
-                  strokeWidth={2}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-            <p className="text-[10px] text-muted-foreground">Past 12 months</p>
+            <p className="text-xs font-medium text-muted-foreground mb-1">Composite Trend</p>
+            {hasTrend ? (
+              <MiniSparkline data={histComposite} color={bandColor(lci.band)} height={60} />
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-xs text-muted-foreground">Collecting trend data...</p>
+                <p className="text-[10px] text-muted-foreground/60 mt-1">
+                  {histComposite.length}/3 snapshots
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Right: Layer Health Summary */}
@@ -165,19 +239,19 @@ export default function LCIReport() {
               </span>
             </div>
             <div className="text-sm text-muted-foreground">
-              {totalMetrics} total metrics across 7 layers
+              {totalMetrics} metrics across {REAL_LAYER_DEFINITIONS.length} layers
             </div>
             <div className="text-sm text-muted-foreground">
-              {escalations.length} active escalation{escalations.length !== 1 ? 's' : ''}
+              {alerts.length} alert{alerts.length !== 1 ? 's' : ''} active
             </div>
           </div>
         </div>
       </div>
 
-      {/* Section 3: 7-Layer Breakdown */}
+      {/* Section 3: 4-Layer Breakdown */}
       <div>
         <SectionHeader
-          title="7-Layer Breakdown"
+          title="4-Layer Breakdown"
           subtitle="Expand each layer to view individual metrics"
           actions={
             <button
@@ -186,14 +260,19 @@ export default function LCIReport() {
               className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded border border-border hover:bg-accent/50"
             >
               <ChevronsUpDown size={14} />
-              {expandedLayers.size === LAYER_DEFINITIONS.length ? 'Collapse All' : 'Expand All'}
+              {expandedLayers.size === REAL_LAYER_DEFINITIONS.length ? 'Collapse All' : 'Expand All'}
             </button>
           }
         />
         <div className="space-y-2">
-          {firmLCI.layers.map(layer => {
+          {lci.layers.map(layer => {
             const isExpanded = expandedLayers.has(layer.layerId);
             const weightedContribution = (layer.score * layer.weight).toFixed(1);
+            const historyKey = `lci-${layer.name.toLowerCase().replace(/\s+/g, '-')}`;
+            const layerHistory = historyKey === 'lci-revenue-performance' ? histRevenue
+              : historyKey === 'lci-timing-compliance' ? histTiming
+              : historyKey === 'lci-inventory-health' ? histInventory
+              : histWorkload;
 
             return (
               <div key={layer.layerId} className="rounded-xl border border-border bg-card overflow-hidden">
@@ -247,10 +326,10 @@ export default function LCIReport() {
                             <tr key={metric.id} className="border-b border-border/50 last:border-b-0">
                               <td className="py-2 pr-4 text-foreground font-medium">{metric.name}</td>
                               <td className="py-2 px-3 text-right tabular-nums">
-                                {metric.unit === '%' ? `${metric.value.toFixed(1)}%` : metric.value.toFixed(1)}
+                                {formatMetricValue(metric.value, metric.unit)}
                               </td>
                               <td className="py-2 px-3 text-right tabular-nums text-muted-foreground">
-                                {metric.unit === '%' ? `${metric.target.toFixed(1)}%` : metric.target.toFixed(1)}
+                                {formatTarget(metric.target, metric.unit)}
                               </td>
                               <td className="py-2 px-3 text-muted-foreground">{metric.unit}</td>
                               <td className="py-2 px-3 text-center">
@@ -262,11 +341,15 @@ export default function LCIReport() {
                                 )} />
                               </td>
                               <td className="py-2 pl-3 w-24">
-                                <MiniSparkline
-                                  data={metric.trend}
-                                  color={bandColor(metric.band)}
-                                  height={24}
-                                />
+                                {layerHistory.length >= 3 ? (
+                                  <MiniSparkline
+                                    data={layerHistory}
+                                    color={bandColor(metric.band)}
+                                    height={24}
+                                  />
+                                ) : (
+                                  <span className="text-[10px] text-muted-foreground">—</span>
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -281,65 +364,23 @@ export default function LCIReport() {
         </div>
       </div>
 
-      {/* Section 4: Active Escalations */}
+      {/* Section 4: Red/Amber Alerts */}
       <div>
-        <SectionHeader title="Active Escalations" />
-        <EscalationBanner escalations={escalations} />
+        <SectionHeader title="Metrics Needing Attention" />
+        <MetricAlertBanner alerts={alerts} />
         <div className="mt-4">
           <DashboardGrid cols={4}>
-            <StatCard label="Total Escalations" value={escalations.length} />
-            <StatCard label="Executive-Level" value={execEscalations} deltaType={execEscalations > 0 ? 'negative' : 'neutral'} />
-            <StatCard label="Avg Weeks in Red" value={avgWeeksInRed} />
-            <StatCard label="Most Affected Layer" value={mostAffectedLayer} />
+            <StatCard label="Total Alerts" value={alerts.length} />
+            <StatCard label="Red" value={redAlerts} deltaType={redAlerts > 0 ? 'negative' : 'neutral'} />
+            <StatCard label="Amber" value={amberAlerts} deltaType={amberAlerts > 0 ? 'negative' : 'neutral'} />
+            <StatCard label="Weakest Layer" value={worstLayer} />
           </DashboardGrid>
         </div>
       </div>
 
-      {/* Section 5: Team Comparison */}
+      {/* Section 5: Attorney Leaderboard */}
       <div>
-        <SectionHeader title="Team Comparison" subtitle="LCI scores and layer breakdown by team" />
-        <DashboardGrid cols={teams.length <= 4 ? (teams.length as 1 | 2 | 3 | 4) : 4}>
-          {teamLCIs.map(({ team, lci }) => (
-            <div key={team} className="rounded-xl border border-border bg-card p-4 space-y-3">
-              <h3 className="text-sm font-semibold text-foreground">{team}</h3>
-              <div className="flex items-center gap-3">
-                <ScoreGauge score={lci.score} maxScore={100} size={70} />
-                <div className="space-y-1">
-                  <LCIBadge score={Math.round(lci.score)} />
-                  <MiniSparkline data={lci.trend} color={bandColor(lci.band)} height={28} />
-                </div>
-              </div>
-              <div className="space-y-1">
-                {lci.layers.map(layer => (
-                  <div key={layer.layerId} className="flex items-center gap-2">
-                    <span className="text-[10px] text-muted-foreground w-28 truncate shrink-0">
-                      {layer.name}
-                    </span>
-                    <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
-                      <div
-                        className={cn(
-                          'h-full rounded-full transition-all',
-                          layer.band === 'green' && 'bg-emerald-500',
-                          layer.band === 'amber' && 'bg-amber-500',
-                          layer.band === 'red' && 'bg-red-500',
-                        )}
-                        style={{ width: `${layer.score}%` }}
-                      />
-                    </div>
-                    <span className="text-[10px] tabular-nums text-muted-foreground w-7 text-right">
-                      {Math.round(layer.score)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </DashboardGrid>
-      </div>
-
-      {/* Section 6: Attorney Leaderboard */}
-      <div>
-        <SectionHeader title="Attorney Leaderboard" />
+        <SectionHeader title="Attorney Leaderboard" subtitle="From Resolutions report — settlement performance" />
         <DashboardGrid cols={2}>
           {/* Top Performers */}
           <div className="rounded-xl border border-border bg-card p-4">
@@ -347,18 +388,15 @@ export default function LCIReport() {
             <div className="space-y-1">
               {topPerformers.map((att, i) => (
                 <button
-                  key={att.id}
+                  key={att.name}
                   type="button"
-                  onClick={() => navigate(`/attorney/${att.id}`)}
+                  onClick={() => navigate(`/attorney/${encodeURIComponent(att.name)}`)}
                   className="flex items-center gap-2 w-full px-2 py-1.5 rounded hover:bg-accent/50 transition-colors text-left"
                 >
                   <span className="text-xs font-bold text-muted-foreground w-5 shrink-0">{i + 1}</span>
                   <span className="text-sm font-medium text-foreground flex-1 min-w-0 truncate">{att.name}</span>
-                  <span className="text-xs text-muted-foreground shrink-0">{att.team}</span>
-                  <div className="w-16 shrink-0">
-                    <MiniSparkline data={att.lci.trend} color={bandColor(att.lci.band)} height={20} />
-                  </div>
-                  <LCIBadge score={Math.round(att.lci.score)} size="sm" />
+                  <span className="text-xs text-muted-foreground shrink-0">{att.cases} cases</span>
+                  <span className="text-xs font-semibold text-foreground shrink-0">{fmt$(att.settlement)}</span>
                 </button>
               ))}
             </div>
@@ -370,18 +408,15 @@ export default function LCIReport() {
             <div className="space-y-1">
               {needsAttention.map((att, i) => (
                 <button
-                  key={att.id}
+                  key={att.name}
                   type="button"
-                  onClick={() => navigate(`/attorney/${att.id}`)}
+                  onClick={() => navigate(`/attorney/${encodeURIComponent(att.name)}`)}
                   className="flex items-center gap-2 w-full px-2 py-1.5 rounded hover:bg-accent/50 transition-colors text-left"
                 >
                   <span className="text-xs font-bold text-muted-foreground w-5 shrink-0">{i + 1}</span>
                   <span className="text-sm font-medium text-foreground flex-1 min-w-0 truncate">{att.name}</span>
-                  <span className="text-xs text-muted-foreground shrink-0">{att.team}</span>
-                  <div className="w-16 shrink-0">
-                    <MiniSparkline data={att.lci.trend} color={bandColor(att.lci.band)} height={20} />
-                  </div>
-                  <LCIBadge score={Math.round(att.lci.score)} size="sm" />
+                  <span className="text-xs text-muted-foreground shrink-0">{att.cases} cases</span>
+                  <span className="text-xs font-semibold text-foreground shrink-0">{fmt$(att.settlement)}</span>
                 </button>
               ))}
             </div>

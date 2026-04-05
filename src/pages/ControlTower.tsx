@@ -18,6 +18,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
+import { fmt$, fmtNum, getDashMetric, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
 
 // ── Report IDs ────────────────────────────────────────────────────────
 const MATTERS_ID     = '00OPp000003OaGjMAK';
@@ -41,58 +42,6 @@ const tooltipStyle = {
 };
 
 const hoverCard = "transition-all duration-300 ease-out hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20";
-
-// ── Helpers ───────────────────────────────────────────────────────────
-function fmt$(n: number): string {
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
-  return `$${n.toLocaleString()}`;
-}
-
-function fmtNum(n: number): string {
-  return n.toLocaleString();
-}
-
-function getDashMetric(dash: DashboardResponse | null, title: string): number | null {
-  if (!dash) return null;
-  const comp = dash.components.find(c => c.title === title);
-  if (!comp || !comp.rows[0]) return null;
-  return comp.rows[0].values[0]?.value ?? null;
-}
-
-function getDashRows(dash: DashboardResponse | null, title: string) {
-  if (!dash) return [];
-  const comp = dash.components.find(c => c.title === title);
-  return comp?.rows ?? [];
-}
-
-function getTimingCompliance(dash: DashboardResponse | null, title: string): { timely: number; late: number } {
-  const rows = getDashRows(dash, title);
-  let timely = 0;
-  let late = 0;
-  for (const r of rows) {
-    const v = r.values[0]?.value ?? 0;
-    const lbl = r.label.toLowerCase();
-    if (lbl.includes('timely') || lbl.includes('compliant') || lbl.includes('under')) {
-      timely += v;
-    } else {
-      late += v;
-    }
-  }
-  return { timely, late };
-}
-
-function compliancePct(c: { timely: number; late: number }) {
-  const total = c.timely + c.late;
-  return total ? Math.round((c.timely / total) * 100) : 0;
-}
-
-function complianceColor(p: number) {
-  if (p >= 60) return 'text-green-400 border-green-500/30 bg-green-500/10';
-  if (p >= 30) return 'text-amber-400 border-amber-500/30 bg-amber-500/10';
-  return 'text-red-400 border-red-500/30 bg-red-500/10';
-}
 
 function LegendDot({ color, label }: { color: string; label: string }) {
   return (

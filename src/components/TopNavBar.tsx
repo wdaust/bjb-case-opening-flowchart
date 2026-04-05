@@ -10,6 +10,7 @@ const mainLinks = [
 ];
 
 const moreLinks = [
+  { label: 'LCI Report', to: '/lci-report' },
   { label: 'Analytics', to: '/analytics' },
   { label: 'Insights', to: '/insights' },
   { label: 'Reports', to: '/reports' },

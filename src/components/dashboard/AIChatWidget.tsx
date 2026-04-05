@@ -5,7 +5,6 @@ import {
   getActiveCases, getControlTowerData, attorneys, getCasesByAttorney,
   getOverSlaCases, getStalledCases, getUpcomingDeadlines,
 } from '../../data/mockData';
-import { calculateFirmLCI, getEscalations } from '../../data/lciEngine';
 import { getSettlementForecasts, getTop20MostLikely } from '../../data/forecastUtils';
 
 interface ChatMessage {
@@ -82,22 +81,12 @@ function processQuery(query: string): string {
 
   // LCI / score / health
   if (q.includes('lci') || q.includes('score') || q.includes('health')) {
-    const lci = calculateFirmLCI();
-    const bandLabel = lci.band === 'green' ? 'Healthy' : lci.band === 'amber' ? 'Watch' : 'Critical';
-    const weakest = [...lci.layers].sort((a, b) => a.score - b.score)[0];
-    const strongest = [...lci.layers].sort((a, b) => b.score - a.score)[0];
-    return `Firm LCI: ${lci.score} (${bandLabel})\n\nLayer scores:\n${lci.layers.map(l => `• ${l.name}: ${l.score} (${l.band})`).join('\n')}\n\nStrongest: ${strongest.name} at ${strongest.score}\nWeakest: ${weakest.name} at ${weakest.score}`;
+    return 'The LCI Report now uses real Salesforce data. Visit the LCI Report page (/lci-report) for the live composite score, 4-layer breakdown, and attorney leaderboard.';
   }
 
   // Escalation / alert
   if (q.includes('escalation') || q.includes('alert') || q.includes('escal')) {
-    const escs = getEscalations();
-    const byLevel: Record<string, number> = {};
-    for (const e of escs) {
-      byLevel[e.escalationLevel] = (byLevel[e.escalationLevel] || 0) + 1;
-    }
-    const levelSummary = Object.entries(byLevel).map(([l, c]) => `${c} ${l}`).join(', ');
-    return `${escs.length} active escalations: ${levelSummary}.\n\nTop escalations:\n${escs.slice(0, 4).map(e => `• ${e.metricName} (${e.layerName}) — ${e.weeksInRed}w in red, ${e.escalationLevel} level`).join('\n')}`;
+    return 'LCI alerts are now computed from real Salesforce data. Visit the LCI Report page (/lci-report) to see metrics needing attention with red/amber bands and remediation steps.';
   }
 
   // Deadline / SOL
