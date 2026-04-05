@@ -110,10 +110,6 @@ export default function LCIReport() {
 
   // ── Metric history hooks (before early return) ─────────────────────
   const histComposite = useMetricHistory('lci-composite');
-  const histRevenue = useMetricHistory('lci-revenue');
-  const histTiming = useMetricHistory('lci-timing');
-  const histInventory = useMetricHistory('lci-inventory');
-  const histWorkload = useMetricHistory('lci-workload');
 
   // ── Compute LCI ─────────────────────────────────────────────────────
   const lci = useMemo(() => {
@@ -268,12 +264,6 @@ export default function LCIReport() {
           {lci.layers.map(layer => {
             const isExpanded = expandedLayers.has(layer.layerId);
             const weightedContribution = (layer.score * layer.weight).toFixed(1);
-            const historyKey = `lci-${layer.name.toLowerCase().replace(/\s+/g, '-')}`;
-            const layerHistory = historyKey === 'lci-revenue-performance' ? histRevenue
-              : historyKey === 'lci-timing-compliance' ? histTiming
-              : historyKey === 'lci-inventory-health' ? histInventory
-              : histWorkload;
-
             return (
               <div key={layer.layerId} className="rounded-xl border border-border bg-card overflow-hidden">
                 {/* Collapsed Row */}
@@ -318,7 +308,6 @@ export default function LCIReport() {
                             <th className="text-right py-2 px-3 font-medium">Target</th>
                             <th className="text-left py-2 px-3 font-medium">Unit</th>
                             <th className="text-center py-2 px-3 font-medium">Band</th>
-                            <th className="py-2 pl-3 font-medium w-24">Trend</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -339,17 +328,6 @@ export default function LCIReport() {
                                   metric.band === 'amber' && 'bg-amber-500',
                                   metric.band === 'red' && 'bg-red-500',
                                 )} />
-                              </td>
-                              <td className="py-2 pl-3 w-24">
-                                {layerHistory.length >= 3 ? (
-                                  <MiniSparkline
-                                    data={layerHistory}
-                                    color={bandColor(metric.band)}
-                                    height={24}
-                                  />
-                                ) : (
-                                  <span className="text-[10px] text-muted-foreground">—</span>
-                                )}
                               </td>
                             </tr>
                           ))}

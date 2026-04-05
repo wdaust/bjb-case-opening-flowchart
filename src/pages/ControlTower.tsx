@@ -12,6 +12,9 @@ import { HeroSummaryTicker } from '../components/dashboard/HeroSummaryTicker';
 import { ControlTowerSkeleton } from '../components/dashboard/ControlTowerSkeleton';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { saveMetricSnapshots, useMetricHistory, detectAnomaly } from '../hooks/useMetricHistory';
+import { ScoreGauge } from '../components/scoring/ScoreGauge';
+import { LCIBadge } from '../components/dashboard/LCIBadge';
+import { computeRealLCI } from '../data/lciEngineReal';
 import { RefreshCw } from 'lucide-react';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
@@ -62,6 +65,13 @@ interface AttorneyRow {
   feePercent: number;
 }
 
+// ── Band helpers ──────────────────────────────────────────────────────
+function bandBadgeClasses(band: string) {
+  if (band === 'green') return 'bg-green-500/20 text-green-400';
+  if (band === 'amber') return 'bg-amber-500/20 text-amber-400';
+  return 'bg-red-500/20 text-red-400';
+}
+
 // ── Main Component ────────────────────────────────────────────────────
 export default function ControlTower() {
   const [introPlayed, setIntroPlayed] = useState(
@@ -92,7 +102,7 @@ export default function ControlTower() {
   const navigate = useNavigate();
 
   // ── Metric History (must be before early return — rules of hooks) ────
-  const histTotalMatters     = useMetricHistory('totalMatters');
+  useMetricHistory('totalMatters'); // preserve hook call order
   const histOpenMatters      = useMetricHistory('openMatters');
   const histPortfolioValue   = useMetricHistory('portfolioValue');
   const histTotalSettlement  = useMetricHistory('totalSettlement');
@@ -125,7 +135,13 @@ export default function ControlTower() {
   const totalResolved = (resData?.grandTotals.find(g => g.label === 'Record Count')?.value ?? 0) as number;
   const totalNetFee = (resData?.grandTotals.find(g => g.label.includes('Fee'))?.value ?? 0) as number;
 
-  // ── Section 2: Matter Pipeline ────────────────────────────────────
+  // ── LCI Computation ─────────────────────────────────────────────────
+  const lci = useMemo(
+    () => computeRealLCI({ resData, statsData, timingData, discData, expertsData }),
+    [resData, statsData, timingData, discData, expertsData],
+  );
+
+  // ── Section 2: Inventory by Stage ───────────────────────────────────
   const pipeline = useMemo(() => {
     if (!mattersData) return [];
     return mattersData.groupings
@@ -140,7 +156,7 @@ export default function ControlTower() {
       .slice(0, 15);
   }, [mattersData]);
 
-  // ── Section 3: NJ Lit Operations (Stats at a Glance) ──────────────
+  // ── Section 3 & 4: NJ Ops metrics ──────────────────────────────────
   const missingTrackers = getDashMetric(statsData, 'Missing Discovery Trackers (NJ)') ?? 0;
   const serviceGt3d = getDashMetric(statsData, 'NJ- Service Initiated >3 Days from COMP') ?? 0;
   const noService35 = getDashMetric(statsData, 'No Service 35+ Days (NJ)') ?? 0;
@@ -191,7 +207,7 @@ export default function ControlTower() {
     }));
   }, [statsData]);
 
-  // ── Section 4: Timing Compliance ──────────────────────────────────
+  // ── Timing Compliance ──────────────────────────────────────────────
   const complaint = getTimingCompliance(timingData, 'Complaint Timing NJ');
   const formA = getTimingCompliance(timingData, 'Form A Timing NJ in Days from Answer');
   const formC = getTimingCompliance(timingData, 'Form C Timing NJ in Days from Answer');
@@ -205,7 +221,18 @@ export default function ControlTower() {
   const complaintTimelyDays = complaintDaysRows.find(r => r.label.toLowerCase().includes('timely'))?.values[0]?.value ?? 0;
   const complaintLateDays = complaintDaysRows.find(r => r.label.toLowerCase().includes('late'))?.values[0]?.value ?? 0;
 
-  // ── Section 5: Resolution Performance ─────────────────────────────
+  // ── Timing Bar Data (Section 8) ─────────────────────────────────────
+  const timingBarData = [
+    { name: 'Complaint', timely: complaint.timely, late: complaint.late },
+    { name: 'Form A', timely: formA.timely, late: formA.late },
+    { name: 'Form C', timely: formC.timely, late: formC.late },
+    { name: 'Deps', timely: deps.timely, late: deps.late },
+  ];
+  const overallCompliancePct = Math.round(
+    [complaint, formA, formC, deps].reduce((s, c) => s + compliancePct(c), 0) / 4
+  );
+
+  // ── Resolution Performance ──────────────────────────────────────────
   const attorneys: AttorneyRow[] = useMemo(() => {
     if (!resData) return [];
     return resData.groupings.map(g => {
@@ -236,7 +263,7 @@ export default function ControlTower() {
     { key: 'feePercent', label: 'Fee %', sortable: true, render: r => `${r.feePercent.toFixed(1)}%`, className: 'text-right' },
   ];
 
-  // ── Section 6: Workload Distribution ──────────────────────────────
+  // ── Workload Distribution (top 8 for compact bars) ──────────────────
   const discoveryTop15 = useMemo(() => {
     if (!discData) return [];
     return discData.groupings
@@ -246,6 +273,7 @@ export default function ControlTower() {
   }, [discData]);
 
   const discTotal = (discData?.grandTotals[0]?.value ?? 0) as number;
+  const discTop8 = discoveryTop15.slice(0, 8);
 
   const expertsTop15 = useMemo(() => {
     if (!expertsData) return [];
@@ -256,6 +284,7 @@ export default function ControlTower() {
   }, [expertsData]);
 
   const expertsTotal = (expertsData?.grandTotals[0]?.value ?? 0) as number;
+  const expertsTop8 = expertsTop15.slice(0, 8);
 
   // ── Refresh all reports ───────────────────────────────────────────
   const refreshAll = () => {
@@ -283,7 +312,6 @@ export default function ControlTower() {
   }, [allLoading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Anomaly detection ──────────────────────────────────────────────
-  const anomTotalMatters    = detectAnomaly(histTotalMatters, totalMatters);
   const anomOpenMatters     = detectAnomaly(histOpenMatters, openMatters);
   const anomPortfolioValue  = detectAnomaly(histPortfolioValue, portfolioValue);
   const anomTotalSettlement = detectAnomaly(histTotalSettlement, totalSettlement);
@@ -311,7 +339,7 @@ export default function ControlTower() {
       {!introPlayed && <OptimusIntro onComplete={handleIntroComplete} />}
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 1: Hero + KPI Cards
+          SECTION 1: Hero + LCI Gauge + 3 KPI Cards
           ═══════════════════════════════════════════════════════════════ */}
       <HeroSection>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
@@ -327,18 +355,28 @@ export default function ControlTower() {
 
         <div className="animate-fade-in-up opacity-0" style={{ animationDelay: '400ms', animationFillMode: 'forwards' }}>
           <DashboardGrid cols={4}>
-            <StatCard
-              label="Total Matters"
-              value={fmtNum(totalMatters)}
-              variant="glass"
-              className={hoverCard}
-              sparklineData={histTotalMatters}
-              anomaly={anomTotalMatters ?? undefined}
-              subMetrics={[
-                { label: "Open", value: fmtNum(openMatters), deltaType: "neutral" },
-                { label: "Closed", value: fmtNum(closedMatters), deltaType: "neutral" },
-              ]}
-            />
+            {/* LCI Gauge Card */}
+            <div
+              className={cn(
+                "rounded-xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-md p-5 cursor-pointer border-t-2 border-t-green-500",
+                "animate-pulse-glow",
+                hoverCard,
+              )}
+              onClick={() => navigate('/lci-report')}
+            >
+              <p className="text-xs font-medium text-muted-foreground mb-2">Litigation Control Index</p>
+              <div className="flex items-center gap-3">
+                <ScoreGauge score={lci.score} maxScore={100} size={90} label="LCI" />
+                <div className="flex flex-col gap-1">
+                  <span className="text-2xl font-bold text-foreground">{Math.round(lci.score)}</span>
+                  <LCIBadge score={Math.round(lci.score)} size="sm" />
+                  <span className={cn('text-[10px] font-medium px-2 py-0.5 rounded-full w-fit', bandBadgeClasses(lci.band))}>
+                    {lci.band === 'green' ? 'Healthy' : lci.band === 'amber' ? 'Watch' : 'Critical'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <StatCard
               label="Open Inventory"
               value={fmtNum(openMatters)}
@@ -346,11 +384,14 @@ export default function ControlTower() {
               className={hoverCard}
               sparklineData={histOpenMatters}
               anomaly={anomOpenMatters ?? undefined}
-              subMetrics={topOpenStages.map(s => ({
-                label: s.label,
-                value: fmtNum(s.open),
-                deltaType: "neutral" as const,
-              }))}
+              subMetrics={[
+                ...topOpenStages.map(s => ({
+                  label: s.label,
+                  value: fmtNum(s.open),
+                  deltaType: "neutral" as const,
+                })),
+                { label: "NJ Lit", value: fmtNum(njInventory), deltaType: "neutral" as const },
+              ]}
             />
             <StatCard
               label="Portfolio Value"
@@ -361,6 +402,7 @@ export default function ControlTower() {
               anomaly={anomPortfolioValue ?? undefined}
               subMetrics={[
                 { label: "NJ Lit count", value: fmtNum(njInventory), deltaType: "neutral" },
+                { label: "Total Matters", value: fmtNum(totalMatters), deltaType: "neutral" },
               ]}
             />
             <StatCard
@@ -380,10 +422,10 @@ export default function ControlTower() {
       </HeroSection>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 2: Matter Pipeline (horizontal stacked bar)
+          SECTION 2: Inventory by Stage (horizontal stacked bar)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="Matter Pipeline" subtitle="Top 15 stages by volume — Open vs Closed" />
+        <SectionHeader title="Inventory by Stage" subtitle="Open vs Closed volume across pipeline stages" />
         <div className={cn("bg-white/[0.04] border border-white/[0.08] rounded-xl p-5", hoverCard)}>
           <ResponsiveContainer width="100%" height={Math.max(400, pipeline.length * 32)}>
             <BarChart data={pipeline} layout="vertical" margin={{ left: 160, right: 30, top: 10, bottom: 10 }}>
@@ -402,13 +444,11 @@ export default function ControlTower() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 3: NJ Litigation Operations
+          SECTION 3: NJ Operations Velocity (4 cards)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="NJ Litigation Operations" subtitle="Stats at a Glance — alerts, negotiations, compliance, events" />
-
-        {/* Row 1: Alert cards */}
-        <DashboardGrid cols={5}>
+        <SectionHeader title="NJ Operations Velocity" subtitle="Key operational metrics for NJ litigation pipeline" />
+        <DashboardGrid cols={4}>
           <StatCard label="NJ Lit Inventory" value={fmtNum(njInventory)} deltaType="neutral" className={hoverCard} sparklineData={histNjInventory} anomaly={anomNjInventory ?? undefined} />
           <StatCard
             label="Missing Disc. Trackers"
@@ -433,6 +473,15 @@ export default function ControlTower() {
             sparklineData={histNoService35}
             anomaly={anomNoService35 ?? undefined}
           />
+        </DashboardGrid>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 4: Risk Signals (4 cards)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section>
+        <SectionHeader title="Risk Signals" subtitle="Items requiring attention across compliance and operations" />
+        <DashboardGrid cols={4}>
           <StatCard
             label="Missing Answers"
             value={missingAnswers}
@@ -441,101 +490,141 @@ export default function ControlTower() {
             sparklineData={histMissingAnswers}
             anomaly={anomMissingAnswers ?? undefined}
           />
+          <StatCard label="DED Extensions" value={fmtNum(dedExtensions)} deltaType="neutral" className={hoverCard} sparklineData={histDedExtensions} anomaly={anomDedExtensions ?? undefined} />
+          <StatCard label="NJ Resolutions" value={fmtNum(njResolutions)} deltaType="neutral" className={hoverCard} sparklineData={histNjResolutions} anomaly={anomNjResolutions ?? undefined} />
+          <StatCard
+            label="Complaint Avg Days"
+            value={`${complaintTimelyDays}d`}
+            delta={`${complaintLateDays}d when late`}
+            deltaType="negative"
+            className={hoverCard}
+            subMetrics={[
+              { label: "Timely avg", value: `${complaintTimelyDays}d`, deltaType: "positive" },
+              { label: "Late avg", value: `${complaintLateDays}d`, deltaType: "negative" },
+            ]}
+          />
         </DashboardGrid>
-
-        {/* Row 2: Donut charts */}
-        <div className="mt-4">
-          <DashboardGrid cols={3}>
-            {/* Negotiations donut */}
-            <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-              <div className="text-sm font-semibold text-foreground">NJ LIT — Negotiations</div>
-              <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(negotiationsData.reduce((s, d) => s + d.value, 0))} total matters</p>
-              <div className="h-[180px] mt-3">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={negotiationsData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} dataKey="value" stroke="none" paddingAngle={1}>
-                      {negotiationsData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                    </Pie>
-                    <RechartsTooltip {...tooltipStyle} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {negotiationsData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
-              </div>
-            </div>
-
-            {/* Complaint Filing donut */}
-            <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-              <div className="text-sm font-semibold text-foreground">Complaint Filing (NJ LIT)</div>
-              <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(complaintFilingData.reduce((s, d) => s + d.value, 0))} total</p>
-              <div className="h-[180px] mt-3">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={complaintFilingData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} dataKey="value" stroke="none" paddingAngle={1}>
-                      {complaintFilingData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                    </Pie>
-                    <RechartsTooltip {...tooltipStyle} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {complaintFilingData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
-              </div>
-            </div>
-
-            {/* Form A Past Due donut */}
-            <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-              <div className="text-sm font-semibold text-foreground">Form A Past Due (NJ)</div>
-              <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(formAPastDueData.reduce((s, d) => s + d.value, 0))} total</p>
-              <div className="h-[180px] mt-3">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={formAPastDueData} cx="50%" cy="50%" innerRadius={40} outerRadius={70} dataKey="value" stroke="none" paddingAngle={1}>
-                      {formAPastDueData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                    </Pie>
-                    <RechartsTooltip {...tooltipStyle} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {formAPastDueData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
-              </div>
-            </div>
-          </DashboardGrid>
-        </div>
-
-        {/* Row 3: Upcoming Events */}
-        {eventsData.length > 0 && (
-          <div className="mt-4">
-            <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-              <div className="text-sm font-semibold text-foreground mb-3">Upcoming Events — ARB, MED, SET CONF, Trials</div>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={eventsData} margin={{ top: 10, right: 30, bottom: 10, left: 10 }}>
-                  <XAxis dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <YAxis yAxisId="count" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
-                  <YAxis yAxisId="value" orientation="right" tickFormatter={v => fmt$(v)} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
-                  <RechartsTooltip {...tooltipStyle} formatter={((v: number | undefined, name?: string) => (name === 'value' ? fmt$(v ?? 0) : fmtNum(v ?? 0))) as never} />
-                  <Bar yAxisId="count" dataKey="count" fill={INDIGO} name="Cases" radius={[4, 4, 0, 0]} barSize={40} />
-                  <Bar yAxisId="value" dataKey="value" fill={GREEN} name="Value" radius={[4, 4, 0, 0]} barSize={40} />
-                </BarChart>
-              </ResponsiveContainer>
-              <div className="flex gap-4 mt-2">
-                <LegendDot color={INDIGO} label="Cases" />
-                <LegendDot color={GREEN} label="Portfolio Value" />
-              </div>
-            </div>
-          </div>
-        )}
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 4: Timing Compliance
+          SECTION 5: NJ Operations Analytics (3 compact donuts)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section>
+        <SectionHeader title="NJ Operations Analytics" subtitle="Negotiations, complaint filing, and form A compliance" />
+        <DashboardGrid cols={3}>
+          {/* Negotiations donut — compact layout */}
+          {(() => {
+            const total = negotiationsData.reduce((s, d) => s + d.value, 0);
+            return (
+              <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+                <div className="text-sm font-semibold text-foreground">NJ LIT — Negotiations</div>
+                <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(total)} total matters</p>
+                <div className="flex items-center gap-4 mt-3">
+                  <span className="text-3xl font-bold text-foreground">{fmtNum(total)}</span>
+                  <div className="h-[140px] flex-1">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={negotiationsData} cx="50%" cy="50%" innerRadius={30} outerRadius={55} dataKey="value" stroke="none" paddingAngle={1}>
+                          {negotiationsData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                        </Pie>
+                        <RechartsTooltip {...tooltipStyle} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {negotiationsData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Complaint Filing donut — compact layout */}
+          {(() => {
+            const total = complaintFilingData.reduce((s, d) => s + d.value, 0);
+            return (
+              <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+                <div className="text-sm font-semibold text-foreground">Complaint Filing (NJ LIT)</div>
+                <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(total)} total</p>
+                <div className="flex items-center gap-4 mt-3">
+                  <span className="text-3xl font-bold text-foreground">{fmtNum(total)}</span>
+                  <div className="h-[140px] flex-1">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={complaintFilingData} cx="50%" cy="50%" innerRadius={30} outerRadius={55} dataKey="value" stroke="none" paddingAngle={1}>
+                          {complaintFilingData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                        </Pie>
+                        <RechartsTooltip {...tooltipStyle} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {complaintFilingData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Form A Past Due donut — compact layout */}
+          {(() => {
+            const total = formAPastDueData.reduce((s, d) => s + d.value, 0);
+            return (
+              <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+                <div className="text-sm font-semibold text-foreground">Form A Past Due (NJ)</div>
+                <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(total)} total</p>
+                <div className="flex items-center gap-4 mt-3">
+                  <span className="text-3xl font-bold text-foreground">{fmtNum(total)}</span>
+                  <div className="h-[140px] flex-1">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={formAPastDueData} cx="50%" cy="50%" innerRadius={30} outerRadius={55} dataKey="value" stroke="none" paddingAngle={1}>
+                          {formAPastDueData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                        </Pie>
+                        <RechartsTooltip {...tooltipStyle} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {formAPastDueData.map(d => <LegendDot key={d.name} color={d.color} label={`${d.name} (${d.value})`} />)}
+                </div>
+              </div>
+            );
+          })()}
+        </DashboardGrid>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 6: Events (conditional)
+          ═══════════════════════════════════════════════════════════════ */}
+      {eventsData.length > 0 && (
+        <section>
+          <SectionHeader title="Upcoming Events" subtitle="ARB, MED, SET CONF, and Trials" />
+          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={eventsData} margin={{ top: 10, right: 30, bottom: 10, left: 10 }}>
+                <XAxis dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="count" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
+                <YAxis yAxisId="value" orientation="right" tickFormatter={v => fmt$(v)} tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} axisLine={false} tickLine={false} />
+                <RechartsTooltip {...tooltipStyle} formatter={((v: number | undefined, name?: string) => (name === 'value' ? fmt$(v ?? 0) : fmtNum(v ?? 0))) as never} />
+                <Bar yAxisId="count" dataKey="count" fill={INDIGO} name="Cases" radius={[4, 4, 0, 0]} barSize={40} />
+                <Bar yAxisId="value" dataKey="value" fill={GREEN} name="Value" radius={[4, 4, 0, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+            <div className="flex gap-4 mt-2">
+              <LegendDot color={INDIGO} label="Cases" />
+              <LegendDot color={GREEN} label="Portfolio Value" />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 7: Timing Compliance (4 colored % cards)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
         <SectionHeader title="Timing Compliance" subtitle="NJ PI — percentage meeting compliance windows" />
-
-        {/* Row 1: Compliance cards */}
         <DashboardGrid cols={4}>
           {([
             { label: 'Complaint Filing', data: complaint },
@@ -555,29 +644,80 @@ export default function ControlTower() {
             );
           })}
         </DashboardGrid>
-
-        {/* Row 2: DED Extensions, NJ Resolutions, Complaint Avg Days */}
-        <div className="mt-4">
-          <DashboardGrid cols={3}>
-            <StatCard label="DED Extensions" value={fmtNum(dedExtensions)} deltaType="neutral" className={hoverCard} sparklineData={histDedExtensions} anomaly={anomDedExtensions ?? undefined} />
-            <StatCard label="NJ Resolutions" value={fmtNum(njResolutions)} deltaType="neutral" className={hoverCard} sparklineData={histNjResolutions} anomaly={anomNjResolutions ?? undefined} />
-            <StatCard
-              label="Complaint Avg Days"
-              value={`${complaintTimelyDays}d`}
-              delta={`${complaintLateDays}d when late`}
-              deltaType="negative"
-              className={hoverCard}
-              subMetrics={[
-                { label: "Timely avg", value: `${complaintTimelyDays}d`, deltaType: "positive" },
-                { label: "Late avg", value: `${complaintLateDays}d`, deltaType: "negative" },
-              ]}
-            />
-          </DashboardGrid>
-        </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 5: Resolution Performance
+          SECTION 8: Operational Analytics (3-col compact bars)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section>
+        <SectionHeader title="Operational Analytics" subtitle="Timing breakdown, discovery trackers, and expert coverage" />
+        <DashboardGrid cols={3}>
+          {/* Timing Compliance Breakdown */}
+          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+            <div className="text-sm font-semibold text-foreground">Timing Compliance Breakdown</div>
+            <p className="text-xs text-muted-foreground mt-0.5">Timely vs Late across milestones</p>
+            <div className="flex items-center gap-4 mt-3">
+              <span className="text-3xl font-bold text-foreground">{overallCompliancePct}%</span>
+              <div className="h-[140px] flex-1">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={timingBarData} layout="vertical" margin={{ left: 60, right: 10, top: 5, bottom: 5 }}>
+                    <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }} axisLine={false} tickLine={false} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 9 }} width={55} axisLine={false} tickLine={false} />
+                    <RechartsTooltip {...tooltipStyle} />
+                    <Bar dataKey="timely" stackId="a" fill={GREEN} name="Timely" />
+                    <Bar dataKey="late" stackId="a" fill={RED} name="Late" radius={[0, 3, 3, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+            <div className="flex gap-4 mt-2">
+              <LegendDot color={GREEN} label="Timely" />
+              <LegendDot color={RED} label="Late" />
+            </div>
+          </div>
+
+          {/* Discovery Trackers */}
+          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+            <div className="text-sm font-semibold text-foreground">Discovery Trackers</div>
+            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(discTotal)} total across {discData?.groupings.length ?? 0} owners</p>
+            <div className="flex items-center gap-4 mt-3">
+              <span className="text-3xl font-bold text-foreground">{fmtNum(discTotal)}</span>
+              <div className="h-[140px] flex-1">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={discTop8} layout="vertical" margin={{ left: 60, right: 10, top: 5, bottom: 5 }}>
+                    <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }} axisLine={false} tickLine={false} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 9 }} width={55} axisLine={false} tickLine={false} />
+                    <RechartsTooltip {...tooltipStyle} />
+                    <Bar dataKey="count" fill={INDIGO} radius={[0, 3, 3, 0]} cursor="pointer" onClick={(_d: unknown, idx: number) => { const name = discTop8[idx]?.name; if (name) navigate(`/attorney/${encodeURIComponent(name)}`); }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          {/* Experts Not Served */}
+          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
+            <div className="text-sm font-semibold text-foreground">Experts Not Served</div>
+            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(expertsTotal)} total across {expertsData?.groupings.length ?? 0} owners</p>
+            <div className="flex items-center gap-4 mt-3">
+              <span className="text-3xl font-bold text-foreground">{fmtNum(expertsTotal)}</span>
+              <div className="h-[140px] flex-1">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={expertsTop8} layout="vertical" margin={{ left: 60, right: 10, top: 5, bottom: 5 }}>
+                    <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 9 }} axisLine={false} tickLine={false} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 9 }} width={55} axisLine={false} tickLine={false} />
+                    <RechartsTooltip {...tooltipStyle} />
+                    <Bar dataKey="count" fill={PINK} radius={[0, 3, 3, 0]} cursor="pointer" onClick={(_d: unknown, idx: number) => { const name = expertsTop8[idx]?.name; if (name) navigate(`/attorney/${encodeURIComponent(name)}`); }} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        </DashboardGrid>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 9: Resolution Performance
           ═══════════════════════════════════════════════════════════════ */}
       <section>
         <SectionHeader title="Resolution Performance" subtitle="Settlement outcomes across all attorneys" />
@@ -610,44 +750,7 @@ export default function ControlTower() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 6: Workload Distribution
-          ═══════════════════════════════════════════════════════════════ */}
-      <section>
-        <SectionHeader title="Workload Distribution" subtitle="Discovery trackers and unserved experts — top 15 by volume" />
-
-        <DashboardGrid cols={2}>
-          {/* Discovery Trackers */}
-          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-            <div className="text-sm font-semibold text-foreground">Discovery Trackers</div>
-            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(discTotal)} total across {discData?.groupings.length ?? 0} owners</p>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={discoveryTop15} layout="vertical" margin={{ left: 120, right: 20, top: 10, bottom: 10 }}>
-                <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
-                <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 10 }} width={110} />
-                <RechartsTooltip {...tooltipStyle} />
-                <Bar dataKey="count" fill={INDIGO} radius={[0, 4, 4, 0]} cursor="pointer" onClick={(_d: unknown, idx: number) => { const name = discoveryTop15[idx]?.name; if (name) navigate(`/attorney/${encodeURIComponent(name)}`); }} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Experts Not Served */}
-          <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
-            <div className="text-sm font-semibold text-foreground">Experts Not Served</div>
-            <p className="text-xs text-muted-foreground mt-0.5">{fmtNum(expertsTotal)} total across {expertsData?.groupings.length ?? 0} owners</p>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={expertsTop15} layout="vertical" margin={{ left: 120, right: 20, top: 10, bottom: 10 }}>
-                <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
-                <YAxis type="category" dataKey="name" tick={{ fill: 'hsl(var(--foreground))', fontSize: 10 }} width={110} />
-                <RechartsTooltip {...tooltipStyle} />
-                <Bar dataKey="count" fill={PINK} radius={[0, 4, 4, 0]} cursor="pointer" onClick={(_d: unknown, idx: number) => { const name = expertsTop15[idx]?.name; if (name) navigate(`/attorney/${encodeURIComponent(name)}`); }} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </DashboardGrid>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 7: Data Freshness Footer
+          SECTION 10: Data Freshness Footer
           ═══════════════════════════════════════════════════════════════ */}
       <footer className="flex items-center justify-between border-t border-border pt-4 pb-2 text-xs text-muted-foreground">
         <div className="flex flex-wrap gap-4">

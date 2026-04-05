@@ -35,7 +35,7 @@ export function ControlTowerSkeleton() {
         </DashboardGrid>
       </div>
 
-      {/* Section 2: Pipeline Chart */}
+      {/* Section 2: Inventory by Stage */}
       <div>
         <Skeleton className="h-5 w-36 mb-2" />
         <Skeleton className="h-3 w-64 mb-4" />
@@ -44,36 +44,51 @@ export function ControlTowerSkeleton() {
         </div>
       </div>
 
-      {/* Section 3: NJ Lit Operations */}
+      {/* Section 3: NJ Operations Velocity (4 cols) */}
       <div>
         <Skeleton className="h-5 w-48 mb-2" />
         <Skeleton className="h-3 w-72 mb-4" />
-        <DashboardGrid cols={5}>
-          <SkeletonCard />
+        <DashboardGrid cols={4}>
           <SkeletonCard />
           <SkeletonCard />
           <SkeletonCard />
           <SkeletonCard />
         </DashboardGrid>
-        <div className="mt-4">
-          <DashboardGrid cols={3}>
-            <div className="rounded-xl border border-border bg-card p-5">
-              <Skeleton className="h-4 w-32 mb-2" />
-              <Skeleton className="h-[180px] w-full" />
-            </div>
-            <div className="rounded-xl border border-border bg-card p-5">
-              <Skeleton className="h-4 w-32 mb-2" />
-              <Skeleton className="h-[180px] w-full" />
-            </div>
-            <div className="rounded-xl border border-border bg-card p-5">
-              <Skeleton className="h-4 w-32 mb-2" />
-              <Skeleton className="h-[180px] w-full" />
-            </div>
-          </DashboardGrid>
-        </div>
       </div>
 
-      {/* Section 4: Timing Compliance */}
+      {/* Section 4: Risk Signals (4 cols) */}
+      <div>
+        <Skeleton className="h-5 w-32 mb-2" />
+        <Skeleton className="h-3 w-64 mb-4" />
+        <DashboardGrid cols={4}>
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </DashboardGrid>
+      </div>
+
+      {/* Section 5: NJ Operations Analytics (3 compact donuts) */}
+      <div>
+        <Skeleton className="h-5 w-48 mb-2" />
+        <Skeleton className="h-3 w-72 mb-4" />
+        <DashboardGrid cols={3}>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <Skeleton className="h-4 w-32 mb-2" />
+            <Skeleton className="h-[140px] w-full" />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <Skeleton className="h-4 w-32 mb-2" />
+            <Skeleton className="h-[140px] w-full" />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <Skeleton className="h-4 w-32 mb-2" />
+            <Skeleton className="h-[140px] w-full" />
+          </div>
+        </DashboardGrid>
+      </div>
+
+      {/* Section 7: Timing Compliance */}
       <div>
         <Skeleton className="h-5 w-40 mb-2" />
         <Skeleton className="h-3 w-64 mb-4" />
@@ -85,7 +100,27 @@ export function ControlTowerSkeleton() {
         </DashboardGrid>
       </div>
 
-      {/* Section 5: Resolution Performance */}
+      {/* Section 8: Operational Analytics (3 compact bars) */}
+      <div>
+        <Skeleton className="h-5 w-44 mb-2" />
+        <Skeleton className="h-3 w-72 mb-4" />
+        <DashboardGrid cols={3}>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <Skeleton className="h-4 w-40 mb-2" />
+            <Skeleton className="h-[140px] w-full" />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <Skeleton className="h-4 w-40 mb-2" />
+            <Skeleton className="h-[140px] w-full" />
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <Skeleton className="h-4 w-40 mb-2" />
+            <Skeleton className="h-[140px] w-full" />
+          </div>
+        </DashboardGrid>
+      </div>
+
+      {/* Section 9: Resolution Performance */}
       <div>
         <Skeleton className="h-5 w-48 mb-2" />
         <Skeleton className="h-3 w-56 mb-4" />
@@ -102,21 +137,7 @@ export function ControlTowerSkeleton() {
         </div>
       </div>
 
-      {/* Section 6: Workload */}
-      <div>
-        <Skeleton className="h-5 w-44 mb-2" />
-        <Skeleton className="h-3 w-72 mb-4" />
-        <DashboardGrid cols={2}>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <Skeleton className="h-[400px] w-full" />
-          </div>
-          <div className="rounded-xl border border-border bg-card p-5">
-            <Skeleton className="h-[400px] w-full" />
-          </div>
-        </DashboardGrid>
-      </div>
-
-      {/* Section 7: Footer */}
+      {/* Section 10: Footer */}
       <div className="flex items-center justify-between border-t border-border pt-4 pb-2">
         <div className="flex gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
