@@ -7,23 +7,8 @@ import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { Skeleton } from '../components/ui/skeleton';
 import type { ReportSummaryResponse } from '../types/salesforce';
-
-// ── Report IDs (same as ControlTower) ──────────────────────────────
-const RESOLUTIONS_ID = '00OPp000003OOCLMA4';
-const DISCOVERY_ID   = '00OPp000003OUcjMAG';
-const EXPERTS_ID     = '00OPp000003PLtxMAG';
-
-// ── Helpers ─────────────────────────────────────────────────────────
-function fmt$(n: number): string {
-  if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
-  if (n >= 1e3) return `$${(n / 1e3).toFixed(0)}K`;
-  return `$${n.toLocaleString()}`;
-}
-
-function fmtNum(n: number): string {
-  return n.toLocaleString();
-}
+import { RESOLUTIONS_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
+import { fmt$, fmtNum } from '../utils/sfHelpers';
 
 // ── Main Component ──────────────────────────────────────────────────
 export default function AttorneyCockpit() {

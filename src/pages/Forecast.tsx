@@ -1,116 +1,136 @@
 import { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
-  LineChart,
-  Line,
   BarChart,
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
+  Cell,
+  CartesianGrid,
 } from 'recharts';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
-import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { StatCard } from '../components/dashboard/StatCard';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DataTable, type Column } from '../components/dashboard/DataTable';
-import {
-  getSettlementForecasts,
-  getWeeklyForecastPipeline,
-  getTop20MostLikely,
-  type SettlementForecast,
-} from '../data/forecastUtils';
-import {
-  getForecastData,
-  getActiveCases,
-  stageLabels,
-  type LitCase,
-} from '../data/mockData';
+import { useSalesforceReport } from '../hooks/useSalesforceReport';
+import { RESOLUTIONS_ID, MATTERS_ID, STATS_ID } from '../data/sfReportIds';
+import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
+import { fmt$, fmtNum } from '../utils/sfHelpers';
 
-const currencyFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0,
-});
+const tooltipStyle = {
+  backgroundColor: 'hsl(var(--card))',
+  border: '1px solid hsl(var(--border))',
+  borderRadius: '0.5rem',
+  color: 'hsl(var(--foreground))',
+};
 
-const formatMillions = (n: number) => `$${(n / 1_000_000).toFixed(1)}M`;
+const BAR_COLORS = [
+  '#6366f1', '#8b5cf6', '#a78bfa', '#818cf8', '#7c3aed',
+  '#6d28d9', '#5b21b6', '#4f46e5', '#4338ca', '#3730a3',
+  '#6366f1', '#8b5cf6', '#a78bfa', '#818cf8', '#7c3aed',
+];
+
+interface AttorneyRow {
+  attorney: string;
+  cases: number;
+  settlement: number;
+  avgSettlement: number;
+  fee: number;
+  feePct: number;
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="flex-1 overflow-auto p-6 space-y-6 animate-pulse">
+      <div className="h-6 w-64 bg-muted rounded" />
+      <div className="grid grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-24 bg-muted rounded-lg" />
+        ))}
+      </div>
+      <div className="h-8 w-80 bg-muted rounded" />
+      <div className="h-64 bg-muted rounded-lg" />
+    </div>
+  );
+}
 
 export default function Forecast() {
-  const navigate = useNavigate();
-  const forecastData = getForecastData();
+  const { data: resData, loading: resLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report' });
+  const { data: mattersData, loading: mattersLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: MATTERS_ID, type: 'report' });
+  const { data: statsData, loading: statsLoading } =
+    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
 
-  const activeCases = getActiveCases();
+  const loading = resLoading || mattersLoading || statsLoading;
 
-  // Settlement forecast data
-  const settlementForecasts = useMemo(() => getSettlementForecasts(), []);
-  const weeklyPipeline = useMemo(() => getWeeklyForecastPipeline(), []);
-  const top20 = useMemo(() => getTop20MostLikely(), []);
-  const totalPipelineValue = useMemo(() => settlementForecasts.reduce((s, f) => s + f.expectedValue, 0), [settlementForecasts]);
-  const totalWeightedValue = useMemo(() => settlementForecasts.reduce((s, f) => s + f.weightedValue, 0), [settlementForecasts]);
-  const top20Value = useMemo(() => top20.reduce((s, f) => s + f.weightedValue, 0), [top20]);
-  const avgProbability = useMemo(() => {
-    if (settlementForecasts.length === 0) return 0;
-    return Math.round(settlementForecasts.reduce((s, f) => s + f.probability, 0) / settlementForecasts.length * 100);
-  }, [settlementForecasts]);
-  const highValueCases = [...activeCases]
-    .sort((a, b) => b.expectedValue - a.expectedValue)
-    .slice(0, 20);
+  // --- Derived data from RESOLUTIONS report ---
+  const attorneyRows = useMemo(() => {
+    return (resData?.groupings ?? []).map(g => {
+      const cases = g.aggregates.find(a => a.label === 'Record Count')?.value ?? 0;
+      const settlement = g.aggregates.find(a => a.label === 'Settlement')?.value ?? 0;
+      const fee = g.aggregates.find(a => a.label === 'Fee')?.value ?? 0;
+      return {
+        attorney: g.label,
+        cases,
+        settlement,
+        avgSettlement: cases > 0 ? Math.round(settlement / cases) : 0,
+        fee,
+        feePct: settlement > 0 ? Math.round((fee / settlement) * 100) : 0,
+      };
+    });
+  }, [resData]);
 
-  const settlementColumns: Column<SettlementForecast>[] = [
-    { key: 'caseId', label: 'Case ID' },
+  const totalSettlement = resData?.grandTotals?.find(a => a.label === 'Settlement')?.value ?? 0;
+  const totalFee = resData?.grandTotals?.find(a => a.label === 'Fee')?.value ?? 0;
+  const totalMatters = mattersData?.grandTotals?.find(a => a.label === 'Record Count')?.value ?? 0;
+
+  // Top 15 attorneys by settlement for chart
+  const top15 = useMemo(
+    () => [...attorneyRows].sort((a, b) => b.settlement - a.settlement).slice(0, 15),
+    [attorneyRows],
+  );
+
+  // Pipeline stages from MATTERS report
+  const pipelineStages = useMemo(() => {
+    return (mattersData?.groupings ?? []).map(g => ({
+      stage: g.label,
+      open: g.aggregates.find(a => a.label === 'Open')?.value ?? 0,
+    }));
+  }, [mattersData]);
+
+  // --- Attorney performance table columns ---
+  const attorneyColumns: Column<AttorneyRow>[] = [
     { key: 'attorney', label: 'Attorney' },
+    { key: 'cases', label: 'Cases' },
     {
-      key: 'expectedValue',
-      label: 'EV',
-      render: (row: SettlementForecast) => currencyFormatter.format(row.expectedValue),
+      key: 'settlement',
+      label: 'Settlement',
+      render: (row: AttorneyRow) => fmt$(row.settlement),
     },
     {
-      key: 'probability',
-      label: 'Probability',
-      render: (row: SettlementForecast) => `${Math.round(row.probability * 100)}%`,
+      key: 'avgSettlement',
+      label: 'Avg Settlement',
+      render: (row: AttorneyRow) => fmt$(row.avgSettlement),
     },
     {
-      key: 'weightedValue',
-      label: 'Weighted Value',
-      render: (row: SettlementForecast) => currencyFormatter.format(row.weightedValue),
+      key: 'fee',
+      label: 'Fee',
+      render: (row: AttorneyRow) => fmt$(row.fee),
     },
     {
-      key: 'estimatedWeek',
-      label: 'Est. Week',
-      render: (row: SettlementForecast) => `W${row.estimatedWeek}`,
+      key: 'feePct',
+      label: 'Fee %',
+      render: (row: AttorneyRow) => `${row.feePct}%`,
     },
   ];
 
-  const highValueColumns: Column<LitCase>[] = [
-    { key: 'id', label: 'Case ID' },
-    { key: 'title', label: 'Title' },
-    { key: 'attorney', label: 'Attorney' },
-    {
-      key: 'stage',
-      label: 'Stage',
-      render: (row: LitCase) => stageLabels[row.stage],
-    },
-    {
-      key: 'expectedValue',
-      label: 'Expected Value',
-      render: (row: LitCase) => currencyFormatter.format(row.expectedValue),
-    },
-    {
-      key: 'evConfidence',
-      label: 'Confidence',
-      render: (row: LitCase) => `${Math.round(row.evConfidence * 100)}%`,
-    },
-    {
-      key: 'exposureAmount',
-      label: 'Exposure',
-      render: (row: LitCase) => currencyFormatter.format(row.exposureAmount),
-    },
-  ];
+  if (loading && !resData && !mattersData && !statsData) {
+    return <LoadingSkeleton />;
+  }
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
@@ -118,110 +138,85 @@ export default function Forecast() {
         { label: 'Control Tower', path: '/control-tower' },
         { label: 'Forecast & Yield' },
       ]} />
-      <FilterBar />
 
       <DashboardGrid cols={4}>
-        <StatCard
-          label="Total Portfolio EV"
-          value={formatMillions(forecastData.totalEV)}
-          delta="+3.2% vs last month"
-          deltaType="positive"
-        />
-        <StatCard
-          label="Expected Fees"
-          value={formatMillions(forecastData.expectedFees)}
-          deltaType="positive"
-        />
-        <StatCard
-          label="Close-Month Forecast"
-          value={`${forecastData.closeMonthForecast} cases`}
-        />
-        <StatCard
-          label="Historical Accuracy"
-          value="92%"
-          deltaType="positive"
-        />
+        <StatCard label="Portfolio Value" value={fmt$(totalSettlement)} />
+        <StatCard label="Total Settlements" value={fmt$(totalSettlement)} />
+        <StatCard label="Net Fees" value={fmt$(totalFee)} />
+        <StatCard label="Open Pipeline" value={`${fmtNum(totalMatters)} matters`} />
       </DashboardGrid>
 
-      <Tabs defaultValue="ev-trend">
+      <Tabs defaultValue="resolution-outcomes">
         <TabsList>
-          <TabsTrigger value="ev-trend">EV Trend</TabsTrigger>
-          <TabsTrigger value="close-accuracy">Close Accuracy</TabsTrigger>
-          <TabsTrigger value="high-value-cases">High-Value Cases</TabsTrigger>
-          <TabsTrigger value="settlement-pipeline">Settlement Pipeline</TabsTrigger>
+          <TabsTrigger value="resolution-outcomes">Resolution Outcomes</TabsTrigger>
+          <TabsTrigger value="pipeline-stage">Pipeline by Stage</TabsTrigger>
+          <TabsTrigger value="attorney-performance">Attorney Performance</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="ev-trend" className="space-y-4">
-          <SectionHeader title="Portfolio EV Trend" subtitle="Monthly expected value" />
+        {/* Tab 1: Resolution Outcomes */}
+        <TabsContent value="resolution-outcomes" className="space-y-4">
+          <SectionHeader title="Resolution Outcomes" subtitle="Top 15 attorneys by settlement amount" />
           <div className="rounded-lg border border-border bg-card p-4">
-            <ResponsiveContainer width="100%" height={280}>
-              <LineChart data={forecastData.monthlyTrend}>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={top15} margin={{ bottom: 80 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-                <Line type="monotone" dataKey="ev" stroke="#6366f1" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="close-accuracy" className="space-y-4">
-          <SectionHeader title="Close Forecast Accuracy" subtitle="Predicted vs actual closures" />
-          <div className="rounded-lg border border-border bg-card p-4">
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={forecastData.historicalAccuracy}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-                <Legend />
-                <Bar dataKey="predicted" fill="#6366f1" name="Predicted" />
-                <Bar dataKey="actual" fill="#10b981" name="Actual" />
+                <XAxis
+                  dataKey="attorney"
+                  stroke="hsl(var(--foreground))"
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
+                  angle={-45}
+                  textAnchor="end"
+                  interval={0}
+                />
+                <YAxis
+                  stroke="hsl(var(--foreground))"
+                  tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                  tickFormatter={(v: number) => fmt$(v)}
+                />
+                <Tooltip contentStyle={tooltipStyle} formatter={(v: number | undefined) => fmt$(v ?? 0)} />
+                <Bar dataKey="settlement" name="Settlement" radius={[4, 4, 0, 0]}>
+                  {top15.map((_, i) => (
+                    <Cell key={i} fill={BAR_COLORS[i % BAR_COLORS.length]} />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </TabsContent>
 
-        <TabsContent value="high-value-cases" className="space-y-4">
-          <SectionHeader title="High-Value Cases" subtitle="Top cases by expected value" />
-          <DataTable
-            data={highValueCases}
-            columns={highValueColumns}
-            keyField="id"
-            onRowClick={(row) => navigate(`/case/${row.id}`)}
-            maxRows={20}
-          />
-        </TabsContent>
-
-        <TabsContent value="settlement-pipeline" className="space-y-4">
-          <DashboardGrid cols={4}>
-            <StatCard label="Total Pipeline Value" value={formatMillions(totalPipelineValue)} />
-            <StatCard label="Weighted Value" value={formatMillions(totalWeightedValue)} />
-            <StatCard label="Top 20 Value" value={formatMillions(top20Value)} />
-            <StatCard label="Avg Probability" value={`${avgProbability}%`} />
-          </DashboardGrid>
-
-          <SectionHeader title="Weekly Forecast Pipeline" subtitle="13-week settlement forecast" />
+        {/* Tab 2: Pipeline by Stage */}
+        <TabsContent value="pipeline-stage" className="space-y-4">
+          <SectionHeader title="Pipeline by Stage" subtitle="Open matters by litigation stage" />
           <div className="rounded-lg border border-border bg-card p-4">
-            <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={weeklyPipeline}>
+            <ResponsiveContainer width="100%" height={Math.max(300, pipelineStages.length * 40)}>
+              <BarChart data={pipelineStages} layout="vertical" margin={{ left: 120 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="weekLabel" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
-                <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-                <Bar dataKey="weightedValue" fill="#6366f1" name="Weighted Value" radius={[4, 4, 0, 0]} />
+                <XAxis
+                  type="number"
+                  stroke="hsl(var(--foreground))"
+                  tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="stage"
+                  stroke="hsl(var(--foreground))"
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                  width={110}
+                />
+                <Tooltip contentStyle={tooltipStyle} />
+                <Bar dataKey="open" name="Open Matters" fill="#6366f1" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
+        </TabsContent>
 
-          <SectionHeader title="Top 20 Most Likely Settlements" subtitle="Ranked by probability and weighted value" />
+        {/* Tab 3: Attorney Performance */}
+        <TabsContent value="attorney-performance" className="space-y-4">
+          <SectionHeader title="Attorney Performance" subtitle="Resolution metrics by attorney" />
           <DataTable
-            data={top20}
-            columns={settlementColumns}
-            keyField="caseId"
-            onRowClick={(row) => navigate(`/case/${row.caseId}`)}
-            maxRows={20}
+            data={attorneyRows}
+            columns={attorneyColumns}
+            keyField="attorney"
           />
         </TabsContent>
       </Tabs>

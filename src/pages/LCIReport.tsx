@@ -23,12 +23,7 @@ import {
 } from '../data/lciEngineReal';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 
-// ── Report IDs (same as ControlTower) ───────────────────────────────────
-const RESOLUTIONS_ID = '00OPp000003OOCLMA4';
-const STATS_ID       = '01ZPp0000015Ug1MAE';
-const TIMING_ID      = '01ZPp0000015dGHMAY';
-const DISCOVERY_ID   = '00OPp000003OUcjMAG';
-const EXPERTS_ID     = '00OPp000003PLtxMAG';
+import { RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
 
 function bandColor(band: LCIBand): string {
   if (band === 'green') return '#22c55e';

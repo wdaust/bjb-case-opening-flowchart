@@ -24,14 +24,7 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { fmt$, fmtNum, getDashMetric, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
-
-// ── Report IDs ────────────────────────────────────────────────────────
-const MATTERS_ID     = '00OPp000003OaGjMAK';
-const RESOLUTIONS_ID = '00OPp000003OOCLMA4';
-const STATS_ID       = '01ZPp0000015Ug1MAE';
-const TIMING_ID      = '01ZPp0000015dGHMAY';
-const DISCOVERY_ID   = '00OPp000003OUcjMAG';
-const EXPERTS_ID     = '00OPp000003PLtxMAG';
+import { MATTERS_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
 
 // ── Palette ───────────────────────────────────────────────────────────
 const GREEN = '#22c55e';
@@ -367,7 +360,7 @@ export default function ControlTower() {
           ═══════════════════════════════════════════════════════════════ */}
       <HeroSection>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-          <HeroTitle title="Optimus Control Tower" subtitle="Firm-Wide Command Center" />
+          <HeroTitle title="Optimus Control Tower" subtitle="LIT DISRUPTOR MODEL" />
           <HeroSummaryTicker
             items={[
               { label: 'matters', value: fmtNum(totalMatters) },

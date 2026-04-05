@@ -11,14 +11,7 @@ import { cn } from '../utils/cn';
 import { InsightsSkeleton } from '../components/dashboard/InsightsSkeleton';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import { fmt$, fmtNum, getDashMetric, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
-
-// Report IDs
-const STATS_ID = '01ZPp0000015Ug1MAE';
-const TIMING_ID = '01ZPp0000015dGHMAY';
-const RESOLUTIONS_ID = '00OPp000003OOCLMA4';
-const DISCOVERY_ID = '00OPp000003OUcjMAG';
-const MATTERS_ID = '00OPp000003OaGjMAK';
-const EXPERTS_ID = '00OPp000003PLtxMAG';
+import { STATS_ID, TIMING_ID, RESOLUTIONS_ID, DISCOVERY_ID, MATTERS_ID, EXPERTS_ID } from '../data/sfReportIds';
 
 const tooltipStyle = {
   backgroundColor: 'hsl(var(--card))',

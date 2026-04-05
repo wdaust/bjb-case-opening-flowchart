@@ -1,10 +1,18 @@
-import { useMemo, useState } from "react";
-import { CheckCircle2, XCircle, CheckSquare, Square } from "lucide-react";
+import { useState } from "react";
+import { CheckSquare, Square } from "lucide-react";
 import { cn } from "../utils/cn";
 import { Breadcrumbs } from "../components/dashboard/Breadcrumbs";
 import { SectionHeader } from "../components/dashboard/SectionHeader";
 import { DataTable, type Column } from "../components/dashboard/DataTable";
-import { getWeeklyThroughput, type WeeklyMetric } from "../data/mockData";
+import { useSalesforceReport } from "../hooks/useSalesforceReport";
+import { STATS_ID, TIMING_ID } from "../data/sfReportIds";
+import type { DashboardResponse } from "../types/salesforce";
+import {
+  getDashMetric,
+  getTimingCompliance,
+  compliancePct,
+  fmtNum,
+} from "../utils/sfHelpers";
 
 interface Issue {
   id: number;
@@ -37,49 +45,66 @@ const initialTodos: Todo[] = [
   { task: "Train new associates on discovery process", owner: "Maria Santos", due: "2026-02-20", done: false },
 ];
 
-interface MetricRow {
-  metric: string;
-  owner: string;
+/* ---------- Metric row definitions ---------- */
+
+type MetricKind = "count" | "compliance";
+
+interface MetricDef {
+  label: string;
   target: string;
-  targetNum: number;
-  comparator: "lte" | "gte" | "lt" | "gt";
-  dataKey: string;
-  format?: (v: number) => string;
+  kind: MetricKind;
+  /** Dashboard component title used with getDashMetric or getTimingCompliance */
+  componentTitle: string;
+  /** Which dashboard provides the data */
+  source: "stats" | "timing";
+  /** For count metrics: value that is "green" (0 = green when 0, -1 = no target) */
+  greenValue?: number;
 }
 
-const metricRows: MetricRow[] = [
-  { metric: "New In", owner: "Intake", target: "10", targetNum: 10, comparator: "lte", dataKey: "newIn" },
-  { metric: "Closed Out", owner: "Lit Team", target: "8", targetNum: 8, comparator: "gte", dataKey: "closedOut" },
-  { metric: "Over SLA", owner: "Partners", target: "<15", targetNum: 15, comparator: "lt", dataKey: "overSla" },
-  { metric: "Stall Count", owner: "Associates", target: "<8", targetNum: 8, comparator: "lt", dataKey: "stallCount" },
-  { metric: "Next-Action %", owner: "All Attorneys", target: ">90%", targetNum: 90, comparator: "gt", dataKey: "nextActionPct", format: (v) => `${v}%` },
-  { metric: "EV ($M)", owner: "CFO", target: ">$120M", targetNum: 120, comparator: "gt", dataKey: "ev", format: (v) => `$${v}` },
-  { metric: "Throughput", owner: "Lit Team", target: ">5", targetNum: 5, comparator: "gt", dataKey: "throughput" },
+const metricDefs: MetricDef[] = [
+  { label: "NJ Inventory",        target: "-",    kind: "count",      componentTitle: "NJ PI Inventory",          source: "stats",  greenValue: -1 },
+  { label: "Missing Trackers",    target: "0",    kind: "count",      componentTitle: "Missing Trackers",         source: "stats",  greenValue: 0 },
+  { label: "No Service 35+",      target: "0",    kind: "count",      componentTitle: "No Service 35+",           source: "stats",  greenValue: 0 },
+  { label: "Missing Answers",     target: "0",    kind: "count",      componentTitle: "Missing Answers",          source: "stats",  greenValue: 0 },
+  { label: "DED Extensions",      target: "-",    kind: "count",      componentTitle: "DED Extensions",           source: "timing", greenValue: -1 },
+  { label: "NJ Resolutions",      target: "-",    kind: "count",      componentTitle: "NJ Resolutions",           source: "timing", greenValue: -1 },
+  { label: "Complaint Filing %",  target: "≥80%", kind: "compliance", componentTitle: "Complaint Filing Timing",  source: "timing" },
+  { label: "Form A %",            target: "≥80%", kind: "compliance", componentTitle: "Form A Timing",            source: "timing" },
+  { label: "Form C %",            target: "≥80%", kind: "compliance", componentTitle: "Form C Timing",            source: "timing" },
+  { label: "Deps %",              target: "≥80%", kind: "compliance", componentTitle: "Deps Timing",              source: "timing" },
 ];
 
-function meetsTarget(value: number, targetNum: number, comparator: string): boolean {
-  switch (comparator) {
-    case "lte": return value <= targetNum;
-    case "gte": return value >= targetNum;
-    case "lt": return value < targetNum;
-    case "gt": return value > targetNum;
-    default: return false;
+function ragBadge(kind: MetricKind, value: number | null, greenValue?: number) {
+  if (value === null) {
+    return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-zinc-500/20 text-zinc-400">N/A</span>;
   }
+
+  let color: string;
+  let label: string;
+
+  if (kind === "compliance") {
+    if (value >= 80) { color = "bg-emerald-500/20 text-emerald-500"; label = "Green"; }
+    else if (value >= 50) { color = "bg-amber-500/20 text-amber-500"; label = "Amber"; }
+    else { color = "bg-red-500/20 text-red-500"; label = "Red"; }
+  } else {
+    // count metric
+    if (greenValue === -1) {
+      // no target — always neutral
+      color = "bg-zinc-500/20 text-zinc-400";
+      label = "-";
+    } else if (value === (greenValue ?? 0)) {
+      color = "bg-emerald-500/20 text-emerald-500";
+      label = "Green";
+    } else {
+      color = "bg-red-500/20 text-red-500";
+      label = "Red";
+    }
+  }
+
+  return <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", color)}>{label}</span>;
 }
 
-function getMetricValue(w: WeeklyMetric, key: string): number {
-  return (w as unknown as Record<string, number>)[key] ?? 0;
-}
-
-function isOnTrack(weeklyData: WeeklyMetric[], row: MetricRow): boolean {
-  if (row.comparator === "lte" || row.comparator === "gte") {
-    const last4 = weeklyData.slice(-4);
-    const avg = last4.reduce((sum, w) => sum + getMetricValue(w, row.dataKey), 0) / last4.length;
-    return meetsTarget(avg, row.targetNum, row.comparator);
-  }
-  const lastVal = weeklyData.length > 0 ? getMetricValue(weeklyData[weeklyData.length - 1], row.dataKey) : 0;
-  return meetsTarget(lastVal, row.targetNum, row.comparator);
-}
+/* ---------- Issue table columns ---------- */
 
 const issueColumns: Column<Issue>[] = [
   { key: "id", label: "#" },
@@ -105,13 +130,34 @@ const issueColumns: Column<Issue>[] = [
   { key: "raised", label: "Raised" },
 ];
 
+/* ---------- Component ---------- */
+
 export default function ManagerRhythm() {
-  const weeklyData = useMemo(() => getWeeklyThroughput(), []);
+  const { data: statsData, loading: statsLoading } =
+    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: "dashboard" });
+  const { data: timingData, loading: timingLoading } =
+    useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: "dashboard" });
+  const loading = statsLoading || timingLoading;
+
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
 
   const toggleTodo = (index: number) => {
     setTodos((prev) => prev.map((t, i) => (i === index ? { ...t, done: !t.done } : t)));
   };
+
+  function resolveValue(def: MetricDef): number | null {
+    const dash = def.source === "stats" ? statsData : timingData;
+    if (def.kind === "compliance") {
+      return compliancePct(getTimingCompliance(dash, def.componentTitle));
+    }
+    return getDashMetric(dash, def.componentTitle);
+  }
+
+  function formatValue(def: MetricDef, value: number | null): string {
+    if (value === null) return "-";
+    if (def.kind === "compliance") return `${value}%`;
+    return fmtNum(value);
+  }
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
@@ -124,47 +170,41 @@ export default function ManagerRhythm() {
 
       <div className="space-y-6">
         <div className="space-y-4">
-          <SectionHeader title="Weekly Operating Scorecard" subtitle="13-week trailing metrics" />
-          <div className="bg-card border border-border rounded-xl overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="sticky left-0 z-10 bg-card px-3 py-2 text-left font-semibold text-foreground whitespace-nowrap">Metric</th>
-                  <th className="sticky left-[100px] z-10 bg-card px-3 py-2 text-left font-semibold text-foreground whitespace-nowrap">Owner</th>
-                  <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">Target</th>
-                  {weeklyData.map((_, i) => (
-                    <th key={i} className="px-2 py-2 text-center font-semibold text-muted-foreground whitespace-nowrap">W{i + 1}</th>
-                  ))}
-                  <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">On Track?</th>
-                </tr>
-              </thead>
-              <tbody>
-                {metricRows.map((row) => {
-                  const onTrack = isOnTrack(weeklyData, row);
-                  return (
-                    <tr key={row.dataKey} className="border-b border-border/50 hover:bg-muted/30">
-                      <td className="sticky left-0 z-10 bg-card px-3 py-2 font-medium text-foreground whitespace-nowrap">{row.metric}</td>
-                      <td className="sticky left-[100px] z-10 bg-card px-3 py-2 text-muted-foreground whitespace-nowrap">{row.owner}</td>
-                      <td className="px-3 py-2 text-center text-muted-foreground whitespace-nowrap">{row.target}</td>
-                      {weeklyData.map((w, i) => {
-                        const val = (w as unknown as Record<string, number>)[row.dataKey] ?? 0;
-                        const meets = meetsTarget(val, row.targetNum, row.comparator);
-                        const formatted = row.format ? row.format(val) : val;
-                        return (
-                          <td key={i} className={cn("px-2 py-2 text-center whitespace-nowrap font-mono", meets ? "text-emerald-500" : "text-red-500")}>
-                            {formatted}
-                          </td>
-                        );
-                      })}
-                      <td className="px-3 py-2 text-center">
-                        {onTrack ? <CheckCircle2 className="inline-block h-4 w-4 text-emerald-500" /> : <XCircle className="inline-block h-4 w-4 text-red-500" />}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <SectionHeader title="Operating Scorecard" subtitle="Current snapshot from Salesforce" />
+
+          {loading ? (
+            <div className="bg-card border border-border rounded-xl p-6 space-y-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-4 bg-muted rounded animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <div className="bg-card border border-border rounded-xl overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="px-3 py-2 text-left font-semibold text-foreground whitespace-nowrap">Metric</th>
+                    <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">Target</th>
+                    <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">Current</th>
+                    <th className="px-3 py-2 text-center font-semibold text-foreground whitespace-nowrap">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {metricDefs.map((def) => {
+                    const value = resolveValue(def);
+                    return (
+                      <tr key={def.label} className="border-b border-border/50 hover:bg-muted/30">
+                        <td className="px-3 py-2 font-medium text-foreground whitespace-nowrap">{def.label}</td>
+                        <td className="px-3 py-2 text-center text-muted-foreground whitespace-nowrap">{def.target}</td>
+                        <td className="px-3 py-2 text-center font-mono text-foreground whitespace-nowrap">{formatValue(def, value)}</td>
+                        <td className="px-3 py-2 text-center">{ragBadge(def.kind, value, def.greenValue)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">

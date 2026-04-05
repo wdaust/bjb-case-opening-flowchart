@@ -1,50 +1,90 @@
 import { useParams, useNavigate, Navigate } from 'react-router-dom';
 import { useMemo } from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  AreaChart, Area, Cell, Legend,
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
 } from 'recharts';
 import { cn } from '../utils/cn';
 import {
   allValidStageRoutes, stageLabels, parentStageOrder, parentStageLabels,
-  substagesOf, getStageCommandData, getWeeklyThroughput, getCasesByParentStage,
-  getDaysInStage, getAgingDistribution, stageSlaTargets,
-  type Stage, type ParentStage, type SubStage, type AgingBand,
+  substagesOf,
+  type Stage, type ParentStage, type SubStage,
 } from '../data/mockData';
-import { calculateStageLCI } from '../data/lciEngine';
-import { getStageMetrics } from '../data/stageMetricsGenerator';
-import { caseOpeningPursuitLadder } from '../data/caseOpeningMetricsData';
+import { useSalesforceReport } from '../hooks/useSalesforceReport';
+import { MATTERS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
+import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
+import {
+  getTimingCompliance, compliancePct, complianceColor, fmtNum,
+} from '../utils/sfHelpers';
 import { StatCard } from '../components/dashboard/StatCard';
 import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
-import { AgingHeatmap } from '../components/dashboard/AgingHeatmap';
 import { DataTable, type Column } from '../components/dashboard/DataTable';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
-import { LCIBadge } from '../components/dashboard/LCIBadge';
-import { StageScorecard } from '../components/dashboard/StageScorecard';
-import { PursuitLadder } from '../components/dashboard/PursuitLadder';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
+
+/* ── Stage-name mapping: MATTERS report grouping labels → route IDs ── */
+const mattersLabelToStageId: Record<string, SubStage> = {
+  'Account Opening': 'pre-account-opening' as SubStage,
+  'Treatment Monitoring (Pre-Lit)': 'pre-treatment-monitoring' as SubStage,
+  'Treatment Monitoring': 'pre-treatment-monitoring' as SubStage,
+  'Value Development': 'pre-value-development' as SubStage,
+  'Demand Readiness': 'pre-demand-readiness' as SubStage,
+  'Negotiation': 'pre-negotiation' as SubStage,
+  'Resolution Pending': 'pre-resolution-pending' as SubStage,
+  'Case Opening': 'lit-case-opening' as SubStage,
+  'Treatment Monitoring (Lit)': 'lit-treatment-monitoring' as SubStage,
+  'Discovery': 'lit-discovery' as SubStage,
+  'Expert & Deposition': 'lit-expert-deposition' as SubStage,
+  'Arbitration/Mediation': 'lit-arb-med' as SubStage,
+  'Trial': 'lit-trial' as SubStage,
+};
+
+/* ── Loading skeleton ── */
+function LoadingSkeleton() {
+  return (
+    <div className="flex-1 overflow-auto p-6 space-y-6 animate-pulse">
+      <div className="h-6 w-48 rounded bg-muted" />
+      <div className="grid grid-cols-3 gap-4">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="h-24 rounded-lg bg-muted" />
+        ))}
+      </div>
+      <div className="h-64 rounded-lg bg-muted" />
+    </div>
+  );
+}
 
 export default function StageCommand() {
   const { stageId } = useParams<{ stageId: string }>();
   const navigate = useNavigate();
+
+  /* ── Salesforce data hooks ── */
+  const { data: mattersData, loading: mattersLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: MATTERS_ID, type: 'report' });
+  const { data: timingData, loading: timingLoading } =
+    useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
+  const { data: discData, loading: discLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: DISCOVERY_ID, type: 'report' });
+  const { loading: expertsLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
+
+  const loading = mattersLoading || timingLoading || discLoading || expertsLoading;
 
   if (!stageId || !allValidStageRoutes.includes(stageId as Stage)) {
     return <Navigate to="/control-tower" replace />;
   }
 
   const stage = stageId as Stage;
-  const isParentStage = (parentStageOrder as Stage[]).includes(stage) && stage !== "intake";
+  const isParentStage = (parentStageOrder as Stage[]).includes(stage) && stage !== 'intake';
 
-  // Build breadcrumbs
+  /* ── Breadcrumbs ── */
   const crumbs: { label: string; path?: string }[] = [
     { label: 'Control Tower', path: '/control-tower' },
   ];
   if (isParentStage) {
     crumbs.push({ label: stageLabels[stage] });
   } else {
-    // Find parent for this substage
     let parentKey: ParentStage | null = null;
     for (const ps of parentStageOrder) {
       const subs = substagesOf[ps];
@@ -56,254 +96,183 @@ export default function StageCommand() {
     crumbs.push({ label: stageLabels[stage] });
   }
 
-  // Parent stage overview mode
+  if (loading) {
+    return (
+      <div className="flex-1 overflow-auto p-6 space-y-6">
+        <Breadcrumbs crumbs={crumbs} />
+        <FilterBar />
+        <LoadingSkeleton />
+      </div>
+    );
+  }
+
+  /* ── Helper: build substage rows from MATTERS groupings ── */
+  const buildSubstageRows = (subs: SubStage[]) => {
+    const groupings = mattersData?.groupings ?? [];
+    return subs.map(sub => {
+      // Find the matching grouping by mapping label → stageId
+      const match = groupings.find(g => mattersLabelToStageId[g.label] === sub);
+      const open = match?.aggregates?.[0]?.value ?? 0;
+      const closed = match?.aggregates?.[1]?.value ?? 0;
+      const total = open + closed;
+      return { stage: sub, label: stageLabels[sub], open, closed, total };
+    });
+  };
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     Parent stage mode
+     ═══════════════════════════════════════════════════════════════════════ */
   if (isParentStage) {
     const ps = stage as ParentStage;
     const subs = substagesOf[ps] || [];
-    const parentCases = getCasesByParentStage(ps);
-    const totalCount = parentCases.length;
-    const overSla = parentCases.filter(c => c.riskFlags.includes("Over SLA")).length;
+    const rows = buildSubstageRows(subs as SubStage[]);
 
-    const subBreakdown = subs.map(sub => {
-      const subCases = parentCases.filter(c => c.stage === sub);
-      const ages = subCases.map(getDaysInStage);
-      const avg = ages.length > 0 ? Math.round(ages.reduce((a, b) => a + b, 0) / ages.length) : 0;
-      return {
-        stage: sub,
-        label: stageLabels[sub],
-        count: subCases.length,
-        overSla: subCases.filter(c => c.riskFlags.includes("Over SLA")).length,
-        avgAge: avg,
-        slaTarget: stageSlaTargets[sub],
-      };
-    });
-
-    const subColumns: Column<typeof subBreakdown[0]>[] = [
-      { key: 'label', label: 'Substage' },
-      { key: 'count', label: 'Cases' },
-      { key: 'overSla', label: 'Over SLA', render: r => <span className={r.overSla > 0 ? "text-red-500 font-medium" : ""}>{r.overSla}</span> },
-      { key: 'avgAge', label: 'Avg Age (d)' },
-      { key: 'slaTarget', label: 'SLA Target (d)' },
+    const subColumns: Column<typeof rows[0]>[] = [
+      { key: 'label', label: 'Stage' },
+      { key: 'open', label: 'Open' },
+      { key: 'closed', label: 'Closed' },
+      { key: 'total', label: 'Total' },
     ];
-
-    // Aging heatmap for substages
-    const agingData = subs.reduce((acc, sub) => {
-      const subCases = parentCases.filter(c => c.stage === sub);
-      acc[sub] = getAgingDistribution(subCases);
-      return acc;
-    }, {} as Record<Stage, Record<AgingBand, number>>);
 
     return (
       <div className="flex-1 overflow-auto p-6 space-y-6">
         <Breadcrumbs crumbs={crumbs} />
         <FilterBar />
 
-        <DashboardGrid cols={3}>
-          <StatCard label="Total Cases" value={totalCount} />
-          <StatCard label="Over SLA" value={overSla} delta={`${totalCount > 0 ? Math.round((overSla / totalCount) * 100) : 0}%`} deltaType="negative" />
-          <StatCard label="Substages" value={subs.length} />
-        </DashboardGrid>
-
-        <Tabs defaultValue="breakdown">
-          <TabsList>
-            <TabsTrigger value="breakdown">Substage Breakdown</TabsTrigger>
-            <TabsTrigger value="aging">Aging Heatmap</TabsTrigger>
-          </TabsList>
-          <TabsContent value="breakdown" className="space-y-4 pt-4">
-            <SectionHeader title={`${stageLabels[stage]} Substages`} />
-            <DataTable
-              data={subBreakdown}
-              columns={subColumns}
-              keyField="stage"
-              onRowClick={row => navigate(`/stage/${row.stage}`)}
-            />
-          </TabsContent>
-          <TabsContent value="aging" className="space-y-4 pt-4">
-            <SectionHeader title="Aging by Substage" />
-            <AgingHeatmap data={agingData} stages={subs} />
-          </TabsContent>
-        </Tabs>
+        <SectionHeader title={`${stageLabels[stage]} Substages`} />
+        <DataTable
+          data={rows}
+          columns={subColumns}
+          keyField="stage"
+          onRowClick={row => navigate(`/stage/${row.stage}`)}
+        />
       </div>
     );
   }
 
-  // Substage / intake detail mode (existing behavior)
-  const stageData = getStageCommandData(stage);
-  const weeklyData = getWeeklyThroughput();
-  const stageLCI = useMemo(() => calculateStageLCI(stage), [stage]);
-  const stageMetrics = useMemo(() => getStageMetrics(stage), [stage]);
+  /* ═══════════════════════════════════════════════════════════════════════
+     Sub-stage mode (and intake) — 3 tabs
+     ═══════════════════════════════════════════════════════════════════════ */
 
-  const isCaseOpeningStage = stage.includes('case-opening') || stage.includes('account-opening');
-  const isTreatmentMonitoringStage = stage.includes('treatment-monitoring');
-  const showPursuitLadder = isCaseOpeningStage || isTreatmentMonitoringStage;
+  // Overview metrics
+  const stageGrouping = mattersData?.groupings?.find(g => mattersLabelToStageId[g.label] === stage);
+  const openCount = stageGrouping?.aggregates?.[0]?.value ?? 0;
 
-  // Generate deterministic compliance rates for pursuit ladder
-  const pursuitComplianceRates = useMemo(() => {
-    return caseOpeningPursuitLadder.map((_, i) => Math.round(95 - i * 3.2 + (i % 3) * 2));
-  }, []);
+  // Compliance from TIMING dashboard — average across the 4 timing metrics
+  const complaintComp = getTimingCompliance(timingData, 'Complaint Filing');
+  const formAComp = getTimingCompliance(timingData, 'Form A');
+  const formCComp = getTimingCompliance(timingData, 'Form C');
+  const depsComp = getTimingCompliance(timingData, 'Deps');
 
-  const gateBarColor = (pct: number) => {
-    if (pct >= 80) return '#10b981';
-    if (pct >= 50) return '#f59e0b';
-    return '#ef4444';
-  };
-
-  const formatDollars = (val: number) => {
-    if (val >= 1_000_000) return `$${(val / 1_000_000).toFixed(1)}M`;
-    if (val >= 1_000) return `$${(val / 1_000).toFixed(0)}K`;
-    return `$${val.toLocaleString()}`;
-  };
-
-  const gateChartData = Object.entries(stageData.gateCompletion).map(([name, completion]) => ({
-    name, completion,
-  }));
-
-  const columns: Column<Record<string, any>>[] = [
-    { key: 'id', label: 'Case ID' },
-    { key: 'title', label: 'Title' },
-    { key: 'attorney', label: 'Attorney' },
-    { key: 'daysInStage', label: 'Days in Stage' },
-    {
-      key: 'slaStatus', label: 'SLA Status',
-      render: (row: Record<string, any>) => {
-        const status = row.slaStatus as string;
-        return (
-          <span className={cn(
-            'px-2 py-0.5 rounded-full text-xs font-medium',
-            status === 'breach' ? 'bg-red-500/20 text-red-500'
-              : status === 'warning' ? 'bg-amber-500/20 text-amber-500'
-              : 'bg-emerald-500/20 text-emerald-500'
-          )}>{status}</span>
-        );
-      },
-    },
-    { key: 'nextAction', label: 'Next Action' },
-    {
-      key: 'expectedValue', label: 'EV',
-      render: (row: Record<string, any>) => formatDollars(row.expectedValue),
-    },
+  const compliancePcts = [
+    compliancePct(complaintComp),
+    compliancePct(formAComp),
+    compliancePct(formCComp),
+    compliancePct(depsComp),
   ];
+  const avgCompliance = compliancePcts.length
+    ? Math.round(compliancePcts.reduce((a, b) => a + b, 0) / compliancePcts.length)
+    : 0;
+
+  // Discovery tracker count
+  const discoveryTotal = discData?.grandTotals?.[0]?.value ?? 0;
+
+  // Workload: attorney distribution from DISCOVERY groupings
+  const workloadData = useMemo(() => {
+    const groupings = discData?.groupings ?? [];
+    return groupings
+      .map(g => ({
+        name: g.label,
+        count: g.aggregates?.[0]?.value ?? 0,
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [discData]);
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
-      <div className="flex items-center gap-3">
-        <Breadcrumbs crumbs={crumbs} />
-        <LCIBadge score={stageLCI.score} />
-      </div>
+      <Breadcrumbs crumbs={crumbs} />
       <FilterBar />
 
-      <Tabs defaultValue="inventory">
+      <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger value="inventory">Inventory</TabsTrigger>
-          <TabsTrigger value="aging">Aging & SLA</TabsTrigger>
-          <TabsTrigger value="throughput">Throughput</TabsTrigger>
-          {gateChartData.length > 0 && <TabsTrigger value="gates">Gates</TabsTrigger>}
-          <TabsTrigger value="queue">Priority Queue</TabsTrigger>
-          <TabsTrigger value="scorecard">Scorecard</TabsTrigger>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="compliance">Compliance</TabsTrigger>
+          <TabsTrigger value="workload">Workload</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="inventory">
-          <div className="space-y-4">
-            <SectionHeader title={`${stageLabels[stage]} Inventory`} />
-            <DashboardGrid cols={3}>
-              <StatCard label="Total Cases" value={stageData.total} />
-              <StatCard label="Over SLA" value={stageData.overSla} delta={`${stageData.overSlaPct}% of stage`} deltaType="negative" />
-              <StatCard label="SLA Target" value={`${stageData.slaTarget} days`} />
-            </DashboardGrid>
-            <div className="rounded-lg border border-border bg-card p-4">
-              <ResponsiveContainer width="100%" height={Math.max(200, stageData.attorneyDistribution.length * 32)}>
-                <BarChart data={stageData.attorneyDistribution} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis type="number" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                  <YAxis type="category" dataKey="name" width={120} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                  <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-                  <Bar dataKey="count" fill="#6366f1" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="aging">
-          <div className="space-y-4">
-            <SectionHeader title="Stage Aging & SLA" />
-            <DashboardGrid cols={3}>
-              <StatCard label="Median Age" value={`${stageData.medianAge}d`} />
-              <StatCard label="90th Percentile" value={`${stageData.p90Age}d`} />
-              <StatCard label="Over SLA %" value={`${stageData.overSlaPct}%`} deltaType={stageData.overSlaPct > 20 ? "negative" : "positive"} />
-            </DashboardGrid>
-            <AgingHeatmap data={{ [stage]: stageData.aging } as any} stages={[stage]} />
-          </div>
-        </TabsContent>
-
-        <TabsContent value="throughput">
-          <div className="space-y-4">
-            <SectionHeader title="Motion & Throughput" subtitle="13-week trailing" />
-            <div className="rounded-lg border border-border bg-card p-4">
-              <ResponsiveContainer width="100%" height={250}>
-                <AreaChart data={weeklyData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="week" stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                  <YAxis stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                  <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-                  <Legend wrapperStyle={{ color: 'hsl(var(--muted-foreground))' }} />
-                  <Area type="monotone" dataKey="newIn" fill="#6366f1" fillOpacity={0.3} stroke="#6366f1" strokeWidth={2} name="New In" />
-                  <Area type="monotone" dataKey="closedOut" fill="#10b981" fillOpacity={0.3} stroke="#10b981" strokeWidth={2} name="Closed Out" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </TabsContent>
-
-        {gateChartData.length > 0 && (
-          <TabsContent value="gates">
-            <div className="space-y-4">
-              <SectionHeader title="Readiness Gates" subtitle="Exit criteria completion across cases" />
-              <div className="rounded-lg border border-border bg-card p-4">
-                <ResponsiveContainer width="100%" height={Math.max(200, gateChartData.length * 40)}>
-                  <BarChart data={gateChartData} layout="vertical">
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                    <XAxis type="number" domain={[0, 100]} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v: number) => `${v}%`} />
-                    <YAxis type="category" dataKey="name" width={160} stroke="hsl(var(--foreground))" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
-                    <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '0.5rem', color: 'hsl(var(--foreground))' }} />
-                    <Bar dataKey="completion" radius={[0, 4, 4, 0]}>
-                      {gateChartData.map((entry, index) => (
-                        <Cell key={`gate-cell-${index}`} fill={gateBarColor(entry.completion)} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </TabsContent>
-        )}
-
-        <TabsContent value="queue">
-          <div className="space-y-4">
-            <SectionHeader title="Priority Queue" subtitle="Cases needing attention, sorted by urgency" />
-            <DataTable columns={columns} data={stageData.priorityQueue} keyField="id"
-              onRowClick={(row) => navigate(`/case/${row.id}`)} maxRows={20}
+        {/* ── Tab 1: Overview ── */}
+        <TabsContent value="overview" className="space-y-4 pt-4">
+          <SectionHeader title={`${stageLabels[stage]} Overview`} />
+          <DashboardGrid cols={3}>
+            <StatCard label="Open Matters" value={fmtNum(openCount)} />
+            <StatCard
+              label="Compliance %"
+              value={`${avgCompliance}%`}
+              deltaType={avgCompliance >= 60 ? 'positive' : 'negative'}
             />
-          </div>
+            <StatCard label="Discovery Tracker" value={fmtNum(discoveryTotal)} />
+          </DashboardGrid>
         </TabsContent>
 
-        <TabsContent value="scorecard">
-          <div className="space-y-6 pt-4">
-            <StageScorecard
-              stageId={stageMetrics.stageId}
-              stageName={stageMetrics.stageName}
-              metrics={stageMetrics.metrics}
-              overallHealth={stageMetrics.overallHealth}
-              greenCount={stageMetrics.greenCount}
-              amberCount={stageMetrics.amberCount}
-              redCount={stageMetrics.redCount}
-            />
-            {showPursuitLadder && (
-              <PursuitLadder
-                steps={caseOpeningPursuitLadder}
-                complianceRates={pursuitComplianceRates}
-              />
-            )}
+        {/* ── Tab 2: Compliance ── */}
+        <TabsContent value="compliance" className="space-y-4 pt-4">
+          <SectionHeader title="Timing Compliance" />
+          <DashboardGrid cols={2}>
+            {[
+              { label: 'Complaint Filing', data: complaintComp },
+              { label: 'Form A', data: formAComp },
+              { label: 'Form C', data: formCComp },
+              { label: 'Deps', data: depsComp },
+            ].map(({ label, data }) => {
+              const pct = compliancePct(data);
+              return (
+                <div
+                  key={label}
+                  className={cn(
+                    'rounded-lg border p-4 space-y-1',
+                    complianceColor(pct),
+                  )}
+                >
+                  <p className="text-sm font-medium opacity-80">{label}</p>
+                  <p className="text-2xl font-bold">{pct}%</p>
+                  <p className="text-xs opacity-60">
+                    {fmtNum(data.timely)} timely / {fmtNum(data.late)} late
+                  </p>
+                </div>
+              );
+            })}
+          </DashboardGrid>
+        </TabsContent>
+
+        {/* ── Tab 3: Workload ── */}
+        <TabsContent value="workload" className="space-y-4 pt-4">
+          <SectionHeader title="Attorney Distribution" subtitle="From Discovery report" />
+          <div className="rounded-lg border border-border bg-card p-4">
+            <ResponsiveContainer width="100%" height={Math.max(200, workloadData.length * 32)}>
+              <BarChart data={workloadData} layout="vertical">
+                <XAxis
+                  type="number"
+                  stroke="hsl(var(--foreground))"
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={140}
+                  stroke="hsl(var(--foreground))"
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--card))',
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '0.5rem',
+                    color: 'hsl(var(--foreground))',
+                  }}
+                />
+                <Bar dataKey="count" fill="#6366f1" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </TabsContent>
       </Tabs>

@@ -42,7 +42,7 @@ import ClaimsMatter from './pages/mockups/ClaimsMatter.tsx';
 import PreLitMatter from './pages/mockups/PreLitMatter.tsx';
 import ControlTower from './pages/ControlTower.tsx';
 import AltControlTower from './pages/AltControlTower.tsx';
-import CallTeamDashboard from './pages/CallTeamDashboard.tsx';
+// CallTeamDashboard hidden from routing (file kept for reference)
 import ProviderNetwork from './pages/ProviderNetwork.tsx';
 import MOS from './pages/MOS.tsx';
 import LitScorecard from './pages/LitScorecard.tsx';
@@ -52,9 +52,8 @@ import RiskRadar from './pages/RiskRadar.tsx';
 import Forecast from './pages/Forecast.tsx';
 import AttorneyCockpit from './pages/AttorneyCockpit.tsx';
 import ManagerRhythm from './pages/ManagerRhythm.tsx';
-import CaseExecution from './pages/CaseExecution.tsx';
+// CaseExecution kept but redirected to control tower
 import TodaysExposure from './pages/TodaysExposure.tsx';
-import GaugeOptions from './pages/GaugeOptions.tsx';
 import LCIReport from './pages/LCIReport.tsx';
 import { AIChatWidget } from './components/dashboard/AIChatWidget.tsx';
 import TopNavMockup from './pages/TopNavMockup.tsx';
@@ -105,14 +104,13 @@ export default function App() {
             <Route path="attorney" element={<AttorneyCockpit />} />
             <Route path="manager-rhythm" element={<ManagerRhythm />} />
             <Route path="today-exposure" element={<TodaysExposure />} />
-            <Route path="case/:caseId" element={<CaseExecution />} />
-            <Route path="gauge-options" element={<GaugeOptions />} />
+            <Route path="case/:caseId" element={<Navigate to="/control-tower" replace />} />
             <Route path="lci-report" element={<LCIReport />} />
             <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
             <Route path="performance-infrastructure/mockups" element={<MockupsLanding />} />
             <Route path="performance-infrastructure/litify" element={<LitifyMockupsLanding />} />
             <Route path="performance-infrastructure/alt-control-tower" element={<AltControlTower />} />
-            <Route path="performance-infrastructure/call-team-dashboard" element={<CallTeamDashboard />} />
+            {/* CallTeamDashboard route removed */}
             <Route path="performance-infrastructure/provider-network" element={<ProviderNetwork />} />
             <Route path="performance-infrastructure/mos" element={<MOS />} />
             <Route path="performance-infrastructure/mockups/client-contact" element={<ClientContact />} />

@@ -1,164 +1,233 @@
-import { useNavigate } from 'react-router-dom';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
-import { FilterBar } from '../components/dashboard/FilterBar';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { StatCard } from '../components/dashboard/StatCard';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
-import { AgingHeatmap } from '../components/dashboard/AgingHeatmap';
 import { DataTable, type Column } from '../components/dashboard/DataTable';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
+import { Skeleton } from '../components/ui/skeleton';
+import { cn } from '../utils/cn';
+import { useSalesforceReport } from '../hooks/useSalesforceReport';
+import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
+import { MATTERS_ID, STATS_ID, TIMING_ID } from '../data/sfReportIds';
 import {
-  getActiveCases,
-  getOverSlaCases,
-  getStalledCases,
-  parentStageOrder,
-  substagesOf,
-  stageLabels,
-  getAgingDistribution,
-  getDaysInStage,
-  type Stage,
-  type AgingBand,
-  type LitCase,
-} from '../data/mockData';
+  getDashMetric,
+  getTimingCompliance,
+  compliancePct,
+  complianceColor,
+  fmtNum,
+} from '../utils/sfHelpers';
 
+// ── Types ───────────────────────────────────────────────────────────
+interface StageRow {
+  stage: string;
+  open: number;
+  closed: number;
+  recordCount: number;
+}
+
+// ── Loading skeleton ────────────────────────────────────────────────
+function InventoryHealthSkeleton() {
+  return (
+    <div className="flex-1 overflow-auto p-6 space-y-6">
+      <Skeleton className="h-4 w-48 mb-2" />
+      <DashboardGrid cols={4}>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-4">
+            <Skeleton className="h-3 w-24 mb-3" />
+            <Skeleton className="h-8 w-32 mb-2" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+        ))}
+      </DashboardGrid>
+      <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">
+        <Skeleton className="h-[300px] w-full" />
+      </div>
+    </div>
+  );
+}
+
+// ── Timing compliance titles ────────────────────────────────────────
+const TIMING_LABELS = [
+  { label: 'Complaint Filing', title: 'Complaint Timing NJ' },
+  { label: 'Form A', title: 'Form A Timing NJ in Days from Answer' },
+  { label: 'Form C', title: 'Form C Timing NJ in Days from Answer' },
+  { label: 'Depositions', title: 'Dep Timing NJ in Days from Form A' },
+] as const;
+
+// ── Component ───────────────────────────────────────────────────────
 export default function InventoryHealth() {
-  const navigate = useNavigate();
+  // ── Data fetching ───────────────────────────────────────────────
+  const { data: mattersData, loading: mattersLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: MATTERS_ID, type: 'report' });
+  const { data: statsData, loading: statsLoading } =
+    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
+  const { data: timingData, loading: timingLoading } =
+    useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
 
-  const activeCases = getActiveCases();
-  const overSlaCases = getOverSlaCases();
-  const stalledCases = getStalledCases();
+  const loading = mattersLoading || statsLoading || timingLoading;
 
-  const overSlaPercent = activeCases.length > 0
-    ? `${((overSlaCases.length / activeCases.length) * 100).toFixed(1)}%`
-    : '0%';
+  if (loading) return <InventoryHealthSkeleton />;
 
-  // Build aging data grouped by parent → substage
-  const agingStages: Stage[] = [];
-  const agingData = {} as Record<Stage, Record<AgingBand, number>>;
-  for (const ps of parentStageOrder) {
-    const subs = substagesOf[ps];
-    if (subs) {
-      for (const sub of subs) {
-        const subCases = activeCases.filter(c => c.stage === sub);
-        agingData[sub] = getAgingDistribution(subCases);
-        agingStages.push(sub);
-      }
-    } else {
-      const psCases = activeCases.filter(c => c.parentStage === ps);
-      agingData[ps] = getAgingDistribution(psCases);
-      agingStages.push(ps);
-    }
-  }
+  // ── StatCard values ─────────────────────────────────────────────
+  const openInventory =
+    mattersData?.grandTotals?.find(a => a.label === 'Record Count')?.value ?? 0;
+  const missingTrackers = getDashMetric(statsData, 'Missing Trackers');
+  const missingAnswers = getDashMetric(statsData, 'Missing Answers');
 
-  const stalledColumns: Column<LitCase>[] = [
-    { key: 'id', label: 'Case ID' },
-    { key: 'title', label: 'Title' },
-    { key: 'attorney', label: 'Attorney' },
-    {
-      key: 'stage',
-      label: 'Stage',
-      render: (row: LitCase) => stageLabels[row.stage],
-    },
-    {
-      key: 'lastActivityDate',
-      label: 'Days Since Activity',
-      render: (row: LitCase) => {
-        const days = Math.floor(
-          (new Date('2026-02-19').getTime() - new Date(row.lastActivityDate).getTime()) / 86400000
-        );
-        return days;
-      },
-    },
-    { key: 'nextAction', label: 'Next Action' },
+  // Overall compliance: average of 4 timing percentages
+  const timingCompliances = TIMING_LABELS.map(t => getTimingCompliance(timingData, t.title));
+  const overallCompliance =
+    timingCompliances.length > 0
+      ? Math.round(
+          timingCompliances.reduce((sum, c) => sum + compliancePct(c), 0) /
+            timingCompliances.length,
+        )
+      : 0;
+
+  // ── Tab 1: Stage Inventory rows ─────────────────────────────────
+  const stageRows: StageRow[] = (mattersData?.groupings ?? []).map(g => ({
+    stage: g.label,
+    recordCount: g.aggregates.find(a => a.label === 'Record Count')?.value ?? 0,
+    open: g.aggregates.find(a => a.label === 'Open')?.value ?? 0,
+    closed: g.aggregates.find(a => a.label === 'Closed')?.value ?? 0,
+  }));
+
+  const stageColumns: Column<StageRow>[] = [
+    { key: 'stage', label: 'Stage' },
+    { key: 'open', label: 'Open', render: (r: StageRow) => fmtNum(r.open) },
+    { key: 'closed', label: 'Closed', render: (r: StageRow) => fmtNum(r.closed) },
+    { key: 'recordCount', label: 'Total', render: (r: StageRow) => fmtNum(r.recordCount) },
   ];
 
-  const overSlaColumns: Column<LitCase>[] = [
-    { key: 'id', label: 'Case ID' },
-    { key: 'title', label: 'Title' },
-    { key: 'attorney', label: 'Attorney' },
-    {
-      key: 'stage',
-      label: 'Stage',
-      render: (row: LitCase) => stageLabels[row.stage],
-    },
-    {
-      key: 'stageEntryDate',
-      label: 'Days in Stage',
-      render: (row: LitCase) => getDaysInStage(row),
-    },
-    {
-      key: 'slaTarget',
-      label: 'SLA Target',
-      render: (row: LitCase) => `${row.slaTarget}d`,
-    },
-    {
-      key: 'openDate',
-      label: 'Over By',
-      render: (row: LitCase) => `${getDaysInStage(row) - row.slaTarget}d`,
-    },
+  // ── Tab 2: Compliance signals ───────────────────────────────────
+  const negotiations = getDashMetric(statsData, 'Negotiations');
+  const complaintFiling = getDashMetric(statsData, 'Complaint Filing');
+
+  // ── Tab 3: Risk indicators ─────────────────────────────────────
+  const noService35 = getDashMetric(statsData, 'No Service 35+');
+
+  const riskIndicators = [
+    { label: 'Missing Trackers', value: missingTrackers },
+    { label: 'No Service 35+', value: noService35 },
+    { label: 'Missing Answers', value: missingAnswers },
   ];
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
-      <Breadcrumbs crumbs={[
-        { label: 'Control Tower', path: '/control-tower' },
-        { label: 'Inventory Health' },
-      ]} />
-      <FilterBar />
+      <Breadcrumbs
+        crumbs={[
+          { label: 'Control Tower', path: '/control-tower' },
+          { label: 'Inventory Health' },
+        ]}
+      />
 
+      {/* ── KPI Cards ──────────────────────────────────────────── */}
       <DashboardGrid cols={4}>
-        <StatCard label="Active Cases" value={activeCases.length} />
+        <StatCard label="Open Inventory" value={fmtNum(openInventory as number)} />
         <StatCard
-          label="Over SLA"
-          value={overSlaCases.length}
-          delta={overSlaPercent}
-          deltaType="negative"
+          label="Missing Trackers"
+          value={missingTrackers != null ? fmtNum(missingTrackers) : '\u2014'}
+          deltaType={missingTrackers && missingTrackers > 0 ? 'negative' : 'neutral'}
         />
         <StatCard
-          label="Silent Stalls"
-          value={stalledCases.length}
-          delta="21+ days inactive"
-          deltaType="negative"
+          label="Missing Answers"
+          value={missingAnswers != null ? fmtNum(missingAnswers) : '\u2014'}
+          deltaType={missingAnswers && missingAnswers > 0 ? 'negative' : 'neutral'}
         />
         <StatCard
-          label="Next-Action Coverage"
-          value="91%"
-          deltaType="positive"
+          label="Overall Compliance"
+          value={`${overallCompliance}%`}
+          deltaType={overallCompliance >= 50 ? 'positive' : 'negative'}
         />
       </DashboardGrid>
 
-      <Tabs defaultValue="aging-heatmap">
+      {/* ── Tabs ───────────────────────────────────────────────── */}
+      <Tabs defaultValue="stage-inventory">
         <TabsList>
-          <TabsTrigger value="aging-heatmap">Aging Heatmap</TabsTrigger>
-          <TabsTrigger value="silent-stalls">Silent Stalls</TabsTrigger>
-          <TabsTrigger value="over-sla-cases">Over-SLA Cases</TabsTrigger>
+          <TabsTrigger value="stage-inventory">Stage Inventory</TabsTrigger>
+          <TabsTrigger value="compliance-signals">Compliance Signals</TabsTrigger>
+          <TabsTrigger value="risk-indicators">Risk Indicators</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="aging-heatmap" className="space-y-4 pt-4">
-          <SectionHeader title="Aging Heatmap" subtitle="All stages x aging bands" />
-          <AgingHeatmap data={agingData} stages={agingStages} />
+        {/* Tab 1: Stage Inventory */}
+        <TabsContent value="stage-inventory" className="space-y-4 pt-4">
+          <SectionHeader
+            title="Stage Inventory"
+            subtitle="Matters grouped by litigation stage"
+          />
+          <DataTable data={stageRows} columns={stageColumns} keyField="stage" />
         </TabsContent>
 
-        <TabsContent value="silent-stalls" className="space-y-4 pt-4">
-          <SectionHeader title="Silent Stall Cases" subtitle="No activity for 21+ days" />
-          <DataTable
-            data={stalledCases}
-            columns={stalledColumns}
-            keyField="id"
-            onRowClick={(row) => navigate(`/case/${row.id}`)}
-            maxRows={25}
+        {/* Tab 2: Compliance Signals */}
+        <TabsContent value="compliance-signals" className="space-y-6 pt-4">
+          <SectionHeader
+            title="Timing Compliance"
+            subtitle="NJ timing compliance across key milestones"
           />
+          <DashboardGrid cols={4}>
+            {TIMING_LABELS.map(({ label, title }) => {
+              const data = getTimingCompliance(timingData, title);
+              const p = compliancePct(data);
+              return (
+                <div
+                  key={label}
+                  className={cn('rounded-xl border p-5 text-center', complianceColor(p))}
+                >
+                  <p className="text-xs font-medium opacity-70 mb-1">{label}</p>
+                  <p className="text-4xl font-bold">{p}%</p>
+                  <p className="text-[11px] mt-1 opacity-60">
+                    {fmtNum(data.timely)} timely / {fmtNum(data.timely + data.late)} total
+                  </p>
+                </div>
+              );
+            })}
+          </DashboardGrid>
+
+          <SectionHeader title="Additional Metrics" subtitle="" />
+          <DashboardGrid cols={2}>
+            <StatCard
+              label="Negotiations"
+              value={negotiations != null ? fmtNum(negotiations) : '\u2014'}
+            />
+            <StatCard
+              label="Complaint Filing"
+              value={complaintFiling != null ? fmtNum(complaintFiling) : '\u2014'}
+            />
+          </DashboardGrid>
         </TabsContent>
 
-        <TabsContent value="over-sla-cases" className="space-y-4 pt-4">
-          <SectionHeader title="Over-SLA Cases" subtitle="Cases exceeding stage time limits" />
-          <DataTable
-            data={overSlaCases}
-            columns={overSlaColumns}
-            keyField="id"
-            onRowClick={(row) => navigate(`/case/${row.id}`)}
-            maxRows={25}
+        {/* Tab 3: Risk Indicators */}
+        <TabsContent value="risk-indicators" className="space-y-4 pt-4">
+          <SectionHeader
+            title="Risk Indicators"
+            subtitle="Metrics that signal operational risk"
           />
+          <div className="grid gap-4 sm:grid-cols-3">
+            {riskIndicators.map(({ label, value }) => {
+              const isRed = value != null && value > 0;
+              return (
+                <div
+                  key={label}
+                  className={cn(
+                    'rounded-xl border-l-4 border bg-white/[0.04] p-5',
+                    isRed
+                      ? 'border-l-red-500 border-red-500/30'
+                      : 'border-l-green-500 border-green-500/30',
+                  )}
+                >
+                  <p className="text-xs font-medium text-muted-foreground mb-1">{label}</p>
+                  <p
+                    className={cn(
+                      'text-3xl font-bold',
+                      isRed ? 'text-red-400' : 'text-green-400',
+                    )}
+                  >
+                    {value != null ? fmtNum(value) : '\u2014'}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </TabsContent>
       </Tabs>
     </div>
