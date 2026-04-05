@@ -17,7 +17,7 @@ import { LCIBadge } from '../components/dashboard/LCIBadge';
 import { computeRealLCI, getRealEscalations } from '../data/lciEngineReal';
 import { EscalationBanner } from '../components/dashboard/EscalationBanner';
 import { loadHistory } from '../hooks/useMetricHistory';
-import { RefreshCw, Filter } from 'lucide-react';
+import { RefreshCw, Filter, ChevronDown } from 'lucide-react';
 import { InfoTooltip } from '../components/dashboard/InfoTooltip';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
@@ -391,24 +391,25 @@ export default function ControlTower() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <HeroTitle title="Optimus Control Tower" subtitle="LIT DISRUPTOR MODEL" />
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-white/[0.06] border border-white/[0.1] rounded-lg px-3 py-1.5">
+            <div className={cn("flex items-center gap-2 bg-white/[0.06] border rounded-lg px-3 py-1.5", isFiltered ? "border-primary/50" : "border-white/[0.1]")}>
               <Filter size={14} className="text-muted-foreground" />
               <select
                 value={selectedAttorney}
                 onChange={e => setSelectedAttorney(e.target.value)}
-                className="bg-transparent text-sm text-foreground border-none outline-none cursor-pointer appearance-none pr-4"
+                className="bg-transparent text-sm text-foreground border-none outline-none cursor-pointer appearance-none"
               >
                 <option value="all" className="bg-zinc-900">All Attorneys</option>
                 {attorneyList.map(name => (
                   <option key={name} value={name} className="bg-zinc-900">{name}</option>
                 ))}
               </select>
+              <ChevronDown size={12} className="pointer-events-none text-muted-foreground" />
             </div>
             <HeroSummaryTicker
               items={[
                 { label: 'matters', value: fmtNum(totalMatters) },
                 { label: 'open', value: fmtNum(openMatters) },
-                { label: 'settlements', value: fmt$(totalSettlement) },
+                { label: 'settlements', value: fmt$(isFiltered ? filteredTotalSettlement : totalSettlement) },
               ]}
             />
           </div>
@@ -468,14 +469,14 @@ export default function ControlTower() {
             />
             <StatCard
               label="Settlement Revenue"
-              value={fmt$(totalSettlement)}
+              value={fmt$(isFiltered ? filteredTotalSettlement : totalSettlement)}
               variant="glass"
               className={hoverCard}
-              sparklineData={histTotalSettlement}
-              anomaly={anomTotalSettlement ?? undefined}
+              sparklineData={isFiltered ? undefined : histTotalSettlement}
+              anomaly={isFiltered ? undefined : anomTotalSettlement ?? undefined}
               subMetrics={[
-                { label: "Resolved", value: fmtNum(totalResolved), deltaType: "neutral" },
-                { label: "Net fees", value: fmt$(totalNetFee), deltaType: "neutral" },
+                { label: "Resolved", value: fmtNum(isFiltered ? filteredTotalResolved : totalResolved), deltaType: "neutral" },
+                { label: "Net fees", value: fmt$(isFiltered ? filteredTotalNetFee : totalNetFee), deltaType: "neutral" },
               ]}
             />
           </DashboardGrid>
@@ -488,7 +489,7 @@ export default function ControlTower() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 2: Inventory by Stage (segmented bar)
           ═══════════════════════════════════════════════════════════════ */}
-      <section>
+      <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
         <SectionHeader title="Inventory by Stage" subtitle="Open inventory proportional by stage" info="Distribution of open matters across pre-litigation and litigation stages. Click a segment to drill into that stage." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <div className={cn("bg-white/[0.04] border border-white/[0.08] rounded-xl p-5", hoverCard)}>
           <div className="flex items-center h-14 w-full">
@@ -547,7 +548,7 @@ export default function ControlTower() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 3: NJ Operations Velocity (4 cards)
           ═══════════════════════════════════════════════════════════════ */}
-      <section>
+      <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
         <SectionHeader title="NJ Operations Velocity" subtitle="Key operational metrics for NJ litigation pipeline" info="Key operational metrics tracking NJ litigation inventory, missing discovery trackers, and service compliance." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <DashboardGrid cols={4}>
           <StatCard label="NJ Lit Inventory" value={fmtNum(njInventory)} deltaType="neutral" className={hoverCard} sparklineData={histNjInventory} anomaly={anomNjInventory ?? undefined} />
@@ -580,7 +581,7 @@ export default function ControlTower() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 4: Risk Signals (4 cards)
           ═══════════════════════════════════════════════════════════════ */}
-      <section>
+      <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
         <SectionHeader title="Risk Signals" subtitle="Items requiring attention across compliance and operations" info="Metrics highlighting cases requiring attention: missing answers, DED extensions, resolutions, and complaint timing." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <DashboardGrid cols={4}>
           <StatCard
@@ -610,7 +611,7 @@ export default function ControlTower() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 5: NJ Operations Analytics (3 compact donuts)
           ═══════════════════════════════════════════════════════════════ */}
-      <section>
+      <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
         <SectionHeader title="NJ Operations Analytics" subtitle="Negotiations, complaint filing, and form A compliance" info="Breakdown of negotiation status, complaint filing progress, and Form A past-due matters." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <DashboardGrid cols={3}>
           {/* Negotiations donut — compact layout */}
@@ -700,7 +701,7 @@ export default function ControlTower() {
           SECTION 6: Events (conditional)
           ═══════════════════════════════════════════════════════════════ */}
       {eventsData.length > 0 && (
-        <section>
+        <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
           <SectionHeader title="Upcoming Events" subtitle="ARB, MED, SET CONF, and Trials" info="Upcoming arbitrations, mediations, settlement conferences, and trials with associated portfolio value." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
           <div className={cn("rounded-xl border border-border bg-card p-5", hoverCard)}>
             <ResponsiveContainer width="100%" height={200}>
@@ -724,7 +725,7 @@ export default function ControlTower() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 7: Timing Compliance (4 colored % cards)
           ═══════════════════════════════════════════════════════════════ */}
-      <section>
+      <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
         <SectionHeader title="Timing Compliance" subtitle="NJ PI — percentage meeting compliance windows" info="Percentage of matters meeting timing benchmarks for complaint filing, Form A, Form C, and depositions." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
         <DashboardGrid cols={4}>
           {([
