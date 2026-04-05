@@ -147,19 +147,38 @@ export default function ControlTower() {
   const escalations = useMemo(() => getRealEscalations(lci, loadHistory()), [lci]);
 
   // ── Section 2: Inventory by Stage ───────────────────────────────────
+  const PRE_LIT_STAGES = ['Account Opening', 'Treatment Monitoring', 'Value Development', 'Demand Readiness', 'Negotiation', 'Resolution Pending'];
+
+  const STAGE_SHORT_LABELS: Record<string, string> = {
+    'Account Opening': 'Acct Open',
+    'Treatment Monitoring': 'Treat Mon',
+    'Value Development': 'Val Dev',
+    'Demand Readiness': 'Dem Ready',
+    'Case Opening': 'Case Open',
+    'Resolution Pending': 'Res Pend',
+    'Expert & Deposition': 'Expert/Dep',
+  };
+
+  const PRE_LIT_COLORS = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5'];
+  const LIT_COLORS = ['#dc2626', '#ef4444', '#f87171', '#fca5a5', '#fecaca'];
+
   const pipeline = useMemo(() => {
     if (!mattersData) return [];
     return mattersData.groupings
       .filter(g => g.label !== 'No Stage')
-      .map(g => {
-        const total = (g.aggregates.find(a => a.label === 'Record Count')?.value ?? 0) as number;
-        const open = (g.aggregates.find(a => a.label === 'Open')?.value ?? 0) as number;
-        const closed = (g.aggregates.find(a => a.label === 'Closed')?.value ?? 0) as number;
-        return { stage: g.label, total, open, closed };
-      })
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 15);
+      .map(g => ({
+        stage: g.label,
+        open: (g.aggregates.find(a => a.label === 'Open')?.value ?? 0) as number,
+      }))
+      .filter(g => g.open > 0)
+      .sort((a, b) => b.open - a.open);
   }, [mattersData]);
+
+  const { preLit, lit, pipelineTotal } = useMemo(() => {
+    const pre = pipeline.filter(p => PRE_LIT_STAGES.includes(p.stage));
+    const l = pipeline.filter(p => !PRE_LIT_STAGES.includes(p.stage));
+    return { preLit: pre, lit: l, pipelineTotal: pipeline.reduce((s, p) => s + p.open, 0) };
+  }, [pipeline]);
 
   // ── Section 3 & 4: NJ Ops metrics ──────────────────────────────────
   const missingTrackers = getDashMetric(statsData, 'Missing Discovery Trackers (NJ)') ?? 0;
@@ -430,23 +449,60 @@ export default function ControlTower() {
       <EscalationBanner escalations={escalations} />
 
       {/* ═══════════════════════════════════════════════════════════════
-          SECTION 2: Inventory by Stage (horizontal stacked bar)
+          SECTION 2: Inventory by Stage (segmented bar)
           ═══════════════════════════════════════════════════════════════ */}
       <section>
-        <SectionHeader title="Inventory by Stage" subtitle="Open vs Closed volume across pipeline stages" />
+        <SectionHeader title="Inventory by Stage" subtitle="Open inventory proportional by stage" />
         <div className={cn("bg-white/[0.04] border border-white/[0.08] rounded-xl p-5", hoverCard)}>
-          <ResponsiveContainer width="100%" height={Math.max(400, pipeline.length * 32)}>
-            <BarChart data={pipeline} layout="vertical" margin={{ left: 160, right: 30, top: 10, bottom: 10 }}>
-              <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
-              <YAxis type="category" dataKey="stage" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} width={150} />
-              <RechartsTooltip {...tooltipStyle} />
-              <Bar dataKey="open" stackId="a" fill={AMBER} name="Open" cursor="pointer" onClick={(_d: unknown, idx: number) => { const stage = pipeline[idx]?.stage; if (stage) navigate(`/stage/${encodeURIComponent(stage)}`); }} />
-              <Bar dataKey="closed" stackId="a" fill={GREEN} name="Closed" radius={[0, 4, 4, 0]} cursor="pointer" onClick={(_d: unknown, idx: number) => { const stage = pipeline[idx]?.stage; if (stage) navigate(`/stage/${encodeURIComponent(stage)}`); }} />
-            </BarChart>
-          </ResponsiveContainer>
-          <div className="flex gap-6 mt-3 text-xs text-muted-foreground">
-            <LegendDot color={AMBER} label="Open" />
-            <LegendDot color={GREEN} label="Closed" />
+          <div className="flex items-center h-14 w-full">
+            {/* Pre-Lit group */}
+            {preLit.map((p, i) => {
+              const pct = pipelineTotal ? (p.open / pipelineTotal) * 100 : 0;
+              const color = PRE_LIT_COLORS[i % PRE_LIT_COLORS.length];
+              const shortLabel = STAGE_SHORT_LABELS[p.stage] ?? p.stage;
+              return (
+                <div
+                  key={p.stage}
+                  className="h-full flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 group relative"
+                  style={{ width: `${pct}%`, backgroundColor: color, borderRadius: i === 0 ? '6px 0 0 6px' : undefined }}
+                  title={`${p.stage}: ${fmtNum(p.open)} open`}
+                  onClick={() => navigate(`/stage/${encodeURIComponent(p.stage)}`)}
+                >
+                  {pct >= 5 && (
+                    <span className="text-[11px] font-semibold text-gray-900 truncate px-1 text-center leading-tight">
+                      {shortLabel}<br /><span className="text-[10px] font-bold">{fmtNum(p.open)}</span>
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+            {/* Gap between pre-lit and lit */}
+            {preLit.length > 0 && lit.length > 0 && <div className="w-1 h-full shrink-0" />}
+            {/* Lit group */}
+            {lit.map((p, i) => {
+              const pct = pipelineTotal ? (p.open / pipelineTotal) * 100 : 0;
+              const color = LIT_COLORS[i % LIT_COLORS.length];
+              const shortLabel = STAGE_SHORT_LABELS[p.stage] ?? p.stage;
+              return (
+                <div
+                  key={p.stage}
+                  className="h-full flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 group relative"
+                  style={{ width: `${pct}%`, backgroundColor: color, borderRadius: i === lit.length - 1 ? '0 6px 6px 0' : undefined }}
+                  title={`${p.stage}: ${fmtNum(p.open)} open`}
+                  onClick={() => navigate(`/stage/${encodeURIComponent(p.stage)}`)}
+                >
+                  {pct >= 5 && (
+                    <span className="text-[11px] font-semibold text-white truncate px-1 text-center leading-tight">
+                      {shortLabel}<br /><span className="text-[10px] font-bold">{fmtNum(p.open)}</span>
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
+            <LegendDot color={PRE_LIT_COLORS[0]} label="Pre-Lit" />
+            <LegendDot color={LIT_COLORS[0]} label="Lit" />
           </div>
         </div>
       </section>
