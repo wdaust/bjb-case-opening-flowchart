@@ -122,6 +122,11 @@ export default function ControlTower() {
     return expertsData.groupings.filter(g => g.label === selectedAttorney);
   }, [expertsData, isFiltered, selectedAttorney]);
 
+  const filteredOpenLitGrouping = useMemo(() => {
+    if (!openLitData || !isFiltered) return null;
+    return openLitData.groupings.find(g => g.label === selectedAttorney) ?? null;
+  }, [openLitData, isFiltered, selectedAttorney]);
+
   const navigate = useNavigate();
 
   // ── Metric History (must be before early return — rules of hooks) ────
@@ -139,10 +144,16 @@ export default function ControlTower() {
   const histTotalNetFee      = useMetricHistory('totalNetFee');
 
   // ── Section 1: Hero KPIs from Matters Universe + Resolutions + Stats ──
-  const openMatters = (openLitData?.grandTotals?.find(g => g.label === 'Record Count')?.value ?? 0) as number;
+  const openMattersFirm = (openLitData?.grandTotals?.find(g => g.label === 'Record Count')?.value ?? 0) as number;
+  const openMatters = isFiltered
+    ? (filteredOpenLitGrouping?.aggregates.find(a => a.label === 'Record Count')?.value ?? 0) as number
+    : openMattersFirm;
 
   const njInventory = getDashMetric(statsData, 'NJ Lit Inventory') ?? 0;
-  const portfolioValue = getDashMetric(statsData, 'NJ Lit Inventory (Value)') ?? 0;
+  const portfolioValueFirm = getDashMetric(statsData, 'NJ Lit Inventory (Value)') ?? 0;
+  const portfolioValue = isFiltered
+    ? (filteredOpenLitGrouping?.aggregates.find(a => a.label === 'Historical True Value')?.value ?? 0) as number
+    : portfolioValueFirm;
   const totalSettlement = (resData?.grandTotals.find(g => g.label.includes('Settlement'))?.value ?? 0) as number;
   const totalResolved = (resData?.grandTotals.find(g => g.label === 'Record Count')?.value ?? 0) as number;
   const totalNetFee = (resData?.grandTotals.find(g => g.label.includes('Fee'))?.value ?? 0) as number;
@@ -301,7 +312,7 @@ export default function ControlTower() {
   useEffect(() => {
     if (allLoading) return;
     saveMetricSnapshots({
-      openMatters, portfolioValue, njInventory,
+      openMatters: openMattersFirm, portfolioValue: portfolioValueFirm, njInventory,
       totalSettlement, totalResolved, totalNetFee,
       missingTrackers, serviceGt3d, noService35, missingAnswers,
       dedExtensions, njResolutions,
@@ -398,9 +409,9 @@ export default function ControlTower() {
               value={fmtNum(openMatters)}
               variant="glass"
               className={hoverCard}
-              sparklineData={histOpenMatters}
-              anomaly={anomOpenMatters ?? undefined}
-              subMetrics={[
+              sparklineData={isFiltered ? undefined : histOpenMatters}
+              anomaly={isFiltered ? undefined : anomOpenMatters ?? undefined}
+              subMetrics={isFiltered ? undefined : [
                 { label: "NJ Lit", value: fmtNum(njInventory), deltaType: "neutral" as const },
               ]}
             />
@@ -409,9 +420,9 @@ export default function ControlTower() {
               value={fmt$(portfolioValue)}
               variant="glass"
               className={hoverCard}
-              sparklineData={histPortfolioValue}
-              anomaly={anomPortfolioValue ?? undefined}
-              subMetrics={[
+              sparklineData={isFiltered ? undefined : histPortfolioValue}
+              anomaly={isFiltered ? undefined : anomPortfolioValue ?? undefined}
+              subMetrics={isFiltered ? undefined : [
                 { label: "NJ Lit count", value: fmtNum(njInventory), deltaType: "neutral" },
               ]}
             />
