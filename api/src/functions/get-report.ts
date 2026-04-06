@@ -13,6 +13,7 @@ interface SfReportResult {
     name: string;
     reportFormat: string;
     groupingsDown: Array<{ name: string; label: string }>;
+    aggregates?: string[];
   };
   factMap: Record<string, {
     aggregates: Array<{ label: string; value: number | null }>;
@@ -30,20 +31,23 @@ interface SfReportResult {
 function shapeReportSummary(raw: SfReportResult) {
   const grandTotals = raw.factMap['T!T']?.aggregates ?? raw.factMap['T']?.aggregates ?? [];
   const aggregateInfo = raw.reportExtendedMetadata?.aggregateColumnInfo ?? {};
+  // Use reportMetadata.aggregates for correct ordering (matches factMap aggregate order)
+  const aggOrder = raw.reportMetadata.aggregates ?? Object.keys(aggregateInfo);
+
+  function labelForIndex(i: number) {
+    const key = aggOrder[i];
+    return key && aggregateInfo[key] ? aggregateInfo[key].label : null;
+  }
 
   const totals = grandTotals.map((agg, i) => {
-    const keys = Object.keys(aggregateInfo);
-    const label = keys[i] ? aggregateInfo[keys[i]].label : agg.label;
-    return { label, value: agg.value };
+    return { label: labelForIndex(i) ?? agg.label, value: agg.value };
   });
 
   const groupings = raw.groupingsDown?.groupings?.map(g => ({
     key: g.key,
     label: g.label,
     aggregates: (raw.factMap[`${g.key}!T`]?.aggregates ?? []).map((a, i) => {
-      const keys = Object.keys(aggregateInfo);
-      const label = keys[i] ? aggregateInfo[keys[i]].label : a.label;
-      return { label, value: a.value };
+      return { label: labelForIndex(i) ?? a.label, value: a.value };
     }),
   })) ?? [];
 

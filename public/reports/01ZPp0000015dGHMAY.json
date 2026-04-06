@@ -5,59 +5,137 @@
     {
       "title": "Complaint Timing NJ",
       "chartType": "donut",
-      "columns": ["Complaint Filing Compliance", "Record Count"],
+      "columns": [
+        "Record Count"
+      ],
       "rows": [
-        { "label": "Complaint Filed Late", "values": [{ "label": "Record Count", "value": 501 }] },
-        { "label": "Complaint Filed Timely", "values": [{ "label": "Record Count", "value": 464 }] }
-      ]
-    },
-    {
-      "title": "Complaint Timing NJ in Days",
-      "chartType": "donut",
-      "columns": ["Complaint Filing Compliance", "Average Date Assigned to Team to Filed"],
-      "rows": [
-        { "label": "Complaint Filed Late", "values": [{ "label": "Average Date Assigned to Team to Filed", "value": 102.9 }] },
-        { "label": "Complaint Filed Timely", "values": [{ "label": "Average Date Assigned to Team to Filed", "value": 8 }] }
-      ]
-    },
-    {
-      "title": "Form A Timing NJ in Days from Answer",
-      "chartType": "donut",
-      "columns": ["Form A Status", "Unique Count of Matter ID"],
-      "rows": [
-        { "label": "Form A Served - Late", "values": [{ "label": "Unique Count of Matter ID", "value": 766 }] },
-        { "label": "Form A Served - Timely", "values": [{ "label": "Unique Count of Matter ID", "value": 172 }] }
+        {
+          "label": "Complaint Filed Late",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 501
+            }
+          ]
+        },
+        {
+          "label": "Complaint Filed Timely",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 464
+            }
+          ]
+        }
       ]
     },
     {
       "title": "Form C Timing NJ in Days from Answer",
       "chartType": "donut",
-      "columns": ["Form C Compliance", "Unique Count of Client Name"],
+      "columns": [
+        "Unique Count of Client Name"
+      ],
       "rows": [
-        { "label": "Form C Compliant - Under 60 Days", "values": [{ "label": "Unique Count of Client Name", "value": 414 }] },
-        { "label": "Form C Not Compliant - Over 60 Days", "values": [{ "label": "Unique Count of Client Name", "value": 1040 }] }
+        {
+          "label": "Form C Compliant - Under 60 Days",
+          "values": [
+            {
+              "label": "Unique Count of Client Name",
+              "value": 414
+            }
+          ]
+        },
+        {
+          "label": "Form C Not Compliant - Over 60 Days",
+          "values": [
+            {
+              "label": "Unique Count of Client Name",
+              "value": 1040
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Complaint Timing NJ in Days",
+      "chartType": "donut",
+      "columns": [
+        "Average Date Assigned to Team to Filed"
+      ],
+      "rows": [
+        {
+          "label": "Complaint Filed Late",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 102.94610778443113
+            }
+          ]
+        },
+        {
+          "label": "Complaint Filed Timely",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 8.191810344827585
+            }
+          ]
+        }
       ]
     },
     {
       "title": "Dep Timing NJ in Days from Form A",
       "chartType": "donut",
-      "columns": ["Dep Compliance", "Unique Count of Matter ID"],
+      "columns": [
+        "Unique Count of Matter ID"
+      ],
       "rows": [
-        { "label": "Dep Compliant - Under 60 Days", "values": [{ "label": "Unique Count of Matter ID", "value": 111 }] },
-        { "label": "Dep Not Compliant - Over 60 Days", "values": [{ "label": "Unique Count of Matter ID", "value": 638 }] }
+        {
+          "label": "Dep Compliant - Under 60 Days",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 111
+            }
+          ]
+        },
+        {
+          "label": "Dep Not Compliant - Over 60 Days",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 638
+            }
+          ]
+        }
       ]
     },
     {
-      "title": "DED Extensions",
-      "chartType": "metric",
-      "columns": ["Record Count"],
-      "rows": [{ "label": "DED Extensions", "values": [{ "label": "Record Count", "value": 899 }] }]
-    },
-    {
-      "title": "NJ Resolutions",
-      "chartType": "metric",
-      "columns": ["Record Count"],
-      "rows": [{ "label": "NJ Resolutions", "values": [{ "label": "Record Count", "value": 154 }] }]
+      "title": "Form A Timing NJ in Days from Answer",
+      "chartType": "donut",
+      "columns": [
+        "Unique Count of Matter ID"
+      ],
+      "rows": [
+        {
+          "label": "Form A Served - Late",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 766
+            }
+          ]
+        },
+        {
+          "label": "Form A Served - Timely",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 172
+            }
+          ]
+        }
+      ]
     }
   ]
 }

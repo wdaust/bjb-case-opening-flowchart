@@ -5,115 +5,513 @@
     {
       "title": "NJ Lit Inventory",
       "chartType": "metric",
-      "columns": ["Record Count"],
-      "rows": [{ "label": "NJ Lit Inventory", "values": [{ "label": "Record Count", "value": 1235 }] }]
+      "columns": [
+        "Record Count"
+      ],
+      "rows": [
+        {
+          "label": "NJ Lit Inventory",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 1234
+            }
+          ]
+        }
+      ]
     },
     {
       "title": "NJ LIT - Negotiations",
       "chartType": "donut",
-      "columns": ["Negotiation Status", "Record Count"],
+      "columns": [
+        "Record Count"
+      ],
       "rows": [
-        { "label": "Attempt within 30 Days, but No Connection", "values": [{ "label": "Record Count", "value": 88 }] },
-        { "label": "Connection Within Last 30 Days", "values": [{ "label": "Record Count", "value": 351 }] },
-        { "label": "No Attempt", "values": [{ "label": "Record Count", "value": 64 }] },
-        { "label": "No Attempt in 30 to 59 Days", "values": [{ "label": "Record Count", "value": 332 }] },
-        { "label": "No Attempt in 60 to 89 Days", "values": [{ "label": "Record Count", "value": 332 }] },
-        { "label": "No Attempt in Over 90 Days", "values": [{ "label": "Record Count", "value": 68 }] }
-      ]
-    },
-    {
-      "title": "Complaint Filing Dashboard (NJ LIT)",
-      "chartType": "donut",
-      "columns": ["Filing Status", "Record Count"],
-      "rows": [
-        { "label": "15-30 Days to Due Date", "values": [{ "label": "Record Count", "value": 46 }] },
-        { "label": "Exception", "values": [{ "label": "Record Count", "value": 3 }] },
-        { "label": "Overdue 0-14 Days", "values": [{ "label": "Record Count", "value": 11 }] },
-        { "label": "Overdue 15-29", "values": [{ "label": "Record Count", "value": 11 }] },
-        { "label": "Overdue 30-59", "values": [{ "label": "Record Count", "value": 21 }] },
-        { "label": "Overdue 60-89", "values": [{ "label": "Record Count", "value": 11 }] }
+        {
+          "label": "Attempt within 30 Days, but No Connection",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 90
+            }
+          ]
+        },
+        {
+          "label": "Connection Within Last 30 Days",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 356
+            }
+          ]
+        },
+        {
+          "label": "No Attempt",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 220
+            }
+          ]
+        },
+        {
+          "label": "No Attempt in 30 to 59 Days",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 165
+            }
+          ]
+        },
+        {
+          "label": "No Attempt in 60 to 89 Days",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 76
+            }
+          ]
+        },
+        {
+          "label": "No Attempt in Over 90 Days",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 327
+            }
+          ]
+        }
       ]
     },
     {
       "title": "NJ Lit Inventory (Value)",
       "chartType": "metric",
-      "columns": ["Sum of Midpoint of Case Rating"],
-      "rows": [{ "label": "NJ Lit Inventory", "values": [{ "label": "Sum of Midpoint of Case Rating", "value": 122192500 }] }]
+      "columns": [
+        "Sum of Case Rating Midpoint"
+      ],
+      "rows": [
+        {
+          "label": "NJ Lit Inventory",
+          "values": [
+            {
+              "label": "Sum of Case Rating Midpoint",
+              "value": 122036000
+            }
+          ]
+        }
+      ]
     },
     {
       "title": "Missing Discovery Trackers (NJ)",
       "chartType": "metric",
-      "columns": ["Record Count"],
-      "rows": [{ "label": "Missing Discovery Trackers", "values": [{ "label": "Record Count", "value": 3 }] }]
+      "columns": [
+        "Record Count"
+      ],
+      "rows": [
+        {
+          "label": "Missing Discovery Trackers (NJ)",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 1
+            }
+          ]
+        }
+      ]
     },
     {
       "title": "NJ- Service Initiated >3 Days from COMP",
       "chartType": "metric",
-      "columns": ["Unique Count of Matter Name"],
-      "rows": [{ "label": "Service >3 Days from COMP", "values": [{ "label": "Unique Count of Matter Name", "value": 27 }] }]
-    },
-    {
-      "title": "No Service 35+ Days (NJ)",
-      "chartType": "metric",
-      "columns": ["Record Count"],
-      "rows": [{ "label": "No Service 35+ Days", "values": [{ "label": "Record Count", "value": 32 }] }]
-    },
-    {
-      "title": "Missing All Ans, No Default (NJ)",
-      "chartType": "metric",
-      "columns": ["Unique Count of Client Name"],
-      "rows": [{ "label": "Missing Ans, No Default", "values": [{ "label": "Unique Count of Client Name", "value": 140 }] }]
+      "columns": [
+        "Unique Count of Matter Name"
+      ],
+      "rows": [
+        {
+          "label": "NJ- Service Initiated >3 Days from COMP",
+          "values": [
+            {
+              "label": "Unique Count of Matter Name",
+              "value": 1
+            }
+          ]
+        }
+      ]
     },
     {
       "title": "Form A Past Due (NJ)",
       "chartType": "donut",
-      "columns": ["Form A Status", "Unique Count of Matter ID"],
+      "columns": [
+        "Unique Count of Matter ID"
+      ],
       "rows": [
-        { "label": "15-30 Days to Due Date", "values": [{ "label": "Unique Count of Matter ID", "value": 20 }] },
-        { "label": "Overdue 0-14 Days", "values": [{ "label": "Unique Count of Matter ID", "value": 24 }] },
-        { "label": "Overdue 15-29 Days", "values": [{ "label": "Unique Count of Matter ID", "value": 15 }] },
-        { "label": "Overdue 30+ Days", "values": [{ "label": "Unique Count of Matter ID", "value": 25 }] }
-      ]
-    },
-    {
-      "title": "Form C Past Due (NJ)",
-      "chartType": "donut",
-      "columns": ["Form C Status", "Unique Count of Matter ID"],
-      "rows": [
-        { "label": "10-Day Letter Out, Within 10 Days", "values": [{ "label": "Unique Count of Matter ID", "value": 10 }] },
-        { "label": "Other", "values": [{ "label": "Unique Count of Matter ID", "value": 132 }] }
+        {
+          "label": "15-30 Days to Due Date",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 16
+            }
+          ]
+        },
+        {
+          "label": "Form A Overdue [Overdue 0-14 Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 14
+            }
+          ]
+        },
+        {
+          "label": "Form A Overdue [Overdue 15-29 Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "label": "Form A Overdue [Overdue 30-59 Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 12
+            }
+          ]
+        },
+        {
+          "label": "Form A Overdue [Overdue 60-89 Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "label": "Form A Overdue [Overdue 90+ Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 19
+            }
+          ]
+        }
       ]
     },
     {
       "title": "Dep Report for NJ PI LIT",
       "chartType": "donut",
-      "columns": ["Dep Compliance", "Unique Count of Matter ID"],
+      "columns": [
+        "Unique Count of Matter ID"
+      ],
       "rows": [
-        { "label": "Dep Overdue [Overdue 180+ Days]", "values": [{ "label": "Unique Count of Matter ID", "value": 5 }] },
-        { "label": "Other", "values": [{ "label": "Unique Count of Matter ID", "value": 10 }] }
+        {
+          "label": "Dep Overdue [Overdue 0-29 Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Dep Overdue [Overdue 180+ Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "label": "Dep Overdue [Overdue 30-59 Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Dep Overdue [Overdue 90-179 Days]",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Not Due Yet 0-29 Days to Due Date",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "Not Due Yet 30-75 Days to Due Date",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Experts not Served (Grouped by Expert)",
+      "chartType": "metric",
+      "columns": [
+        "Record Count"
+      ],
+      "rows": [
+        {
+          "label": "Experts not Served (Grouped by Expert)",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 430
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "NJ ARB, MED, SET CONF or Trials",
+      "chartType": "column",
+      "columns": [
+        "Record Count",
+        "Sum of Case Rating Midpoint"
+      ],
+      "rows": [
+        {
+          "label": "Arbitration",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 89
+            },
+            {
+              "label": "Sum of Case Rating Midpoint",
+              "value": 14338500
+            }
+          ]
+        },
+        {
+          "label": "Mediation",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 6
+            },
+            {
+              "label": "Sum of Case Rating Midpoint",
+              "value": 1051000
+            }
+          ]
+        },
+        {
+          "label": "Settlement Conference",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 15
+            },
+            {
+              "label": "Sum of Case Rating Midpoint",
+              "value": 2667000
+            }
+          ]
+        },
+        {
+          "label": "Trial",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 44
+            },
+            {
+              "label": "Sum of Case Rating Midpoint",
+              "value": 8367500
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Complaint Filing Dashboard (NJ LIT)",
+      "chartType": "donut",
+      "columns": [
+        "Record Count"
+      ],
+      "rows": [
+        {
+          "label": "15-30 Days to Due Date",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 44
+            }
+          ]
+        },
+        {
+          "label": "Exception",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 17
+            }
+          ]
+        },
+        {
+          "label": "Overdue 0-14 Days",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 15
+            }
+          ]
+        },
+        {
+          "label": "Overdue 15-29",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 6
+            }
+          ]
+        },
+        {
+          "label": "Overdue 30-59",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 15
+            }
+          ]
+        },
+        {
+          "label": "Overdue 60-89",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "No Service 35+ Days (NJ)",
+      "chartType": "metric",
+      "columns": [
+        "Record Count"
+      ],
+      "rows": [
+        {
+          "label": "No Service 35+ Days (NJ)",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 32
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Form C Past Due (NJ)",
+      "chartType": "donut",
+      "columns": [
+        "Unique Count of Matter ID"
+      ],
+      "rows": [
+        {
+          "label": "10-Day Letter Out, Within 10 Days",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "label": "60 Days Approaching, Prepare 10 Day Letter",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "label": "Need a 10-Day Letter",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 27
+            }
+          ]
+        },
+        {
+          "label": "Need to File Motion",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 82
+            }
+          ]
+        },
+        {
+          "label": "Within Time",
+          "values": [
+            {
+              "label": "Unique Count of Matter ID",
+              "value": 20
+            }
+          ]
+        }
       ]
     },
     {
       "title": "Avg Days Due to Extensions",
       "chartType": "metric",
-      "columns": ["Average Days Between Extensions"],
-      "rows": [{ "label": "DED Extensions", "values": [{ "label": "Average Days Between Extensions", "value": 82.2 }] }]
-    },
-    {
-      "title": "Experts not Served (Grouped by Expert)",
-      "chartType": "metric",
-      "columns": ["Record Count"],
-      "rows": [{ "label": "Experts Not Served", "values": [{ "label": "Record Count", "value": 433 }] }]
-    },
-    {
-      "title": "NJ ARB, MED, SET CONF or Trials",
-      "chartType": "bar",
-      "columns": ["Next Event", "Record Count", "Sum of Midpoint of Case Rating"],
+      "columns": [
+        "Average Days Between Extensions"
+      ],
       "rows": [
-        { "label": "Arbitration", "values": [{ "label": "Record Count", "value": 89 }, { "label": "Sum of Midpoint of Case Rating", "value": 14039000 }] },
-        { "label": "Mediation", "values": [{ "label": "Record Count", "value": 6 }, { "label": "Sum of Midpoint of Case Rating", "value": 1051000 }] },
-        { "label": "Settlement Conference", "values": [{ "label": "Record Count", "value": 12 }, { "label": "Sum of Midpoint of Case Rating", "value": 1466500 }] },
-        { "label": "Trial", "values": [{ "label": "Record Count", "value": 47 }, { "label": "Sum of Midpoint of Case Rating", "value": 9568500 }] }
+        {
+          "label": "Avg Days Due to Extensions",
+          "values": [
+            {
+              "label": "Average Days Between Extensions",
+              "value": 80.48055207026349
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Missing All Ans, No Default (NJ)",
+      "chartType": "metric",
+      "columns": [
+        "Unique Count of Client Name"
+      ],
+      "rows": [
+        {
+          "label": "Missing All Ans, No Default (NJ)",
+          "values": [
+            {
+              "label": "Unique Count of Client Name",
+              "value": 145
+            }
+          ]
+        }
       ]
     }
   ]
