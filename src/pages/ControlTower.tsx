@@ -405,6 +405,7 @@ export default function ControlTower() {
               value={fmtNum(openMatters)}
               variant="glass"
               className={hoverCard}
+              onClick={() => navigate('/open-inventory')}
               sparklineData={isFiltered ? undefined : histOpenMatters}
               anomaly={isFiltered ? undefined : anomOpenMatters ?? undefined}
               subMetrics={isFiltered ? undefined : [
@@ -416,6 +417,7 @@ export default function ControlTower() {
               value={`${compliancePct(formA)}%`}
               variant="glass"
               className={hoverCard}
+              onClick={() => navigate('/form-a')}
               subMetrics={[
                 { label: "Timely", value: fmtNum(formA.timely), deltaType: "neutral" as const },
                 { label: "Late", value: fmtNum(formA.late), deltaType: "neutral" as const },
@@ -427,6 +429,7 @@ export default function ControlTower() {
               value={`${compliancePct(deps)}%`}
               variant="glass"
               className={hoverCard}
+              onClick={() => navigate('/depositions')}
               subMetrics={[
                 { label: "Timely", value: fmtNum(deps.timely), deltaType: "neutral" as const },
                 { label: "Late", value: fmtNum(deps.late), deltaType: "neutral" as const },

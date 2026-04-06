@@ -51,6 +51,32 @@ if (reportId === RESOLUTIONS_ID) {
   }
 }
 
+// ── Detail row extraction ────────────────────────────────────────────
+let detailRows = undefined;
+if (raw.hasDetailRows) {
+  const detailCols = raw.reportMetadata?.detailColumns ?? [];
+  const detailColInfo = raw.reportExtendedMetadata?.detailColumnInfo ?? {};
+  detailRows = [];
+
+  for (const g of filteredGroupings) {
+    // Iterate row indices in factMap for this grouping
+    let rowIdx = 0;
+    while (true) {
+      const cell = raw.factMap[`${g.key}!${rowIdx}`];
+      if (!cell) break;
+      const row = { _groupingLabel: g.label };
+      (cell.dataCells ?? []).forEach((dc, ci) => {
+        const colKey = detailCols[ci];
+        const colInfo = detailColInfo[colKey];
+        const colLabel = colInfo?.label ?? colKey ?? `col_${ci}`;
+        row[colLabel] = dc.label ?? dc.value;
+      });
+      detailRows.push(row);
+      rowIdx++;
+    }
+  }
+}
+
 const shaped = {
   reportId,
   reportName: raw.reportMetadata.name,
@@ -58,6 +84,7 @@ const shaped = {
   grandTotals: filteredTotals,
   groupings: filteredGroupings,
   hasDetailRows: raw.hasDetailRows,
+  ...(detailRows ? { detailRows } : {}),
 };
 
 console.log(JSON.stringify(shaped, null, 2));

@@ -17,7 +17,7 @@ SCRIPT_DIR="$(pwd)/scripts"
 REPORTS=(
   "00OPp000003OUcjMAG"   # Discovery Trackers
   "00OPp000003PLtxMAG"   # Experts Not Served
-  "00O4V000009RreKUAS"   # Open Lit Matters by Owner and PI status
+  # Open Lit fetched separately below with includeDetails=true
 )
 # NOTE: Matters Universe (00OPp000003OaGjMAK) is skipped — the SF report was
 # reconfigured and no longer provides the stage-grouped Open/Closed aggregates
@@ -74,6 +74,15 @@ for id in "${REPORTS[@]}"; do
   NAME=$(jq -r '.reportName' "$OUT_DIR/$id.json")
   echo "✅  $NAME"
 done
+
+# ── Open Lit (with detail rows) ──────────────────────────────────────
+OPEN_LIT_ID="00O4V000009RreKUAS"
+echo -n "  📊 Open Lit (with details) ... "
+RAW=$(sf api request rest "/services/data/$API_VER/analytics/reports/${OPEN_LIT_ID}?includeDetails=true" -o "$ORG" 2>/dev/null)
+echo "$RAW" | node "$SCRIPT_DIR/shape-report.mjs" > "$OUT_DIR/$OPEN_LIT_ID.json"
+NAME=$(jq -r '.reportName' "$OUT_DIR/$OPEN_LIT_ID.json")
+ROWS=$(jq '.detailRows | length' "$OUT_DIR/$OPEN_LIT_ID.json")
+echo "✅  $NAME ($ROWS detail rows)"
 
 # ── Fetch Dashboards ─────────────────────────────────────────────────
 for id in "${DASHBOARDS[@]}"; do
