@@ -17,6 +17,7 @@ SCRIPT_DIR="$(pwd)/scripts"
 REPORTS=(
   "00OPp000003OUcjMAG"   # Discovery Trackers
   "00OPp000003PLtxMAG"   # Experts Not Served
+  "00O4V000009RreKUAS"   # Open Lit Matters by Owner and PI status
 )
 # NOTE: Matters Universe (00OPp000003OaGjMAK) is skipped — the SF report was
 # reconfigured and no longer provides the stage-grouped Open/Closed aggregates

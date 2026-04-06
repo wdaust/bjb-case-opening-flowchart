@@ -8,7 +8,7 @@ import { Skeleton } from '../components/ui/skeleton';
 import { cn } from '../utils/cn';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
-import { MATTERS_ID, STATS_ID, TIMING_ID } from '../data/sfReportIds';
+import { MATTERS_ID, OPEN_LIT_ID, STATS_ID, TIMING_ID } from '../data/sfReportIds';
 import {
   getDashMetric,
   getTimingCompliance,
@@ -59,18 +59,20 @@ export default function InventoryHealth() {
   // ── Data fetching ───────────────────────────────────────────────
   const { data: mattersData, loading: mattersLoading } =
     useSalesforceReport<ReportSummaryResponse>({ id: MATTERS_ID, type: 'report' });
+  const { data: openLitData, loading: openLitLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: OPEN_LIT_ID, type: 'report' });
   const { data: statsData, loading: statsLoading } =
     useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
   const { data: timingData, loading: timingLoading } =
     useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
 
-  const loading = mattersLoading || statsLoading || timingLoading;
+  const loading = mattersLoading || openLitLoading || statsLoading || timingLoading;
 
   if (loading) return <InventoryHealthSkeleton />;
 
   // ── StatCard values ─────────────────────────────────────────────
   const openInventory =
-    mattersData?.grandTotals?.find(a => a.label === 'Record Count')?.value ?? 0;
+    openLitData?.grandTotals?.find(a => a.label === 'Record Count')?.value ?? 0;
   const missingTrackers = getDashMetric(statsData, 'Missing Trackers');
   const missingAnswers = getDashMetric(statsData, 'Missing Answers');
 

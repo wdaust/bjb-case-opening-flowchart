@@ -1,0 +1,966 @@
+{
+  "reportId": "00O4V000009RreKUAS",
+  "reportName": "Open Lit Matters by Owner and PI status",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Average Age in Litigation",
+      "value": 318.7942908926144
+    },
+    {
+      "label": "Sum of Case Rating Midpoint",
+      "value": 194874500
+    },
+    {
+      "label": "Sum of Historical True Value",
+      "value": 167190869.25
+    },
+    {
+      "label": "Sum of Max Negotiation Offer",
+      "value": 27521398.56
+    },
+    {
+      "label": "Record Count",
+      "value": 2207
+    }
+  ],
+  "groupings": [
+    {
+      "key": "0",
+      "label": "Andrew Dellaripa",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 584
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 3342000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 3408910.7
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 934012.67
+        },
+        {
+          "label": "Record Count",
+          "value": 66
+        }
+      ]
+    },
+    {
+      "key": "1",
+      "label": "Andrew Nirchio",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 69
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 372000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 338980.8
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 134925
+        },
+        {
+          "label": "Record Count",
+          "value": 19
+        }
+      ]
+    },
+    {
+      "key": "2",
+      "label": "Austin Qi",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 235.76315789473685
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 1682000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 938274.23
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 467500
+        },
+        {
+          "label": "Record Count",
+          "value": 38
+        }
+      ]
+    },
+    {
+      "key": "3",
+      "label": "Bianca Pagani",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 1266
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 7500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 44030.91
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 15000
+        },
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "4",
+      "label": "Brian Lehrer",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 443.1023622047244
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 13654500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 11132872.92
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1379982.66
+        },
+        {
+          "label": "Record Count",
+          "value": 127
+        }
+      ]
+    },
+    {
+      "key": "5",
+      "label": "Bruce Cantin",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 1594
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 20500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 18511.9
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 0
+        },
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "6",
+      "label": "Chris Bradley",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 671.5
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 38000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 45061.22
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 30000
+        },
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "7",
+      "label": "Christopher Karounos",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 430.86046511627904
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 11208000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 9749452.73
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 2089300
+        },
+        {
+          "label": "Record Count",
+          "value": 86
+        }
+      ]
+    },
+    {
+      "key": "8",
+      "label": "David Rehe",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 398.1375
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 6350000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 5568879.54
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 452650
+        },
+        {
+          "label": "Record Count",
+          "value": 80
+        }
+      ]
+    },
+    {
+      "key": "9",
+      "label": "Eric Plantier",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 479.0204081632653
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 9211000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 6928785.53
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 893794
+        },
+        {
+          "label": "Record Count",
+          "value": 98
+        }
+      ]
+    },
+    {
+      "key": "10",
+      "label": "George Saba",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 246.08064516129033
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 4613500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 2795724.45
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 60835
+        },
+        {
+          "label": "Record Count",
+          "value": 62
+        }
+      ]
+    },
+    {
+      "key": "11",
+      "label": "Gregory Shaffer",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 280.1808510638298
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 6854000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 6441387.41
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1183825
+        },
+        {
+          "label": "Record Count",
+          "value": 94
+        }
+      ]
+    },
+    {
+      "key": "12",
+      "label": "Heath Murphy",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 295.70588235294116
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 2832500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 2613865
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 792067.14
+        },
+        {
+          "label": "Record Count",
+          "value": 34
+        }
+      ]
+    },
+    {
+      "key": "13",
+      "label": "Jason Richman",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 112.97560975609755
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 15781000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 14914917.37
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1635500
+        },
+        {
+          "label": "Record Count",
+          "value": 82
+        }
+      ]
+    },
+    {
+      "key": "14",
+      "label": "Jason Zajdel",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 185.90769230769232
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 4418500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 1952241.87
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 289600
+        },
+        {
+          "label": "Record Count",
+          "value": 65
+        }
+      ]
+    },
+    {
+      "key": "15",
+      "label": "Jerry Lindheim",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 148.83333333333334
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 1498500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 756700.16
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 200000
+        },
+        {
+          "label": "Record Count",
+          "value": 30
+        }
+      ]
+    },
+    {
+      "key": "16",
+      "label": "Joel Moore",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 163.5
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 2147000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 1952000
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 143897.09
+        },
+        {
+          "label": "Record Count",
+          "value": 78
+        }
+      ]
+    },
+    {
+      "key": "17",
+      "label": "John Carucci",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 209.97058823529412
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 2789500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 2778913.06
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 137000
+        },
+        {
+          "label": "Record Count",
+          "value": 34
+        }
+      ]
+    },
+    {
+      "key": "18",
+      "label": "John VanDyken",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 210.71428571428572
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 5435500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 4247527.73
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 359549
+        },
+        {
+          "label": "Record Count",
+          "value": 77
+        }
+      ]
+    },
+    {
+      "key": "19",
+      "label": "Lisa Lehrer",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 301.1391304347826
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 18353000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 15421674.45
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1772783
+        },
+        {
+          "label": "Record Count",
+          "value": 115
+        }
+      ]
+    },
+    {
+      "key": "20",
+      "label": "Marc Borden",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 389.5
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 6360500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 6905305.6
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1400000
+        },
+        {
+          "label": "Record Count",
+          "value": 34
+        }
+      ]
+    },
+    {
+      "key": "21",
+      "label": "Mark Dumas",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 504.22727272727275
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 1786000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 1706996.89
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 90000
+        },
+        {
+          "label": "Record Count",
+          "value": 22
+        }
+      ]
+    },
+    {
+      "key": "22",
+      "label": "Mark Grodberg",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 289.2886597938144
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 5172000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 6026198.37
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 334850
+        },
+        {
+          "label": "Record Count",
+          "value": 97
+        }
+      ]
+    },
+    {
+      "key": "23",
+      "label": "Matthew Futerfas",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 368.5287356321839
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 7120000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 5857002.73
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1249180
+        },
+        {
+          "label": "Record Count",
+          "value": 87
+        }
+      ]
+    },
+    {
+      "key": "24",
+      "label": "Matthew Slama",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 4
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 197500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 23178.57
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 80000
+        },
+        {
+          "label": "Record Count",
+          "value": 10
+        }
+      ]
+    },
+    {
+      "key": "25",
+      "label": "Melissa Perrotta Marinelli",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 461.125
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 6462500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 5806147.53
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1330500
+        },
+        {
+          "label": "Record Count",
+          "value": 88
+        }
+      ]
+    },
+    {
+      "key": "26",
+      "label": "Micronetbd User",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 0
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 0
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 0
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 0
+        },
+        {
+          "label": "Record Count",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "key": "27",
+      "label": "Paul A Krauss",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 397.5568181818182
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 10712500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 9561575.26
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 2389600
+        },
+        {
+          "label": "Record Count",
+          "value": 88
+        }
+      ]
+    },
+    {
+      "key": "28",
+      "label": "Paul F Romano",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 301.5656565656566
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 9542500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 11247800.54
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 3576850
+        },
+        {
+          "label": "Record Count",
+          "value": 99
+        }
+      ]
+    },
+    {
+      "key": "29",
+      "label": "Raymond Carroll",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 318.1578947368421
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 8777500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 7496327.05
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1302000
+        },
+        {
+          "label": "Record Count",
+          "value": 95
+        }
+      ]
+    },
+    {
+      "key": "30",
+      "label": "Robert Davant",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 177.38636363636363
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 4319500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 1425364.02
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 263000
+        },
+        {
+          "label": "Record Count",
+          "value": 44
+        }
+      ]
+    },
+    {
+      "key": "31",
+      "label": "Ryan Veilleux",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 203.247311827957
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 8512500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 6616145.92
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 152523
+        },
+        {
+          "label": "Record Count",
+          "value": 93
+        }
+      ]
+    },
+    {
+      "key": "32",
+      "label": "Stephen Gontkosky",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 72.91666666666667
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 2107000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 237899.2
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 29300
+        },
+        {
+          "label": "Record Count",
+          "value": 24
+        }
+      ]
+    },
+    {
+      "key": "33",
+      "label": "Stephen Mennella",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 458.3958333333333
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 7875500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 6955646.09
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 1534875
+        },
+        {
+          "label": "Record Count",
+          "value": 96
+        }
+      ]
+    },
+    {
+      "key": "34",
+      "label": "Todd Greenwell",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 146.92857142857142
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 632500
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 601758.6
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 250500
+        },
+        {
+          "label": "Record Count",
+          "value": 28
+        }
+      ]
+    },
+    {
+      "key": "35",
+      "label": "William Firth",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 331.7821782178218
+        },
+        {
+          "label": "Sum of Case Rating Midpoint",
+          "value": 4688000
+        },
+        {
+          "label": "Sum of Historical True Value",
+          "value": 4674810.9
+        },
+        {
+          "label": "Sum of Max Negotiation Offer",
+          "value": 566000
+        },
+        {
+          "label": "Record Count",
+          "value": 101
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": false
+}

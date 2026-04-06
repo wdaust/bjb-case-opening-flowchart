@@ -35,15 +35,6 @@ export function ControlTowerSkeleton() {
         </DashboardGrid>
       </div>
 
-      {/* Section 2: Inventory by Stage */}
-      <div>
-        <Skeleton className="h-5 w-36 mb-2" />
-        <Skeleton className="h-3 w-64 mb-4" />
-        <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-5">
-          <Skeleton className="h-[400px] w-full" />
-        </div>
-      </div>
-
       {/* Section 3: NJ Operations Velocity (4 cols) */}
       <div>
         <Skeleton className="h-5 w-48 mb-2" />

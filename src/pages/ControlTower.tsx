@@ -167,40 +167,6 @@ export default function ControlTower() {
   // ── Escalations ────────────────────────────────────────────────────
   const escalations = useMemo(() => getRealEscalations(lci, loadHistory()), [lci]);
 
-  // ── Section 2: Inventory by Stage ───────────────────────────────────
-  const PRE_LIT_STAGES = ['Account Opening', 'Treatment Monitoring', 'Value Development', 'Demand Readiness', 'Negotiation', 'Resolution Pending'];
-
-  const STAGE_SHORT_LABELS: Record<string, string> = {
-    'Account Opening': 'Acct Open',
-    'Treatment Monitoring': 'Treat Mon',
-    'Value Development': 'Val Dev',
-    'Demand Readiness': 'Dem Ready',
-    'Case Opening': 'Case Open',
-    'Resolution Pending': 'Res Pend',
-    'Expert & Deposition': 'Expert/Dep',
-  };
-
-  const PRE_LIT_COLORS = ['#059669', '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5'];
-  const LIT_COLORS = ['#dc2626', '#ef4444', '#f87171', '#fca5a5', '#fecaca'];
-
-  const pipeline = useMemo(() => {
-    if (!mattersData) return [];
-    return mattersData.groupings
-      .filter(g => g.label !== 'No Stage')
-      .map(g => ({
-        stage: g.label,
-        open: (g.aggregates.find(a => a.label === 'Open')?.value ?? 0) as number,
-      }))
-      .filter(g => g.open > 0)
-      .sort((a, b) => b.open - a.open);
-  }, [mattersData]);
-
-  const { preLit, lit, pipelineTotal } = useMemo(() => {
-    const pre = pipeline.filter(p => PRE_LIT_STAGES.includes(p.stage));
-    const l = pipeline.filter(p => !PRE_LIT_STAGES.includes(p.stage));
-    return { preLit: pre, lit: l, pipelineTotal: pipeline.reduce((s, p) => s + p.open, 0) };
-  }, [pipeline]);
-
   // ── Section 3 & 4: NJ Ops metrics ──────────────────────────────────
   const missingTrackers = getDashMetric(statsData, 'Missing Discovery Trackers (NJ)') ?? 0;
   const serviceGt3d = getDashMetric(statsData, 'NJ- Service Initiated >3 Days from COMP') ?? 0;
@@ -263,8 +229,8 @@ export default function ControlTower() {
 
   // Complaint timing in days
   const complaintDaysRows = getDashRows(timingData, 'Complaint Timing NJ in Days');
-  const complaintTimelyDays = complaintDaysRows.find(r => r.label.toLowerCase().includes('timely'))?.values[0]?.value ?? 0;
-  const complaintLateDays = complaintDaysRows.find(r => r.label.toLowerCase().includes('late'))?.values[0]?.value ?? 0;
+  const complaintTimelyDays = Number((complaintDaysRows.find(r => r.label.toLowerCase().includes('timely'))?.values[0]?.value ?? 0).toFixed(2));
+  const complaintLateDays = Number((complaintDaysRows.find(r => r.label.toLowerCase().includes('late'))?.values[0]?.value ?? 0).toFixed(2));
 
   // ── Timing Bar Data (Section 8) ─────────────────────────────────────
   const timingBarData = [
@@ -485,65 +451,6 @@ export default function ControlTower() {
 
       {/* Active Escalations Banner */}
       <EscalationBanner escalations={escalations} />
-
-      {/* ═══════════════════════════════════════════════════════════════
-          SECTION 2: Inventory by Stage (segmented bar)
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
-        <SectionHeader title="Inventory by Stage" subtitle="Open inventory proportional by stage" info="Distribution of open matters across pre-litigation and litigation stages. Click a segment to drill into that stage." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
-        <div className={cn("bg-white/[0.04] border border-white/[0.08] rounded-xl p-5", hoverCard)}>
-          <div className="flex items-center h-14 w-full">
-            {/* Pre-Lit group */}
-            {preLit.map((p, i) => {
-              const pct = pipelineTotal ? (p.open / pipelineTotal) * 100 : 0;
-              const color = PRE_LIT_COLORS[i % PRE_LIT_COLORS.length];
-              const shortLabel = STAGE_SHORT_LABELS[p.stage] ?? p.stage;
-              return (
-                <div
-                  key={p.stage}
-                  className="h-full flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 group relative"
-                  style={{ width: `${pct}%`, backgroundColor: color, borderRadius: i === 0 ? '6px 0 0 6px' : undefined }}
-                  title={`${p.stage}: ${fmtNum(p.open)} open`}
-                  onClick={() => navigate(`/stage/${encodeURIComponent(p.stage)}`)}
-                >
-                  {pct >= 5 && (
-                    <span className="text-[11px] font-semibold text-gray-900 truncate px-1 text-center leading-tight">
-                      {shortLabel}<br /><span className="text-[10px] font-bold">{fmtNum(p.open)}</span>
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-            {/* Gap between pre-lit and lit */}
-            {preLit.length > 0 && lit.length > 0 && <div className="w-1 h-full shrink-0" />}
-            {/* Lit group */}
-            {lit.map((p, i) => {
-              const pct = pipelineTotal ? (p.open / pipelineTotal) * 100 : 0;
-              const color = LIT_COLORS[i % LIT_COLORS.length];
-              const shortLabel = STAGE_SHORT_LABELS[p.stage] ?? p.stage;
-              return (
-                <div
-                  key={p.stage}
-                  className="h-full flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 group relative"
-                  style={{ width: `${pct}%`, backgroundColor: color, borderRadius: i === lit.length - 1 ? '0 6px 6px 0' : undefined }}
-                  title={`${p.stage}: ${fmtNum(p.open)} open`}
-                  onClick={() => navigate(`/stage/${encodeURIComponent(p.stage)}`)}
-                >
-                  {pct >= 5 && (
-                    <span className="text-[11px] font-semibold text-white truncate px-1 text-center leading-tight">
-                      {shortLabel}<br /><span className="text-[10px] font-bold">{fmtNum(p.open)}</span>
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex gap-4 mt-3 text-xs text-muted-foreground">
-            <LegendDot color={PRE_LIT_COLORS[0]} label="Pre-Lit" />
-            <LegendDot color={LIT_COLORS[0]} label="Lit" />
-          </div>
-        </div>
-      </section>
 
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 3: NJ Operations Velocity (4 cards)

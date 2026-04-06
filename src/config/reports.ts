@@ -45,6 +45,15 @@ export const REPORTS: ReportConfig[] = [
     recordCount: 66350,
   },
   {
+    id: '00O4V000009RreKUAS',
+    name: 'Open Lit Matters',
+    type: 'report',
+    mode: 'summary',
+    description: 'Open litigation matters grouped by owner and PI status',
+    sfUrl: `${SF_BASE}/Report/00O4V000009RreKUAS/view`,
+    recordCount: 2207,
+  },
+  {
     id: '00OPp000003PLtxMAG',
     name: 'Experts Not Served',
     type: 'report',
