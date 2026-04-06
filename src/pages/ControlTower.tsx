@@ -25,7 +25,7 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { fmt$, fmtNum, getDashMetric, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
-import { MATTERS_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
+import { OPEN_LIT_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
 
 // ── Palette ───────────────────────────────────────────────────────────
 const GREEN = '#22c55e';
@@ -80,8 +80,8 @@ export default function ControlTower() {
   };
 
   // ── Load all 6 reports in parallel ────────────────────────────────
-  const { data: mattersData, loading: mattersLoading, lastFetched: mattersTs, refresh: refreshMatters } =
-    useSalesforceReport<ReportSummaryResponse>({ id: MATTERS_ID, type: 'report' });
+  const { data: openLitData, loading: openLitLoading, lastFetched: openLitTs, refresh: refreshOpenLit } =
+    useSalesforceReport<ReportSummaryResponse>({ id: OPEN_LIT_ID, type: 'report' });
   const { data: resData, loading: resLoading, lastFetched: resTs, refresh: refreshRes } =
     useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report' });
   const { data: statsData, loading: statsLoading, lastFetched: statsTs, refresh: refreshStats } =
@@ -93,7 +93,7 @@ export default function ControlTower() {
   const { data: expertsData, loading: expertsLoading, lastFetched: expertsTs, refresh: refreshExperts } =
     useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
 
-  const allLoading = mattersLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
+  const allLoading = openLitLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
 
   // ── Attorney filter ─────────────────────────────────────────────────
   const [selectedAttorney, setSelectedAttorney] = useState<string>('all');
@@ -139,18 +139,7 @@ export default function ControlTower() {
   const histTotalNetFee      = useMetricHistory('totalNetFee');
 
   // ── Section 1: Hero KPIs from Matters Universe + Resolutions + Stats ──
-  const totalMatters = (mattersData?.grandTotals.find(g => g.label === 'Record Count')?.value ?? 0) as number;
-  const openMatters = (mattersData?.grandTotals.find(g => g.label === 'Open')?.value ?? 0) as number;
-  const closedMatters = (mattersData?.grandTotals.find(g => g.label === 'Closed')?.value ?? 0) as number;
-
-  const topOpenStages = useMemo(() => {
-    if (!mattersData) return [];
-    return mattersData.groupings
-      .filter(g => g.label !== 'No Stage')
-      .map(g => ({ label: g.label, open: (g.aggregates.find(a => a.label === 'Open')?.value ?? 0) as number }))
-      .sort((a, b) => b.open - a.open)
-      .slice(0, 3);
-  }, [mattersData]);
+  const openMatters = (openLitData?.grandTotals?.find(g => g.label === 'Record Count')?.value ?? 0) as number;
 
   const njInventory = getDashMetric(statsData, 'NJ Lit Inventory') ?? 0;
   const portfolioValue = getDashMetric(statsData, 'NJ Lit Inventory (Value)') ?? 0;
@@ -300,7 +289,7 @@ export default function ControlTower() {
 
   // ── Refresh all reports ───────────────────────────────────────────
   const refreshAll = () => {
-    refreshMatters();
+    refreshOpenLit();
     refreshRes();
     refreshStats();
     refreshTiming();
@@ -312,7 +301,7 @@ export default function ControlTower() {
   useEffect(() => {
     if (allLoading) return;
     saveMetricSnapshots({
-      totalMatters, openMatters, closedMatters, portfolioValue, njInventory,
+      openMatters, portfolioValue, njInventory,
       totalSettlement, totalResolved, totalNetFee,
       missingTrackers, serviceGt3d, noService35, missingAnswers,
       dedExtensions, njResolutions,
@@ -373,8 +362,7 @@ export default function ControlTower() {
             </div>
             <HeroSummaryTicker
               items={[
-                { label: 'matters', value: fmtNum(totalMatters) },
-                { label: 'open', value: fmtNum(openMatters) },
+                { label: 'open lit', value: fmtNum(openMatters) },
                 { label: 'settlements', value: fmt$(isFiltered ? filteredTotalSettlement : totalSettlement) },
               ]}
             />
@@ -413,11 +401,6 @@ export default function ControlTower() {
               sparklineData={histOpenMatters}
               anomaly={anomOpenMatters ?? undefined}
               subMetrics={[
-                ...topOpenStages.map(s => ({
-                  label: s.label,
-                  value: fmtNum(s.open),
-                  deltaType: "neutral" as const,
-                })),
                 { label: "NJ Lit", value: fmtNum(njInventory), deltaType: "neutral" as const },
               ]}
             />
@@ -430,7 +413,6 @@ export default function ControlTower() {
               anomaly={anomPortfolioValue ?? undefined}
               subMetrics={[
                 { label: "NJ Lit count", value: fmtNum(njInventory), deltaType: "neutral" },
-                { label: "Total Matters", value: fmtNum(totalMatters), deltaType: "neutral" },
               ]}
             />
             <StatCard
@@ -764,7 +746,7 @@ export default function ControlTower() {
       <footer className="flex items-center justify-between border-t border-border pt-4 pb-2 text-xs text-muted-foreground">
         <div className="flex flex-wrap gap-4">
           {[
-            { label: 'Matters', ts: mattersTs },
+            { label: 'Open Lit', ts: openLitTs },
             { label: 'Resolutions', ts: resTs },
             { label: 'Stats', ts: statsTs },
             { label: 'Timing', ts: timingTs },
