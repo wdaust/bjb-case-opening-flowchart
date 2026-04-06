@@ -14,7 +14,7 @@ export interface Session {
 const SESSION_KEY = 'optimus_session';
 
 // SHA-256 hash of "Optimus2026!"
-const PASSWORD_HASH = '2c42b74e178462990ff4e4944c5f2088b6eb243158551dd0fdd597f94f6f7168';
+const PASSWORD_HASH = '601b1120eb22dbfa031ce5706e512d329becc8aa6ca4b037d7bbceab01c5a02e';
 
 const users: User[] = [
   { username: 'mbroderick', displayName: 'Matthew Broderick', role: 'admin', passwordHash: PASSWORD_HASH },
