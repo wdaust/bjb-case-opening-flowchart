@@ -7,7 +7,7 @@ import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { Skeleton } from '../components/ui/skeleton';
 import type { ReportSummaryResponse } from '../types/salesforce';
-import { RESOLUTIONS_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
+import { RESOLUTIONS_ID, DISCOVERY_ID, EXPERTS_ID, OPEN_LIT_ID } from '../data/sfReportIds';
 import { fmt$, fmtNum } from '../utils/sfHelpers';
 
 // ── Main Component ──────────────────────────────────────────────────
@@ -15,15 +15,17 @@ export default function AttorneyCockpit() {
   const { attorneyId } = useParams();
   const navigate = useNavigate();
 
-  // Load 3 reports
+  // Load 4 reports
   const { data: resData, loading: resLoading } =
     useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report' });
   const { data: discData, loading: discLoading } =
     useSalesforceReport<ReportSummaryResponse>({ id: DISCOVERY_ID, type: 'report' });
   const { data: expertsData, loading: expertsLoading } =
     useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
+  const { data: openLitData, loading: openLitLoading } =
+    useSalesforceReport<ReportSummaryResponse>({ id: OPEN_LIT_ID, type: 'report' });
 
-  const allLoading = resLoading || discLoading || expertsLoading;
+  const allLoading = resLoading || discLoading || expertsLoading || openLitLoading;
 
   // Build attorney list from Resolutions groupings
   const attorneyList = useMemo(() => {
@@ -62,6 +64,20 @@ export default function AttorneyCockpit() {
   }, [expertsData, selectedName]);
 
   const expertsUnserved = (expertsGrouping?.aggregates[0]?.value ?? 0) as number;
+
+  // ── Open Lit data for selected attorney ─────────────────────────
+  const openLitGrouping = useMemo(() => {
+    if (!openLitData) return null;
+    return openLitData.groupings.find(g => g.label === selectedName) ?? null;
+  }, [openLitData, selectedName]);
+
+  const litAgg = (label: string) =>
+    (openLitGrouping?.aggregates.find(a => a.label === label)?.value ?? 0) as number;
+  const openMatters = litAgg('Record Count');
+  const avgAge = litAgg('Avg Age in Litigation');
+  const caseRating = litAgg('Case Rating Midpoint');
+  const trueValue = litAgg('Historical True Value');
+  const maxOffer = litAgg('Max Negotiation Offer');
 
   // ── Loading skeleton ──────────────────────────────────────────────
   if (allLoading) {
@@ -143,6 +159,16 @@ export default function AttorneyCockpit() {
           deltaType="neutral"
           variant="glass"
         />
+      </DashboardGrid>
+
+      {/* Open Inventory */}
+      <SectionHeader title="Open Inventory" subtitle={`Open litigation portfolio for ${selectedName}`} info="Open matters count, average age in litigation, case rating midpoint, historical true value, and max negotiation offer." />
+      <DashboardGrid cols={5}>
+        <StatCard label="Open Matters" value={fmtNum(openMatters)} variant="glass" />
+        <StatCard label="Avg Age (days)" value={avgAge.toFixed(1)} variant="glass" />
+        <StatCard label="Case Rating" value={fmt$(caseRating)} variant="glass" />
+        <StatCard label="True Value" value={fmt$(trueValue)} variant="glass" />
+        <StatCard label="Max Offer" value={fmt$(maxOffer)} variant="glass" />
       </DashboardGrid>
 
       {/* Workload Cards */}
