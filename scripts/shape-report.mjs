@@ -31,12 +31,32 @@ const groupings = (raw.groupingsDown?.groupings ?? []).map(g => ({
   })),
 }));
 
+// ── Post-processing filters ──────────────────────────────────────────
+// Resolutions: exclude Adam Greenspan and adjust grand totals
+const RESOLUTIONS_ID = '00OPp000003OOCLMA4';
+const reportId = raw.attributes.reportId;
+
+let filteredGroupings = groupings;
+let filteredTotals = totals;
+
+if (reportId === RESOLUTIONS_ID) {
+  const excluded = groupings.filter(g => g.label === 'Adam Greenspan');
+  filteredGroupings = groupings.filter(g => g.label !== 'Adam Greenspan');
+  filteredGroupings.forEach((g, i) => g.key = String(i));
+  if (excluded.length) {
+    filteredTotals = totals.map(gt => {
+      const sub = excluded[0].aggregates.find(a => a.label === gt.label);
+      return sub ? { ...gt, value: +(gt.value - sub.value).toFixed(2) } : gt;
+    });
+  }
+}
+
 const shaped = {
-  reportId: raw.attributes.reportId,
+  reportId,
   reportName: raw.reportMetadata.name,
   format: raw.reportMetadata.reportFormat,
-  grandTotals: totals,
-  groupings,
+  grandTotals: filteredTotals,
+  groupings: filteredGroupings,
   hasDetailRows: raw.hasDetailRows,
 };
 

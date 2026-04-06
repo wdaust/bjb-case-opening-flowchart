@@ -5,36 +5,18 @@
   "grandTotals": [
     {
       "label": "Record Count",
-      "value": 66350
+      "value": 45094
     },
     {
       "label": "Open",
-      "value": 22748
+      "value": 15953
     },
     {
       "label": "Closed",
-      "value": 39063
+      "value": 25415
     }
   ],
   "groupings": [
-    {
-      "key": "Settlement",
-      "label": "Settlement",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 16858
-        },
-        {
-          "label": "Open",
-          "value": 6260
-        },
-        {
-          "label": "Closed",
-          "value": 10584
-        }
-      ]
-    },
     {
       "key": "No Stage",
       "label": "No Stage",
@@ -122,24 +104,6 @@
         {
           "label": "Closed",
           "value": 3122
-        }
-      ]
-    },
-    {
-      "key": "Settled",
-      "label": "Settled",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 2712
-        },
-        {
-          "label": "Open",
-          "value": 219
-        },
-        {
-          "label": "Closed",
-          "value": 2425
         }
       ]
     },
@@ -248,24 +212,6 @@
         {
           "label": "Closed",
           "value": 406
-        }
-      ]
-    },
-    {
-      "key": "REF - Settled",
-      "label": "REF - Settled",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 771
-        },
-        {
-          "label": "Open",
-          "value": 0
-        },
-        {
-          "label": "Closed",
-          "value": 84
         }
       ]
     },
@@ -396,24 +342,6 @@
       ]
     },
     {
-      "key": "Arbitration / Settlement Conference",
-      "label": "Arbitration / Settlement Conference",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 336
-        },
-        {
-          "label": "Open",
-          "value": 41
-        },
-        {
-          "label": "Closed",
-          "value": 283
-        }
-      ]
-    },
-    {
       "key": "Trial",
       "label": "Trial",
       "aggregates": [
@@ -428,24 +356,6 @@
         {
           "label": "Closed",
           "value": 252
-        }
-      ]
-    },
-    {
-      "key": "10 - Settlement",
-      "label": "10 - Settlement",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 294
-        },
-        {
-          "label": "Open",
-          "value": 74
-        },
-        {
-          "label": "Closed",
-          "value": 220
         }
       ]
     },
@@ -500,24 +410,6 @@
         {
           "label": "Closed",
           "value": 229
-        }
-      ]
-    },
-    {
-      "key": "Settlement Negotiations",
-      "label": "Settlement Negotiations",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 223
-        },
-        {
-          "label": "Open",
-          "value": 190
-        },
-        {
-          "label": "Closed",
-          "value": 32
         }
       ]
     },
@@ -828,24 +720,6 @@
       ]
     },
     {
-      "key": "Settled with New Firm - BJB Fee Pending (AR)",
-      "label": "Settled with New Firm - BJB Fee Pending (AR)",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 22
-        },
-        {
-          "label": "Open",
-          "value": 0
-        },
-        {
-          "label": "Closed",
-          "value": 0
-        }
-      ]
-    },
-    {
       "key": "SOL Call",
       "label": "SOL Call",
       "aggregates": [
@@ -972,24 +846,6 @@
       ]
     },
     {
-      "key": "Settled / Award / Withdrawn",
-      "label": "Settled / Award / Withdrawn",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 11
-        },
-        {
-          "label": "Open",
-          "value": 11
-        },
-        {
-          "label": "Closed",
-          "value": 0
-        }
-      ]
-    },
-    {
       "key": "Closed/Lost",
       "label": "Closed/Lost",
       "aggregates": [
@@ -1026,24 +882,6 @@
       ]
     },
     {
-      "key": "Arbitration/Settlement Conference",
-      "label": "Arbitration/Settlement Conference",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 8
-        },
-        {
-          "label": "Open",
-          "value": 0
-        },
-        {
-          "label": "Closed",
-          "value": 8
-        }
-      ]
-    },
-    {
       "key": "New",
       "label": "New",
       "aggregates": [
@@ -1054,24 +892,6 @@
         {
           "label": "Open",
           "value": 8
-        },
-        {
-          "label": "Closed",
-          "value": 0
-        }
-      ]
-    },
-    {
-      "key": "Settled with New Firm - Fee in Dispute",
-      "label": "Settled with New Firm - Fee in Dispute",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 8
-        },
-        {
-          "label": "Open",
-          "value": 0
         },
         {
           "label": "Closed",
@@ -1130,24 +950,6 @@
         {
           "label": "Closed",
           "value": 1
-        }
-      ]
-    },
-    {
-      "key": "Pre-Suit Settlement Negotiations",
-      "label": "Pre-Suit Settlement Negotiations",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 5
-        },
-        {
-          "label": "Open",
-          "value": 0
-        },
-        {
-          "label": "Closed",
-          "value": 4
         }
       ]
     },
@@ -1220,24 +1022,6 @@
         {
           "label": "Closed",
           "value": 3
-        }
-      ]
-    },
-    {
-      "key": "Settlement Conference & Trial",
-      "label": "Settlement Conference & Trial",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 4
-        },
-        {
-          "label": "Open",
-          "value": 0
-        },
-        {
-          "label": "Closed",
-          "value": 4
         }
       ]
     },
@@ -1400,24 +1184,6 @@
         {
           "label": "Closed",
           "value": 0
-        }
-      ]
-    },
-    {
-      "key": "Settled With Friendlies",
-      "label": "Settled With Friendlies",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 2
-        },
-        {
-          "label": "Open",
-          "value": 0
-        },
-        {
-          "label": "Closed",
-          "value": 2
         }
       ]
     },
@@ -1586,42 +1352,6 @@
     {
       "key": "Treatment Checkpoint",
       "label": "Treatment Checkpoint",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 1
-        },
-        {
-          "label": "Open",
-          "value": 0
-        },
-        {
-          "label": "Closed",
-          "value": 1
-        }
-      ]
-    },
-    {
-      "key": "settled",
-      "label": "settled",
-      "aggregates": [
-        {
-          "label": "Record Count",
-          "value": 1
-        },
-        {
-          "label": "Open",
-          "value": 0
-        },
-        {
-          "label": "Closed",
-          "value": 1
-        }
-      ]
-    },
-    {
-      "key": "Settlement - Litigation",
-      "label": "Settlement - Litigation",
       "aggregates": [
         {
           "label": "Record Count",

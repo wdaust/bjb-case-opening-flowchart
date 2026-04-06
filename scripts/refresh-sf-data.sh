@@ -56,6 +56,7 @@ echo "🔄 Refreshing Salesforce data..."
 echo ""
 
 # ── Resolutions (POST with grouping) ──────────────────────────────────
+# Note: shape-report.mjs filters out Adam Greenspan from Resolutions output
 echo -n "  📊 Resolutions (grouped by attorney) ... "
 RAW=$(sf api request rest "/services/data/$API_VER/analytics/reports/${RESOLUTIONS_ID}?includeDetails=false" \
   -o "$ORG" --method POST --body "$RESOLUTIONS_BODY" 2>/dev/null)
