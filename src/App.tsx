@@ -58,6 +58,8 @@ import LCIReport from './pages/LCIReport.tsx';
 import OpenInventoryDetail from './pages/OpenInventoryDetail.tsx';
 import FormADetail from './pages/FormADetail.tsx';
 import DepositionDetail from './pages/DepositionDetail.tsx';
+import ComplaintsOverdueDetail from './pages/ComplaintsOverdueDetail.tsx';
+import DefendantsDiscoveryDetail from './pages/DefendantsDiscoveryDetail.tsx';
 import { AIChatWidget } from './components/dashboard/AIChatWidget.tsx';
 import TopNavMockup from './pages/TopNavMockup.tsx';
 import SpecViewer from './pages/SpecViewer.tsx';
@@ -112,6 +114,8 @@ export default function App() {
             <Route path="open-inventory" element={<OpenInventoryDetail />} />
             <Route path="form-a" element={<FormADetail />} />
             <Route path="depositions" element={<DepositionDetail />} />
+            <Route path="complaints-overdue" element={<ComplaintsOverdueDetail />} />
+            <Route path="defendants-discovery" element={<DefendantsDiscoveryDetail />} />
             <Route path="performance-infrastructure" element={<PerformanceInfrastructure />} />
             <Route path="performance-infrastructure/mockups" element={<MockupsLanding />} />
             <Route path="performance-infrastructure/litify" element={<LitifyMockupsLanding />} />

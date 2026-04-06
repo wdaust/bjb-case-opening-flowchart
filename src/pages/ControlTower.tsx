@@ -14,9 +14,8 @@ import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { saveMetricSnapshots, useMetricHistory, detectAnomaly } from '../hooks/useMetricHistory';
 import { ScoreGauge } from '../components/scoring/ScoreGauge';
 import { LCIBadge } from '../components/dashboard/LCIBadge';
-import { computeRealLCI, getRealEscalations } from '../data/lciEngineReal';
-import { EscalationBanner } from '../components/dashboard/EscalationBanner';
-import { loadHistory } from '../hooks/useMetricHistory';
+import { computeRealLCI } from '../data/lciEngineReal';
+import { EscalationCards } from '../components/dashboard/EscalationCards';
 import { RefreshCw, Filter, ChevronDown } from 'lucide-react';
 import { InfoTooltip } from '../components/dashboard/InfoTooltip';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
@@ -162,9 +161,6 @@ export default function ControlTower() {
     [resData, statsData, timingData, discData, expertsData],
   );
 
-  // ── Escalations ────────────────────────────────────────────────────
-  const escalations = useMemo(() => getRealEscalations(lci, loadHistory()), [lci]);
-
   // ── Section 3 & 4: NJ Ops metrics ──────────────────────────────────
   const missingTrackers = getDashMetric(statsData, 'Missing Discovery Trackers (NJ)') ?? 0;
   const serviceGt3d = getDashMetric(statsData, 'NJ- Service Initiated >3 Days from COMP') ?? 0;
@@ -205,6 +201,33 @@ export default function ControlTower() {
       return { name: lbl, value: v, color: isOverdue30 ? RED : isOverdue ? AMBER : GREEN };
     });
   }, [statsData]);
+
+  // ── Escalation Card Counts ─────────────────────────────────────────
+  const complaintsOverdue = useMemo(() => {
+    return complaintFilingData
+      .filter(d => d.name.includes('Overdue') && !d.name.includes('0-14'))
+      .reduce((s, d) => s + d.value, 0);
+  }, [complaintFilingData]);
+
+  const formAPastDue60 = useMemo(() => {
+    return formAPastDueData
+      .filter(d => d.name.includes('60-89') || d.name.includes('90'))
+      .reduce((s, d) => s + d.value, 0);
+  }, [formAPastDueData]);
+
+  const formCPastDueRows = useMemo(() => getDashRows(statsData, 'Form C Past Due (NJ)'), [statsData]);
+  const formCPastDue = useMemo(() => {
+    return formCPastDueRows
+      .filter(r => !r.label.toLowerCase().includes('within time'))
+      .reduce((s, r) => s + (r.values[0]?.value ?? 0), 0);
+  }, [formCPastDueRows]);
+
+  const depReportRows = useMemo(() => getDashRows(statsData, 'Dep Report for NJ PI LIT'), [statsData]);
+  const depsOverdue90 = useMemo(() => {
+    return depReportRows
+      .filter(r => r.label.includes('90-179') || r.label.includes('180'))
+      .reduce((s, r) => s + (r.values[0]?.value ?? 0), 0);
+  }, [depReportRows]);
 
   // Upcoming Events
   const eventsData = useMemo(() => {
@@ -439,8 +462,14 @@ export default function ControlTower() {
         </div>
       </HeroSection>
 
-      {/* Active Escalations Banner */}
-      <EscalationBanner escalations={escalations} />
+      {/* Active Escalation Cards */}
+      <EscalationCards
+        complaintsOverdue={complaintsOverdue}
+        formAPastDue60={formAPastDue60}
+        missingAnswers={missingAnswers}
+        formCPastDue={formCPastDue}
+        depsOverdue90={depsOverdue90}
+      />
 
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 3: NJ Operations Velocity (4 cards)
