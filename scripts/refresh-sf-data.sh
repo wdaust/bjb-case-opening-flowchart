@@ -16,9 +16,13 @@ SCRIPT_DIR="$(pwd)/scripts"
 # Standard reports (already SUMMARY format with groupings)
 REPORTS=(
   "00OPp000003OUcjMAG"   # Discovery Trackers
-  "00OPp000003OaGjMAK"   # Matters Universe
   "00OPp000003PLtxMAG"   # Experts Not Served
 )
+# NOTE: Matters Universe (00OPp000003OaGjMAK) is skipped — the SF report was
+# reconfigured and no longer provides the stage-grouped Open/Closed aggregates
+# the dashboard needs. Using the last known good static export instead.
+# To refresh it, restore the SF report to SUMMARY format grouped by stage
+# with Open/Closed formula aggregates.
 
 # Dashboard IDs
 DASHBOARDS=(
