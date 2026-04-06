@@ -132,7 +132,7 @@ export default function ControlTower() {
   // ── Metric History (must be before early return — rules of hooks) ────
   useMetricHistory('totalMatters'); // preserve hook call order
   const histOpenMatters      = useMetricHistory('openMatters');
-  const histPortfolioValue   = useMetricHistory('portfolioValue');
+  useMetricHistory('portfolioValue'); // hook order preserved
   const histTotalSettlement  = useMetricHistory('totalSettlement');
   const histNjInventory      = useMetricHistory('njInventory');
   const histMissingTrackers  = useMetricHistory('missingTrackers');
@@ -151,9 +151,7 @@ export default function ControlTower() {
 
   const njInventory = getDashMetric(statsData, 'NJ Lit Inventory') ?? 0;
   const portfolioValueFirm = getDashMetric(statsData, 'NJ Lit Inventory (Value)') ?? 0;
-  const portfolioValue = isFiltered
-    ? (filteredOpenLitGrouping?.aggregates.find(a => a.label === 'Historical True Value')?.value ?? 0) as number
-    : portfolioValueFirm;
+  // portfolioValue removed (hero card replaced); portfolioValueFirm still used in snapshot log
   const totalSettlement = (resData?.grandTotals.find(g => g.label.includes('Settlement'))?.value ?? 0) as number;
   const totalResolved = (resData?.grandTotals.find(g => g.label === 'Record Count')?.value ?? 0) as number;
   const totalNetFee = (resData?.grandTotals.find(g => g.label.includes('Fee'))?.value ?? 0) as number;
@@ -325,8 +323,6 @@ export default function ControlTower() {
 
   // ── Anomaly detection ──────────────────────────────────────────────
   const anomOpenMatters     = detectAnomaly(histOpenMatters, openMatters);
-  const anomPortfolioValue  = detectAnomaly(histPortfolioValue, portfolioValue);
-  const anomTotalSettlement = detectAnomaly(histTotalSettlement, totalSettlement);
   const anomNjInventory     = detectAnomaly(histNjInventory, njInventory);
   const anomMissingTrackers = detectAnomaly(histMissingTrackers, missingTrackers);
   const anomNoService35     = detectAnomaly(histNoService35, noService35);
@@ -416,26 +412,24 @@ export default function ControlTower() {
               ]}
             />
             <StatCard
-              label="Portfolio Value"
-              value={fmt$(portfolioValue)}
+              label="Form A: Plaintiff Discovery"
+              value={`${compliancePct(formA)}%`}
               variant="glass"
               className={hoverCard}
-              sparklineData={isFiltered ? undefined : histPortfolioValue}
-              anomaly={isFiltered ? undefined : anomPortfolioValue ?? undefined}
-              subMetrics={isFiltered ? undefined : [
-                { label: "NJ Lit count", value: fmtNum(njInventory), deltaType: "neutral" },
+              subMetrics={[
+                { label: "Timely", value: fmtNum(formA.timely), deltaType: "neutral" as const },
+                { label: "Late", value: fmtNum(formA.late), deltaType: "neutral" as const },
+                { label: "Past due", value: fmtNum(formAPastDueData.reduce((s, d) => s + d.value, 0)), deltaType: "neutral" as const },
               ]}
             />
             <StatCard
-              label="Settlement Revenue"
-              value={fmt$(isFiltered ? filteredTotalSettlement : totalSettlement)}
+              label="Deposition"
+              value={`${compliancePct(deps)}%`}
               variant="glass"
               className={hoverCard}
-              sparklineData={isFiltered ? undefined : histTotalSettlement}
-              anomaly={isFiltered ? undefined : anomTotalSettlement ?? undefined}
               subMetrics={[
-                { label: "Resolved", value: fmtNum(isFiltered ? filteredTotalResolved : totalResolved), deltaType: "neutral" },
-                { label: "Net fees", value: fmt$(isFiltered ? filteredTotalNetFee : totalNetFee), deltaType: "neutral" },
+                { label: "Timely", value: fmtNum(deps.timely), deltaType: "neutral" as const },
+                { label: "Late", value: fmtNum(deps.late), deltaType: "neutral" as const },
               ]}
             />
           </DashboardGrid>

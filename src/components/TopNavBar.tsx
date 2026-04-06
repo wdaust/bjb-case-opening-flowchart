@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { Menu, X, LogOut, ChevronDown } from 'lucide-react';
 import { cn } from '../utils/cn.ts';
+import { APP_VERSION } from '../utils/version';
+import { useAuth } from '../contexts/AuthContext';
 
 const mainLinks = [
   { label: 'LDM', to: '/control-tower' },
@@ -22,6 +24,7 @@ export function TopNavBar() {
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const { logout } = useAuth();
 
   const isActive = (to: string) =>
     location.pathname === to || location.pathname.startsWith(to + '/');
@@ -114,10 +117,11 @@ export function TopNavBar() {
           </div>
         </nav>
 
-        {/* Right: User */}
+        {/* Right: User + Version */}
         <div className="hidden md:flex items-center gap-3 text-gray-500 text-sm">
+          <span className="text-gray-600 text-xs">v{APP_VERSION}</span>
           <span>Will Daust</span>
-          <LogOut size={16} className="hover:text-gray-300 cursor-pointer" />
+          <LogOut size={16} className="hover:text-gray-300 cursor-pointer" onClick={logout} />
         </div>
 
         {/* Mobile hamburger */}

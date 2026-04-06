@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode, type FormEvent } from 'react';
 import { type Session, getSavedSession, validateLogin, clearSession } from '../utils/auth';
+import { APP_VERSION } from '../utils/version';
 
 interface AuthContextValue {
   user: Session;
@@ -132,6 +133,9 @@ function LoginScreen({ onLogin }: { onLogin: (session: Session) => void }) {
         >
           {loading ? 'Signing in...' : 'Sign In'}
         </button>
+        <p style={{ color: '#666', fontSize: '11px', textAlign: 'center', marginTop: '16px' }}>
+          v{APP_VERSION}
+        </p>
       </form>
     </div>
   );
