@@ -228,6 +228,9 @@ export default function ControlTower() {
       .filter(r => r.label.includes('90-179') || r.label.includes('180'))
       .reduce((s, r) => s + (r.values[0]?.value ?? 0), 0);
   }, [depReportRows]);
+  const depsTotal = useMemo(() => depReportRows.reduce((s, r) => s + (r.values[0]?.value ?? 0), 0), [depReportRows]);
+  const depsOnTime = depsTotal - depsOverdue90;
+  const depsPct90 = depsTotal ? Math.round((depsOnTime / depsTotal) * 100) : 0;
 
   // Upcoming Events
   const eventsData = useMemo(() => {
@@ -438,6 +441,8 @@ export default function ControlTower() {
             <StatCard
               label="Form A: Plaintiff Discovery"
               value={`${compliancePct(formA)}%`}
+              delta="Compliance rate"
+              deltaType="neutral"
               variant="glass"
               className={hoverCard}
               onClick={() => navigate('/form-a')}
@@ -449,13 +454,15 @@ export default function ControlTower() {
             />
             <StatCard
               label="Deposition"
-              value={`${compliancePct(deps)}%`}
+              value={`${depsPct90}%`}
+              delta="On time (<90 days)"
+              deltaType="neutral"
               variant="glass"
               className={hoverCard}
               onClick={() => navigate('/depositions')}
               subMetrics={[
-                { label: "Timely", value: fmtNum(deps.timely), deltaType: "neutral" as const },
-                { label: "Late", value: fmtNum(deps.late), deltaType: "neutral" as const },
+                { label: "On time", value: fmtNum(depsOnTime), deltaType: "neutral" as const },
+                { label: "Late >90d", value: fmtNum(depsOverdue90), deltaType: "neutral" as const },
               ]}
             />
           </DashboardGrid>

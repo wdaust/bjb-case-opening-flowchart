@@ -20,6 +20,7 @@ const users: User[] = [
   { username: 'mbroderick', displayName: 'Matthew Broderick', role: 'admin', passwordHash: PASSWORD_HASH },
   { username: 'wdaust', displayName: 'Will Daust', role: 'admin', passwordHash: PASSWORD_HASH },
   { username: 'jbillingsley', displayName: 'Justin Billingsley', role: 'admin', passwordHash: PASSWORD_HASH },
+  { username: 'kdelgado', displayName: 'Kennia Delgado', role: 'admin', passwordHash: PASSWORD_HASH },
 ];
 
 async function hashPassword(password: string): Promise<string> {
