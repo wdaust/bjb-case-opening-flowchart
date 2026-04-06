@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import { fmtNum, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
+import { fmtNum, getDashRows, complianceColor } from '../utils/sfHelpers';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { StatCard } from '../components/dashboard/StatCard';
 import { Skeleton } from '../components/ui/skeleton';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
-import { TIMING_ID } from '../data/sfReportIds';
+import { STATS_ID } from '../data/sfReportIds';
 import type { DashboardResponse } from '../types/salesforce';
 import { cn } from '../utils/cn';
 
@@ -23,24 +23,31 @@ function LoadingSkeleton() {
 }
 
 export default function DepositionDetail() {
-  const { data: timingData, loading } =
-    useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
+  const { data: statsData, loading } =
+    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
 
-  const deps = getTimingCompliance(timingData, 'Dep Timing NJ in Days from Form A');
-  const pct = compliancePct(deps);
-  const total = deps.timely + deps.late;
+  const depRows = useMemo(() => getDashRows(statsData, 'Dep Report for NJ PI LIT'), [statsData]);
+  const total = useMemo(() => depRows.reduce((s, r) => s + (r.values[0]?.value ?? 0), 0), [depRows]);
+  const overdue90 = useMemo(() => {
+    return depRows
+      .filter(r => r.label.includes('90-179') || r.label.includes('180'))
+      .reduce((s, r) => s + (r.values[0]?.value ?? 0), 0);
+  }, [depRows]);
+  const onTime = total - overdue90;
+  const pct = total ? Math.round((onTime / total) * 100) : 0;
 
-  // Timing breakdown rows
+  // Bucket breakdown rows
   const timingRows = useMemo(() => {
-    const rows = getDashRows(timingData, 'Dep Timing NJ in Days from Form A');
-    return rows.map(r => ({
-      bucket: r.label,
-      count: r.values[0]?.value ?? 0,
-      isTimely: r.label.toLowerCase().includes('timely') ||
-        r.label.toLowerCase().includes('compliant') ||
-        r.label.toLowerCase().includes('under'),
-    }));
-  }, [timingData]);
+    return depRows.map(r => {
+      const lbl = r.label;
+      const isLate = lbl.includes('90-179') || lbl.includes('180');
+      return {
+        bucket: lbl,
+        count: r.values[0]?.value ?? 0,
+        isTimely: !isLate,
+      };
+    });
+  }, [depRows]);
 
   if (loading) return <LoadingSkeleton />;
 
@@ -51,25 +58,25 @@ export default function DepositionDetail() {
         { label: 'Deposition Detail' },
       ]} />
 
-      <h1 className="text-2xl font-bold text-foreground">Deposition Timing Detail</h1>
+      <h1 className="text-2xl font-bold text-foreground">Deposition Detail</h1>
       <p className="text-sm text-muted-foreground">
-        Compliance timing breakdown for depositions measured in days from Form A.
+        Deposition compliance — matters overdue by 90+ days are considered late.
       </p>
 
       {/* KPI Strip */}
       <DashboardGrid cols={3}>
         <div className={cn('rounded-xl border p-5 text-center', complianceColor(pct))}>
-          <p className="text-xs font-medium opacity-70 mb-1">Compliance Rate</p>
+          <p className="text-xs font-medium opacity-70 mb-1">On Time (&lt;90 days)</p>
           <p className="text-4xl font-bold">{pct}%</p>
-          <p className="text-[11px] mt-1 opacity-60">{fmtNum(deps.timely)} timely / {fmtNum(total)} total</p>
+          <p className="text-[11px] mt-1 opacity-60">{fmtNum(onTime)} on time / {fmtNum(total)} total</p>
         </div>
-        <StatCard label="Timely" value={fmtNum(deps.timely)} variant="glass" />
-        <StatCard label="Late" value={fmtNum(deps.late)} variant="glass" />
+        <StatCard label="On Time" value={fmtNum(onTime)} variant="glass" />
+        <StatCard label="Late >90d" value={fmtNum(overdue90)} variant="glass" />
       </DashboardGrid>
 
       {/* Timing Bucket Breakdown */}
       <section>
-        <SectionHeader title="Timing Buckets" subtitle="Deposition timing breakdown by days from Form A" />
+        <SectionHeader title="Deposition Buckets" subtitle="Breakdown by overdue status from Stats dashboard" />
         <div className="rounded-xl border border-border bg-card p-5">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {timingRows.map(row => (
