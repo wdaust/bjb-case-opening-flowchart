@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { StatCard } from '../components/dashboard/StatCard';
@@ -15,6 +16,7 @@ import {
   compliancePct,
   complianceColor,
   fmtNum,
+  fmt$,
 } from '../utils/sfHelpers';
 
 // ── Types ───────────────────────────────────────────────────────────
@@ -23,6 +25,15 @@ interface StageRow {
   open: number;
   closed: number;
   recordCount: number;
+}
+
+interface OpenLitRow {
+  name: string;
+  cases: number;
+  avgAge: number;
+  caseRating: number;
+  trueValue: number;
+  maxOffer: number;
 }
 
 // ── Loading skeleton ────────────────────────────────────────────────
@@ -56,6 +67,8 @@ const TIMING_LABELS = [
 
 // ── Component ───────────────────────────────────────────────────────
 export default function InventoryHealth() {
+  const navigate = useNavigate();
+
   // ── Data fetching ───────────────────────────────────────────────
   const { data: mattersData, loading: mattersLoading } =
     useSalesforceReport<ReportSummaryResponse>({ id: MATTERS_ID, type: 'report' });
@@ -99,6 +112,31 @@ export default function InventoryHealth() {
     { key: 'open', label: 'Open', render: (r: StageRow) => fmtNum(r.open) },
     { key: 'closed', label: 'Closed', render: (r: StageRow) => fmtNum(r.closed) },
     { key: 'recordCount', label: 'Total', render: (r: StageRow) => fmtNum(r.recordCount) },
+  ];
+
+  // ── Tab 4: Open Lit by Attorney ────────────────────────────────
+  const openLitRows: OpenLitRow[] = (openLitData?.groupings ?? [])
+    .filter(g => g.label !== 'Micronetbd User')
+    .map(g => {
+      const agg = (label: string) => g.aggregates.find(a => a.label === label)?.value ?? 0;
+      return {
+        name: g.label,
+        cases: agg('Record Count'),
+        avgAge: agg('Avg Age in Litigation'),
+        caseRating: agg('Case Rating Midpoint'),
+        trueValue: agg('Historical True Value'),
+        maxOffer: agg('Max Negotiation Offer'),
+      };
+    })
+    .sort((a, b) => b.cases - a.cases);
+
+  const openLitColumns: Column<OpenLitRow>[] = [
+    { key: 'name', label: 'Attorney' },
+    { key: 'cases', label: 'Open Matters', render: (r) => fmtNum(r.cases) },
+    { key: 'avgAge', label: 'Avg Age (days)', render: (r) => r.avgAge.toFixed(1) },
+    { key: 'caseRating', label: 'Case Rating', render: (r) => fmt$(r.caseRating) },
+    { key: 'trueValue', label: 'True Value', render: (r) => fmt$(r.trueValue) },
+    { key: 'maxOffer', label: 'Max Offer', render: (r) => fmt$(r.maxOffer) },
   ];
 
   // ── Tab 2: Compliance signals ───────────────────────────────────
@@ -154,6 +192,7 @@ export default function InventoryHealth() {
           <TabsTrigger value="stage-inventory">Stage Inventory</TabsTrigger>
           <TabsTrigger value="compliance-signals">Compliance Signals</TabsTrigger>
           <TabsTrigger value="risk-indicators">Risk Indicators</TabsTrigger>
+          <TabsTrigger value="open-lit-attorney">Open Lit by Attorney</TabsTrigger>
         </TabsList>
 
         {/* Tab 1: Stage Inventory */}
@@ -238,6 +277,20 @@ export default function InventoryHealth() {
               );
             })}
           </div>
+        </TabsContent>
+        {/* Tab 4: Open Lit by Attorney */}
+        <TabsContent value="open-lit-attorney" className="space-y-4 pt-4">
+          <SectionHeader
+            title="Open Lit by Attorney"
+            subtitle="Open litigation matters grouped by attorney"
+            info="Attorney-level breakdown of open cases, average age, case ratings, true value, and max negotiation offers."
+          />
+          <DataTable
+            data={openLitRows}
+            columns={openLitColumns}
+            keyField="name"
+            onRowClick={(row) => navigate(`/attorney/${encodeURIComponent(row.name)}`)}
+          />
         </TabsContent>
       </Tabs>
     </div>
