@@ -11,7 +11,7 @@ const mainLinks = [
   { label: 'MOS', to: '/performance-infrastructure/mos' },
 ];
 
-const moreLinks = [
+const moreLinksBase = [
   { label: 'LCI Report', to: '/lci-report' },
   { label: 'Analytics', to: '/analytics' },
   { label: 'Insights', to: '/insights' },
@@ -20,12 +20,23 @@ const moreLinks = [
   { label: 'Optimus Structure', to: '/optimus-structure' },
 ];
 
+/** Links only visible to specific users */
+const restrictedMoreLinks = [
+  { label: 'BJB Showcase', to: '/bjb-showcase', allowedUsers: ['wdaust', 'jbillingsley'] },
+];
+
 export function TopNavBar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+
+  // Build more links with user-restricted entries
+  const moreLinks = [
+    ...moreLinksBase,
+    ...restrictedMoreLinks.filter(l => l.allowedUsers.includes(user.username)),
+  ];
 
   const isActive = (to: string) =>
     location.pathname === to || location.pathname.startsWith(to + '/');
@@ -121,7 +132,7 @@ export function TopNavBar() {
         {/* Right: User + Version */}
         <div className="hidden md:flex items-center gap-3 text-gray-500 text-sm">
           <span className="text-gray-600 text-xs">v{APP_VERSION}</span>
-          <span>Will Daust</span>
+          <span>{user.displayName}</span>
           <LogOut size={16} className="hover:text-gray-300 cursor-pointer" onClick={logout} />
         </div>
 
