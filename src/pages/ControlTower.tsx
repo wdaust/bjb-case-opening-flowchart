@@ -26,6 +26,7 @@ import {
 import { fmt$, fmtNum, getDashMetric, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
 import { OPEN_LIT_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID, MISSING_ANS_REPORT_ID, COMPLAINTS_REPORT_ID, FORM_A_REPORT_ID, FORM_C_REPORT_ID, DEP_REPORT_ID } from '../data/sfReportIds';
 import { ESCALATION_FILTERS, countOverdue } from '../utils/escalationFilters';
+import { buildAttorneyLookup, filterRowsByAttorney } from '../utils/attorneyLookup';
 
 // ── Palette ───────────────────────────────────────────────────────────
 const GREEN = '#22c55e';
@@ -105,16 +106,27 @@ export default function ControlTower() {
   const { data: depReport } =
     useSalesforceReport<ReportSummaryResponse>({ id: DEP_REPORT_ID, type: 'report', mode: 'full' });
 
+  // Open Lit detail rows for attorney cross-reference lookup
+  const { data: openLitFullData } =
+    useSalesforceReport<ReportSummaryResponse>({ id: OPEN_LIT_ID, type: 'report', mode: 'full' });
+
   const allLoading = openLitLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
 
   // ── Attorney filter ─────────────────────────────────────────────────
   const [selectedAttorney, setSelectedAttorney] = useState<string>('all');
 
+  // Build attorney cross-reference lookup from Open Lit detail rows
+  const openLitDetailRows = useMemo(() => (openLitFullData?.detailRows ?? []) as Array<Record<string, unknown>>, [openLitFullData]);
+  const attorneyLookup = useMemo(() => buildAttorneyLookup(openLitDetailRows), [openLitDetailRows]);
+
   const attorneyList = useMemo(() => {
-    if (!resData) return [];
-    const names = resData.groupings.map(g => g.label).sort((a, b) => a.localeCompare(b));
-    return names;
-  }, [resData]);
+    const nameSet = new Set<string>();
+    // From Resolutions groupings
+    resData?.groupings.forEach(g => nameSet.add(g.label));
+    // From Open Lit groupings (covers attorneys with open cases but no resolutions)
+    openLitData?.groupings.forEach(g => nameSet.add(g.label));
+    return [...nameSet].sort((a, b) => a.localeCompare(b));
+  }, [resData, openLitData]);
 
   const isFiltered = selectedAttorney !== 'all';
 
@@ -222,16 +234,28 @@ export default function ControlTower() {
 
   // ── Escalation Card Counts (source reports = single source of truth) ──
   const complaintsDetailRows = useMemo(() => (complaintsReport?.detailRows ?? []) as Array<Record<string, unknown>>, [complaintsReport]);
-  const complaintsOverdue = useMemo(() => countOverdue(complaintsDetailRows, ESCALATION_FILTERS.complaints), [complaintsDetailRows]);
+  const complaintsOverdue = useMemo(() => {
+    const rows = isFiltered ? filterRowsByAttorney(complaintsDetailRows, attorneyLookup, selectedAttorney) : complaintsDetailRows;
+    return countOverdue(rows, ESCALATION_FILTERS.complaints);
+  }, [complaintsDetailRows, isFiltered, attorneyLookup, selectedAttorney]);
 
   const formADetailRows = useMemo(() => (formAReport?.detailRows ?? []) as Array<Record<string, unknown>>, [formAReport]);
-  const formAPastDue60 = useMemo(() => countOverdue(formADetailRows, ESCALATION_FILTERS.formA), [formADetailRows]);
+  const formAPastDue60 = useMemo(() => {
+    const rows = isFiltered ? filterRowsByAttorney(formADetailRows, attorneyLookup, selectedAttorney) : formADetailRows;
+    return countOverdue(rows, ESCALATION_FILTERS.formA);
+  }, [formADetailRows, isFiltered, attorneyLookup, selectedAttorney]);
 
   const formCDetailRows = useMemo(() => (formCReport?.detailRows ?? []) as Array<Record<string, unknown>>, [formCReport]);
-  const formCPastDue = useMemo(() => countOverdue(formCDetailRows, ESCALATION_FILTERS.formC), [formCDetailRows]);
+  const formCPastDue = useMemo(() => {
+    const rows = isFiltered ? filterRowsByAttorney(formCDetailRows, attorneyLookup, selectedAttorney) : formCDetailRows;
+    return countOverdue(rows, ESCALATION_FILTERS.formC);
+  }, [formCDetailRows, isFiltered, attorneyLookup, selectedAttorney]);
 
   const depDetailRows = useMemo(() => (depReport?.detailRows ?? []) as Array<Record<string, unknown>>, [depReport]);
-  const depsOverdue90 = useMemo(() => countOverdue(depDetailRows, ESCALATION_FILTERS.deps), [depDetailRows]);
+  const depsOverdue90 = useMemo(() => {
+    const rows = isFiltered ? filterRowsByAttorney(depDetailRows, attorneyLookup, selectedAttorney) : depDetailRows;
+    return countOverdue(rows, ESCALATION_FILTERS.deps);
+  }, [depDetailRows, isFiltered, attorneyLookup, selectedAttorney]);
 
   // Deps timing from Stats dashboard (hero card still uses this)
   const depReportRows = useMemo(() => getDashRows(statsData, 'Dep Report for NJ PI LIT'), [statsData]);
@@ -489,63 +513,81 @@ export default function ControlTower() {
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 3: NJ Operations Velocity (4 cards)
           ═══════════════════════════════════════════════════════════════ */}
-      <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
-        <SectionHeader title="NJ Operations Velocity" subtitle="Key operational metrics for NJ litigation pipeline" info="Key operational metrics tracking NJ litigation inventory, missing discovery trackers, and service compliance." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
+      <section>
+        <SectionHeader title="NJ Operations Velocity" subtitle="Key operational metrics for NJ litigation pipeline" info="Key operational metrics tracking NJ litigation inventory, missing discovery trackers, and service compliance." />
         <DashboardGrid cols={4}>
-          <StatCard label="NJ Lit Inventory" value={fmtNum(njInventory)} deltaType="neutral" className={hoverCard} sparklineData={histNjInventory} anomaly={anomNjInventory ?? undefined} />
-          <StatCard
-            label="Missing Disc. Trackers"
-            value={missingTrackers}
-            deltaType={missingTrackers <= 5 ? "positive" : "negative"}
-            delta={missingTrackers <= 5 ? "low" : "needs attention"}
-            className={hoverCard}
-            sparklineData={histMissingTrackers}
-            anomaly={anomMissingTrackers ?? undefined}
-          />
-          <StatCard
-            label="Service >3d from COMP"
-            value={serviceGt3d}
-            deltaType={serviceGt3d > 20 ? "negative" : "neutral"}
-            className={hoverCard}
-          />
-          <StatCard
-            label="No Service 35+ Days"
-            value={noService35}
-            deltaType="negative"
-            className={hoverCard}
-            sparklineData={histNoService35}
-            anomaly={anomNoService35 ?? undefined}
-          />
+          <StatCard label="NJ Lit Inventory" value={fmtNum(isFiltered ? (filteredOpenLitGrouping?.aggregates.find(a => a.label === 'Record Count')?.value ?? 0) as number : njInventory)} deltaType="neutral" className={hoverCard} sparklineData={isFiltered ? undefined : histNjInventory} anomaly={isFiltered ? undefined : anomNjInventory ?? undefined} />
+          <div className="relative">
+            {isFiltered && <span className="absolute top-2 right-2 z-10 text-[9px] font-semibold bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">Firm-wide</span>}
+            <StatCard
+              label="Missing Disc. Trackers"
+              value={missingTrackers}
+              deltaType={missingTrackers <= 5 ? "positive" : "negative"}
+              delta={missingTrackers <= 5 ? "low" : "needs attention"}
+              className={hoverCard}
+              sparklineData={histMissingTrackers}
+              anomaly={anomMissingTrackers ?? undefined}
+            />
+          </div>
+          <div className="relative">
+            {isFiltered && <span className="absolute top-2 right-2 z-10 text-[9px] font-semibold bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">Firm-wide</span>}
+            <StatCard
+              label="Service >3d from COMP"
+              value={serviceGt3d}
+              deltaType={serviceGt3d > 20 ? "negative" : "neutral"}
+              className={hoverCard}
+            />
+          </div>
+          <div className="relative">
+            {isFiltered && <span className="absolute top-2 right-2 z-10 text-[9px] font-semibold bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">Firm-wide</span>}
+            <StatCard
+              label="No Service 35+ Days"
+              value={noService35}
+              deltaType="negative"
+              className={hoverCard}
+              sparklineData={histNoService35}
+              anomaly={anomNoService35 ?? undefined}
+            />
+          </div>
         </DashboardGrid>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
           SECTION 4: Risk Signals (4 cards)
           ═══════════════════════════════════════════════════════════════ */}
-      <section className={isFiltered ? 'opacity-40 pointer-events-none' : ''}>
-        <SectionHeader title="Risk Signals" subtitle="Items requiring attention across compliance and operations" info="Metrics highlighting cases requiring attention: missing answers, DED extensions, resolutions, and complaint timing." actions={isFiltered ? <span className="text-[10px] text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-full">Firm-wide</span> : undefined} />
+      <section>
+        <SectionHeader title="Risk Signals" subtitle="Items requiring attention across compliance and operations" info="Metrics highlighting cases requiring attention: missing answers, DED extensions, resolutions, and complaint timing." />
         <DashboardGrid cols={4}>
           <StatCard
             label="Missing Answers"
             value={missingAnswers}
             deltaType="negative"
             className={hoverCard}
-            sparklineData={histMissingAnswers}
-            anomaly={anomMissingAnswers ?? undefined}
+            sparklineData={isFiltered ? undefined : histMissingAnswers}
+            anomaly={isFiltered ? undefined : anomMissingAnswers ?? undefined}
           />
-          <StatCard label="DED Extensions" value={fmtNum(dedExtensions)} deltaType="neutral" className={hoverCard} sparklineData={histDedExtensions} anomaly={anomDedExtensions ?? undefined} />
-          <StatCard label="NJ Resolutions" value={fmtNum(njResolutions)} deltaType="neutral" className={hoverCard} sparklineData={histNjResolutions} anomaly={anomNjResolutions ?? undefined} />
-          <StatCard
-            label="Complaint Avg Days"
-            value={`${complaintTimelyDays}d`}
-            delta={`${complaintLateDays}d when late`}
-            deltaType="negative"
-            className={hoverCard}
-            subMetrics={[
-              { label: "Timely avg", value: `${complaintTimelyDays}d`, deltaType: "positive" },
-              { label: "Late avg", value: `${complaintLateDays}d`, deltaType: "negative" },
-            ]}
-          />
+          <div className="relative">
+            {isFiltered && <span className="absolute top-2 right-2 z-10 text-[9px] font-semibold bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">Firm-wide</span>}
+            <StatCard label="DED Extensions" value={fmtNum(dedExtensions)} deltaType="neutral" className={hoverCard} sparklineData={histDedExtensions} anomaly={anomDedExtensions ?? undefined} />
+          </div>
+          <div className="relative">
+            {isFiltered && <span className="absolute top-2 right-2 z-10 text-[9px] font-semibold bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">Firm-wide</span>}
+            <StatCard label="NJ Resolutions" value={fmtNum(njResolutions)} deltaType="neutral" className={hoverCard} sparklineData={histNjResolutions} anomaly={anomNjResolutions ?? undefined} />
+          </div>
+          <div className="relative">
+            {isFiltered && <span className="absolute top-2 right-2 z-10 text-[9px] font-semibold bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">Firm-wide</span>}
+            <StatCard
+              label="Complaint Avg Days"
+              value={`${complaintTimelyDays}d`}
+              delta={`${complaintLateDays}d when late`}
+              deltaType="negative"
+              className={hoverCard}
+              subMetrics={[
+                { label: "Timely avg", value: `${complaintTimelyDays}d`, deltaType: "positive" },
+                { label: "Late avg", value: `${complaintLateDays}d`, deltaType: "negative" },
+              ]}
+            />
+          </div>
         </DashboardGrid>
       </section>
 

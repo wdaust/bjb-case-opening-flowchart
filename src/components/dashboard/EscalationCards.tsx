@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
 import { fmtNum } from '../../utils/sfHelpers';
 import { DashboardGrid } from './DashboardGrid';
-import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip';
 
 interface EscalationCardsProps {
   complaintsOverdue: number;
@@ -21,14 +20,12 @@ interface CardDef {
   path: string | null;
   temp?: boolean;
   tempNote?: string;
-  /** Card can be filtered by attorney (has per-attorney data) */
-  filterable?: boolean;
 }
 
 const cards: CardDef[] = [
   { label: 'Complaints >14 Days', key: 'complaintsOverdue', path: '/complaints-overdue' },
   { label: 'Form A Past Due >60d', key: 'formAPastDue60', path: '/form-a' },
-  { label: 'Missing Answers >40d', key: 'missingAnswers', path: '/missing-answers', filterable: true },
+  { label: 'Missing Answers >40d', key: 'missingAnswers', path: '/missing-answers' },
   { label: 'Def. Discovery >75d', key: 'formCPastDue', path: '/defendants-discovery' },
   { label: 'Deps Not Sched >90d', key: 'depsOverdue90', path: '/depositions' },
 ];
@@ -47,20 +44,18 @@ export function EscalationCards(props: EscalationCardsProps) {
         const bgColor = severity === 'red' ? 'bg-red-500/5' : severity === 'amber' ? 'bg-amber-500/5' : 'bg-green-500/5';
         const textColor = severity === 'red' ? 'text-red-400' : severity === 'amber' ? 'text-amber-400' : 'text-green-400';
 
-        const showFirmBadge = isFiltered && !card.filterable;
-
-        // Append overdue=true and optional attorney filter to link
+        // Build link with overdue=true and attorney filter for all cards
         const cardPath = (() => {
           if (!card.path) return null;
           const params = new URLSearchParams();
           params.set('overdue', 'true');
-          if (isFiltered && card.filterable) {
+          if (isFiltered) {
             params.set('attorney', selectedAttorney);
           }
           return `${card.path}?${params.toString()}`;
         })();
 
-        const cardContent = (
+        return (
           <div
             key={card.key}
             className={cn(
@@ -75,28 +70,10 @@ export function EscalationCards(props: EscalationCardsProps) {
                 Temp
               </span>
             )}
-            {showFirmBadge && (
-              <span className="absolute top-2 right-2 text-[9px] font-semibold bg-muted text-muted-foreground px-1.5 py-0.5 rounded-full">
-                Firm-wide
-              </span>
-            )}
             <p className={cn('text-4xl font-bold', textColor)}>{fmtNum(count)}</p>
             <p className="text-xs font-medium text-muted-foreground mt-2">{card.label}</p>
           </div>
         );
-
-        if (card.temp && card.tempNote) {
-          return (
-            <Tooltip key={card.key}>
-              <TooltipTrigger asChild>{cardContent}</TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-[220px] text-xs">
-                {card.tempNote}
-              </TooltipContent>
-            </Tooltip>
-          );
-        }
-
-        return cardContent;
       })}
     </DashboardGrid>
   );

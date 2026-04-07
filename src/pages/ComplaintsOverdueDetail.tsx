@@ -9,10 +9,12 @@ import { DataTable } from '../components/dashboard/DataTable';
 import type { Column } from '../components/dashboard/DataTable';
 import { Skeleton } from '../components/ui/skeleton';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
-import { STATS_ID, COMPLAINTS_REPORT_ID } from '../data/sfReportIds';
+import { STATS_ID, COMPLAINTS_REPORT_ID, OPEN_LIT_ID } from '../data/sfReportIds';
 import type { DashboardResponse, ReportSummaryResponse } from '../types/salesforce';
 import { cn } from '../utils/cn';
 import { ESCALATION_FILTERS } from '../utils/escalationFilters';
+import { buildAttorneyLookup, filterRowsByAttorney } from '../utils/attorneyLookup';
+import { X } from 'lucide-react';
 import {
   PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer,
 } from 'recharts';
@@ -67,6 +69,7 @@ interface DetailRow extends Record<string, unknown> {
 export default function ComplaintsOverdueDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
   const overdueOnly = searchParams.get('overdue') === 'true';
+  const attorneyParam = searchParams.get('attorney');
 
   const { data: statsData, loading } =
     useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
@@ -77,6 +80,13 @@ export default function ComplaintsOverdueDetail() {
       type: 'report',
       mode: 'full',
     });
+
+  // Open Lit detail rows for attorney cross-reference
+  const { data: openLitFullData } =
+    useSalesforceReport<ReportSummaryResponse>({ id: OPEN_LIT_ID, type: 'report', mode: 'full' });
+
+  const openLitDetailRows = useMemo(() => (openLitFullData?.detailRows ?? []) as DetailRow[], [openLitFullData]);
+  const attorneyLookup = useMemo(() => buildAttorneyLookup(openLitDetailRows), [openLitDetailRows]);
 
   const [filterText, setFilterText] = useState('');
 
@@ -104,14 +114,20 @@ export default function ComplaintsOverdueDetail() {
   // Detail rows from source report
   const allDetailRows = (reportData?.detailRows ?? []) as DetailRow[];
 
-  // Apply overdue pre-filter when linked from escalation card
+  // Apply overdue pre-filter and attorney cross-ref filter
   const detailRows = useMemo(() => {
-    if (!overdueOnly) return allDetailRows;
-    return allDetailRows.filter(r => {
-      const lbl = r._groupingLabel;
-      return typeof lbl === 'string' && ESCALATION_FILTERS.complaints(lbl);
-    });
-  }, [allDetailRows, overdueOnly]);
+    let rows = allDetailRows;
+    if (overdueOnly) {
+      rows = rows.filter(r => {
+        const lbl = r._groupingLabel;
+        return typeof lbl === 'string' && ESCALATION_FILTERS.complaints(lbl);
+      });
+    }
+    if (attorneyParam) {
+      rows = filterRowsByAttorney(rows, attorneyLookup, attorneyParam);
+    }
+    return rows;
+  }, [allDetailRows, overdueOnly, attorneyParam, attorneyLookup]);
 
   const detailColumns: Column<DetailRow>[] = useMemo(() => {
     if (!allDetailRows.length) return [];
@@ -160,6 +176,26 @@ export default function ComplaintsOverdueDetail() {
       <p className="text-sm text-muted-foreground">
         Aging breakdown for NJ complaint filings from the Stats dashboard.
       </p>
+
+      {/* Attorney filter banner */}
+      {attorneyParam && (
+        <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 text-sm">
+          <span className="text-muted-foreground">Filtered to:</span>
+          <span className="font-medium text-foreground">{attorneyParam}</span>
+          <button
+            onClick={() => {
+              setSearchParams(prev => {
+                const next = new URLSearchParams(prev);
+                next.delete('attorney');
+                return next;
+              });
+            }}
+            className="ml-auto flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="w-3 h-3" /> Clear filter
+          </button>
+        </div>
+      )}
 
       {/* KPI Strip */}
       <DashboardGrid cols={3}>
