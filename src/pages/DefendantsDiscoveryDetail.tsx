@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { fmtNum, getDashRows } from '../utils/sfHelpers';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
@@ -6,12 +6,18 @@ import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { StatCard } from '../components/dashboard/StatCard';
 import { Skeleton } from '../components/ui/skeleton';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
-import { STATS_ID } from '../data/sfReportIds';
-import type { DashboardResponse } from '../types/salesforce';
+import { STATS_ID, FORM_C_REPORT_ID } from '../data/sfReportIds';
+import type { DashboardResponse, ReportSummaryResponse } from '../types/salesforce';
 import { cn } from '../utils/cn';
+import { DataTable } from '../components/dashboard/DataTable';
+import type { Column } from '../components/dashboard/DataTable';
 import {
   PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer,
 } from 'recharts';
+
+interface DetailRow extends Record<string, unknown> {
+  _groupingLabel?: string;
+}
 
 const tooltipStyle = {
   contentStyle: { backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: 8, fontSize: 12 },
@@ -23,6 +29,27 @@ const GREEN = '#22c55e';
 const AMBER = '#f59e0b';
 const RED = '#ef4444';
 const PINK = '#ec4899';
+
+type DefDiscRow = { bucket: string; count: number; status: string; _color: string };
+
+const defDiscTableCols: Column<DefDiscRow>[] = [
+  { key: 'bucket', label: 'Bucket' },
+  { key: 'count', label: 'Count', render: (r) => fmtNum(r.count) },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (r) => (
+      <span className={cn(
+        'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+        r._color === GREEN ? 'bg-green-500/15 text-green-400' :
+        r._color === RED ? 'bg-red-500/15 text-red-400' :
+        'bg-amber-500/15 text-amber-400',
+      )}>
+        {r.status}
+      </span>
+    ),
+  },
+];
 
 function LoadingSkeleton() {
   return (
@@ -39,6 +66,15 @@ function LoadingSkeleton() {
 export default function DefendantsDiscoveryDetail() {
   const { data: statsData, loading } =
     useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
+
+  const { data: reportData, loading: reportLoading } =
+    useSalesforceReport<ReportSummaryResponse>({
+      id: FORM_C_REPORT_ID,
+      type: 'report',
+      mode: 'full',
+    });
+
+  const [filterText, setFilterText] = useState('');
 
   const formCData = useMemo(() => {
     const rows = getDashRows(statsData, 'Form C Past Due (NJ)');
@@ -65,6 +101,43 @@ export default function DefendantsDiscoveryDetail() {
     color: d.name.toLowerCase().includes('within time') ? GREEN : PALETTE[(i % (PALETTE.length - 1)) + 1],
   }));
 
+  // Detail rows from source report
+  const detailRowsRaw = (reportData?.detailRows ?? []) as DetailRow[];
+
+  const detailColumns: Column<DetailRow>[] = useMemo(() => {
+    if (!detailRowsRaw.length) return [];
+    const first = detailRowsRaw[0];
+    return Object.keys(first)
+      .filter(k => k !== '_groupingLabel')
+      .map(k => ({
+        key: k,
+        label: k,
+        sortable: true,
+        render: (row: DetailRow) => {
+          const v = row[k];
+          if (v == null) return '—';
+          if (typeof v === 'number') return fmtNum(v);
+          return String(v);
+        },
+      }));
+  }, [detailRowsRaw]);
+
+  const allDetailColumns: Column<DetailRow>[] = useMemo(() => {
+    if (!detailRowsRaw.length || !detailRowsRaw[0]._groupingLabel) return detailColumns;
+    return [
+      { key: '_groupingLabel', label: 'Group', sortable: true },
+      ...detailColumns,
+    ];
+  }, [detailColumns, detailRowsRaw]);
+
+  const filteredDetailRows = useMemo(() => {
+    if (!filterText) return detailRowsRaw;
+    const q = filterText.toLowerCase();
+    return detailRowsRaw.filter(row =>
+      Object.values(row).some(v => String(v).toLowerCase().includes(q))
+    );
+  }, [detailRowsRaw, filterText]);
+
   if (loading) return <LoadingSkeleton />;
 
   return (
@@ -76,14 +149,8 @@ export default function DefendantsDiscoveryDetail() {
 
       <h1 className="text-2xl font-bold text-foreground">Defendants Discovery (Form C Past Due)</h1>
       <p className="text-sm text-muted-foreground">
-        Action-based bucket breakdown from the Stats dashboard. Buckets are action-based, not day-based —
-        pending a dedicated SF report for &gt;75 day filtering.
+        Action-based bucket breakdown from the Stats dashboard with matter-level detail from Form C source report.
       </p>
-
-      <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-400">
-        <span className="font-semibold">Temp card</span> — Buckets are action-based (e.g. "Need to File Motion"), not day-based.
-        A dedicated Salesforce report is needed to filter defendants discovery &gt;75 days.
-      </div>
 
       {/* KPI Strip */}
       <DashboardGrid cols={3}>
@@ -149,15 +216,56 @@ export default function DefendantsDiscoveryDetail() {
         </div>
       </section>
 
-      {/* Placeholder */}
-      <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center text-muted-foreground">
-        <p className="font-medium text-foreground mb-2">Day-Based Filtering</p>
-        <p className="text-sm">
-          Day-based filtering (&gt;75 days) requires a dedicated Salesforce report.
-          Once created, add the report ID to <code className="text-xs bg-muted px-1.5 py-0.5 rounded">sfReportIds.ts</code> and
-          this page will show day-based aging breakdown.
-        </p>
-      </div>
+      {/* Bucket Data Table */}
+      <section>
+        <SectionHeader title="Action Bucket Data" subtitle="Sortable table of defendants discovery action buckets" />
+        <DataTable
+          data={formCData.map(d => ({
+            bucket: d.name,
+            count: d.value,
+            status: d.name.toLowerCase().includes('within time') ? 'Within Time' :
+                    d.name.toLowerCase().includes('motion') ? 'Motion Needed' : 'Past Due',
+            _color: d.color,
+          }))}
+          columns={defDiscTableCols}
+          keyField="bucket"
+        />
+      </section>
+
+      {/* Matter Detail Table */}
+      {reportLoading && (
+        <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
+          Loading matter-level detail...
+        </div>
+      )}
+      {!reportLoading && detailRowsRaw.length > 0 && (
+        <section>
+          <SectionHeader
+            title="Matter Detail"
+            subtitle={`${fmtNum(filteredDetailRows.length)} of ${fmtNum(detailRowsRaw.length)} matters`}
+          />
+          <div className="mb-3">
+            <input
+              type="text"
+              placeholder="Filter matters..."
+              value={filterText}
+              onChange={e => setFilterText(e.target.value)}
+              className="w-full max-w-sm px-3 py-1.5 text-sm rounded-md border border-border bg-card text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50"
+            />
+          </div>
+          <DataTable
+            data={filteredDetailRows}
+            columns={allDetailColumns}
+            keyField="_groupingLabel"
+            maxRows={100}
+          />
+        </section>
+      )}
+      {!reportLoading && detailRowsRaw.length === 0 && (
+        <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
+          No detail rows available. Run <code className="text-xs bg-muted px-1.5 py-0.5 rounded">scripts/refresh-sf-data.sh</code> to fetch detail data.
+        </div>
+      )}
     </div>
   );
 }

@@ -29,6 +29,7 @@ export interface DashboardComponent {
   chartType: string;
   columns: string[];
   rows: DashboardRow[];
+  sourceReportId?: string;
 }
 
 export interface DashboardResponse {

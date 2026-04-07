@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { fmtNum, getDashRows, complianceColor } from '../utils/sfHelpers';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
@@ -6,9 +6,34 @@ import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { StatCard } from '../components/dashboard/StatCard';
 import { Skeleton } from '../components/ui/skeleton';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
-import { STATS_ID } from '../data/sfReportIds';
-import type { DashboardResponse } from '../types/salesforce';
+import { STATS_ID, DEP_REPORT_ID } from '../data/sfReportIds';
+import type { DashboardResponse, ReportSummaryResponse } from '../types/salesforce';
 import { cn } from '../utils/cn';
+import { DataTable } from '../components/dashboard/DataTable';
+import type { Column } from '../components/dashboard/DataTable';
+
+interface DetailRow extends Record<string, unknown> {
+  _groupingLabel?: string;
+}
+
+type DepRow = { bucket: string; count: number; status: string; isTimely: boolean };
+
+const depTableCols: Column<DepRow>[] = [
+  { key: 'bucket', label: 'Bucket' },
+  { key: 'count', label: 'Count', render: (r) => fmtNum(r.count) },
+  {
+    key: 'status',
+    label: 'Status',
+    render: (r) => (
+      <span className={cn(
+        'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
+        r.isTimely ? 'bg-green-500/15 text-green-400' : 'bg-red-500/15 text-red-400',
+      )}>
+        {r.status}
+      </span>
+    ),
+  },
+];
 
 function LoadingSkeleton() {
   return (
@@ -25,6 +50,15 @@ function LoadingSkeleton() {
 export default function DepositionDetail() {
   const { data: statsData, loading } =
     useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
+
+  const { data: reportData, loading: reportLoading } =
+    useSalesforceReport<ReportSummaryResponse>({
+      id: DEP_REPORT_ID,
+      type: 'report',
+      mode: 'full',
+    });
+
+  const [filterText, setFilterText] = useState('');
 
   const depRows = useMemo(() => getDashRows(statsData, 'Dep Report for NJ PI LIT'), [statsData]);
   const total = useMemo(() => depRows.reduce((s, r) => s + (r.values[0]?.value ?? 0), 0), [depRows]);
@@ -48,6 +82,43 @@ export default function DepositionDetail() {
       };
     });
   }, [depRows]);
+
+  // Detail rows from source report
+  const detailRowsRaw = (reportData?.detailRows ?? []) as DetailRow[];
+
+  const detailColumns: Column<DetailRow>[] = useMemo(() => {
+    if (!detailRowsRaw.length) return [];
+    const first = detailRowsRaw[0];
+    return Object.keys(first)
+      .filter(k => k !== '_groupingLabel')
+      .map(k => ({
+        key: k,
+        label: k,
+        sortable: true,
+        render: (row: DetailRow) => {
+          const v = row[k];
+          if (v == null) return '—';
+          if (typeof v === 'number') return fmtNum(v);
+          return String(v);
+        },
+      }));
+  }, [detailRowsRaw]);
+
+  const allDetailColumns: Column<DetailRow>[] = useMemo(() => {
+    if (!detailRowsRaw.length || !detailRowsRaw[0]._groupingLabel) return detailColumns;
+    return [
+      { key: '_groupingLabel', label: 'Group', sortable: true },
+      ...detailColumns,
+    ];
+  }, [detailColumns, detailRowsRaw]);
+
+  const filteredDetailRows = useMemo(() => {
+    if (!filterText) return detailRowsRaw;
+    const q = filterText.toLowerCase();
+    return detailRowsRaw.filter(row =>
+      Object.values(row).some(v => String(v).toLowerCase().includes(q))
+    );
+  }, [detailRowsRaw, filterText]);
 
   if (loading) return <LoadingSkeleton />;
 
@@ -97,15 +168,55 @@ export default function DepositionDetail() {
         </div>
       </section>
 
-      {/* Placeholder for matter-level data */}
-      <div className="rounded-xl border border-dashed border-border bg-card/50 p-8 text-center text-muted-foreground">
-        <p className="font-medium text-foreground mb-2">Matter-Level Detail</p>
-        <p className="text-sm">
-          Matter-level data requires a dedicated Salesforce report. Once created, add the report ID
-          to <code className="text-xs bg-muted px-1.5 py-0.5 rounded">sfReportIds.ts</code> and
-          this table will populate automatically.
-        </p>
-      </div>
+      {/* Bucket Data Table */}
+      <section>
+        <SectionHeader title="Deposition Data" subtitle="Sortable table of deposition timing buckets" />
+        <DataTable
+          data={timingRows.map(r => ({
+            bucket: r.bucket,
+            count: r.count,
+            status: r.isTimely ? 'On Time' : 'Late',
+            isTimely: r.isTimely,
+          }))}
+          columns={depTableCols}
+          keyField="bucket"
+        />
+      </section>
+
+      {/* Matter Detail Table */}
+      {reportLoading && (
+        <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
+          Loading matter-level detail...
+        </div>
+      )}
+      {!reportLoading && detailRowsRaw.length > 0 && (
+        <section>
+          <SectionHeader
+            title="Matter Detail"
+            subtitle={`${fmtNum(filteredDetailRows.length)} of ${fmtNum(detailRowsRaw.length)} matters`}
+          />
+          <div className="mb-3">
+            <input
+              type="text"
+              placeholder="Filter matters..."
+              value={filterText}
+              onChange={e => setFilterText(e.target.value)}
+              className="w-full max-w-sm px-3 py-1.5 text-sm rounded-md border border-border bg-card text-foreground placeholder:text-muted-foreground outline-none focus:border-primary/50"
+            />
+          </div>
+          <DataTable
+            data={filteredDetailRows}
+            columns={allDetailColumns}
+            keyField="_groupingLabel"
+            maxRows={100}
+          />
+        </section>
+      )}
+      {!reportLoading && detailRowsRaw.length === 0 && (
+        <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
+          No detail rows available. Run <code className="text-xs bg-muted px-1.5 py-0.5 rounded">scripts/refresh-sf-data.sh</code> to fetch detail data.
+        </div>
+      )}
     </div>
   );
 }

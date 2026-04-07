@@ -1,0 +1,534 @@
+{
+  "reportId": "00OPp000003LtarMAC",
+  "reportName": "Dep Report for NJ PI LIT",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Unique Count of Matter ID",
+      "value": 15
+    },
+    {
+      "label": "Average Time from Filed Date",
+      "value": 428.40909090909093
+    },
+    {
+      "label": "Average Answer Date to Today",
+      "value": 342.5
+    },
+    {
+      "label": "Average Form A Served to Today",
+      "value": 179.0909090909091
+    }
+  ],
+  "groupings": [
+    {
+      "key": "0",
+      "label": "Dep Overdue [Overdue 0-29 Days]",
+      "aggregates": [
+        {
+          "label": "Unique Count of Matter ID",
+          "value": 1
+        },
+        {
+          "label": "Average Time from Filed Date",
+          "value": 188
+        },
+        {
+          "label": "Average Answer Date to Today",
+          "value": 123.5
+        },
+        {
+          "label": "Average Form A Served to Today",
+          "value": 82
+        }
+      ]
+    },
+    {
+      "key": "1",
+      "label": "Dep Overdue [Overdue 180+ Days]",
+      "aggregates": [
+        {
+          "label": "Unique Count of Matter ID",
+          "value": 5
+        },
+        {
+          "label": "Average Time from Filed Date",
+          "value": 865.6666666666666
+        },
+        {
+          "label": "Average Answer Date to Today",
+          "value": 722
+        },
+        {
+          "label": "Average Form A Served to Today",
+          "value": 494.5
+        }
+      ]
+    },
+    {
+      "key": "2",
+      "label": "Dep Overdue [Overdue 30-59 Days]",
+      "aggregates": [
+        {
+          "label": "Unique Count of Matter ID",
+          "value": 1
+        },
+        {
+          "label": "Average Time from Filed Date",
+          "value": 188
+        },
+        {
+          "label": "Average Answer Date to Today",
+          "value": 138
+        },
+        {
+          "label": "Average Form A Served to Today",
+          "value": 120
+        }
+      ]
+    },
+    {
+      "key": "3",
+      "label": "Dep Overdue [Overdue 90-179 Days]",
+      "aggregates": [
+        {
+          "label": "Unique Count of Matter ID",
+          "value": 1
+        },
+        {
+          "label": "Average Time from Filed Date",
+          "value": 307
+        },
+        {
+          "label": "Average Answer Date to Today",
+          "value": 281
+        },
+        {
+          "label": "Average Form A Served to Today",
+          "value": 193
+        }
+      ]
+    },
+    {
+      "key": "4",
+      "label": "Not Due Yet 0-29 Days to Due Date",
+      "aggregates": [
+        {
+          "label": "Unique Count of Matter ID",
+          "value": 2
+        },
+        {
+          "label": "Average Time from Filed Date",
+          "value": 230.5
+        },
+        {
+          "label": "Average Answer Date to Today",
+          "value": 142
+        },
+        {
+          "label": "Average Form A Served to Today",
+          "value": 56
+        }
+      ]
+    },
+    {
+      "key": "5",
+      "label": "Not Due Yet 30-75 Days to Due Date",
+      "aggregates": [
+        {
+          "label": "Unique Count of Matter ID",
+          "value": 5
+        },
+        {
+          "label": "Average Time from Filed Date",
+          "value": 301.22222222222223
+        },
+        {
+          "label": "Average Answer Date to Today",
+          "value": 235
+        },
+        {
+          "label": "Average Form A Served to Today",
+          "value": 29.333333333333332
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": true,
+  "detailRows": [
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 0-29 Days] > MAT-24062045279",
+      "Matter ID": "a0LPp000004xns1",
+      "Display Name": "Jean Mary Severe | 6/7/2024 | Automobile Accident",
+      "Active Stage": "Discovery",
+      "Discovery Tracker Name": "DIS-8147",
+      "Defendant (Party Name)": "Jorge R. Cruz",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "10/1/2025",
+      "Answer Filed": "11/21/2025",
+      "Date Form A Sent to Attorney for Review": "12/23/2025",
+      "Client Deposition": "-",
+      "Form A Served": "1/15/2026",
+      "Time from Filed Date": "188",
+      "Answer Date to Today": "137",
+      "Form A Served to Today": "82"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 0-29 Days] > MAT-24062045279",
+      "Matter ID": "a0LPp000004xns1",
+      "Display Name": "Jean Mary Severe | 6/7/2024 | Automobile Accident",
+      "Active Stage": "Discovery",
+      "Discovery Tracker Name": "DIS-8151",
+      "Defendant (Party Name)": "Lionel Metellus",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "10/1/2025",
+      "Answer Filed": "12/18/2025",
+      "Date Form A Sent to Attorney for Review": "12/23/2025",
+      "Client Deposition": "-",
+      "Form A Served": "1/15/2026",
+      "Time from Filed Date": "188",
+      "Answer Date to Today": "110",
+      "Form A Served to Today": "82"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 180+ Days] > MAT-23082536285",
+      "Matter ID": "a0L4V00000UyYnp",
+      "Display Name": "Brigitte Jackson | 8/24/2023 | Automobile Accident",
+      "Active Stage": "Deps / Med Exams / Narratives",
+      "Discovery Tracker Name": "DIS-5462",
+      "Defendant (Party Name)": "MALKIT SINGH",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "2/27/2025",
+      "Answer Filed": "5/29/2025",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "6/17/2025",
+      "Time from Filed Date": "404",
+      "Answer Date to Today": "313",
+      "Form A Served to Today": "294"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 180+ Days] > MAT-24013041197",
+      "Matter ID": "a0LPp000002FJu1",
+      "Display Name": "Carlos Irizarry | 12/22/2023 | Premises Liability",
+      "Active Stage": "Written Discovery",
+      "Discovery Tracker Name": "DIS-4528",
+      "Defendant (Party Name)": "Raccoon Creek Associates, LLC",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "5/10/2024",
+      "Answer Filed": "6/3/2024",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "2/28/2025",
+      "Time from Filed Date": "697",
+      "Answer Date to Today": "673",
+      "Form A Served to Today": "403"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 180+ Days] > MAT-22072926640",
+      "Matter ID": "a0L4V00000UyF8u",
+      "Display Name": "Yvonne Santiago | 7/23/2022 | Premises Liability",
+      "Active Stage": "Written Discovery",
+      "Discovery Tracker Name": "DIS-0879",
+      "Defendant (Party Name)": "380 Claremont LLC",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "1/17/2023",
+      "Answer Filed": "2/9/2023",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "4/11/2024",
+      "Time from Filed Date": "1,176",
+      "Answer Date to Today": "1,153",
+      "Form A Served to Today": "726"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 180+ Days] > MAT-23022031054",
+      "Matter ID": "a0L4V00000ZpHp3",
+      "Display Name": "Leonora Madison | 2/14/2023 | Automobile Accident",
+      "Active Stage": "Written Discovery",
+      "Discovery Tracker Name": "DIS-4067",
+      "Defendant (Party Name)": "City of Jersey City",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "11/16/2023",
+      "Answer Filed": "4/30/2024",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "11/1/2024",
+      "Time from Filed Date": "873",
+      "Answer Date to Today": "707",
+      "Form A Served to Today": "522"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-24071246020",
+      "Matter ID": "a0LPp000005PS1T",
+      "Display Name": "Skyler Lee Pollak | 7/6/2024 | Animal Incident",
+      "Active Stage": "Case Opening",
+      "Discovery Tracker Name": "DIS-4800",
+      "Defendant (Party Name)": "Iron State Properties",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "3/24/2025",
+      "Answer Filed": "5/7/2025",
+      "Date Form A Sent to Attorney for Review": "12/8/2025",
+      "Client Deposition": "-",
+      "Form A Served": "3/10/2026",
+      "Time from Filed Date": "379",
+      "Answer Date to Today": "335",
+      "Form A Served to Today": "28"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-24071246020",
+      "Matter ID": "a0LPp000005PS1T",
+      "Display Name": "Skyler Lee Pollak | 7/6/2024 | Animal Incident",
+      "Active Stage": "Case Opening",
+      "Discovery Tracker Name": "DIS-4801",
+      "Defendant (Party Name)": "Iron State Development LLC",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "3/24/2025",
+      "Answer Filed": "5/7/2025",
+      "Date Form A Sent to Attorney for Review": "12/8/2025",
+      "Client Deposition": "-",
+      "Form A Served": "3/10/2026",
+      "Time from Filed Date": "379",
+      "Answer Date to Today": "335",
+      "Form A Served to Today": "28"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-24071246020",
+      "Matter ID": "a0LPp000005PS1T",
+      "Display Name": "Skyler Lee Pollak | 7/6/2024 | Animal Incident",
+      "Active Stage": "Case Opening",
+      "Discovery Tracker Name": "DIS-4802",
+      "Defendant (Party Name)": "Harrison Building 3 LLC",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "3/24/2025",
+      "Answer Filed": "5/7/2025",
+      "Date Form A Sent to Attorney for Review": "12/8/2025",
+      "Client Deposition": "-",
+      "Form A Served": "3/10/2026",
+      "Time from Filed Date": "379",
+      "Answer Date to Today": "335",
+      "Form A Served to Today": "28"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 180+ Days] > MAT-21082020294",
+      "Matter ID": "a0L4V00000VpQzx",
+      "Display Name": "Edgar Galdamez-Joachin | 8/13/2021 | Automobile Accident",
+      "Active Stage": "Written Discovery",
+      "Discovery Tracker Name": "DIS-0612",
+      "Defendant (Party Name)": "Ricky Torres",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "6/20/2023",
+      "Answer Filed": "3/25/2024",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "11/12/2024",
+      "Time from Filed Date": "1,022",
+      "Answer Date to Today": "743",
+      "Form A Served to Today": "511"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 180+ Days] > MAT-21082020294",
+      "Matter ID": "a0L4V00000VpQzx",
+      "Display Name": "Edgar Galdamez-Joachin | 8/13/2021 | Automobile Accident",
+      "Active Stage": "Written Discovery",
+      "Discovery Tracker Name": "DIS-0614",
+      "Defendant (Party Name)": "Mariah Rivera",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "6/20/2023",
+      "Answer Filed": "3/25/2024",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "11/12/2024",
+      "Time from Filed Date": "1,022",
+      "Answer Date to Today": "743",
+      "Form A Served to Today": "511"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-25010953845",
+      "Matter ID": "a0LPp000008pMt7",
+      "Display Name": "Brian Polito | 12/30/2024 | Premises Liability",
+      "Active Stage": "Case Checkpoint",
+      "Discovery Tracker Name": "DIS-7662",
+      "Defendant (Party Name)": "Citizens Financial Group, Inc.",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "10/8/2025",
+      "Answer Filed": "11/13/2025",
+      "Date Form A Sent to Attorney for Review": "3/13/2026",
+      "Client Deposition": "-",
+      "Form A Served": "3/17/2026",
+      "Time from Filed Date": "181",
+      "Answer Date to Today": "145",
+      "Form A Served to Today": "21"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-23080935836",
+      "Matter ID": "a0L4V00000UyWxD",
+      "Display Name": "Darlene Coviel | 7/31/2023 | Premises Liability",
+      "Active Stage": "Discovery",
+      "Discovery Tracker Name": "DIS-6455",
+      "Defendant (Party Name)": "Garden State Honda",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "3/18/2025",
+      "Answer Filed": "6/17/2025",
+      "Date Form A Sent to Attorney for Review": "2/16/2026",
+      "Client Deposition": "-",
+      "Form A Served": "3/6/2026",
+      "Time from Filed Date": "385",
+      "Answer Date to Today": "294",
+      "Form A Served to Today": "32"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 90-179 Days] > MAT-24021341644",
+      "Matter ID": "a0LPp000002VBHN",
+      "Display Name": "Amber Hopkins | 2/6/2024 | Automobile Accident",
+      "Active Stage": "Case Opening",
+      "Discovery Tracker Name": "DIS-7593",
+      "Defendant (Party Name)": "Richard Leschander",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "6/4/2025",
+      "Answer Filed": "6/30/2025",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "9/26/2025",
+      "Time from Filed Date": "307",
+      "Answer Date to Today": "281",
+      "Form A Served to Today": "193"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-24040843192",
+      "Matter ID": "a0LPp000003Ugcn",
+      "Display Name": "Brianna Perez | 12/29/2023 | Premises Liability",
+      "Active Stage": "Demand Prep",
+      "Discovery Tracker Name": "DIS-7583",
+      "Defendant (Party Name)": "Whole Foods Market",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "9/25/2025",
+      "Answer Filed": "10/27/2025",
+      "Date Form A Sent to Attorney for Review": "3/4/2026",
+      "Client Deposition": "-",
+      "Form A Served": "3/9/2026",
+      "Time from Filed Date": "194",
+      "Answer Date to Today": "162",
+      "Form A Served to Today": "29"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-24040843192",
+      "Matter ID": "a0LPp000003Ugcn",
+      "Display Name": "Brianna Perez | 12/29/2023 | Premises Liability",
+      "Active Stage": "Demand Prep",
+      "Discovery Tracker Name": "DIS-7584",
+      "Defendant (Party Name)": "Whole Food Market Group, INC",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "9/25/2025",
+      "Answer Filed": "10/27/2025",
+      "Date Form A Sent to Attorney for Review": "3/4/2026",
+      "Client Deposition": "-",
+      "Form A Served": "3/9/2026",
+      "Time from Filed Date": "194",
+      "Answer Date to Today": "162",
+      "Form A Served to Today": "29"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-24040843192",
+      "Matter ID": "a0LPp000003Ugcn",
+      "Display Name": "Brianna Perez | 12/29/2023 | Premises Liability",
+      "Active Stage": "Demand Prep",
+      "Discovery Tracker Name": "DIS-7587",
+      "Defendant (Party Name)": "Androse Associates of Allaire, LLC",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "9/25/2025",
+      "Answer Filed": "12/11/2025",
+      "Date Form A Sent to Attorney for Review": "3/4/2026",
+      "Client Deposition": "-",
+      "Form A Served": "3/9/2026",
+      "Time from Filed Date": "194",
+      "Answer Date to Today": "117",
+      "Form A Served to Today": "29"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-23080335632",
+      "Matter ID": "a0L4V00000UyWDJ",
+      "Display Name": "Sabrina Johnson | 7/15/2023 | Automobile Accident",
+      "Active Stage": "Case Opening",
+      "Discovery Tracker Name": "DIS-6453",
+      "Defendant (Party Name)": "Christopher L. Richardson",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "2/5/2025",
+      "Answer Filed": "8/20/2025",
+      "Date Form A Sent to Attorney for Review": "2/6/2026",
+      "Client Deposition": "-",
+      "Form A Served": "2/26/2026",
+      "Time from Filed Date": "426",
+      "Answer Date to Today": "230",
+      "Form A Served to Today": "40"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 0-29 Days to Due Date > MAT-24103050971",
+      "Matter ID": "a0LPp000007XjK8",
+      "Display Name": "Mohamed Niyas | 10/27/2024 | Automobile Accident",
+      "Active Stage": "Discovery",
+      "Discovery Tracker Name": "DIS-8750",
+      "Defendant (Party Name)": "Drive New Jersey Insurance Company",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "8/18/2025",
+      "Answer Filed": "1/9/2026",
+      "Date Form A Sent to Attorney for Review": "2/13/2026",
+      "Client Deposition": "-",
+      "Form A Served": "2/16/2026",
+      "Time from Filed Date": "232",
+      "Answer Date to Today": "88",
+      "Form A Served to Today": "50"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 0-29 Days to Due Date > MAT-24111551646",
+      "Matter ID": "a0LPp000007rNQf",
+      "Display Name": "Adeoluwa Babawale | 11/14/2024 | Automobile Accident",
+      "Active Stage": "Discovery",
+      "Discovery Tracker Name": "DIS-7437",
+      "Defendant (Party Name)": "Lauren Ernst",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "8/21/2025",
+      "Answer Filed": "9/23/2025",
+      "Date Form A Sent to Attorney for Review": "2/3/2026",
+      "Client Deposition": "-",
+      "Form A Served": "2/4/2026",
+      "Time from Filed Date": "229",
+      "Answer Date to Today": "196",
+      "Form A Served to Today": "62"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 30-59 Days] > MAT-24031442567",
+      "Matter ID": "a0LPp0000034CLp",
+      "Display Name": "Justine Riboldi | 3/13/2024 | Automobile Accident",
+      "Active Stage": "Case Opening",
+      "Discovery Tracker Name": "DIS-8153",
+      "Defendant (Party Name)": "Township of Mahwah",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "10/1/2025",
+      "Answer Filed": "11/20/2025",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "12/8/2025",
+      "Time from Filed Date": "188",
+      "Answer Date to Today": "138",
+      "Form A Served to Today": "120"
+    },
+    {
+      "_groupingLabel": "Dep Overdue [Overdue 30-59 Days] > MAT-24031442567",
+      "Matter ID": "a0LPp0000034CLp",
+      "Display Name": "Justine Riboldi | 3/13/2024 | Automobile Accident",
+      "Active Stage": "Case Opening",
+      "Discovery Tracker Name": "DIS-8154",
+      "Defendant (Party Name)": "Robert W. Birney",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "10/1/2025",
+      "Answer Filed": "11/20/2025",
+      "Date Form A Sent to Attorney for Review": "-",
+      "Client Deposition": "-",
+      "Form A Served": "12/8/2025",
+      "Time from Filed Date": "188",
+      "Answer Date to Today": "138",
+      "Form A Served to Today": "120"
+    }
+  ]
+}

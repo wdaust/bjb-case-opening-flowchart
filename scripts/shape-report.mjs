@@ -52,29 +52,77 @@ if (reportId === RESOLUTIONS_ID) {
 }
 
 // ── Detail row extraction ────────────────────────────────────────────
+// SF Reports API returns detail rows in two possible formats:
+//   1. Separate factMap entries keyed as `groupKey!rowIdx` (older/smaller reports)
+//   2. A `rows` array inside each factMap entry like `groupKey!T` (common format)
+// We try both approaches.
 let detailRows = undefined;
-if (raw.hasDetailRows) {
-  const detailCols = raw.reportMetadata?.detailColumns ?? [];
-  const detailColInfo = raw.reportExtendedMetadata?.detailColumnInfo ?? {};
+const detailCols = raw.reportMetadata?.detailColumns ?? [];
+const detailColInfo = raw.reportExtendedMetadata?.detailColumnInfo ?? {};
+
+function extractDataCells(dataCells) {
+  const row = {};
+  (dataCells ?? []).forEach((dc, ci) => {
+    const colKey = detailCols[ci];
+    const colInfo = detailColInfo[colKey];
+    const colLabel = colInfo?.label ?? colKey ?? `col_${ci}`;
+    row[colLabel] = dc.label ?? dc.value;
+  });
+  return row;
+}
+
+if (detailCols.length > 0) {
   detailRows = [];
 
-  for (const g of filteredGroupings) {
-    // Iterate row indices in factMap for this grouping
+  // Build a lookup from grouping key → label for all grouping levels.
+  // groupingsDown can be nested: each grouping has sub-groupings.
+  const keyToLabel = {};
+  function walkGroupings(groups, parentLabel) {
+    for (const g of groups) {
+      keyToLabel[g.key] = parentLabel ? `${parentLabel} > ${g.label}` : g.label;
+      if (g.groupings?.length) walkGroupings(g.groupings, keyToLabel[g.key]);
+    }
+  }
+  walkGroupings(raw.groupingsDown?.groupings ?? [], '');
+
+  // Scan ALL factMap entries for rows[] arrays (handles nested groupings)
+  for (const [fmKey, entry] of Object.entries(raw.factMap)) {
+    if (!entry?.rows?.length) continue;
+
+    // Determine grouping label from the factMap key (e.g., "3_2!T" → key "3_2")
+    const groupKey = fmKey.replace(/!.*$/, '');
+    const label = keyToLabel[groupKey] ?? groupKey;
+
+    for (const r of entry.rows) {
+      detailRows.push({ _groupingLabel: label, ...extractDataCells(r.dataCells) });
+    }
+  }
+
+  // Fallback: try separate factMap entries (key!0, key!1, ...) for top-level groupings
+  if (detailRows.length === 0 && filteredGroupings.length > 0) {
+    for (const g of filteredGroupings) {
+      let rowIdx = 0;
+      while (true) {
+        const cell = raw.factMap[`${g.key}!${rowIdx}`];
+        if (!cell) break;
+        detailRows.push({ _groupingLabel: g.label, ...extractDataCells(cell.dataCells) });
+        rowIdx++;
+      }
+    }
+  }
+
+  // Fallback for ungrouped: T!0, T!1, ...
+  if (detailRows.length === 0) {
     let rowIdx = 0;
     while (true) {
-      const cell = raw.factMap[`${g.key}!${rowIdx}`];
+      const cell = raw.factMap[`T!${rowIdx}`];
       if (!cell) break;
-      const row = { _groupingLabel: g.label };
-      (cell.dataCells ?? []).forEach((dc, ci) => {
-        const colKey = detailCols[ci];
-        const colInfo = detailColInfo[colKey];
-        const colLabel = colInfo?.label ?? colKey ?? `col_${ci}`;
-        row[colLabel] = dc.label ?? dc.value;
-      });
-      detailRows.push(row);
+      detailRows.push(extractDataCells(cell.dataCells));
       rowIdx++;
     }
   }
+
+  if (detailRows.length === 0) detailRows = undefined;
 }
 
 const shaped = {

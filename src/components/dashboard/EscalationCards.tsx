@@ -25,8 +25,8 @@ interface CardDef {
 const cards: CardDef[] = [
   { label: 'Complaints >14 Days', key: 'complaintsOverdue', path: '/complaints-overdue' },
   { label: 'Form A Past Due >60d', key: 'formAPastDue60', path: '/form-a' },
-  { label: 'Missing Answers >40d', key: 'missingAnswers', path: null, temp: true, tempNote: 'Detail pending SF report — shows total count, cannot filter >40 days' },
-  { label: 'Def. Discovery >75d', key: 'formCPastDue', path: '/defendants-discovery', temp: true, tempNote: 'Buckets are action-based, not day-based — pending SF report for >75 day filtering' },
+  { label: 'Missing Answers >40d', key: 'missingAnswers', path: '/missing-answers' },
+  { label: 'Def. Discovery >75d', key: 'formCPastDue', path: '/defendants-discovery' },
   { label: 'Deps Not Sched >90d', key: 'depsOverdue90', path: '/depositions' },
 ];
 

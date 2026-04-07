@@ -57,11 +57,17 @@ for (const [, cd] of Object.entries(raw.componentData ?? {})) {
     }];
   }
 
+  // Extract source report ID from embedded reportResult metadata
+  const sourceReportId = cd.reportResult?.reportMetadata?.id
+    ?? cd.reportResult?.attributes?.reportId
+    ?? undefined;
+
   components.push({
     title: cm.header,
     chartType: vizType.toLowerCase(),
     columns: columnLabels,
     rows,
+    ...(sourceReportId ? { sourceReportId } : {}),
   });
 }
 

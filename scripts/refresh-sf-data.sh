@@ -18,6 +18,12 @@ REPORTS=(
   "00OPp000003OUcjMAG"   # Discovery Trackers
   "00OPp000003PLtxMAG"   # Experts Not Served
   # Open Lit fetched separately below with includeDetails=true
+  # Source reports backing dashboard drill-down components:
+  "00OPp000003Lt2zMAC"   # Complaint Filing Dashboard (NJ LIT)
+  "00OPp000003LtJ7MAK"   # Form A Past Due (NJ)
+  "00OPp000003LtarMAC"   # Dep Report for NJ PI LIT
+  "00OPp000003Lte5MAC"   # Form C Past Due (NJ)
+  "00OPp000003LtCfMAK"   # Missing All Ans, No Default NJ
 )
 # NOTE: Matters Universe (00OPp000003OaGjMAK) is skipped — the SF report was
 # reconfigured and no longer provides the stage-grouped Open/Closed aggregates
@@ -29,6 +35,7 @@ REPORTS=(
 DASHBOARDS=(
   "01ZPp0000015Ug1MAE"   # States at a Glance
   "01ZPp0000015dGHMAY"   # NJ PI Timing
+  "01ZPp000000l3NRMAY"   # (new) from SF Lightning
 )
 
 # Resolutions report needs special handling — it's TABULAR in SF
@@ -59,7 +66,7 @@ echo ""
 # ── Resolutions (POST with grouping) ──────────────────────────────────
 # Note: shape-report.mjs filters out Adam Greenspan from Resolutions output
 echo -n "  📊 Resolutions (grouped by attorney) ... "
-RAW=$(sf api request rest "/services/data/$API_VER/analytics/reports/${RESOLUTIONS_ID}?includeDetails=false" \
+RAW=$(sf api request rest "/services/data/$API_VER/analytics/reports/${RESOLUTIONS_ID}?includeDetails=true" \
   -o "$ORG" --method POST --body "$RESOLUTIONS_BODY" 2>/dev/null)
 echo "$RAW" | node "$SCRIPT_DIR/shape-report.mjs" > "$OUT_DIR/$RESOLUTIONS_ID.json"
 NAME=$(jq -r '.reportName' "$OUT_DIR/$RESOLUTIONS_ID.json")
@@ -69,10 +76,11 @@ echo "✅  $NAME ($GROUPS attorneys)"
 # ── Fetch Standard Reports ────────────────────────────────────────────
 for id in "${REPORTS[@]}"; do
   echo -n "  📊 Report $id ... "
-  RAW=$(sf api request rest "/services/data/$API_VER/analytics/reports/${id}?includeDetails=false" -o "$ORG" 2>/dev/null)
+  RAW=$(sf api request rest "/services/data/$API_VER/analytics/reports/${id}?includeDetails=true" -o "$ORG" 2>/dev/null)
   echo "$RAW" | node "$SCRIPT_DIR/shape-report.mjs" > "$OUT_DIR/$id.json"
   NAME=$(jq -r '.reportName' "$OUT_DIR/$id.json")
-  echo "✅  $NAME"
+  ROWS=$(jq '.detailRows | length // 0' "$OUT_DIR/$id.json")
+  echo "✅  $NAME ($ROWS detail rows)"
 done
 
 # ── Open Lit (with detail rows) ──────────────────────────────────────

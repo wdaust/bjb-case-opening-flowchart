@@ -54,6 +54,13 @@ export function compliancePct(c: { timely: number; late: number }): number {
   return total ? Math.round((c.timely / total) * 100) : 0;
 }
 
+/** Get the source report ID for a dashboard component by title. */
+export function getDashSourceReportId(dash: DashboardResponse | null, title: string): string | null {
+  if (!dash) return null;
+  const comp = dash.components.find(c => c.title === title);
+  return comp?.sourceReportId ?? null;
+}
+
 /** Return Tailwind classes for compliance percentage (green/amber/red). */
 export function complianceColor(p: number): string {
   if (p >= 60) return 'text-green-400 border-green-500/30 bg-green-500/10';
