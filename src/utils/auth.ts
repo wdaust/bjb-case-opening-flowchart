@@ -18,11 +18,13 @@ const SESSION_KEY = 'optimus_session';
 
 // SHA-256 hash of "Optimus2026!"
 const PASSWORD_HASH = '601b1120eb22dbfa031ce5706e512d329becc8aa6ca4b037d7bbceab01c5a02e';
+// SHA-256 hash of "JustinBJB2026!"
+const JUSTIN_HASH = 'f67358ddfaf13645e2dc6b10a424a1ca226bb4baba2c3d6d2341bd8e990b3370';
 
 const users: User[] = [
   { username: 'mbroderick', displayName: 'Matthew Broderick', role: 'admin', passwordHash: PASSWORD_HASH },
   { username: 'wdaust', displayName: 'Will Daust', role: 'admin', passwordHash: PASSWORD_HASH },
-  { username: 'jbillingsley', displayName: 'Justin Billingsley', role: 'admin', passwordHash: PASSWORD_HASH },
+  { username: 'jbillingsley', displayName: 'Justin Billingsley', role: 'admin', passwordHash: JUSTIN_HASH },
   { username: 'kdelgado', displayName: 'Kennia Delgado', role: 'admin', passwordHash: PASSWORD_HASH },
 ];
 
