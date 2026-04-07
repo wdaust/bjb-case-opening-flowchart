@@ -5,23 +5,23 @@
   "grandTotals": [
     {
       "label": "Average Age in Litigation",
-      "value": 317.79168549480346
+      "value": 317.9353526220615
     },
     {
       "label": "Sum of Case Rating Midpoint",
-      "value": 195382000
+      "value": 195374500
     },
     {
       "label": "Sum of Historical True Value",
-      "value": 167000697.72
+      "value": 166985697.72
     },
     {
       "label": "Sum of Max Negotiation Offer",
-      "value": 27761858.56
+      "value": 27792558.56
     },
     {
       "label": "Record Count",
-      "value": 2213
+      "value": 2212
     }
   ],
   "groupings": [
@@ -641,7 +641,7 @@
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 1249180
+          "value": 1284180
         },
         {
           "label": "Record Count",
@@ -863,23 +863,23 @@
       "aggregates": [
         {
           "label": "Average Age in Litigation",
-          "value": 70.28
+          "value": 73.20833333333333
         },
         {
           "label": "Sum of Case Rating Midpoint",
-          "value": 2145000
+          "value": 2137500
         },
         {
           "label": "Sum of Historical True Value",
-          "value": 237899.2
+          "value": 222899.2
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 44300
+          "value": 40000
         },
         {
           "label": "Record Count",
-          "value": 25
+          "value": 24
         }
       ]
     },
@@ -6930,26 +6930,6 @@
       "Case Rating Midpoint": "$0.00",
       "Historical True Value": "-",
       "Max Negotiation Offer": "-",
-      "Date Assigned To Litigation Unit": "-"
-    },
-    {
-      "_groupingLabel": "Stephen Gontkosky > Pre-Lit",
-      "Client": "Mark Harris",
-      "Display Name": "Mark Harris | 5/11/2025 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25051265730",
-      "Case Type": "Automobile Accident",
-      "Matter Case Rating": "F - 0-15k",
-      "Active Stage": "C/F",
-      "Discovery End Date": "-",
-      "Age in Litigation": "-",
-      "Open Date": "5/12/2025",
-      "Complaint Filed Date": "-",
-      "Matter State": "PA Pennsylvania",
-      "Statute of Limitations": "5/10/2027",
-      "Description": "Client was in a UBER sitting in the rear seat and was rear ended by a private DEF at a High speeds \r\n C/O - neck , lower back buttocks",
-      "Case Rating Midpoint": "$7,500.00",
-      "Historical True Value": "$15,000",
-      "Max Negotiation Offer": "$4,300.00",
       "Date Assigned To Litigation Unit": "-"
     },
     {
@@ -13631,6 +13611,26 @@
       "Historical True Value": "$87,918",
       "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "9/7/2023"
+    },
+    {
+      "_groupingLabel": "Stephen Mennella > Litigation",
+      "Client": "Yvonne Santiago",
+      "Display Name": "Yvonne Santiago | 7/23/2022 | Premises Liability",
+      "Matter: Matter Name": "MAT-22072926640",
+      "Case Type": "Premises Liability",
+      "Matter Case Rating": "B - 101k-250k",
+      "Active Stage": "Written Discovery",
+      "Discovery End Date": "12/3/2024",
+      "Age in Litigation": "1,176",
+      "Open Date": "7/29/2022",
+      "Complaint Filed Date": "1/17/2023",
+      "Matter State": "NJ New Jersey",
+      "Statute of Limitations": "7/22/2024",
+      "Description": "** 7/23/22 **  \r\n**  Slipped and fell down front stairs at 380A Claremont Ave***\r\nConstruction work was performed next door of a 630 unit bldg which caused damage to the two-family home where client resides. The prior landlord just sold the house to the ...",
+      "Case Rating Midpoint": "$175,000.00",
+      "Historical True Value": "$180,900",
+      "Max Negotiation Offer": "$0.00",
+      "Date Assigned To Litigation Unit": "-"
     },
     {
       "_groupingLabel": "Raymond Carroll > Litigation",
@@ -24765,7 +24765,7 @@
       "Open Date": "5/8/2024",
       "Complaint Filed Date": "-",
       "Matter State": "NY New York",
-      "Statute of Limitations": "4/19/2026",
+      "Statute of Limitations": "12/19/2026",
       "Description": "Client sttd he was a rear seat passenger in an UBER and was rear ended  C/O - right knee pain, back pain,, neck pain",
       "Case Rating Midpoint": "$38,000.00",
       "Historical True Value": "-",
@@ -24785,7 +24785,7 @@
       "Open Date": "5/8/2024",
       "Complaint Filed Date": "-",
       "Matter State": "NY New York",
-      "Statute of Limitations": "4/19/2026",
+      "Statute of Limitations": "12/19/2026",
       "Description": "client sttd she was a rear passenger in a UBER that was rear ended, C/O - left shoulder blade is in pain,  lower back is in pain , left wrist is in pain, right hip has pain",
       "Case Rating Midpoint": "$38,000.00",
       "Historical True Value": "-",
@@ -30009,7 +30009,7 @@
       "Description": "Client was driving straight when traffic stopped and she was hit from behind. C/O neck, back, knee pain.",
       "Case Rating Midpoint": "$20,500.00",
       "Historical True Value": "$24,727",
-      "Max Negotiation Offer": "$0.00",
+      "Max Negotiation Offer": "$35,000.00",
       "Date Assigned To Litigation Unit": "6/12/2025"
     },
     {
