@@ -24,7 +24,7 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { fmt$, fmtNum, getDashMetric, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
-import { OPEN_LIT_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
+import { OPEN_LIT_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID, MISSING_ANS_REPORT_ID } from '../data/sfReportIds';
 
 // ── Palette ───────────────────────────────────────────────────────────
 const GREEN = '#22c55e';
@@ -91,6 +91,8 @@ export default function ControlTower() {
     useSalesforceReport<ReportSummaryResponse>({ id: DISCOVERY_ID, type: 'report' });
   const { data: expertsData, loading: expertsLoading, lastFetched: expertsTs, refresh: refreshExperts } =
     useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
+  const { data: missingAnsReport } =
+    useSalesforceReport<ReportSummaryResponse>({ id: MISSING_ANS_REPORT_ID, type: 'report', mode: 'full' });
 
   const allLoading = openLitLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
 
@@ -165,7 +167,12 @@ export default function ControlTower() {
   const missingTrackers = getDashMetric(statsData, 'Missing Discovery Trackers (NJ)') ?? 0;
   const serviceGt3d = getDashMetric(statsData, 'NJ- Service Initiated >3 Days from COMP') ?? 0;
   const noService35 = getDashMetric(statsData, 'No Service 35+ Days (NJ)') ?? 0;
-  const missingAnswers = getDashMetric(statsData, 'Missing All Ans, No Default (NJ)') ?? 0;
+  const missingAnsDetailRows = useMemo(() => (missingAnsReport?.detailRows ?? []) as Array<Record<string, unknown>>, [missingAnsReport]);
+  const missingAnswers = useMemo(() => {
+    if (!missingAnsDetailRows.length) return getDashMetric(statsData, 'Missing All Ans, No Default (NJ)') ?? 0;
+    if (!isFiltered) return missingAnsDetailRows.length;
+    return missingAnsDetailRows.filter(r => r._groupingLabel === selectedAttorney).length;
+  }, [missingAnsDetailRows, statsData, isFiltered, selectedAttorney]);
 
   // Donut data: Negotiations
   const negotiationsData = useMemo(() => {
@@ -476,6 +483,7 @@ export default function ControlTower() {
         missingAnswers={missingAnswers}
         formCPastDue={formCPastDue}
         depsOverdue90={depsOverdue90}
+        selectedAttorney={selectedAttorney}
       />
 
       {/* ═══════════════════════════════════════════════════════════════

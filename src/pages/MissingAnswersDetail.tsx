@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { fmtNum, getDashRows } from '../utils/sfHelpers';
+import { useSearchParams } from 'react-router-dom';
+import { fmtNum } from '../utils/sfHelpers';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
@@ -8,8 +9,9 @@ import { DataTable } from '../components/dashboard/DataTable';
 import type { Column } from '../components/dashboard/DataTable';
 import { Skeleton } from '../components/ui/skeleton';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
-import { STATS_ID, MISSING_ANS_REPORT_ID } from '../data/sfReportIds';
-import type { DashboardResponse, ReportSummaryResponse } from '../types/salesforce';
+import { MISSING_ANS_REPORT_ID } from '../data/sfReportIds';
+import type { ReportSummaryResponse } from '../types/salesforce';
+import { X } from 'lucide-react';
 
 interface DetailRow extends Record<string, unknown> {
   _groupingLabel?: string;
@@ -28,8 +30,8 @@ function LoadingSkeleton() {
 }
 
 export default function MissingAnswersDetail() {
-  const { data: statsData, loading } =
-    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const attorneyParam = searchParams.get('attorney');
 
   const { data: reportData, loading: reportLoading } =
     useSalesforceReport<ReportSummaryResponse>({
@@ -40,15 +42,14 @@ export default function MissingAnswersDetail() {
 
   const [filterText, setFilterText] = useState('');
 
-  // Pull the single-metric count from the Stats dashboard
-  const missingAnswersCount = useMemo(() => {
-    const rows = getDashRows(statsData, 'Missing All Ans');
-    if (rows.length) return rows.reduce((s, r) => s + (r.values[0]?.value ?? 0), 0);
-    return 0;
-  }, [statsData]);
-
   // Detail rows from source report
-  const detailRows = (reportData?.detailRows ?? []) as DetailRow[];
+  const allDetailRows = (reportData?.detailRows ?? []) as DetailRow[];
+
+  // Pre-filter by attorney if param is set
+  const detailRows = useMemo(() => {
+    if (!attorneyParam) return allDetailRows;
+    return allDetailRows.filter(r => r._groupingLabel === attorneyParam);
+  }, [allDetailRows, attorneyParam]);
 
   const detailColumns: Column<DetailRow>[] = useMemo(() => {
     if (!detailRows.length) return [];
@@ -84,7 +85,15 @@ export default function MissingAnswersDetail() {
     );
   }, [detailRows, filterText]);
 
-  if (loading) return <LoadingSkeleton />;
+  const clearAttorneyFilter = () => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev);
+      next.delete('attorney');
+      return next;
+    });
+  };
+
+  if (reportLoading) return <LoadingSkeleton />;
 
   return (
     <div className="flex-1 overflow-auto p-6 space-y-6">
@@ -98,18 +107,33 @@ export default function MissingAnswersDetail() {
         Matters missing all answers with no default filed (NJ). Source report detail rows shown below.
       </p>
 
+      {/* Attorney filter banner */}
+      {attorneyParam && (
+        <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 text-sm">
+          <span className="text-muted-foreground">Filtered to:</span>
+          <span className="font-medium text-foreground">{attorneyParam}</span>
+          <button
+            onClick={clearAttorneyFilter}
+            className="ml-auto flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="w-3 h-3" /> Clear filter
+          </button>
+        </div>
+      )}
+
       {/* KPI Strip */}
       <DashboardGrid cols={2}>
-        <StatCard label="Missing Answers (Dashboard)" value={fmtNum(missingAnswersCount)} variant="glass" />
-        <StatCard label="Detail Rows" value={fmtNum(detailRows.length)} variant="glass" />
+        <StatCard
+          label="Missing Answers"
+          value={attorneyParam
+            ? `${fmtNum(detailRows.length)} of ${fmtNum(allDetailRows.length)}`
+            : fmtNum(allDetailRows.length)}
+          variant="glass"
+        />
+        <StatCard label="Showing" value={fmtNum(filteredRows.length)} variant="glass" />
       </DashboardGrid>
 
       {/* Matter Detail Table */}
-      {reportLoading && (
-        <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
-          Loading matter-level detail...
-        </div>
-      )}
       {!reportLoading && detailRows.length > 0 && (
         <section>
           <SectionHeader
@@ -135,7 +159,10 @@ export default function MissingAnswersDetail() {
       )}
       {!reportLoading && detailRows.length === 0 && (
         <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
-          No detail rows available. Run <code className="text-xs bg-muted px-1.5 py-0.5 rounded">scripts/refresh-sf-data.sh</code> to fetch detail data.
+          {attorneyParam
+            ? `No matters found for ${attorneyParam}.`
+            : <>No detail rows available. Run <code className="text-xs bg-muted px-1.5 py-0.5 rounded">scripts/refresh-sf-data.sh</code> to fetch detail data.</>
+          }
         </div>
       )}
     </div>
