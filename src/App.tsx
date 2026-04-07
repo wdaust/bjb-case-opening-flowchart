@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { TooltipProvider } from './components/ui/tooltip.tsx';
 import { DashboardFilterProvider } from './contexts/DashboardFilterContext.tsx';
+import { useAuth } from './contexts/AuthContext.tsx';
 import { TopNavBar } from './components/TopNavBar.tsx';
+import { ContributorLayout } from './components/ContributorLayout.tsx';
+import MosEntry from './pages/MosEntry.tsx';
 import PerformanceInfrastructure from './pages/PerformanceInfrastructure.tsx';
 import MockupsLanding from './pages/MockupsLanding.tsx';
 import LitifyMockupsLanding from './pages/LitifyMockupsLanding.tsx';
@@ -93,6 +96,19 @@ function Layout() {
 }
 
 export default function App() {
+  const { user } = useAuth();
+
+  // Contributors only see their MOS entry page
+  if (user.role === 'contributor') {
+    return (
+      <Routes>
+        <Route element={<ContributorLayout />}>
+          <Route path="*" element={<MosEntry />} />
+        </Route>
+      </Routes>
+    );
+  }
+
   return (
     <TooltipProvider delayDuration={300}>
       <DashboardFilterProvider>
@@ -166,6 +182,7 @@ export default function App() {
             <Route path="reports/:reportId" element={<ReportDetail />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="insights" element={<Insights />} />
+            <Route path="mos-entry" element={<MosEntry />} />
           </Route>
         </Routes>
       </DashboardFilterProvider>

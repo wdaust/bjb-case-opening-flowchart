@@ -1,3 +1,6 @@
+import { initDb, loadGenericSection } from './db.ts';
+import type { MosContributorsData } from '../types/mos.ts';
+
 export interface User {
   username: string;
   displayName: string;
@@ -23,7 +26,7 @@ const users: User[] = [
   { username: 'kdelgado', displayName: 'Kennia Delgado', role: 'admin', passwordHash: PASSWORD_HASH },
 ];
 
-async function hashPassword(password: string): Promise<string> {
+export async function hashPassword(password: string): Promise<string> {
   const encoded = new TextEncoder().encode(password);
   const buffer = await crypto.subtle.digest('SHA-256', encoded);
   return Array.from(new Uint8Array(buffer))
@@ -33,11 +36,38 @@ async function hashPassword(password: string): Promise<string> {
 
 export async function validateLogin(username: string, password: string): Promise<Session | null> {
   const hash = await hashPassword(password);
+
+  // Check hardcoded admin users first
   const user = users.find((u) => u.username === username && u.passwordHash === hash);
-  if (!user) return null;
-  const session: Session = { username: user.username, displayName: user.displayName, role: user.role };
-  saveSession(session);
-  return session;
+  if (user) {
+    const session: Session = { username: user.username, displayName: user.displayName, role: user.role };
+    saveSession(session);
+    return session;
+  }
+
+  // Check DB-stored contributors
+  try {
+    await initDb();
+    const data = await loadGenericSection<MosContributorsData>('mos-contributors');
+    if (data?.contributors) {
+      const contributor = data.contributors.find(
+        (c) => c.active && c.username === username && c.passwordHash === hash
+      );
+      if (contributor) {
+        const session: Session = {
+          username: contributor.username,
+          displayName: contributor.displayName,
+          role: 'contributor',
+        };
+        saveSession(session);
+        return session;
+      }
+    }
+  } catch (err) {
+    console.error('Failed to check contributors:', err);
+  }
+
+  return null;
 }
 
 export function getSavedSession(): Session | null {
