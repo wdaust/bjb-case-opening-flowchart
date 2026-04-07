@@ -1,8 +1,13 @@
+export type KpiType = 'number' | 'currency' | 'percent' | 'text' | 'days';
+export type KpiDirection = 'above' | 'below';
+
 export interface MetricDef {
   uid: string;
   responsible: string;
   metric: string;
   kpi: string;
+  kpiType?: KpiType;
+  kpiDirection?: KpiDirection;
   isRock?: boolean;
   isSection?: boolean;
   order: number;

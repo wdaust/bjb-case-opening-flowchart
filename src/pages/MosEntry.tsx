@@ -146,6 +146,11 @@ export default function MosEntry() {
               meeting={meeting}
               weeklyData={weeklyData}
               onCellChange={handleCellChange}
+              isAdmin={false}
+              onMetricUpdate={() => {}}
+              onDeleteMetric={() => {}}
+              allResponsibles={[]}
+              onReorder={() => {}}
             />
           </div>
         ))

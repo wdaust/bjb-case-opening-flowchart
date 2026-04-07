@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { SectionHeader } from '../components/dashboard/SectionHeader.tsx';
 import { StatCard } from '../components/dashboard/StatCard.tsx';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid.tsx';
@@ -6,13 +6,23 @@ import { initDb, loadGenericSection, saveGenericSection } from '../utils/db.ts';
 import { ensureMosMigration } from '../utils/mosMigration.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { cn } from '../utils/cn.ts';
-import type { MeetingDef } from '../types/mos.ts';
+import type { MeetingDef, MetricDef, MosMetricDefsData, MosContributorsData } from '../types/mos.ts';
 import { MEETINGS as FALLBACK_MEETINGS } from '../data/mosMeetings.ts';
 import {
-  CheckCircle, AlertCircle, Loader2, ChevronDown, ChevronRight, Target, Settings, Users,
+  CheckCircle, AlertCircle, Loader2, ChevronDown, ChevronRight, Target, Users, Plus, GripVertical, Trash2,
 } from 'lucide-react';
-import { MetricEditor } from '../components/mos/MetricEditor.tsx';
 import { ContributorManager } from '../components/mos/ContributorManager.tsx';
+import { InlineEdit } from '../components/mos/InlineEdit.tsx';
+import { ResponsibleDropdown } from '../components/mos/ResponsibleDropdown.tsx';
+import { KpiPopover, evaluateKpi } from '../components/mos/KpiPopover.tsx';
+import {
+  DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext, verticalListSortingStrategy, useSortable, arrayMove,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -72,7 +82,6 @@ function useMergeOnSave(
       const keysToSave = new Set(changedKeys.current);
       changedKeys.current.clear();
       try {
-        // Load current DB state, merge only changed keys
         const current = await loadGenericSection<WeeklyData>(sectionId) ?? {};
         for (const key of keysToSave) {
           if (data[key] !== undefined) {
@@ -93,16 +102,72 @@ function useMergeOnSave(
   return status;
 }
 
+// ─── Sortable row ───────────────────────────────────────────────────────────
+
+function SortableRow({
+  id,
+  children,
+  isAdmin,
+  disabled,
+}: {
+  id: string;
+  children: React.ReactNode;
+  isAdmin: boolean;
+  disabled?: boolean;
+}) {
+  const {
+    attributes, listeners, setNodeRef, transform, transition, isDragging,
+  } = useSortable({ id, disabled });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 30 : undefined,
+    opacity: isDragging ? 0.8 : undefined,
+    boxShadow: isDragging ? '0 4px 20px rgba(0,0,0,0.3)' : undefined,
+  };
+
+  return (
+    <tr ref={setNodeRef} style={style} {...attributes}>
+      {isAdmin && (
+        <td className="py-1 px-1 w-6 sticky left-0 bg-inherit z-10">
+          <button
+            {...listeners}
+            className={cn(
+              'cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors',
+              disabled && 'invisible',
+            )}
+            tabIndex={-1}
+          >
+            <GripVertical size={12} />
+          </button>
+        </td>
+      )}
+      {children}
+    </tr>
+  );
+}
+
 // ─── Scorecard table ─────────────────────────────────────────────────────────
 
 export function ScorecardTable({
   meeting,
   weeklyData,
   onCellChange,
+  isAdmin,
+  onMetricUpdate,
+  onDeleteMetric,
+  allResponsibles,
+  onReorder,
 }: {
   meeting: MeetingDef;
   weeklyData: WeeklyData;
   onCellChange: (key: string, value: string) => void;
+  isAdmin: boolean;
+  onMetricUpdate: (uid: string, field: keyof MetricDef, value: string | boolean | number | undefined) => void;
+  onDeleteMetric: (uid: string) => void;
+  allResponsibles: string[];
+  onReorder: (activeId: string, overId: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
@@ -112,14 +177,32 @@ export function ScorecardTable({
     return currentSection;
   });
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      onReorder(active.id as string, over.id as string);
+    }
+  };
+
+  const sortableIds = meeting.metrics.map(m => m.uid);
+  const stickyLeftOffset = isAdmin ? 'left-[24px]' : 'left-0';
+  const stickyLeftOffset2 = isAdmin ? 'left-[144px]' : 'left-[120px]';
+
   return (
     <div className="overflow-x-auto rounded-lg border border-border">
-      <table className="text-xs w-full" style={{ minWidth: WEEKS.length * 80 + 400 }}>
+      <table className="text-xs w-full" style={{ minWidth: WEEKS.length * 80 + 400 + (isAdmin ? 24 : 0) }}>
         <thead>
           <tr className="border-b border-border bg-muted/50 sticky top-0 z-10">
-            <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 bg-muted/50 z-20 min-w-[120px]">Responsible</th>
-            <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-[120px] bg-muted/50 z-20 min-w-[240px]">Metric</th>
+            {isAdmin && <th className="w-6 sticky left-0 bg-muted/50 z-20" />}
+            <th className={cn("text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky bg-muted/50 z-20 min-w-[120px]", stickyLeftOffset)}>Responsible</th>
+            <th className={cn("text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky bg-muted/50 z-20 min-w-[240px]", stickyLeftOffset2)}>Metric</th>
             <th className="text-center py-2 px-3 font-medium text-muted-foreground whitespace-nowrap min-w-[70px]">KPI</th>
+            {isAdmin && <th className="w-8" />}
             {WEEKS.map(w => (
               <th
                 key={w}
@@ -133,66 +216,136 @@ export function ScorecardTable({
             ))}
           </tr>
         </thead>
-        <tbody>
-          {meeting.metrics.map((m, idx) => {
-            if (m.isSection) {
-              const isCollapsed = collapsed[m.metric] ?? false;
-              return (
-                <tr key={m.uid} className="bg-primary/5 border-b border-border">
-                  <td
-                    colSpan={3 + WEEKS.length}
-                    className="py-2.5 px-3 font-semibold text-primary text-xs cursor-pointer select-none"
-                    onClick={() => setCollapsed(prev => ({ ...prev, [m.metric]: !prev[m.metric] }))}
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={sortableIds} strategy={verticalListSortingStrategy}>
+            <tbody>
+              {meeting.metrics.map((m, idx) => {
+                if (m.isSection) {
+                  const isCollapsed = collapsed[m.metric] ?? false;
+                  return (
+                    <SortableRow key={m.uid} id={m.uid} isAdmin={isAdmin}>
+                      <td
+                        colSpan={3 + WEEKS.length + (isAdmin ? 1 : 0)}
+                        className="py-2.5 px-3 font-semibold text-primary text-xs cursor-pointer select-none"
+                        onClick={() => setCollapsed(prev => ({ ...prev, [m.metric]: !prev[m.metric] }))}
+                      >
+                        <span className="inline-flex items-center gap-1.5">
+                          {isCollapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
+                          {isAdmin ? (
+                            <InlineEdit
+                              value={m.metric}
+                              onSave={v => onMetricUpdate(m.uid, 'metric', v)}
+                            />
+                          ) : m.metric}
+                        </span>
+                      </td>
+                    </SortableRow>
+                  );
+                }
+
+                const section = metricSections[idx];
+                if (section && collapsed[section]) return null;
+
+                const cellKey = (w: string) => `${meeting.id}:${m.uid}:${w}`;
+
+                return (
+                  <SortableRow
+                    key={m.uid}
+                    id={m.uid}
+                    isAdmin={isAdmin}
                   >
-                    <span className="inline-flex items-center gap-1.5">
-                      {isCollapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
-                      {m.metric}
-                    </span>
-                  </td>
-                </tr>
-              );
-            }
-
-            const section = metricSections[idx];
-            if (section && collapsed[section]) return null;
-
-            const cellKey = (w: string) => `${meeting.id}:${m.uid}:${w}`;
-
-            return (
-              <tr
-                key={m.uid}
-                className={cn(
-                  "border-b border-border last:border-0 transition-colors",
-                  m.isRock ? "bg-amber-500/5" : idx % 2 === 0 ? "bg-card" : "bg-table-stripe",
-                )}
-              >
-                <td className="py-1.5 px-3 text-muted-foreground whitespace-nowrap sticky left-0 bg-inherit z-10 min-w-[120px]">
-                  {m.responsible}
-                </td>
-                <td className={cn("py-1.5 px-3 whitespace-nowrap sticky left-[120px] bg-inherit z-10 min-w-[240px]", m.isRock && "font-semibold text-amber-400")}>
-                  {m.isRock && <Target size={11} className="inline mr-1 -mt-0.5" />}
-                  {m.metric}
-                </td>
-                <td className="py-1.5 px-3 text-center text-muted-foreground whitespace-nowrap">{m.kpi}</td>
-                {WEEKS.map(w => (
-                  <td key={w} className={cn("py-0.5 px-0.5", w === CURRENT_WEEK && "bg-primary/5")}>
-                    <input
-                      type="text"
-                      value={weeklyData[cellKey(w)] ?? ''}
-                      onChange={e => onCellChange(cellKey(w), e.target.value)}
-                      className={cn(
-                        "w-full text-center text-xs py-1 px-1 rounded bg-transparent border border-transparent",
-                        "focus:border-primary/40 focus:bg-primary/5 focus:outline-none transition-colors",
-                        "hover:border-border",
-                      )}
-                      placeholder="—"
-                    />
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
+                    <td className={cn("py-1.5 px-3 text-muted-foreground whitespace-nowrap sticky bg-inherit z-10 min-w-[120px]", stickyLeftOffset)}>
+                      {isAdmin ? (
+                        <ResponsibleDropdown
+                          value={m.responsible}
+                          options={allResponsibles}
+                          onSave={v => onMetricUpdate(m.uid, 'responsible', v)}
+                        />
+                      ) : m.responsible}
+                    </td>
+                    <td className={cn("py-1.5 px-3 whitespace-nowrap sticky bg-inherit z-10 min-w-[240px]", stickyLeftOffset2, m.isRock && "font-semibold text-amber-400")}>
+                      {m.isRock && <Target size={11} className="inline mr-1 -mt-0.5" />}
+                      {isAdmin ? (
+                        <InlineEdit
+                          value={m.metric}
+                          onSave={v => onMetricUpdate(m.uid, 'metric', v)}
+                        />
+                      ) : m.metric}
+                    </td>
+                    <td className="py-1.5 px-3 text-center whitespace-nowrap">
+                      <KpiPopover
+                        kpi={m.kpi}
+                        kpiType={m.kpiType}
+                        kpiDirection={m.kpiDirection}
+                        onKpiChange={v => onMetricUpdate(m.uid, 'kpi', v)}
+                        onTypeChange={v => onMetricUpdate(m.uid, 'kpiType', v)}
+                        onDirectionChange={v => onMetricUpdate(m.uid, 'kpiDirection', v)}
+                        isAdmin={isAdmin}
+                      />
+                    </td>
+                    {isAdmin && (
+                      <td className="py-1 px-1 text-center whitespace-nowrap">
+                        <button
+                          onClick={() => onMetricUpdate(m.uid, 'isRock', m.isRock ? undefined : true)}
+                          className={cn(
+                            "transition-colors mr-1",
+                            m.isRock
+                              ? "text-amber-400 hover:text-muted-foreground/60"
+                              : "text-muted-foreground/30 hover:text-amber-400",
+                          )}
+                          title={m.isRock ? "Convert to KPI" : "Convert to Rock"}
+                        >
+                          <Target size={12} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            const label = m.metric || 'this metric';
+                            if (window.confirm(`Delete "${label}"? This cannot be undone.`)) {
+                              onDeleteMetric(m.uid);
+                            }
+                          }}
+                          className="text-muted-foreground/40 hover:text-red-400 transition-colors"
+                          title="Delete metric"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </td>
+                    )}
+                    {WEEKS.map(w => {
+                      const val = weeklyData[cellKey(w)] ?? '';
+                      const evaluation = evaluateKpi(val, m.kpi, m.kpiType, m.kpiDirection);
+                      return (
+                        <td
+                          key={w}
+                          className={cn(
+                            "py-0.5 px-0.5",
+                            w === CURRENT_WEEK && "bg-primary/5",
+                            evaluation === 'green' && "bg-green-500/10",
+                            evaluation === 'red' && "bg-red-500/10",
+                          )}
+                        >
+                          <input
+                            type="text"
+                            value={val}
+                            onChange={e => onCellChange(cellKey(w), e.target.value)}
+                            className={cn(
+                              "w-full text-center text-xs py-1 px-1 rounded bg-transparent border border-transparent",
+                              "focus:border-primary/40 focus:bg-primary/5 focus:outline-none transition-colors",
+                              "hover:border-border",
+                              evaluation === 'green' && "text-green-400",
+                              evaluation === 'red' && "text-red-400",
+                            )}
+                            placeholder="—"
+                          />
+                        </td>
+                      );
+                    })}
+                  </SortableRow>
+                );
+              })}
+            </tbody>
+          </SortableContext>
+        </DndContext>
       </table>
     </div>
   );
@@ -241,9 +394,10 @@ export default function MOS() {
   const [activeTab, setActiveTab] = useState('');
   const [weeklyData, setWeeklyData] = useState<WeeklyData>({});
   const [loaded, setLoaded] = useState(false);
-  const [metricEditorOpen, setMetricEditorOpen] = useState(false);
   const [contributorManagerOpen, setContributorManagerOpen] = useState(false);
+  const [contributorNames, setContributorNames] = useState<string[]>([]);
   const changedKeysRef = useRef<Set<string>>(new Set());
+  const metricSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const syncStatus = useMergeOnSave('mos-kpi-scorecard', weeklyData, changedKeysRef, loaded);
 
   useEffect(() => {
@@ -255,7 +409,6 @@ export default function MOS() {
         setActiveTab(migrated[0]?.id ?? '');
       } catch (err) {
         console.error('Migration failed, using fallback:', err);
-        // Convert fallback to MeetingDef with generated UIDs
         const fallback: MeetingDef[] = FALLBACK_MEETINGS.map(m => ({
           ...m,
           metrics: m.metrics.map((metric, idx) => ({
@@ -269,6 +422,10 @@ export default function MOS() {
       }
       const saved = await loadGenericSection<WeeklyData>('mos-kpi-scorecard');
       if (saved) setWeeklyData(saved);
+      const contribData = await loadGenericSection<MosContributorsData>('mos-contributors');
+      if (contribData?.contributors) {
+        setContributorNames(contribData.contributors.filter(c => c.active).map(c => c.displayName));
+      }
       setLoaded(true);
     })();
   }, []);
@@ -278,11 +435,90 @@ export default function MOS() {
     setWeeklyData(prev => ({ ...prev, [key]: value }));
   }, []);
 
-  const handleMeetingsUpdated = useCallback((updated: MeetingDef[]) => {
-    setMeetings(updated);
+  // Debounced save for metric def changes
+  const saveMetricDefs = useCallback((updated: MeetingDef[]) => {
+    clearTimeout(metricSaveTimerRef.current);
+    metricSaveTimerRef.current = setTimeout(async () => {
+      await saveGenericSection<MosMetricDefsData>('mos-metric-defs', {
+        meetings: updated,
+        migrated: true,
+      });
+    }, 800);
   }, []);
 
+  const handleMetricUpdate = useCallback((uid: string, field: keyof MetricDef, value: string | boolean | number | undefined) => {
+    setMeetings(prev => {
+      const updated = prev.map(m => {
+        if (m.id !== activeTab) return m;
+        return {
+          ...m,
+          metrics: m.metrics.map(metric =>
+            metric.uid === uid ? { ...metric, [field]: value } : metric
+          ),
+        };
+      });
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [activeTab, saveMetricDefs]);
+
+  const handleReorder = useCallback((activeId: string, overId: string) => {
+    setMeetings(prev => {
+      const updated = prev.map(m => {
+        if (m.id !== activeTab) return m;
+        const oldIdx = m.metrics.findIndex(x => x.uid === activeId);
+        const newIdx = m.metrics.findIndex(x => x.uid === overId);
+        if (oldIdx === -1 || newIdx === -1) return m;
+        const reordered = arrayMove(m.metrics, oldIdx, newIdx).map((x, i) => ({ ...x, order: i }));
+        return { ...m, metrics: reordered };
+      });
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [activeTab, saveMetricDefs]);
+
+  const handleDeleteMetric = useCallback((uid: string) => {
+    setMeetings(prev => {
+      const updated = prev.map(m => {
+        if (m.id !== activeTab) return m;
+        return { ...m, metrics: m.metrics.filter(x => x.uid !== uid).map((x, i) => ({ ...x, order: i })) };
+      });
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [activeTab, saveMetricDefs]);
+
+  const handleAddMetric = useCallback((asRock: boolean) => {
+    setMeetings(prev => {
+      const updated = prev.map(m => {
+        if (m.id !== activeTab) return m;
+        const newMetric: MetricDef = {
+          uid: crypto.randomUUID(),
+          responsible: '',
+          metric: '',
+          kpi: '',
+          isRock: asRock || undefined,
+          order: 0,
+        };
+        const reindexed = m.metrics.map(x => ({ ...x, order: x.order + 1 }));
+        return { ...m, metrics: [newMetric, ...reindexed] };
+      });
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [activeTab, saveMetricDefs]);
+
   const activeMeeting = meetings.find(m => m.id === activeTab);
+
+  // Collect all unique responsible names across all meetings + contributors
+  const allResponsibles = useMemo(() => {
+    const names = new Set<string>();
+    meetings.forEach(m => m.metrics.forEach(metric => {
+      if (metric.responsible) names.add(metric.responsible);
+    }));
+    contributorNames.forEach(n => names.add(n));
+    return Array.from(names).sort();
+  }, [meetings, contributorNames]);
 
   return (
     <div className="p-6 max-w-full mx-auto space-y-4">
@@ -295,18 +531,25 @@ export default function MOS() {
           {isAdmin && (
             <>
               <button
+                onClick={() => handleAddMetric(false)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-dashed border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              >
+                <Plus size={14} />
+                KPI
+              </button>
+              <button
+                onClick={() => handleAddMetric(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-dashed border-amber-500/40 text-amber-400/70 hover:text-amber-400 hover:bg-amber-500/10 transition-colors"
+              >
+                <Target size={14} />
+                Rock
+              </button>
+              <button
                 onClick={() => setContributorManagerOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
               >
                 <Users size={14} />
                 Contributors
-              </button>
-              <button
-                onClick={() => setMetricEditorOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              >
-                <Settings size={14} />
-                Edit Metrics
               </button>
             </>
           )}
@@ -358,20 +601,15 @@ export default function MOS() {
             meeting={activeMeeting}
             weeklyData={weeklyData}
             onCellChange={handleCellChange}
+            isAdmin={isAdmin}
+            onMetricUpdate={handleMetricUpdate}
+            onDeleteMetric={handleDeleteMetric}
+            allResponsibles={allResponsibles}
+            onReorder={handleReorder}
           />
         </div>
       ) : null}
 
-      {/* Admin modals */}
-      {isAdmin && activeMeeting && (
-        <MetricEditor
-          open={metricEditorOpen}
-          onOpenChange={setMetricEditorOpen}
-          meetings={meetings}
-          activeMeetingId={activeTab}
-          onMeetingsUpdated={handleMeetingsUpdated}
-        />
-      )}
       {isAdmin && (
         <ContributorManager
           open={contributorManagerOpen}

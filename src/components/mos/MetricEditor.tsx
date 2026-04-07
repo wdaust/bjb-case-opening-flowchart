@@ -4,10 +4,24 @@ import {
 } from '../ui/dialog.tsx';
 import { saveGenericSection } from '../../utils/db.ts';
 import { cn } from '../../utils/cn.ts';
-import type { MeetingDef, MetricDef, MosMetricDefsData } from '../../types/mos.ts';
+import type { MeetingDef, MetricDef, MosMetricDefsData, KpiType, KpiDirection } from '../../types/mos.ts';
 import {
   Plus, Trash2, ArrowUp, ArrowDown, Loader2, CheckCircle,
 } from 'lucide-react';
+
+const KPI_TYPE_OPTIONS: { value: KpiType; label: string }[] = [
+  { value: 'text', label: 'Text' },
+  { value: 'number', label: '#' },
+  { value: 'currency', label: '$' },
+  { value: 'percent', label: '%' },
+  { value: 'days', label: 'Days' },
+];
+
+const KPI_DIR_OPTIONS: { value: KpiDirection | ''; label: string }[] = [
+  { value: '', label: '—' },
+  { value: 'above', label: '≥' },
+  { value: 'below', label: '≤' },
+];
 
 interface MetricEditorProps {
   open: boolean;
@@ -44,7 +58,9 @@ export function MetricEditor({
   const updateMetric = (idx: number, field: keyof MetricDef, value: string | boolean | number) => {
     setLocalMetrics(prev => {
       const next = [...prev];
-      next[idx] = { ...next[idx], [field]: value };
+      // Store undefined for empty kpiDirection so it serializes cleanly
+      const resolved = field === 'kpiDirection' && value === '' ? undefined : value;
+      next[idx] = { ...next[idx], [field]: resolved };
       return next;
     });
     setSaved(false);
@@ -165,6 +181,29 @@ export function MetricEditor({
                 placeholder="KPI"
                 className="w-[80px] shrink-0 px-2 py-1 rounded bg-background border border-border text-xs focus:outline-none focus:border-primary/40"
               />
+              <select
+                value={m.kpiType ?? 'text'}
+                onChange={e => updateMetric(idx, 'kpiType', e.target.value as KpiType)}
+                className="w-[52px] shrink-0 px-1 py-1 rounded bg-background border border-border text-xs focus:outline-none focus:border-primary/40"
+                title="KPI type"
+              >
+                {KPI_TYPE_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+              <select
+                value={m.kpiDirection ?? ''}
+                onChange={e => {
+                  const v = e.target.value as KpiDirection | '';
+                  updateMetric(idx, 'kpiDirection', v || ('' as unknown as KpiDirection));
+                }}
+                className="w-[40px] shrink-0 px-1 py-1 rounded bg-background border border-border text-xs focus:outline-none focus:border-primary/40"
+                title="KPI direction"
+              >
+                {KPI_DIR_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
 
               {/* Toggles */}
               <label className="flex items-center gap-1 shrink-0 text-muted-foreground cursor-pointer">
