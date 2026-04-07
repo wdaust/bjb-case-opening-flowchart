@@ -6,7 +6,7 @@ import { initDb, loadGenericSection, saveGenericSection } from '../../utils/db.t
 import { hashPassword } from '../../utils/auth.ts';
 import type { Contributor, MosContributorsData } from '../../types/mos.ts';
 import {
-  Plus, Loader2, CheckCircle, KeyRound, UserX, UserCheck,
+  Plus, Loader2, CheckCircle, KeyRound, UserX, UserCheck, Copy, ClipboardCheck,
 } from 'lucide-react';
 
 interface ContributorManagerProps {
@@ -29,6 +29,17 @@ export function ContributorManager({ open, onOpenChange }: ContributorManagerPro
   // Reset password state
   const [resetTarget, setResetTarget] = useState<string | null>(null);
   const [resetPassword, setResetPassword] = useState('');
+
+  // Copy credentials state
+  const [justCreated, setJustCreated] = useState<{ username: string; password: string } | null>(null);
+  const [justReset, setJustReset] = useState<{ username: string; password: string } | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const copyToClipboard = async (text: string, id: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -74,6 +85,7 @@ export function ContributorManager({ open, onOpenChange }: ContributorManagerPro
     const updated = [...contributors, { username: uname, displayName: dname, passwordHash: hash, active: true }];
     const ok = await persist(updated);
     if (ok) {
+      setJustCreated({ username: uname, password: pwd });
       setNewDisplayName('');
       setNewUsername('');
       setNewPassword('');
@@ -93,8 +105,10 @@ export function ContributorManager({ open, onOpenChange }: ContributorManagerPro
     const updated = contributors.map(c =>
       c.username === username ? { ...c, passwordHash: hash } : c
     );
+    const plainPwd = resetPassword.trim();
     const ok = await persist(updated);
     if (ok) {
+      setJustReset({ username, password: plainPwd });
       setResetTarget(null);
       setResetPassword('');
     }
@@ -127,7 +141,16 @@ export function ContributorManager({ open, onOpenChange }: ContributorManagerPro
                 <div key={c.username} className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-card text-xs">
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-foreground truncate">{c.displayName}</p>
-                    <p className="text-muted-foreground">{c.username}</p>
+                    <p className="text-muted-foreground flex items-center gap-1">
+                      {c.username}
+                      <button
+                        onClick={() => copyToClipboard(`Username: ${c.username}`, `user-${c.username}`)}
+                        title="Copy username"
+                        className="text-muted-foreground hover:text-foreground"
+                      >
+                        {copiedId === `user-${c.username}` ? <ClipboardCheck size={10} /> : <Copy size={10} />}
+                      </button>
+                    </p>
                   </div>
                   <span className={c.active ? "text-green-500 text-[10px]" : "text-red-400 text-[10px]"}>
                     {c.active ? 'Active' : 'Inactive'}
@@ -223,6 +246,36 @@ export function ContributorManager({ open, onOpenChange }: ContributorManagerPro
                 <p className="text-xs text-green-500 flex items-center gap-1">
                   <CheckCircle size={12} /> Saved
                 </p>
+              )}
+
+              {justCreated && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-green-500/30 bg-green-500/10 text-xs">
+                  <span className="flex-1 text-foreground">
+                    Created <strong>{justCreated.username}</strong>
+                  </span>
+                  <button
+                    onClick={() => copyToClipboard(`Username: ${justCreated.username}\nPassword: ${justCreated.password}`, 'just-created')}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded bg-green-600 text-white hover:bg-green-700 text-[10px] font-medium"
+                  >
+                    {copiedId === 'just-created' ? <><ClipboardCheck size={10} /> Copied</> : <><Copy size={10} /> Copy Credentials</>}
+                  </button>
+                  <button onClick={() => setJustCreated(null)} className="text-muted-foreground hover:text-foreground">&times;</button>
+                </div>
+              )}
+
+              {justReset && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-blue-500/30 bg-blue-500/10 text-xs">
+                  <span className="flex-1 text-foreground">
+                    Password reset for <strong>{justReset.username}</strong>
+                  </span>
+                  <button
+                    onClick={() => copyToClipboard(`Username: ${justReset.username}\nPassword: ${justReset.password}`, 'just-reset')}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 text-[10px] font-medium"
+                  >
+                    {copiedId === 'just-reset' ? <><ClipboardCheck size={10} /> Copied</> : <><Copy size={10} /> Copy Credentials</>}
+                  </button>
+                  <button onClick={() => setJustReset(null)} className="text-muted-foreground hover:text-foreground">&times;</button>
+                </div>
               )}
 
               {/* Shareable link info */}

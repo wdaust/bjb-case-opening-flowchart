@@ -17,6 +17,7 @@ const moreLinks = [
   { label: 'Insights', to: '/insights' },
   { label: 'Reports', to: '/reports' },
   { label: 'Litify Spec', to: '/specs' },
+  { label: 'Optimus Structure', to: '/optimus-structure' },
 ];
 
 export function TopNavBar() {
