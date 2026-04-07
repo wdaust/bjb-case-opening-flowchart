@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { fmtNum, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
@@ -11,6 +12,7 @@ import type { DashboardResponse, ReportSummaryResponse } from '../types/salesfor
 import { cn } from '../utils/cn';
 import { DataTable } from '../components/dashboard/DataTable';
 import type { Column } from '../components/dashboard/DataTable';
+import { ESCALATION_FILTERS } from '../utils/escalationFilters';
 import {
   PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer,
 } from 'recharts';
@@ -63,6 +65,9 @@ function LoadingSkeleton() {
 }
 
 export default function FormADetail() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const overdueOnly = searchParams.get('overdue') === 'true';
+
   const { data: timingData, loading: timingLoading } =
     useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
   const { data: statsData, loading: statsLoading } =
@@ -110,11 +115,20 @@ export default function FormADetail() {
   }, [timingData]);
 
   // Detail rows from source report
-  const detailRows = (reportData?.detailRows ?? []) as DetailRow[];
+  const allDetailRows = (reportData?.detailRows ?? []) as DetailRow[];
+
+  // Apply overdue pre-filter when linked from escalation card
+  const detailRows = useMemo(() => {
+    if (!overdueOnly) return allDetailRows;
+    return allDetailRows.filter(r => {
+      const lbl = r._groupingLabel;
+      return typeof lbl === 'string' && ESCALATION_FILTERS.formA(lbl);
+    });
+  }, [allDetailRows, overdueOnly]);
 
   const detailColumns: Column<DetailRow>[] = useMemo(() => {
-    if (!detailRows.length) return [];
-    const first = detailRows[0];
+    if (!allDetailRows.length) return [];
+    const first = allDetailRows[0];
     return Object.keys(first)
       .filter(k => k !== '_groupingLabel')
       .map(k => ({
@@ -128,15 +142,15 @@ export default function FormADetail() {
           return String(v);
         },
       }));
-  }, [detailRows]);
+  }, [allDetailRows]);
 
   const allDetailColumns: Column<DetailRow>[] = useMemo(() => {
-    if (!detailRows.length || !detailRows[0]._groupingLabel) return detailColumns;
+    if (!allDetailRows.length || !allDetailRows[0]._groupingLabel) return detailColumns;
     return [
       { key: '_groupingLabel', label: 'Group', sortable: true },
       ...detailColumns,
     ];
-  }, [detailColumns, detailRows]);
+  }, [detailColumns, allDetailRows]);
 
   const filteredRows = useMemo(() => {
     if (!filterText) return detailRows;
@@ -248,12 +262,25 @@ export default function FormADetail() {
           Loading matter-level detail...
         </div>
       )}
-      {!reportLoading && detailRows.length > 0 && (
+      {!reportLoading && allDetailRows.length > 0 && (
         <section>
           <SectionHeader
             title="Matter Detail"
-            subtitle={`${fmtNum(filteredRows.length)} of ${fmtNum(detailRows.length)} matters`}
+            subtitle={`${fmtNum(filteredRows.length)} of ${fmtNum(allDetailRows.length)} matters`}
           />
+          {overdueOnly && (
+            <div className="mb-3 flex items-center gap-2 text-sm">
+              <span className="inline-flex items-center rounded-full bg-amber-500/15 text-amber-400 px-2.5 py-1 text-xs font-medium">
+                Overdue &gt;60d only
+              </span>
+              <button
+                onClick={() => { setSearchParams({}); }}
+                className="text-xs text-primary hover:underline"
+              >
+                Clear filter
+              </button>
+            </div>
+          )}
           <div className="mb-3">
             <input
               type="text"
@@ -271,7 +298,7 @@ export default function FormADetail() {
           />
         </section>
       )}
-      {!reportLoading && detailRows.length === 0 && (
+      {!reportLoading && allDetailRows.length === 0 && (
         <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
           No detail rows available. Run <code className="text-xs bg-muted px-1.5 py-0.5 rounded">scripts/refresh-sf-data.sh</code> to fetch detail data.
         </div>

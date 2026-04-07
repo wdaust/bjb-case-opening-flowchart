@@ -49,12 +49,16 @@ export function EscalationCards(props: EscalationCardsProps) {
 
         const showFirmBadge = isFiltered && !card.filterable;
 
-        // Append attorney filter to link for filterable cards
-        const cardPath = card.path
-          ? (isFiltered && card.filterable
-            ? `${card.path}?attorney=${encodeURIComponent(selectedAttorney)}`
-            : card.path)
-          : null;
+        // Append overdue=true and optional attorney filter to link
+        const cardPath = (() => {
+          if (!card.path) return null;
+          const params = new URLSearchParams();
+          params.set('overdue', 'true');
+          if (isFiltered && card.filterable) {
+            params.set('attorney', selectedAttorney);
+          }
+          return `${card.path}?${params.toString()}`;
+        })();
 
         const cardContent = (
           <div

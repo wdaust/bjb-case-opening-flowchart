@@ -24,7 +24,8 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
 import { fmt$, fmtNum, getDashMetric, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
-import { OPEN_LIT_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID, MISSING_ANS_REPORT_ID } from '../data/sfReportIds';
+import { OPEN_LIT_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID, MISSING_ANS_REPORT_ID, COMPLAINTS_REPORT_ID, FORM_A_REPORT_ID, FORM_C_REPORT_ID, DEP_REPORT_ID } from '../data/sfReportIds';
+import { ESCALATION_FILTERS, countOverdue } from '../utils/escalationFilters';
 
 // ── Palette ───────────────────────────────────────────────────────────
 const GREEN = '#22c55e';
@@ -93,6 +94,16 @@ export default function ControlTower() {
     useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
   const { data: missingAnsReport } =
     useSalesforceReport<ReportSummaryResponse>({ id: MISSING_ANS_REPORT_ID, type: 'report', mode: 'full' });
+
+  // Source reports for escalation card counts (single source of truth)
+  const { data: complaintsReport } =
+    useSalesforceReport<ReportSummaryResponse>({ id: COMPLAINTS_REPORT_ID, type: 'report', mode: 'full' });
+  const { data: formAReport } =
+    useSalesforceReport<ReportSummaryResponse>({ id: FORM_A_REPORT_ID, type: 'report', mode: 'full' });
+  const { data: formCReport } =
+    useSalesforceReport<ReportSummaryResponse>({ id: FORM_C_REPORT_ID, type: 'report', mode: 'full' });
+  const { data: depReport } =
+    useSalesforceReport<ReportSummaryResponse>({ id: DEP_REPORT_ID, type: 'report', mode: 'full' });
 
   const allLoading = openLitLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
 
@@ -209,32 +220,21 @@ export default function ControlTower() {
     });
   }, [statsData]);
 
-  // ── Escalation Card Counts ─────────────────────────────────────────
-  const complaintsOverdue = useMemo(() => {
-    return complaintFilingData
-      .filter(d => d.name.includes('Overdue') && !d.name.includes('0-14'))
-      .reduce((s, d) => s + d.value, 0);
-  }, [complaintFilingData]);
+  // ── Escalation Card Counts (source reports = single source of truth) ──
+  const complaintsDetailRows = useMemo(() => (complaintsReport?.detailRows ?? []) as Array<Record<string, unknown>>, [complaintsReport]);
+  const complaintsOverdue = useMemo(() => countOverdue(complaintsDetailRows, ESCALATION_FILTERS.complaints), [complaintsDetailRows]);
 
-  const formAPastDue60 = useMemo(() => {
-    return formAPastDueData
-      .filter(d => d.name.includes('60-89') || d.name.includes('90'))
-      .reduce((s, d) => s + d.value, 0);
-  }, [formAPastDueData]);
+  const formADetailRows = useMemo(() => (formAReport?.detailRows ?? []) as Array<Record<string, unknown>>, [formAReport]);
+  const formAPastDue60 = useMemo(() => countOverdue(formADetailRows, ESCALATION_FILTERS.formA), [formADetailRows]);
 
-  const formCPastDueRows = useMemo(() => getDashRows(statsData, 'Form C Past Due (NJ)'), [statsData]);
-  const formCPastDue = useMemo(() => {
-    return formCPastDueRows
-      .filter(r => !r.label.toLowerCase().includes('within time'))
-      .reduce((s, r) => s + (r.values[0]?.value ?? 0), 0);
-  }, [formCPastDueRows]);
+  const formCDetailRows = useMemo(() => (formCReport?.detailRows ?? []) as Array<Record<string, unknown>>, [formCReport]);
+  const formCPastDue = useMemo(() => countOverdue(formCDetailRows, ESCALATION_FILTERS.formC), [formCDetailRows]);
 
+  const depDetailRows = useMemo(() => (depReport?.detailRows ?? []) as Array<Record<string, unknown>>, [depReport]);
+  const depsOverdue90 = useMemo(() => countOverdue(depDetailRows, ESCALATION_FILTERS.deps), [depDetailRows]);
+
+  // Deps timing from Stats dashboard (hero card still uses this)
   const depReportRows = useMemo(() => getDashRows(statsData, 'Dep Report for NJ PI LIT'), [statsData]);
-  const depsOverdue90 = useMemo(() => {
-    return depReportRows
-      .filter(r => r.label.includes('90-179') || r.label.includes('180'))
-      .reduce((s, r) => s + (r.values[0]?.value ?? 0), 0);
-  }, [depReportRows]);
   const depsTotal = useMemo(() => depReportRows.reduce((s, r) => s + (r.values[0]?.value ?? 0), 0), [depReportRows]);
   const depsOnTime = depsTotal - depsOverdue90;
   const depsPct90 = depsTotal ? Math.round((depsOnTime / depsTotal) * 100) : 0;
@@ -456,7 +456,7 @@ export default function ControlTower() {
               subMetrics={[
                 { label: "Timely", value: fmtNum(formA.timely), deltaType: "neutral" as const },
                 { label: "Late", value: fmtNum(formA.late), deltaType: "neutral" as const },
-                { label: "Past due", value: fmtNum(formAPastDueData.reduce((s, d) => s + d.value, 0)), deltaType: "neutral" as const },
+                { label: "Past due >60d", value: fmtNum(formAPastDue60), deltaType: "neutral" as const },
               ]}
             />
             <StatCard
