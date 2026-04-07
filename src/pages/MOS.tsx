@@ -403,8 +403,11 @@ export default function MOS() {
   useEffect(() => {
     (async () => {
       await initDb();
+      const TAB_ORDER = ['ryans-mtg', 'johns-mtg', 'marcs-mtg'];
+      const sortTabs = (arr: MeetingDef[]) =>
+        [...arr].sort((a, b) => (TAB_ORDER.indexOf(a.id) === -1 ? 999 : TAB_ORDER.indexOf(a.id)) - (TAB_ORDER.indexOf(b.id) === -1 ? 999 : TAB_ORDER.indexOf(b.id)));
       try {
-        const migrated = await ensureMosMigration();
+        const migrated = sortTabs(await ensureMosMigration());
         setMeetings(migrated);
         setActiveTab(migrated[0]?.id ?? '');
       } catch (err) {
