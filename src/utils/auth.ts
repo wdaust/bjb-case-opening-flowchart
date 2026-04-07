@@ -20,12 +20,18 @@ const SESSION_KEY = 'optimus_session';
 const PASSWORD_HASH = '601b1120eb22dbfa031ce5706e512d329becc8aa6ca4b037d7bbceab01c5a02e';
 // SHA-256 hash of "JustinBJB2026!"
 const JUSTIN_HASH = 'f67358ddfaf13645e2dc6b10a424a1ca226bb4baba2c3d6d2341bd8e990b3370';
+// SHA-256 hash of "JMoranBJB2026!"
+const JMORAN_HASH = 'efac936d7464b9e156276604a912ed9b4af15791c4c9250eb061107f97185b4b';
+// SHA-256 hash of "MBordenBJB2026!"
+const MBORDEN_HASH = 'a41290067788aa10850cddbde20e2e5fe3d5b4c442f0ec406c142a5f8912a391';
 
 const users: User[] = [
   { username: 'mbroderick', displayName: 'Matthew Broderick', role: 'admin', passwordHash: PASSWORD_HASH },
   { username: 'wdaust', displayName: 'Will Daust', role: 'admin', passwordHash: PASSWORD_HASH },
   { username: 'jbillingsley', displayName: 'Justin Billingsley', role: 'admin', passwordHash: JUSTIN_HASH },
   { username: 'kdelgado', displayName: 'Kennia Delgado', role: 'admin', passwordHash: PASSWORD_HASH },
+  { username: 'jmoran', displayName: 'J Moran', role: 'admin', passwordHash: JMORAN_HASH },
+  { username: 'mborden', displayName: 'Mark Borden', role: 'admin', passwordHash: MBORDEN_HASH },
 ];
 
 export async function hashPassword(password: string): Promise<string> {
