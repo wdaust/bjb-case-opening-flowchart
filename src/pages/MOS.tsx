@@ -10,6 +10,9 @@ import {
   CheckCircle, AlertCircle, Loader2, ChevronDown, ChevronRight, Target, Users, Plus, GripVertical, Trash2, X, Layers, Settings,
 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover.tsx';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from '../components/ui/dialog.tsx';
 import { ContributorManager } from '../components/mos/ContributorManager.tsx';
 import { InlineEdit } from '../components/mos/InlineEdit.tsx';
 import { ResponsibleDropdown } from '../components/mos/ResponsibleDropdown.tsx';
@@ -27,6 +30,12 @@ import { CSS } from '@dnd-kit/utilities';
 
 type WeeklyData = Record<string, string>;
 type SyncStatus = '' | 'saving' | 'saved' | 'error';
+type ConfirmDialog = {
+  title: string;
+  description: string;
+  details?: string[];
+  onConfirm: () => void;
+} | null;
 
 // ─── Week helpers ────────────────────────────────────────────────────────────
 
@@ -164,6 +173,7 @@ export function ScorecardTable({
   weeks,
   hiddenWeeks,
   onUnhideWeek,
+  onRequestConfirm,
 }: {
   meeting: MeetingDef;
   weeklyData: WeeklyData;
@@ -177,6 +187,7 @@ export function ScorecardTable({
   weeks: string[];
   hiddenWeeks: Set<string>;
   onUnhideWeek?: (weekKey: string) => void;
+  onRequestConfirm?: (dialog: NonNullable<ConfirmDialog>) => void;
 }) {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
@@ -259,8 +270,21 @@ export function ScorecardTable({
                             <button
                               onClick={e => {
                                 e.stopPropagation();
-                                if (window.confirm(`Delete section "${m.metric}" and all metrics under it?`)) {
-                                  onDeleteSection(m.uid);
+                                const sectionIdx = meeting.metrics.findIndex(x => x.uid === m.uid);
+                                const childMetrics: string[] = [];
+                                for (let i = sectionIdx + 1; i < meeting.metrics.length; i++) {
+                                  if (meeting.metrics[i].isSection) break;
+                                  childMetrics.push(meeting.metrics[i].metric || '(unnamed)');
+                                }
+                                if (onRequestConfirm) {
+                                  onRequestConfirm({
+                                    title: `Delete "${m.metric}"?`,
+                                    description: childMetrics.length
+                                      ? `This will permanently delete the section and ${childMetrics.length} metric${childMetrics.length > 1 ? 's' : ''} under it:`
+                                      : 'This will permanently delete this empty section.',
+                                    details: childMetrics.length ? childMetrics : undefined,
+                                    onConfirm: () => onDeleteSection(m.uid),
+                                  });
                                 }
                               }}
                               className="text-muted-foreground/40 hover:text-red-400 transition-colors ml-2"
@@ -332,8 +356,12 @@ export function ScorecardTable({
                         <button
                           onClick={() => {
                             const label = m.metric || 'this metric';
-                            if (window.confirm(`Delete "${label}"? This cannot be undone.`)) {
-                              onDeleteMetric(m.uid);
+                            if (onRequestConfirm) {
+                              onRequestConfirm({
+                                title: `Delete "${label}"?`,
+                                description: 'This metric and all its weekly data will be permanently deleted.',
+                                onConfirm: () => onDeleteMetric(m.uid),
+                              });
                             }
                           }}
                           className="text-muted-foreground/40 hover:text-red-400 transition-colors"
@@ -447,6 +475,7 @@ export default function MOS() {
   const [contributorNames, setContributorNames] = useState<string[]>([]);
   const [weekCount, setWeekCount] = useState(DEFAULT_WEEK_COUNT);
   const [hiddenWeeks, setHiddenWeeks] = useState<Set<string>>(new Set());
+  const [confirmDialog, setConfirmDialog] = useState<ConfirmDialog>(null);
   const changedKeysRef = useRef<Set<string>>(new Set());
   const metricSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const weekConfigSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -676,17 +705,22 @@ export default function MOS() {
   }, [saveMetricDefs]);
 
   const handleDeleteTab = useCallback((meetingId: string) => {
-    setMeetings(prev => {
-      if (prev.length <= 1) return prev;
-      const meeting = prev.find(m => m.id === meetingId);
-      if (!meeting) return prev;
-      if (!window.confirm(`Delete "${meeting.label}"? All metrics and scorecard data for this meeting will be lost.`)) return prev;
-      const updated = prev.filter(m => m.id !== meetingId);
-      if (activeTab === meetingId) setActiveTab(updated[0]?.id ?? '');
-      saveMetricDefs(updated);
-      return updated;
+    const meeting = meetings.find(m => m.id === meetingId);
+    if (!meeting || meetings.length <= 1) return;
+    const metricCount = meeting.metrics.filter(m => !m.isSection).length;
+    setConfirmDialog({
+      title: `Delete "${meeting.label}"?`,
+      description: `All ${metricCount} metric${metricCount !== 1 ? 's' : ''} and scorecard data for this meeting will be permanently lost.`,
+      onConfirm: () => {
+        setMeetings(prev => {
+          const updated = prev.filter(m => m.id !== meetingId);
+          if (activeTab === meetingId) setActiveTab(updated[0]?.id ?? '');
+          saveMetricDefs(updated);
+          return updated;
+        });
+      },
     });
-  }, [activeTab, saveMetricDefs]);
+  }, [meetings, activeTab, saveMetricDefs]);
 
   const handleTabReorder = useCallback((activeId: string, overId: string) => {
     setMeetings(prev => {
@@ -911,6 +945,7 @@ export default function MOS() {
             weeks={weeks}
             hiddenWeeks={hiddenWeeks}
             onUnhideWeek={isAdmin ? handleUnhideWeek : undefined}
+            onRequestConfirm={isAdmin ? setConfirmDialog : undefined}
           />
         </div>
       ) : null}
@@ -921,6 +956,37 @@ export default function MOS() {
           onOpenChange={setContributorManagerOpen}
         />
       )}
+
+      <Dialog open={!!confirmDialog} onOpenChange={open => { if (!open) setConfirmDialog(null); }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-base">{confirmDialog?.title}</DialogTitle>
+            <DialogDescription>{confirmDialog?.description}</DialogDescription>
+          </DialogHeader>
+          {confirmDialog?.details && (
+            <ul className="text-xs text-muted-foreground space-y-0.5 max-h-40 overflow-y-auto pl-4 list-disc">
+              {confirmDialog.details.map((d, i) => <li key={i}>{d}</li>)}
+            </ul>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            <button
+              onClick={() => setConfirmDialog(null)}
+              className="px-4 py-2 text-sm rounded-md border border-border text-muted-foreground hover:bg-muted/50 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                confirmDialog?.onConfirm();
+                setConfirmDialog(null);
+              }}
+              className="px-4 py-2 text-sm rounded-md bg-red-500/90 text-white hover:bg-red-500 transition-colors"
+            >
+              Delete
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
