@@ -44,7 +44,7 @@ export function StageCard({ aggregate, isExpanded, onClick }: Props) {
         {totalItems.toLocaleString()}
       </div>
       <div className="text-xs text-muted-foreground mt-0.5 mb-3">
-        {pctTimely}% timely
+        {pctTimely}% on track
       </div>
 
       {/* Stacked progress bar */}
