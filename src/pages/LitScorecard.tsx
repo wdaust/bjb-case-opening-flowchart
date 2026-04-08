@@ -43,7 +43,6 @@ const SCORECARD_KPIS: KpiDef[] = [
   { key: '10day-letter', label: '10-Day Letters Needed (#)', format: 'count', higherBetter: false, thresholds: [3, 8], status: 'green' },
   { key: 'motions-compel', label: 'Motions to Compel Filed (#)', format: 'count', higherBetter: true, status: 'green' },
   { key: 'days-to-motion', label: 'Avg Days: Past-Due → Motion Filed', format: 'days', higherBetter: false, thresholds: [30, 60], status: 'yellow' },
-  { key: 'motions-granted', label: 'Motions Granted / Substantially Granted %', format: 'pct', higherBetter: true, status: 'red' },
   { key: 'past-due-svc', label: 'Past Due Service (#)', format: 'count', higherBetter: false, thresholds: [3, 8], status: 'green' },
   { key: 'ded-extensions', label: 'DED Extensions (#)', format: 'count', higherBetter: false, status: 'red' },
   { key: 'depos-1yr', label: 'Client Depos Completed ≤ 1 Year of Answer %', format: 'pct', higherBetter: true, status: 'red' },
@@ -228,7 +227,6 @@ function computeKpisForAttorney(attorney: string, b: ReportBundle): KpiValues {
   kpis['defaults-timely'] = null;
   kpis['plaintiff-disc'] = null;
   kpis['defense-disc'] = null;
-  kpis['motions-granted'] = null;
   kpis['depos-1yr'] = null;
   kpis['depos-180'] = null;
   kpis['expert-reports'] = null;
