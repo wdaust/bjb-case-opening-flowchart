@@ -345,7 +345,10 @@ function ScorecardTable({
                   aIdx % 2 === 0 ? 'bg-card' : 'bg-table-stripe',
                 )}
               >
-                <td className="py-2 px-3 font-medium whitespace-nowrap sticky left-0 bg-inherit z-10 min-w-[200px] border-r border-border">
+                <td className={cn(
+                  "py-2 px-3 font-medium whitespace-nowrap sticky left-0 z-10 min-w-[200px] border-r border-border",
+                  aIdx % 2 === 0 ? 'bg-card' : 'bg-[hsl(var(--table-stripe))]',
+                )}>
                   {attorney}
                 </td>
                 {SCORECARD_KPIS.map(kpi => {
