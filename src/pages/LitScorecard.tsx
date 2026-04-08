@@ -310,7 +310,7 @@ function ScorecardTable({
   kpiData: Map<string, KpiValues>;
 }) {
   return (
-    <div className="overflow-auto rounded-lg border border-border scorecard-scroll" style={{ maxHeight: 'calc(100vh - 260px)' }}>
+    <div className="overflow-auto rounded-lg border border-border scorecard-scroll h-full">
       <table className="text-xs w-full" style={{ minWidth: SCORECARD_KPIS.length * 120 + 200 }}>
         <thead>
           <tr className="border-b border-border bg-muted/50 sticky top-0 z-10">
@@ -434,7 +434,7 @@ export default function LitScorecard() {
   const handleRefresh = () => { r1(); r2(); };
 
   return (
-    <div className="p-6 max-w-full mx-auto space-y-6">
+    <div className="p-6 max-w-full mx-auto space-y-6 h-[calc(100vh-64px)] flex flex-col">
       <div className="flex items-center justify-between">
         <SectionHeader
           title="LIT Attorney Scorecard"
@@ -462,18 +462,18 @@ export default function LitScorecard() {
             populatedPct={populatedPct}
           />
 
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-green-500/50" /> Live — data from SF reports
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-amber-500/50" /> Partial — limited data
-              </span>
-              <span className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-red-500/50" /> N/A — not yet trackable
-              </span>
-            </div>
+          <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-green-500/50" /> Live — data from SF reports
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-amber-500/50" /> Partial — limited data
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-red-500/50" /> N/A — not yet trackable
+            </span>
+          </div>
+          <div className="flex-1 min-h-0">
             <ScorecardTable
               attorneys={attorneys}
               kpiData={kpiData}
