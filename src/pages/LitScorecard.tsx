@@ -401,7 +401,7 @@ function ScorecardTable({
       {/* Table — hides its own horizontal scrollbar */}
       <div ref={tableRef} className="overflow-auto rounded-lg border border-border flex-1 min-h-0 scorecard-table-body">
         <table className="text-xs w-full" style={{ minWidth: tableMinWidth }}>
-          <thead>
+          <thead className="relative z-20">
             <tr className="border-b border-border bg-muted sticky top-0 z-10">
               <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 top-0 bg-muted z-30 min-w-[200px] border-r border-border">
                 Attorney
@@ -409,7 +409,7 @@ function ScorecardTable({
               {SCORECARD_KPIS.map(kpi => (
                 <th
                   key={kpi.key}
-                  className="text-center py-2 px-2 font-medium text-muted-foreground min-w-[120px]"
+                  className="text-center py-2 px-2 font-medium text-muted-foreground min-w-[120px] sticky top-0 bg-muted z-20"
                 >
                   <div className="flex flex-col items-center gap-1">
                     <span className={cn('text-[9px] px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider', statusBadge(kpi.status))}>
@@ -545,7 +545,7 @@ export default function LitScorecard() {
   const handleRefresh = () => { r1(); r2(); };
 
   return (
-    <div className="p-6 max-w-full mx-auto space-y-6 h-[calc(100vh-64px)] flex flex-col">
+    <div className="p-6 max-w-full mx-auto space-y-6 h-[calc(100vh-64px)] flex flex-col overflow-hidden">
       <div className="flex items-center justify-between">
         <SectionHeader
           title="LIT Attorney Scorecard"
