@@ -319,7 +319,7 @@ export function ScorecardTable({
                         />
                       ) : m.responsible}
                     </td>
-                    <td className={cn("py-1.5 px-3 whitespace-nowrap sticky bg-inherit z-10 min-w-[240px]", stickyLeftOffset2, m.isRock && "font-semibold text-amber-400")}>
+                    <td className={cn("py-1.5 px-3 whitespace-nowrap sticky bg-inherit z-10 min-w-[240px]", stickyLeftOffset2, m.isRock && "font-semibold text-amber-400", section && "pl-6")}>
                       {m.isRock && <Target size={11} className="inline mr-1 -mt-0.5" />}
                       {isAdmin ? (
                         <InlineEdit
@@ -878,6 +878,7 @@ export default function MOS() {
                         setEditingTabId(null);
                       }}
                       onKeyDown={e => {
+                        e.stopPropagation();
                         if (e.key === 'Enter') {
                           if (editingTabValue.trim()) handleRenameTab(m.id, editingTabValue.trim());
                           setEditingTabId(null);
