@@ -1,16 +1,19 @@
+import { useState } from 'react';
 import { DashboardGrid } from '../dashboard/DashboardGrid';
 import { StatCard } from '../dashboard/StatCard';
 import { DataTable } from '../dashboard/DataTable';
 import { StageBulletGauge } from './StageBulletGauge';
+import { CardDrillDown } from './CardDrillDown';
 import { SectionHeader } from '../dashboard/SectionHeader';
 import { InfoTooltip } from '../dashboard/InfoTooltip';
-import type { LdnAttorneyScore, ActionableIssue, StageName, RagColor } from '../../utils/ldnMetrics';
-import { STAGE_ORDER, STAGE_LABELS, STAGE_INFO, CARD_INFO } from '../../utils/ldnMetrics';
+import type { LdnAttorneyScore, ActionableIssue, StageName, RagColor, LdnReportBundle, DrillRow } from '../../utils/ldnMetrics';
+import { STAGE_ORDER, STAGE_LABELS, STAGE_INFO, CARD_INFO, STAGE_DRILL_COLUMNS, CARD_FILTERS, topAttorney } from '../../utils/ldnMetrics';
 import type { Column } from '../dashboard/DataTable';
 import { cn } from '../../utils/cn';
 
 interface Props {
   score: LdnAttorneyScore;
+  bundle: LdnReportBundle;
   onBack: () => void;
 }
 
@@ -52,13 +55,79 @@ const issueColumns: Column<ActionableIssue>[] = [
   { key: 'suggestedAction', label: 'Suggested Action' },
 ];
 
-export function AttorneyProfile({ score, onBack }: Props) {
+/** Filter bundle detail rows to a single attorney */
+function getAttorneyStageRows(bundle: LdnReportBundle, stage: StageName, attorney: string): { rows: DrillRow[]; tenDayRows?: DrillRow[]; motionRows?: DrillRow[] } {
+  const filterByGrouping = (rows: DrillRow[]) =>
+    rows.filter(r => topAttorney(r._groupingLabel) === attorney);
+  const filterByDisplayName = (rows: DrillRow[], allOpenLit: DrillRow[]) => {
+    // Build lookup of Display Name → attorney from openLit groupings
+    const lookup = new Map<string, string>();
+    for (const r of allOpenLit) {
+      const dn = String(r['Display Name'] ?? '');
+      if (dn) lookup.set(dn, topAttorney(r._groupingLabel));
+    }
+    return rows.filter(r => {
+      const dn = String(r['Display Name'] ?? '');
+      return lookup.get(dn) === attorney;
+    });
+  };
+
+  const openLitRows = (bundle.openLit?.detailRows ?? []) as DrillRow[];
+
+  switch (stage) {
+    case 'complaints':
+      return { rows: filterByDisplayName((bundle.complaints?.detailRows ?? []) as DrillRow[], openLitRows) };
+    case 'service':
+      return { rows: filterByGrouping((bundle.service?.detailRows ?? []) as DrillRow[]) };
+    case 'answers':
+      return { rows: filterByGrouping((bundle.answers?.detailRows ?? []) as DrillRow[]) };
+    case 'formA':
+      return { rows: filterByDisplayName((bundle.formA?.detailRows ?? []) as DrillRow[], openLitRows) };
+    case 'formC':
+      return {
+        rows: filterByDisplayName((bundle.formC?.detailRows ?? []) as DrillRow[], openLitRows),
+        tenDayRows: ((bundle.tenDay?.detailRows ?? []) as DrillRow[]).filter(r => {
+          // tenDay uses level2 grouping
+          const label = r._groupingLabel as string;
+          const parts = (label ?? '').split(' > ');
+          return parts.length >= 2 ? parts[1].trim() === attorney : parts[0]?.trim() === attorney;
+        }),
+        motionRows: ((bundle.motions?.detailRows ?? []) as DrillRow[]).filter(r => {
+          const label = r._groupingLabel as string;
+          const parts = (label ?? '').split(' > ');
+          return parts.length >= 2 ? parts[1].trim() === attorney : parts[0]?.trim() === attorney;
+        }),
+      };
+    case 'depositions':
+      return { rows: filterByDisplayName((bundle.deps?.detailRows ?? []) as DrillRow[], openLitRows) };
+    case 'ded':
+      return { rows: filterByGrouping(openLitRows) };
+  }
+}
+
+export function AttorneyProfile({ score, bundle, onBack }: Props) {
+  const [drillDown, setDrillDown] = useState<{ stage: StageName; card: string } | null>(null);
+
   const redStages = STAGE_ORDER.filter(s => score.stages[s].rag === 'red');
   const amberStages = STAGE_ORDER.filter(s => score.stages[s].rag === 'amber');
   const worstStage = redStages[0];
   const priorityText = worstStage
     ? `Priority: ${STAGE_LABELS[worstStage]} (${score.stages[worstStage].cards[0]?.value} items)`
     : 'No critical stages';
+
+  // Get drill-down rows for the active card
+  function getDrillRows(): DrillRow[] {
+    if (!drillDown) return [];
+    const { stage, card } = drillDown;
+    const stageRows = getAttorneyStageRows(bundle, stage, score.attorney);
+    if (stage === 'formC') {
+      if (card === 'Need 10-Day Letter') return stageRows.tenDayRows ?? [];
+      if (card === 'Need Motion') return stageRows.motionRows ?? [];
+    }
+    const filterFn = CARD_FILTERS[stage]?.[card];
+    if (!filterFn) return stageRows.rows;
+    return stageRows.rows.filter(filterFn);
+  }
 
   return (
     <div className="space-y-6">
@@ -123,6 +192,7 @@ export function AttorneyProfile({ score, onBack }: Props) {
                       value={c.value}
                       delta={c.rag}
                       deltaType={c.rag === 'green' ? 'positive' : c.rag === 'red' ? 'negative' : 'neutral'}
+                      onClick={() => setDrillDown({ stage: sn, card: c.label })}
                     />
                   </div>
                 ))}
@@ -152,6 +222,17 @@ export function AttorneyProfile({ score, onBack }: Props) {
           <p className="text-sm text-muted-foreground">No actionable issues found.</p>
         )}
       </section>
+
+      {/* Drill-down dialog */}
+      {drillDown && (
+        <CardDrillDown
+          open={true}
+          onClose={() => setDrillDown(null)}
+          title={`${score.attorney} — ${STAGE_LABELS[drillDown.stage]} — ${drillDown.card}`}
+          rows={getDrillRows()}
+          columns={STAGE_DRILL_COLUMNS[drillDown.stage] ?? []}
+        />
+      )}
     </div>
   );
 }

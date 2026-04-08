@@ -23,6 +23,8 @@ import {
   buildAttorneyList,
   STAGE_ORDER,
   type LdnReportBundle,
+  type StageName,
+  type DrillRow,
 } from '../utils/ldnMetrics';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { RiskPanel } from '../components/litprog/RiskPanel';
@@ -157,10 +159,14 @@ export default function LDN() {
       {selectedAttorney && selectedScore ? (
         <AttorneyProfile
           score={selectedScore}
+          bundle={bundle}
           onBack={() => setSelectedAttorney('')}
         />
       ) : (
         <>
+          {/* Pipeline Summary Bar */}
+          <PipelineSummaryBar bundle={bundle} />
+
           {/* Risk Summary */}
           <RiskPanel
             scores={riskPanelScores as never[]}
@@ -189,18 +195,90 @@ export default function LDN() {
             </ResponsiveContainer>
           </section>
 
-          {/* 7 Stage Sections */}
-          {STAGE_ORDER.map(sn => (
-            <StageSection
-              key={sn}
-              stageName={sn}
-              stageMetrics={portfolioStages[sn]}
-              scores={scores}
-              onSelectAttorney={setSelectedAttorney}
-            />
-          ))}
+          {/* 7 Stage Sections — with detail rows for drill-down */}
+          {STAGE_ORDER.map(sn => {
+            const detailRows = getStageDetailRows(bundle, sn);
+            return (
+              <StageSection
+                key={sn}
+                stageName={sn}
+                stageMetrics={portfolioStages[sn]}
+                scores={scores}
+                onSelectAttorney={setSelectedAttorney}
+                detailRows={detailRows.rows}
+                tenDayRows={detailRows.tenDayRows}
+                motionRows={detailRows.motionRows}
+              />
+            );
+          })}
         </>
       )}
+    </div>
+  );
+}
+
+// ─── Helper: map stage name to the right detail rows from the bundle ────────
+
+function getStageDetailRows(
+  bundle: LdnReportBundle,
+  stage: StageName,
+): { rows: DrillRow[]; tenDayRows?: DrillRow[]; motionRows?: DrillRow[] } {
+  switch (stage) {
+    case 'complaints':
+      return { rows: (bundle.complaints?.detailRows ?? []) as DrillRow[] };
+    case 'service':
+      return { rows: (bundle.service?.detailRows ?? []) as DrillRow[] };
+    case 'answers':
+      return { rows: (bundle.answers?.detailRows ?? []) as DrillRow[] };
+    case 'formA':
+      return { rows: (bundle.formA?.detailRows ?? []) as DrillRow[] };
+    case 'formC':
+      return {
+        rows: (bundle.formC?.detailRows ?? []) as DrillRow[],
+        tenDayRows: (bundle.tenDay?.detailRows ?? []) as DrillRow[],
+        motionRows: (bundle.motions?.detailRows ?? []) as DrillRow[],
+      };
+    case 'depositions':
+      return { rows: (bundle.deps?.detailRows ?? []) as DrillRow[] };
+    case 'ded':
+      return { rows: (bundle.openLit?.detailRows ?? []) as DrillRow[] };
+  }
+}
+
+// ─── Pipeline Summary Bar ───────────────────────────────────────────────────
+
+function PipelineSummaryBar({ bundle }: { bundle: LdnReportBundle }) {
+  const openLitCount = bundle.openLit?.detailRows?.length ?? 0;
+  const noComplaint = bundle.complaints?.detailRows?.length ?? 0;
+  const noService = bundle.service?.detailRows?.length ?? 0;
+  const noAnswer = bundle.answers?.detailRows?.length ?? 0;
+  const noDiscovery = (bundle.formA?.detailRows?.length ?? 0) + (bundle.formC?.detailRows?.length ?? 0);
+  const pastDed = (bundle.openLit?.detailRows ?? []).filter(r => {
+    const v = r['Discovery End Date'];
+    if (!v || v === '-') return false;
+    const d = new Date(v as string);
+    return !isNaN(d.getTime()) && d < new Date();
+  }).length;
+
+  const items = [
+    { label: 'Open Lit', value: openLitCount, color: 'text-foreground' },
+    { label: 'No Complaint', value: noComplaint, color: noComplaint > 0 ? 'text-red-400' : 'text-green-400' },
+    { label: 'No Service', value: noService, color: noService > 0 ? 'text-red-400' : 'text-green-400' },
+    { label: 'No Answer', value: noAnswer, color: noAnswer > 0 ? 'text-red-400' : 'text-green-400' },
+    { label: 'No Discovery', value: noDiscovery, color: noDiscovery > 0 ? 'text-amber-400' : 'text-green-400' },
+    { label: 'Past DED', value: pastDed, color: pastDed > 0 ? 'text-red-400' : 'text-green-400' },
+  ];
+
+  return (
+    <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-card/50 px-4 py-3">
+      <span className="text-xs font-medium text-muted-foreground mr-2 shrink-0">Pipeline:</span>
+      {items.map((item, i) => (
+        <div key={item.label} className="flex items-center gap-1 shrink-0">
+          {i > 0 && <span className="text-muted-foreground/40 mx-1">/</span>}
+          <span className={`text-sm font-bold ${item.color}`}>{item.value}</span>
+          <span className="text-xs text-muted-foreground">{item.label}</span>
+        </div>
+      ))}
     </div>
   );
 }

@@ -6,8 +6,9 @@ import { StatCard } from '../dashboard/StatCard';
 import { InfoTooltip } from '../dashboard/InfoTooltip';
 import { DataTable } from '../dashboard/DataTable';
 import { StageBulletGauge } from './StageBulletGauge';
-import type { LdnStageMetrics, LdnAttorneyScore, StageName, RagColor } from '../../utils/ldnMetrics';
-import { STAGE_INFO, CARD_INFO } from '../../utils/ldnMetrics';
+import { CardDrillDown } from './CardDrillDown';
+import type { LdnStageMetrics, LdnAttorneyScore, StageName, RagColor, DrillRow } from '../../utils/ldnMetrics';
+import { STAGE_INFO, CARD_INFO, STAGE_DRILL_COLUMNS, CARD_FILTERS } from '../../utils/ldnMetrics';
 import type { Column } from '../dashboard/DataTable';
 import { cn } from '../../utils/cn';
 
@@ -16,6 +17,9 @@ interface Props {
   scores: LdnAttorneyScore[];
   stageName: StageName;
   onSelectAttorney: (attorney: string) => void;
+  detailRows?: DrillRow[];
+  tenDayRows?: DrillRow[];
+  motionRows?: DrillRow[];
 }
 
 const RAG_DOT: Record<RagColor, string> = {
@@ -30,8 +34,9 @@ interface RankRow {
   [key: string]: unknown;
 }
 
-export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney }: Props) {
+export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney, detailRows, tenDayRows, motionRows }: Props) {
   const [expanded, setExpanded] = useState(false);
+  const [drillDownCard, setDrillDownCard] = useState<string | null>(null);
 
   // Build ranking table data
   const rankData: RankRow[] = scores
@@ -77,10 +82,26 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
     })),
   ];
 
+  // Drill-down: determine which rows to show for the clicked card
+  function getDrillRows(cardLabel: string): DrillRow[] {
+    if (!detailRows) return [];
+    // Form C has special sub-sources
+    if (stageName === 'formC') {
+      if (cardLabel === 'Need 10-Day Letter') return tenDayRows ?? [];
+      if (cardLabel === 'Need Motion') return motionRows ?? [];
+      // 'Past-Due Form C' uses the main detailRows
+    }
+    const filterFn = CARD_FILTERS[stageName]?.[cardLabel];
+    if (!filterFn) return detailRows;
+    return detailRows.filter(filterFn);
+  }
+
   const ragBorder =
     stageMetrics.rag === 'red' ? 'border-red-500/30' :
     stageMetrics.rag === 'amber' ? 'border-amber-500/30' :
     'border-green-500/30';
+
+  const drillColumns = STAGE_DRILL_COLUMNS[stageName] ?? [];
 
   return (
     <section className={cn('rounded-xl border p-5', ragBorder, 'bg-card/50')}>
@@ -99,7 +120,7 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
         }
       />
 
-      {/* Metric cards with info tooltips */}
+      {/* Metric cards with info tooltips — now clickable for drill-down */}
       <DashboardGrid cols={stageMetrics.cards.length <= 3 ? 3 : stageMetrics.cards.length <= 5 ? 5 : 4}>
         {stageMetrics.cards.map(c => (
           <div key={c.label} className="relative">
@@ -113,6 +134,7 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
               value={c.value}
               delta={c.rag}
               deltaType={c.rag === 'green' ? 'positive' : c.rag === 'red' ? 'negative' : 'neutral'}
+              onClick={detailRows ? () => setDrillDownCard(c.label) : undefined}
             />
           </div>
         ))}
@@ -134,6 +156,17 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
             onRowClick={(row) => onSelectAttorney(row.attorney)}
           />
         </div>
+      )}
+
+      {/* Drill-down dialog */}
+      {drillDownCard && (
+        <CardDrillDown
+          open={true}
+          onClose={() => setDrillDownCard(null)}
+          title={`${stageMetrics.label} — ${drillDownCard}`}
+          rows={getDrillRows(drillDownCard)}
+          columns={drillColumns}
+        />
       )}
     </section>
   );

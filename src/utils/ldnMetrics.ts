@@ -632,6 +632,169 @@ export const STAGE_INFO: Record<StageName, string> = {
   ded: 'Discovery End Date tracking across the open litigation portfolio. Flags past-DED cases and those approaching within 30/60 days.',
 };
 
+// ─── Drill-down column definitions per stage ────────────────────────────────
+
+export type DrillRow = Record<string, unknown>;
+
+export interface DrillColumn {
+  key: string;
+  label: string;
+}
+
+export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
+  complaints: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Matter Name', label: 'Matter Name' },
+    { key: 'Date Assigned to Team to Today', label: 'Days Assigned' },
+    { key: 'Date Assigned To Litigation Unit', label: 'Assigned Date' },
+    { key: 'Complaint Filed Date', label: 'Filed Date' },
+    { key: 'Blocker to Filing Complaint', label: 'Blocker' },
+    { key: 'PI Status', label: 'PI Status' },
+  ],
+  service: [
+    { key: 'Matter Name', label: 'Matter Name' },
+    { key: 'Client Name', label: 'Client' },
+    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Case Type', label: 'Case Type' },
+    { key: 'Active Defendant?', label: 'Active?' },
+    { key: 'Service complete date', label: 'Service Date' },
+    { key: 'Default Entered Date', label: 'Default Date' },
+  ],
+  answers: [
+    { key: 'Matter Name', label: 'Matter Name' },
+    { key: 'Client Name', label: 'Client' },
+    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Answer Filed', label: 'Answer Filed' },
+    { key: 'Default Entered Date', label: 'Default Date' },
+    { key: 'Active Defendant?', label: 'Active?' },
+    { key: 'Defendant Deposition', label: 'Deposition' },
+  ],
+  formA: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Answer Filed', label: 'Answer Filed' },
+    { key: 'Answer Date to Today', label: 'Days Since Answer' },
+    { key: 'Date Form A Sent to Attorney for Review', label: 'Sent to Review' },
+    { key: 'Form A Served', label: 'Served' },
+    { key: 'Active Stage', label: 'Stage' },
+  ],
+  formC: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Answer Date to Today', label: 'Days Since Answer' },
+    { key: 'Form C Received', label: 'Form C Received' },
+    { key: '10 Day Letter Sent', label: '10-Day Letter' },
+    { key: 'Date Motion Filed', label: 'Motion Filed' },
+    { key: 'Active Stage', label: 'Stage' },
+  ],
+  depositions: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Complaint Filed Date', label: 'Filed Date' },
+    { key: 'Answer Filed', label: 'Answer Filed' },
+    { key: 'Time from Filed Date', label: 'Days from Filed' },
+    { key: 'Client Deposition', label: 'Client Depo' },
+    { key: 'Active Stage', label: 'Stage' },
+  ],
+  ded: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Matter Name', label: 'Matter Name' },
+    { key: 'Case Type', label: 'Case Type' },
+    { key: 'Active Stage', label: 'Stage' },
+    { key: 'Discovery End Date', label: 'DED' },
+    { key: 'Age in Litigation', label: 'Age (Lit)' },
+    { key: 'Statute of Limitations', label: 'SOL' },
+    { key: 'Matter State', label: 'State' },
+  ],
+};
+
+// ─── Drill-down filter functions per stage+card ──────────────────────────────
+
+type CardFilterFn = (row: DrillRow) => boolean;
+const identity = () => true;
+const hasVal = (key: string) => (row: DrillRow) => {
+  const v = row[key];
+  return v != null && v !== '' && v !== '-';
+};
+
+export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
+  complaints: {
+    'Total Unfiled': identity,
+    'Overdue >14d': (row) => {
+      const v = row['Date Assigned to Team to Today'];
+      const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
+      if (!isNaN(num)) return num > 14;
+      const d = parseDate(row['Date Assigned To Litigation Unit']);
+      return d ? daysSinceToday(d) > 14 : false;
+    },
+    'Avg Days Assigned': identity,
+    'Blockers': (row) => {
+      const b = row['Blocker to Filing Complaint'] ?? row['Blocker'];
+      return b != null && b !== '' && b !== '-';
+    },
+    'Filing Rate': hasVal('Complaint Filed Date'),
+  },
+  service: {
+    'Past-Due Items': identity,
+    'Matters Affected': identity,
+    'Active Defendants': hasVal('Active Defendant?'),
+    'Has First Answer': hasVal('Prim. Defendant First Answer Filed'),
+  },
+  answers: {
+    'Missing Answers': identity,
+    'Defendants Affected': identity,
+    'Defaults Entered': hasVal('Default Entered Date'),
+    'Active Defendants': hasVal('Active Defendant?'),
+    'Has Deposition': hasVal('Defendant Deposition'),
+  },
+  formA: {
+    'Past-Due Count': identity,
+    'At Attorney Review': (row) => {
+      const sent = row['Date Form A Sent to Attorney for Review'];
+      const served = row['Form A Served'];
+      return (sent != null && sent !== '' && sent !== '-') && (!served || served === '-');
+    },
+    'Avg Days Since Answer': identity,
+    '% Served': hasVal('Form A Served'),
+  },
+  formC: {
+    'Past-Due Form C': identity, // will use formC rows
+    'Need 10-Day Letter': identity, // will use tenDay rows
+    'Need Motion': identity, // will use motion rows
+  },
+  depositions: {
+    'Outstanding': identity,
+    'Overdue 180+': (row) => {
+      const v = row['Time from Filed Date'] ?? row['Time from Filed'];
+      return typeof v === 'number' && v >= 180;
+    },
+    'Avg Days from Filed': identity,
+    '% Scheduled': (row) => {
+      const cd = row['Client Deposition'] ?? row['Client Depo Date'];
+      return cd != null && cd !== '' && cd !== '-';
+    },
+  },
+  ded: {
+    'At-Risk Cases': (row) => {
+      const d = parseDate(row['Discovery End Date']);
+      if (!d) return false;
+      const days = daysFromToday(d);
+      return days < 60;
+    },
+    'Past DED': (row) => {
+      const d = parseDate(row['Discovery End Date']);
+      return d ? daysFromToday(d) < 0 : false;
+    },
+    'Within 30d': (row) => {
+      const d = parseDate(row['Discovery End Date']);
+      if (!d) return false;
+      const days = daysFromToday(d);
+      return days >= 0 && days <= 30;
+    },
+    'No DED Set': (row) => !row['Discovery End Date'] || row['Discovery End Date'] === '-',
+  },
+};
+
 export const CARD_INFO: Record<string, string> = {
   'Total Unfiled': 'Count of complaints assigned but not yet filed.',
   'Overdue >14d': 'Complaints past the 14-day SLA target.',

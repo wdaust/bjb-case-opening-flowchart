@@ -312,7 +312,7 @@ function ScorecardTable({
   kpiData: Map<string, KpiValues>;
 }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-border">
+    <div className="overflow-auto rounded-lg border border-border scorecard-scroll" style={{ maxHeight: 'calc(100vh - 260px)' }}>
       <table className="text-xs w-full" style={{ minWidth: SCORECARD_KPIS.length * 120 + 200 }}>
         <thead>
           <tr className="border-b border-border bg-muted/50 sticky top-0 z-10">
