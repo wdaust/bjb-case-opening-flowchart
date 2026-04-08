@@ -43,7 +43,11 @@ export function StageCard({ aggregate, isExpanded, onClick }: Props) {
       <div className="text-2xl font-bold text-foreground tabular-nums">
         {totalItems.toLocaleString()}
       </div>
-      <div className="text-xs text-muted-foreground mt-0.5 mb-3">
+      <div className={cn('text-xs mt-0.5 mb-3', {
+        green: 'text-green-400',
+        amber: 'text-amber-400',
+        red: 'text-red-400',
+      }[worstColor])}>
         {pctTimely}% on track
       </div>
 
