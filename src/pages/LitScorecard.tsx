@@ -1,4 +1,4 @@
-import { useMemo, useRef, useEffect, useCallback } from 'react';
+import { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { StatCard } from '../components/dashboard/StatCard';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
@@ -310,36 +310,91 @@ function ScorecardTable({
   kpiData: Map<string, KpiValues>;
 }) {
   const tableRef = useRef<HTMLDivElement>(null);
-  const scrollbarRef = useRef<HTMLDivElement>(null);
-  const syncing = useRef(false);
-
-  const syncScroll = useCallback((source: 'table' | 'bar') => {
-    if (syncing.current) return;
-    syncing.current = true;
-    const table = tableRef.current;
-    const bar = scrollbarRef.current;
-    if (table && bar) {
-      if (source === 'table') bar.scrollLeft = table.scrollLeft;
-      else table.scrollLeft = bar.scrollLeft;
-    }
-    requestAnimationFrame(() => { syncing.current = false; });
-  }, []);
-
-  useEffect(() => {
-    const table = tableRef.current;
-    const bar = scrollbarRef.current;
-    if (!table || !bar) return;
-    const onTable = () => syncScroll('table');
-    const onBar = () => syncScroll('bar');
-    table.addEventListener('scroll', onTable);
-    bar.addEventListener('scroll', onBar);
-    return () => {
-      table.removeEventListener('scroll', onTable);
-      bar.removeEventListener('scroll', onBar);
-    };
-  }, [syncScroll]);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [thumbLeft, setThumbLeft] = useState(0);
+  const [thumbWidth, setThumbWidth] = useState(0);
+  const dragging = useRef(false);
+  const dragStartX = useRef(0);
+  const dragStartScroll = useRef(0);
 
   const tableMinWidth = SCORECARD_KPIS.length * 120 + 200;
+
+  // Update thumb position/size from table scroll state
+  const updateThumb = useCallback(() => {
+    const el = tableRef.current;
+    const track = trackRef.current;
+    if (!el || !track) return;
+    const trackW = track.clientWidth;
+    const ratio = el.clientWidth / el.scrollWidth;
+    const tw = Math.max(ratio * trackW, 40);
+    const maxLeft = trackW - tw;
+    const scrollRatio = el.scrollWidth - el.clientWidth > 0
+      ? el.scrollLeft / (el.scrollWidth - el.clientWidth)
+      : 0;
+    setThumbWidth(tw);
+    setThumbLeft(scrollRatio * maxLeft);
+  }, []);
+
+  // Sync on scroll
+  useEffect(() => {
+    const el = tableRef.current;
+    if (!el) return;
+    const onScroll = () => { if (!dragging.current) updateThumb(); };
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [updateThumb]);
+
+  // Recalc on resize
+  useEffect(() => {
+    updateThumb();
+    window.addEventListener('resize', updateThumb);
+    return () => window.removeEventListener('resize', updateThumb);
+  }, [updateThumb, attorneys]);
+
+  // Drag handlers
+  const onThumbMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    dragging.current = true;
+    dragStartX.current = e.clientX;
+    dragStartScroll.current = tableRef.current?.scrollLeft ?? 0;
+
+    const onMouseMove = (ev: MouseEvent) => {
+      const el = tableRef.current;
+      const track = trackRef.current;
+      if (!el || !track) return;
+      const dx = ev.clientX - dragStartX.current;
+      const trackW = track.clientWidth;
+      const ratio = el.clientWidth / el.scrollWidth;
+      const tw = Math.max(ratio * trackW, 40);
+      const maxLeft = trackW - tw;
+      const scrollRange = el.scrollWidth - el.clientWidth;
+      const scrollDelta = scrollRange > 0 ? (dx / maxLeft) * scrollRange : 0;
+      el.scrollLeft = dragStartScroll.current + scrollDelta;
+      updateThumb();
+    };
+
+    const onMouseUp = () => {
+      dragging.current = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }, [updateThumb]);
+
+  // Click on track to jump
+  const onTrackClick = useCallback((e: React.MouseEvent) => {
+    const el = tableRef.current;
+    const track = trackRef.current;
+    if (!el || !track) return;
+    const rect = track.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const trackW = track.clientWidth;
+    const ratio = clickX / trackW;
+    el.scrollLeft = ratio * (el.scrollWidth - el.clientWidth);
+    updateThumb();
+  }, [updateThumb]);
 
   return (
     <div className="relative h-full flex flex-col">
@@ -407,9 +462,23 @@ function ScorecardTable({
           </tbody>
         </table>
       </div>
-      {/* Proxy horizontal scrollbar — always visible at bottom */}
-      <div ref={scrollbarRef} className="scorecard-scroll shrink-0 overflow-x-scroll mt-1" style={{ overflowY: 'hidden' }}>
-        <div style={{ width: tableMinWidth, height: 1 }} />
+      {/* Custom horizontal scrollbar — always visible */}
+      <div
+        ref={trackRef}
+        onClick={onTrackClick}
+        className="shrink-0 mt-1 rounded-full cursor-pointer relative"
+        style={{ height: 14, background: '#2a2a2a' }}
+      >
+        <div
+          onMouseDown={onThumbMouseDown}
+          className="absolute top-1 bottom-1 rounded-full transition-colors hover:bg-[#888]"
+          style={{
+            left: thumbLeft,
+            width: thumbWidth,
+            background: '#666',
+            cursor: 'grab',
+          }}
+        />
       </div>
     </div>
   );

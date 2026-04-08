@@ -381,40 +381,11 @@ body {
   animation: sparklineDraw 1.2s ease-out 0.6s forwards;
 }
 
-/* ── Scorecard always-visible scrollbar ────────────────── */
+/* ── Scorecard: hide native horizontal scrollbar on table ── */
 
-.scorecard-scroll {
-  overflow: scroll !important;
-  scrollbar-width: auto;
-  scrollbar-color: #666 #2a2a2a;
+.scorecard-table-body {
+  scrollbar-gutter: stable;
 }
-
-.scorecard-scroll::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-}
-
-.scorecard-scroll::-webkit-scrollbar-track {
-  background: #2a2a2a;
-  border-radius: 6px;
-}
-
-.scorecard-scroll::-webkit-scrollbar-thumb {
-  background: #666;
-  border-radius: 6px;
-  border: 2px solid #2a2a2a;
-}
-
-.scorecard-scroll::-webkit-scrollbar-thumb:hover {
-  background: #888;
-}
-
-.scorecard-scroll::-webkit-scrollbar-corner {
-  background: #2a2a2a;
-}
-
-/* Hide horizontal scrollbar on the table body — proxy bar handles it */
 .scorecard-table-body::-webkit-scrollbar:horizontal {
   height: 0;
 }
