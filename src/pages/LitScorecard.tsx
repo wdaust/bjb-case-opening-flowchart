@@ -403,7 +403,7 @@ function ScorecardTable({
         <table className="text-xs w-full" style={{ minWidth: tableMinWidth }}>
           <thead>
             <tr className="border-b border-border bg-muted sticky top-0 z-10">
-              <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 bg-muted z-20 min-w-[200px] border-r border-border">
+              <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 top-0 bg-muted z-30 min-w-[200px] border-r border-border">
                 Attorney
               </th>
               {SCORECARD_KPIS.map(kpi => (
