@@ -413,3 +413,8 @@ body {
 .scorecard-scroll::-webkit-scrollbar-corner {
   background: #2a2a2a;
 }
+
+/* Hide horizontal scrollbar on the table body — proxy bar handles it */
+.scorecard-table-body::-webkit-scrollbar:horizontal {
+  height: 0;
+}

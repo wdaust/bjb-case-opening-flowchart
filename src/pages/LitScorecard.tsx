@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useEffect, useCallback } from 'react';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { StatCard } from '../components/dashboard/StatCard';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
@@ -309,69 +309,108 @@ function ScorecardTable({
   attorneys: string[];
   kpiData: Map<string, KpiValues>;
 }) {
+  const tableRef = useRef<HTMLDivElement>(null);
+  const scrollbarRef = useRef<HTMLDivElement>(null);
+  const syncing = useRef(false);
+
+  const syncScroll = useCallback((source: 'table' | 'bar') => {
+    if (syncing.current) return;
+    syncing.current = true;
+    const table = tableRef.current;
+    const bar = scrollbarRef.current;
+    if (table && bar) {
+      if (source === 'table') bar.scrollLeft = table.scrollLeft;
+      else table.scrollLeft = bar.scrollLeft;
+    }
+    requestAnimationFrame(() => { syncing.current = false; });
+  }, []);
+
+  useEffect(() => {
+    const table = tableRef.current;
+    const bar = scrollbarRef.current;
+    if (!table || !bar) return;
+    const onTable = () => syncScroll('table');
+    const onBar = () => syncScroll('bar');
+    table.addEventListener('scroll', onTable);
+    bar.addEventListener('scroll', onBar);
+    return () => {
+      table.removeEventListener('scroll', onTable);
+      bar.removeEventListener('scroll', onBar);
+    };
+  }, [syncScroll]);
+
+  const tableMinWidth = SCORECARD_KPIS.length * 120 + 200;
+
   return (
-    <div className="overflow-auto rounded-lg border border-border scorecard-scroll h-full">
-      <table className="text-xs w-full" style={{ minWidth: SCORECARD_KPIS.length * 120 + 200 }}>
-        <thead>
-          <tr className="border-b border-border bg-muted sticky top-0 z-10">
-            <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 bg-muted z-20 min-w-[200px] border-r border-border">
-              Attorney
-            </th>
-            {SCORECARD_KPIS.map(kpi => (
-              <th
-                key={kpi.key}
-                className="text-center py-2 px-2 font-medium text-muted-foreground min-w-[120px]"
-              >
-                <div className="flex flex-col items-center gap-1">
-                  <span className={cn('text-[9px] px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider', statusBadge(kpi.status))}>
-                    {kpi.status === 'green' ? 'Live' : kpi.status === 'yellow' ? 'Partial' : 'N/A'}
-                  </span>
-                  <span className="text-[10px] leading-tight max-w-[110px] whitespace-normal text-center">
-                    {kpi.label}
-                  </span>
-                </div>
+    <div className="relative h-full flex flex-col">
+      {/* Table — hides its own horizontal scrollbar */}
+      <div ref={tableRef} className="overflow-auto rounded-lg border border-border flex-1 min-h-0 scorecard-table-body">
+        <table className="text-xs w-full" style={{ minWidth: tableMinWidth }}>
+          <thead>
+            <tr className="border-b border-border bg-muted sticky top-0 z-10">
+              <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 bg-muted z-20 min-w-[200px] border-r border-border">
+                Attorney
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {attorneys.map((attorney, aIdx) => {
-            const kpis = kpiData.get(attorney) ?? {};
-            return (
-              <tr
-                key={attorney}
-                className={cn(
-                  'border-b border-border last:border-0 transition-colors hover:bg-primary/5',
-                  aIdx % 2 === 0 ? 'bg-card' : 'bg-table-stripe',
-                )}
-              >
-                <td className={cn(
-                  "py-2 px-3 font-medium whitespace-nowrap sticky left-0 z-10 min-w-[200px] border-r border-border",
-                  aIdx % 2 === 0 ? 'bg-card' : 'bg-[hsl(var(--table-stripe))]',
-                )}>
-                  {attorney}
-                </td>
-                {SCORECARD_KPIS.map(kpi => {
-                  const value = kpis[kpi.key] ?? null;
-                  const colorCls = cellColorClass(kpi, value);
-                  return (
-                    <td
-                      key={kpi.key}
-                      className={cn(
-                        'text-center py-2 px-2 tabular-nums',
-                        colorCls,
-                        !colorCls && value === null && 'text-muted-foreground/40',
-                      )}
-                    >
-                      {formatValue(kpi.key, value, kpi)}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+              {SCORECARD_KPIS.map(kpi => (
+                <th
+                  key={kpi.key}
+                  className="text-center py-2 px-2 font-medium text-muted-foreground min-w-[120px]"
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <span className={cn('text-[9px] px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wider', statusBadge(kpi.status))}>
+                      {kpi.status === 'green' ? 'Live' : kpi.status === 'yellow' ? 'Partial' : 'N/A'}
+                    </span>
+                    <span className="text-[10px] leading-tight max-w-[110px] whitespace-normal text-center">
+                      {kpi.label}
+                    </span>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {attorneys.map((attorney, aIdx) => {
+              const kpis = kpiData.get(attorney) ?? {};
+              return (
+                <tr
+                  key={attorney}
+                  className={cn(
+                    'border-b border-border last:border-0 transition-colors hover:bg-primary/5',
+                    aIdx % 2 === 0 ? 'bg-card' : 'bg-table-stripe',
+                  )}
+                >
+                  <td className={cn(
+                    "py-2 px-3 font-medium whitespace-nowrap sticky left-0 z-10 min-w-[200px] border-r border-border",
+                    aIdx % 2 === 0 ? 'bg-card' : 'bg-[hsl(var(--table-stripe))]',
+                  )}>
+                    {attorney}
+                  </td>
+                  {SCORECARD_KPIS.map(kpi => {
+                    const value = kpis[kpi.key] ?? null;
+                    const colorCls = cellColorClass(kpi, value);
+                    return (
+                      <td
+                        key={kpi.key}
+                        className={cn(
+                          'text-center py-2 px-2 tabular-nums',
+                          colorCls,
+                          !colorCls && value === null && 'text-muted-foreground/40',
+                        )}
+                      >
+                        {formatValue(kpi.key, value, kpi)}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      {/* Proxy horizontal scrollbar — always visible at bottom */}
+      <div ref={scrollbarRef} className="scorecard-scroll shrink-0 overflow-x-scroll mt-1" style={{ overflowY: 'hidden' }}>
+        <div style={{ width: tableMinWidth, height: 1 }} />
+      </div>
     </div>
   );
 }
