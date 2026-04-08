@@ -170,10 +170,12 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
         ))}
       </DashboardGrid>
 
-      {/* Bullet gauge */}
-      <div className="mt-4">
-        <StageBulletGauge gauge={stageMetrics.gauge} />
-      </div>
+      {/* Bullet gauge (hidden for answers — no usable aging data) */}
+      {stageName !== 'answers' && (
+        <div className="mt-4">
+          <StageBulletGauge gauge={stageMetrics.gauge} />
+        </div>
+      )}
 
       {/* Expandable attorney ranking table */}
       {expanded && (

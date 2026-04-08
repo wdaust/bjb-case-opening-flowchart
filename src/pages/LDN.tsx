@@ -25,18 +25,20 @@ import {
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
   computeAllLdnMetrics,
-  computePortfolioStages,
+  computePortfolioFromScores,
+  computeComplaints,
   buildAttorneyList,
   computeStageAggregatesFromLdn,
   STAGE_ORDER,
   type LdnReportBundle,
   type StageName,
+  type LdnStageMetrics,
   type DrillRow,
   filterLitOnly,
+  topAttorney,
 } from '../utils/ldnMetrics';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
-import { InfoTooltip } from '../components/dashboard/InfoTooltip';
 import { RiskPanel } from '../components/litprog/RiskPanel';
 import { StageCard } from '../components/litprog/StageCard';
 import { StageSection } from '../components/ldn/StageSection';
@@ -113,10 +115,31 @@ export default function LDN() {
 
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
-  const portfolioStages = useMemo(() => computePortfolioStages(bundle), [bundle]);
+  const portfolioStages = useMemo(() => computePortfolioFromScores(scores), [scores]);
 
   // ── Stage Overview aggregates from LDN scores (no litProgMetrics dependency) ──
   const stageAggregates = useMemo(() => computeStageAggregatesFromLdn(scores), [scores]);
+
+  // ── Complaints toggle: recompute metrics for unfiled vs all mode ──
+  const complaintMetrics = useMemo((): LdnStageMetrics => {
+    if (complaintsMode === 'unfiled') {
+      // Default: use attorney-scoped Pre-Lit metrics from portfolioStages
+      return portfolioStages['complaints'];
+    }
+    // 'all' mode: collect ALL complaint rows attributed to attorneys (Pre-Lit + Litigation)
+    const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
+    const attorneySet = new Set(scores.map(s => s.attorney));
+    const attorneyRows = allRows.filter(r => {
+      const atty = topAttorney(r._groupingLabel);
+      return atty && attorneySet.has(atty);
+    });
+    const result = computeComplaints(attorneyRows);
+    // Relabel first card for 'all' mode
+    if (result.metrics.cards[0]) {
+      result.metrics.cards[0].label = 'Total Complaints';
+    }
+    return result.metrics;
+  }, [complaintsMode, portfolioStages, bundle.complaints, scores]);
 
   // ── LCI Computation ──
   const lci = useMemo(
@@ -219,10 +242,42 @@ export default function LDN() {
         />
       ) : (
         <>
-          {/* Stage Overview Cards */}
+          {/* Stage Overview Cards (LCI + 7 stages = 8 cards in 4x2 grid) */}
           <section>
             <SectionHeader title="Stage Overview" subtitle="Click a stage to expand details" />
             <DashboardGrid cols={4}>
+              {/* LCI Card */}
+              <button
+                onClick={() => navigate('/lci-report')}
+                className={cn(
+                  'relative bg-card rounded-xl border-2 p-4 text-left transition-all hover:scale-[1.02] cursor-pointer',
+                  'border-green-500/30',
+                )}
+              >
+                <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider mb-1">
+                  LCI
+                </div>
+                {lciLoading ? (
+                  <div className="flex items-center gap-2 text-muted-foreground py-2">
+                    <Loader2 className="animate-spin" size={16} />
+                    <span className="text-xs">Loading...</span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-2 mb-1">
+                      <ScoreGauge score={lci.score} maxScore={100} size={48} label="" />
+                      <div>
+                        <div className="text-2xl font-bold text-foreground tabular-nums">{Math.round(lci.score)}</div>
+                        <LCIBadge score={Math.round(lci.score)} size="sm" />
+                      </div>
+                    </div>
+                    <span className={cn('text-[10px] font-medium px-2 py-0.5 rounded-full', bandBadgeClasses(lci.band))}>
+                      {lci.band === 'green' ? 'Healthy' : lci.band === 'amber' ? 'Watch' : 'Critical'}
+                    </span>
+                  </>
+                )}
+              </button>
+
               {stageAggregates.map(agg => (
                 <StageCard
                   key={agg.stage}
@@ -232,37 +287,6 @@ export default function LDN() {
                 />
               ))}
             </DashboardGrid>
-          </section>
-
-          {/* LCI Card */}
-          <section
-            className={cn(
-              "rounded-xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-md p-5 cursor-pointer border-t-2 border-t-green-500",
-              "hover:bg-white/[0.06] transition-colors",
-            )}
-            onClick={() => navigate('/lci-report')}
-          >
-            <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
-              Litigation Control Index
-              <InfoTooltip text="The Litigation Control Index scores overall portfolio health from 0-100 based on compliance, workload, and resolution metrics." />
-            </p>
-            {lciLoading ? (
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Loader2 className="animate-spin" size={16} />
-                <span className="text-sm">Loading LCI...</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-3">
-                <ScoreGauge score={lci.score} maxScore={100} size={90} label="LCI" />
-                <div className="flex flex-col gap-1">
-                  <span className="text-2xl font-bold text-foreground">{Math.round(lci.score)}</span>
-                  <LCIBadge score={Math.round(lci.score)} size="sm" />
-                  <span className={cn('text-[10px] font-medium px-2 py-0.5 rounded-full w-fit', bandBadgeClasses(lci.band))}>
-                    {lci.band === 'green' ? 'Healthy' : lci.band === 'amber' ? 'Watch' : 'Critical'}
-                  </span>
-                </div>
-              </div>
-            )}
           </section>
 
           {/* Pipeline Summary Bar */}
@@ -298,12 +322,13 @@ export default function LDN() {
 
           {/* 7 Stage Sections — with detail rows for drill-down */}
           {STAGE_ORDER.map(sn => {
-            const detailRows = getStageDetailRows(bundle, sn, complaintsMode);
+            const detailRows = getStageDetailRows(bundle, sn, complaintsMode, scores);
+            const metrics = sn === 'complaints' ? complaintMetrics : portfolioStages[sn];
             return (
               <StageSection
                 key={sn}
                 stageName={sn}
-                stageMetrics={portfolioStages[sn]}
+                stageMetrics={metrics}
                 scores={scores}
                 onSelectAttorney={setSelectedAttorney}
                 detailRows={detailRows.rows}
@@ -326,13 +351,20 @@ function getStageDetailRows(
   bundle: LdnReportBundle,
   stage: StageName,
   complaintsMode: 'unfiled' | 'all',
+  scores: { attorney: string }[],
 ): { rows: DrillRow[]; tenDayRows?: DrillRow[]; motionRows?: DrillRow[] } {
   switch (stage) {
     case 'complaints': {
       const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
-      if (complaintsMode === 'all') return { rows: allRows };
-      // Unfiled = Pre-Lit only (complaints should NOT use filterLitOnly — Pre-Lit is expected)
-      return { rows: allRows.filter(r => r['PI Status'] === 'Pre-Lit' || r['PI Status'] == null) };
+      // Filter to attorney-attributed rows only (exclude orphans)
+      const attorneySet = new Set(scores.map(s => s.attorney));
+      const attorneyRows = allRows.filter(r => {
+        const atty = topAttorney(r._groupingLabel);
+        return atty && attorneySet.has(atty);
+      });
+      if (complaintsMode === 'all') return { rows: attorneyRows };
+      // Unfiled = Pre-Lit only
+      return { rows: attorneyRows.filter(r => r['PI Status'] === 'Pre-Lit' || r['PI Status'] == null) };
     }
     case 'service':
       return { rows: (bundle.service?.detailRows ?? []) as DrillRow[] };

@@ -198,7 +198,7 @@ function filterRowsByAttorney(rows: Row[], lookup: Map<string, string>, attorney
 
 // ─── Per-stage computation ──────────────────────────────────────────────────
 
-function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+export function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   const total = rows.length;
   const daysArr = rows.map(r => {
     const v = r['Date Assigned to Team to Today'];
@@ -875,6 +875,73 @@ export function computePortfolioStages(bundle: LdnReportBundle): Record<StageNam
     depositions: computeDepositions(allDeps).metrics,
     ded: computeDED(allOpenLit).metrics,
   };
+}
+
+// ─── Portfolio from attorney scores (attorney-scoped, matches Stage Overview) ─
+
+/** Aggregate stage metrics from attorney scores so totals match Stage Overview exactly. */
+export function computePortfolioFromScores(scores: LdnAttorneyScore[]): Record<StageName, LdnStageMetrics> {
+  const result = {} as Record<StageName, LdnStageMetrics>;
+
+  for (const stage of STAGE_ORDER) {
+    // Merge cards across attorneys
+    const template = scores[0]?.stages[stage];
+    if (!template) {
+      // Fallback — shouldn't happen if scores is non-empty
+      result[stage] = { stage, label: STAGE_LABELS[stage], cards: [], gauge: { label: STAGE_LABELS[stage], count: 0, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS[stage] }, rag: 'green' };
+      continue;
+    }
+
+    const mergedCards: MetricCard[] = template.cards.map((tmpl, idx) => {
+      let sumValue = 0;
+      let worstCardRag: RagColor = 'green';
+      const ragPri: Record<RagColor, number> = { green: 0, amber: 1, red: 2 };
+
+      for (const s of scores) {
+        const card = s.stages[stage].cards[idx];
+        if (!card) continue;
+        if (typeof card.value === 'number') sumValue += card.value;
+        if (ragPri[card.rag] > ragPri[worstCardRag]) worstCardRag = card.rag;
+      }
+
+      // For string values (like "42d" or "80%"), recompute from sum
+      const isStringVal = typeof tmpl.value === 'string';
+      return {
+        label: tmpl.label,
+        value: isStringVal ? tmpl.value : sumValue, // string cards keep template value (will be overridden per-stage if needed)
+        rag: worstCardRag,
+        subMetrics: tmpl.subMetrics,
+      };
+    });
+
+    // Merge gauge data
+    let totalCount = 0;
+    let noAgingData = true;
+    for (const s of scores) {
+      const g = s.stages[stage].gauge;
+      totalCount += g.count;
+      if (!g.noAgingData) noAgingData = false;
+    }
+
+    // Worst RAG across attorneys
+    let worstRag: RagColor = 'green';
+    const ragPri: Record<RagColor, number> = { green: 0, amber: 1, red: 2 };
+    for (const s of scores) {
+      if (ragPri[s.stages[stage].rag] > ragPri[worstRag]) worstRag = s.stages[stage].rag;
+    }
+
+    result[stage] = {
+      stage,
+      label: STAGE_LABELS[stage],
+      cards: mergedCards,
+      gauge: noAgingData
+        ? { label: STAGE_LABELS[stage], count: totalCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS[stage], noAgingData: true }
+        : { label: STAGE_LABELS[stage], count: totalCount, medianAge: template.gauge.medianAge, p90Age: template.gauge.p90Age, slaTarget: SLA_TARGETS[stage] },
+      rag: worstRag,
+    };
+  }
+
+  return result;
 }
 
 // ─── Stage aggregates from LDN scores (replaces litProgMetrics dependency) ──
