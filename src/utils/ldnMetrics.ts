@@ -92,6 +92,29 @@ const SLA_TARGETS: Record<StageName, number> = {
   ded: 60,
 };
 
+// ─── LIT-only filter ────────────────────────────────────────────────────────
+// Pre-lit Active Stage values to exclude from LDM metrics.
+// Anything NOT in this set (or with no Active Stage field) is considered LIT.
+const PRE_LIT_STAGES = new Set([
+  'Case Opening',
+  'Accounts Opening',
+  'Opening',
+]);
+
+/** Filter detail rows to LIT-only matters.
+ *  - If a row has "PI Status", keep only "Litigation".
+ *  - If a row has "Active Stage", exclude pre-lit stages.
+ *  - Rows with neither field pass through (report is already LIT-scoped). */
+export function filterLitOnly(rows: Row[]): Row[] {
+  return rows.filter(r => {
+    const piStatus = r['PI Status'];
+    if (piStatus != null) return piStatus === 'Litigation';
+    const stage = r['Active Stage'];
+    if (typeof stage === 'string' && stage !== '') return !PRE_LIT_STAGES.has(stage);
+    return true; // no stage field → pass through
+  });
+}
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 type Row = Record<string, unknown>;
@@ -198,9 +221,6 @@ function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: Act
     return b && b !== '-';
   }).length;
 
-  const filed = rows.filter(r => r['Complaint Filed Date'] && r['Complaint Filed Date'] !== '-').length;
-  const filingPct = total ? Math.round((filed / total) * 100) : 100;
-
   const avgDays = mean(daysArr);
 
   // Aging breakdown
@@ -224,7 +244,6 @@ function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: Act
         { label: '90+d', value: b90plus },
       ],
     },
-    { label: 'Filing Rate', value: `${filingPct}%`, rag: filingPct >= 80 ? 'green' : filingPct >= 50 ? 'amber' : 'red' },
   ];
 
   const worstRag = overdue >= 4 ? 'red' : overdue >= 1 ? 'amber' : 'green';
@@ -502,16 +521,23 @@ export function computeAllLdnMetrics(bundle: LdnReportBundle): LdnAttorneyScore[
   const attorneys = buildAttorneyList(bundle);
   const lookup = buildFixedAttorneyLookup(bundle.openLit?.detailRows ?? []);
 
+  // Pre-filter report rows to LIT-only matters (complaints excluded — Pre-Lit is expected)
+  const allComplaints = bundle.complaints?.detailRows ?? [];
+  const litFormA = filterLitOnly(bundle.formA?.detailRows ?? []);
+  const litFormC = filterLitOnly(bundle.formC?.detailRows ?? []);
+  const litDeps = filterLitOnly(bundle.deps?.detailRows ?? []);
+  const litOpenLit = filterLitOnly(bundle.openLit?.detailRows ?? []);
+
   return attorneys.map(attorney => {
-    const complaintRows = filterRowsByAttorney(bundle.complaints?.detailRows ?? [], lookup, attorney);
+    const complaintRows = filterRowsByAttorney(allComplaints, lookup, attorney);
     const serviceRows = (bundle.service?.detailRows ?? []).filter(r => topAttorney(r._groupingLabel) === attorney);
     const answerRows = (bundle.answers?.detailRows ?? []).filter(r => topAttorney(r._groupingLabel) === attorney);
-    const formARows = filterRowsByAttorney(bundle.formA?.detailRows ?? [], lookup, attorney);
-    const formCCrossRef = filterRowsByAttorney(bundle.formC?.detailRows ?? [], lookup, attorney);
+    const formARows = filterRowsByAttorney(litFormA, lookup, attorney);
+    const formCCrossRef = filterRowsByAttorney(litFormC, lookup, attorney);
     const tenDayRows = (bundle.tenDay?.detailRows ?? []).filter(r => level2Attorney(r._groupingLabel) === attorney);
     const motionRows = (bundle.motions?.detailRows ?? []).filter(r => level2Attorney(r._groupingLabel) === attorney);
-    const depRows = filterRowsByAttorney(bundle.deps?.detailRows ?? [], lookup, attorney);
-    const openLitRows = (bundle.openLit?.detailRows ?? []).filter(r => topAttorney(r._groupingLabel) === attorney);
+    const depRows = filterRowsByAttorney(litDeps, lookup, attorney);
+    const openLitRows = litOpenLit.filter(r => topAttorney(r._groupingLabel) === attorney);
 
     const c = computeComplaints(complaintRows);
     const s = computeService(serviceRows);
@@ -575,8 +601,8 @@ export function computeAllLdnMetrics(bundle: LdnReportBundle): LdnAttorneyScore[
 // ─── Portfolio-level aggregates ─────────────────────────────────────────────
 
 export function computePortfolioGauges(bundle: LdnReportBundle): Record<StageName, BulletGauge> {
-  // Compute gauges from ALL rows (not per-attorney)
-  const complaintDays = (bundle.complaints?.detailRows ?? []).map(r => {
+  // Compute gauges from ALL rows (not per-attorney), LIT-only
+  const complaintDays = filterLitOnly(bundle.complaints?.detailRows ?? []).map(r => {
     const v = r['Date Assigned to Team to Today'];
     const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
     if (!isNaN(num)) return num;
@@ -587,22 +613,22 @@ export function computePortfolioGauges(bundle: LdnReportBundle): Record<StageNam
   const serviceCount = (bundle.service?.detailRows ?? []).length;
   const answerCount = (bundle.answers?.detailRows ?? []).length;
 
-  const formADays = (bundle.formA?.detailRows ?? []).map(r => {
+  const formADays = filterLitOnly(bundle.formA?.detailRows ?? []).map(r => {
     const v = r['Answer Date to Today'];
     return typeof v === 'number' ? v : null;
   }).filter((d): d is number => d != null);
 
-  const formCDays = (bundle.formC?.detailRows ?? []).map(r => {
+  const formCDays = filterLitOnly(bundle.formC?.detailRows ?? []).map(r => {
     const v = r['Answer Date to Today'];
     return typeof v === 'number' ? v : null;
   }).filter((d): d is number => d != null);
 
-  const depDays = (bundle.deps?.detailRows ?? []).map(r => {
+  const depDays = filterLitOnly(bundle.deps?.detailRows ?? []).map(r => {
     const v = r['Time from Filed Date'] ?? r['Time from Filed'];
     return typeof v === 'number' ? v : null;
   }).filter((d): d is number => d != null);
 
-  const dedDays = (bundle.openLit?.detailRows ?? [])
+  const dedDays = filterLitOnly(bundle.openLit?.detailRows ?? [])
     .filter(r => r['Discovery End Date'] && r['Discovery End Date'] !== '-')
     .map(r => {
       const d = parseDate(r['Discovery End Date']);
@@ -732,7 +758,6 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
       const b = row['Blocker to Filing Complaint'] ?? row['Blocker'];
       return b != null && b !== '' && b !== '-';
     },
-    'Filing Rate': hasVal('Complaint Filed Date'),
   },
   service: {
     'Past-Due Items': identity,
@@ -800,7 +825,7 @@ export const CARD_INFO: Record<string, string> = {
   'Overdue >14d': 'Complaints past the 14-day SLA target.',
   'Avg Days Assigned': 'Average days since assignment to litigation unit.',
   'Blockers': 'Cases with a documented blocker preventing filing. Sub-metrics show aging breakdown.',
-  'Filing Rate': 'Percentage of complaints that have a filed date vs total assigned.',
+  'Total Complaints': 'Count of all complaints (filed and unfiled).',
   'Past-Due Items': 'Service items that are past due for completion.',
   'Matters Affected': 'Unique matters with past-due service items.',
   'Active Defendants': 'Defendants marked as active in the case.',
@@ -834,12 +859,12 @@ export function computePortfolioStages(bundle: LdnReportBundle): Record<StageNam
   const allComplaint = bundle.complaints?.detailRows ?? [];
   const allService = bundle.service?.detailRows ?? [];
   const allAnswers = bundle.answers?.detailRows ?? [];
-  const allFormA = bundle.formA?.detailRows ?? [];
-  const allFormC = bundle.formC?.detailRows ?? [];
+  const allFormA = filterLitOnly(bundle.formA?.detailRows ?? []);
+  const allFormC = filterLitOnly(bundle.formC?.detailRows ?? []);
   const allTenDay = bundle.tenDay?.detailRows ?? [];
   const allMotions = bundle.motions?.detailRows ?? [];
-  const allDeps = bundle.deps?.detailRows ?? [];
-  const allOpenLit = bundle.openLit?.detailRows ?? [];
+  const allDeps = filterLitOnly(bundle.deps?.detailRows ?? []);
+  const allOpenLit = filterLitOnly(bundle.openLit?.detailRows ?? []);
 
   return {
     complaints: computeComplaints(allComplaint).metrics,
@@ -850,4 +875,49 @@ export function computePortfolioStages(bundle: LdnReportBundle): Record<StageNam
     depositions: computeDepositions(allDeps).metrics,
     ded: computeDED(allOpenLit).metrics,
   };
+}
+
+// ─── Stage aggregates from LDN scores (replaces litProgMetrics dependency) ──
+
+export interface LdnStageAggregate {
+  stage: StageName;
+  label: string;
+  totalItems: number;
+  pctTimely: number;
+  greenCount: number;
+  amberCount: number;
+  redCount: number;
+}
+
+/** Derive stage aggregates from LDN attorney scores for StageCard display. */
+export function computeStageAggregatesFromLdn(scores: LdnAttorneyScore[]): LdnStageAggregate[] {
+  return STAGE_ORDER.map(stage => {
+    let totalItems = 0;
+    let greenCount = 0;
+    let amberCount = 0;
+    let redCount = 0;
+
+    for (const s of scores) {
+      const m = s.stages[stage];
+      // Primary value is the first card's numeric value
+      const primary = typeof m.cards[0]?.value === 'number' ? m.cards[0].value : 0;
+      totalItems += primary;
+      if (m.rag === 'green') greenCount++;
+      else if (m.rag === 'amber') amberCount++;
+      else redCount++;
+    }
+
+    const total = greenCount + amberCount + redCount;
+    const pctTimely = total ? Math.round((greenCount / total) * 100) : 100;
+
+    return {
+      stage,
+      label: STAGE_LABELS[stage],
+      totalItems,
+      pctTimely,
+      greenCount,
+      amberCount,
+      redCount,
+    };
+  });
 }

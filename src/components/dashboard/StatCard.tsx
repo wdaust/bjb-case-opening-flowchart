@@ -62,11 +62,11 @@ export function StatCard({ label, value, delta, deltaType = "neutral", sparkline
           {delta && (
             <div className="flex items-center gap-1 mt-1">
               {deltaType === "positive" && <TrendingUp size={12} className="text-green-500" />}
-              {deltaType === "negative" && <TrendingDown size={12} className="text-gray-500" />}
+              {deltaType === "negative" && <TrendingDown size={12} className="text-red-500" />}
               <span className={cn(
                 "text-xs font-medium",
                 deltaType === "positive" && "text-green-500",
-                deltaType === "negative" && "text-gray-500",
+                deltaType === "negative" && "text-red-500",
                 deltaType === "neutral" && "text-muted-foreground",
               )}>
                 {delta}
@@ -77,7 +77,7 @@ export function StatCard({ label, value, delta, deltaType = "neutral", sparkline
             <div className={cn("w-20 mt-1", isGlass && "sparkline-draw-in")}>
               <MiniSparkline
                 data={sparklineData}
-                color={deltaType === "negative" ? "#555555" : "#22c55e"}
+                color={deltaType === "negative" ? "#ef4444" : deltaType === "neutral" ? "#f59e0b" : "#22c55e"}
               />
             </div>
           )}

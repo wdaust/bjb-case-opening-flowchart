@@ -20,6 +20,8 @@ interface Props {
   detailRows?: DrillRow[];
   tenDayRows?: DrillRow[];
   motionRows?: DrillRow[];
+  complaintsMode?: 'unfiled' | 'all';
+  onComplaintsModeChange?: (mode: 'unfiled' | 'all') => void;
 }
 
 const RAG_DOT: Record<RagColor, string> = {
@@ -34,7 +36,7 @@ interface RankRow {
   [key: string]: unknown;
 }
 
-export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney, detailRows, tenDayRows, motionRows }: Props) {
+export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney, detailRows, tenDayRows, motionRows, complaintsMode, onComplaintsModeChange }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [drillDownCard, setDrillDownCard] = useState<string | null>(null);
 
@@ -109,14 +111,42 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
         title={stageMetrics.label}
         info={STAGE_INFO[stageName]}
         actions={
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Users size={14} />
-            {expanded ? 'Collapse' : 'Attorney Rankings'}
-            {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          </button>
+          <div className="flex items-center gap-2">
+            {stageName === 'complaints' && complaintsMode && onComplaintsModeChange && (
+              <div className="flex rounded-lg border border-white/10 overflow-hidden">
+                <button
+                  onClick={() => onComplaintsModeChange('unfiled')}
+                  className={cn(
+                    'px-3 py-1.5 text-xs transition-colors',
+                    complaintsMode === 'unfiled'
+                      ? 'bg-white/15 text-foreground font-medium'
+                      : 'bg-white/5 text-muted-foreground hover:bg-white/10',
+                  )}
+                >
+                  Unfiled
+                </button>
+                <button
+                  onClick={() => onComplaintsModeChange('all')}
+                  className={cn(
+                    'px-3 py-1.5 text-xs transition-colors',
+                    complaintsMode === 'all'
+                      ? 'bg-white/15 text-foreground font-medium'
+                      : 'bg-white/5 text-muted-foreground hover:bg-white/10',
+                  )}
+                >
+                  All
+                </button>
+              </div>
+            )}
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="flex items-center gap-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Users size={14} />
+              {expanded ? 'Collapse' : 'Attorney Rankings'}
+              {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+          </div>
         }
       />
 

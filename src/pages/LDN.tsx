@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { HeroSection } from '../components/dashboard/HeroSection';
@@ -15,37 +16,49 @@ import {
   FORM_C_10DAY_ID,
   NEED_FORM_C_MOTION_ID,
   OPEN_LIT_ID,
+  RESOLUTIONS_ID,
+  STATS_ID,
+  TIMING_ID,
+  DISCOVERY_ID,
+  EXPERTS_ID,
 } from '../data/sfReportIds';
-import type { ReportSummaryResponse } from '../types/salesforce';
+import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
   computeAllLdnMetrics,
   computePortfolioStages,
   buildAttorneyList,
+  computeStageAggregatesFromLdn,
   STAGE_ORDER,
   type LdnReportBundle,
   type StageName,
   type DrillRow,
+  filterLitOnly,
 } from '../utils/ldnMetrics';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
+import { InfoTooltip } from '../components/dashboard/InfoTooltip';
 import { RiskPanel } from '../components/litprog/RiskPanel';
 import { StageCard } from '../components/litprog/StageCard';
-import { AttorneyRankingTable } from '../components/litprog/AttorneyRankingTable';
 import { StageSection } from '../components/ldn/StageSection';
 import { AttorneyProfile } from '../components/ldn/AttorneyProfile';
-import {
-  computeAllAttorneyStageMetrics,
-  computeStageAggregates,
-  STAGE_LABELS,
-  type StageName as LitProgStageName,
-  type ReportBundle,
-} from '../utils/litProgMetrics';
+import { ScoreGauge } from '../components/scoring/ScoreGauge';
+import { LCIBadge } from '../components/dashboard/LCIBadge';
+import { computeRealLCI } from '../data/lciEngineReal';
+import { cn } from '../utils/cn';
+
+function bandBadgeClasses(band: string) {
+  if (band === 'green') return 'bg-green-500/20 text-green-400';
+  if (band === 'amber') return 'bg-amber-500/20 text-amber-400';
+  return 'bg-red-500/20 text-red-400';
+}
 
 export default function LDN() {
+  const navigate = useNavigate();
   const [selectedAttorney, setSelectedAttorney] = useState<string>('');
-  const [expandedStage, setExpandedStage] = useState<LitProgStageName | null>(null);
+  const [expandedStage, setExpandedStage] = useState<StageName | null>(null);
+  const [complaintsMode, setComplaintsMode] = useState<'unfiled' | 'all'>('unfiled');
 
-  // ── Data fetching (same 9 reports as LitProgression) ──
+  // ── Data fetching (9 LDN reports) ──
   const { data: complaints, loading: l1 } = useSalesforceReport<ReportSummaryResponse>({
     id: COMPLAINTS_REPORT_ID, type: 'report', mode: 'full',
   });
@@ -74,7 +87,25 @@ export default function LDN() {
     id: OPEN_LIT_ID, type: 'report', mode: 'full',
   });
 
+  // ── LCI data fetching (5 additional sources) ──
+  const { data: resData, loading: l10 } = useSalesforceReport<ReportSummaryResponse>({
+    id: RESOLUTIONS_ID, type: 'report',
+  });
+  const { data: statsData, loading: l11 } = useSalesforceReport<DashboardResponse>({
+    id: STATS_ID, type: 'dashboard',
+  });
+  const { data: timingData, loading: l12 } = useSalesforceReport<DashboardResponse>({
+    id: TIMING_ID, type: 'dashboard',
+  });
+  const { data: discData, loading: l13 } = useSalesforceReport<ReportSummaryResponse>({
+    id: DISCOVERY_ID, type: 'report',
+  });
+  const { data: expertsData, loading: l14 } = useSalesforceReport<ReportSummaryResponse>({
+    id: EXPERTS_ID, type: 'report',
+  });
+
   const loading = l1 || l2 || l3 || l4 || l5 || l6 || l7 || l8 || l9;
+  const lciLoading = l10 || l11 || l12 || l13 || l14;
 
   const bundle: LdnReportBundle = useMemo(() => ({
     complaints, service, answers, formA, formC, deps, tenDay, motions, openLit,
@@ -84,17 +115,17 @@ export default function LDN() {
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
   const portfolioStages = useMemo(() => computePortfolioStages(bundle), [bundle]);
 
-  // ── LitProg Stage Overview metrics (reuse existing bundle) ──
-  const allLitProgScores = useMemo(() => computeAllAttorneyStageMetrics(bundle as unknown as ReportBundle), [bundle]);
-  const stageAggregates = useMemo(() => computeStageAggregates(allLitProgScores), [allLitProgScores]);
+  // ── Stage Overview aggregates from LDN scores (no litProgMetrics dependency) ──
+  const stageAggregates = useMemo(() => computeStageAggregatesFromLdn(scores), [scores]);
 
-  const handleStageClick = (stage: LitProgStageName) => {
+  // ── LCI Computation ──
+  const lci = useMemo(
+    () => computeRealLCI({ resData, statsData, timingData, discData, expertsData }),
+    [resData, statsData, timingData, discData, expertsData],
+  );
+
+  const handleStageClick = (stage: StageName) => {
     setExpandedStage(prev => prev === stage ? null : stage);
-  };
-
-  const handleSelectAttorneyFromStage = (attorney: string) => {
-    setSelectedAttorney(attorney);
-    setExpandedStage(null);
   };
 
   const stageHealthData = useMemo(() =>
@@ -159,7 +190,7 @@ export default function LDN() {
       <HeroSection>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-2">
-            <HeroTitle title="Litigation Dashboard Manager" subtitle="Attorney performance deep-dive with actionable intelligence" />
+            <HeroTitle title="Lit Disruptor Model" subtitle="Attorney performance deep-dive with actionable intelligence" />
             <HeroSummaryTicker items={[
               { label: 'attorneys', value: attorneys.length },
               { label: 'red flags', value: totalRedFlags },
@@ -190,7 +221,7 @@ export default function LDN() {
         <>
           {/* Stage Overview Cards */}
           <section>
-            <SectionHeader title="Stage Overview" subtitle="Click a stage to see attorney rankings" />
+            <SectionHeader title="Stage Overview" subtitle="Click a stage to expand details" />
             <DashboardGrid cols={4}>
               {stageAggregates.map(agg => (
                 <StageCard
@@ -203,20 +234,36 @@ export default function LDN() {
             </DashboardGrid>
           </section>
 
-          {/* Expanded Stage Drill-Down */}
-          {expandedStage && (
-            <section>
-              <SectionHeader
-                title={`${STAGE_LABELS[expandedStage]} — Attorney Rankings`}
-                subtitle="Click an attorney row for detail view"
-              />
-              <AttorneyRankingTable
-                scores={allLitProgScores}
-                stage={expandedStage}
-                onSelectAttorney={handleSelectAttorneyFromStage}
-              />
-            </section>
-          )}
+          {/* LCI Card */}
+          <section
+            className={cn(
+              "rounded-xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-md p-5 cursor-pointer border-t-2 border-t-green-500",
+              "hover:bg-white/[0.06] transition-colors",
+            )}
+            onClick={() => navigate('/lci-report')}
+          >
+            <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+              Litigation Control Index
+              <InfoTooltip text="The Litigation Control Index scores overall portfolio health from 0-100 based on compliance, workload, and resolution metrics." />
+            </p>
+            {lciLoading ? (
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="animate-spin" size={16} />
+                <span className="text-sm">Loading LCI...</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <ScoreGauge score={lci.score} maxScore={100} size={90} label="LCI" />
+                <div className="flex flex-col gap-1">
+                  <span className="text-2xl font-bold text-foreground">{Math.round(lci.score)}</span>
+                  <LCIBadge score={Math.round(lci.score)} size="sm" />
+                  <span className={cn('text-[10px] font-medium px-2 py-0.5 rounded-full w-fit', bandBadgeClasses(lci.band))}>
+                    {lci.band === 'green' ? 'Healthy' : lci.band === 'amber' ? 'Watch' : 'Critical'}
+                  </span>
+                </div>
+              </div>
+            )}
+          </section>
 
           {/* Pipeline Summary Bar */}
           <PipelineSummaryBar bundle={bundle} />
@@ -251,7 +298,7 @@ export default function LDN() {
 
           {/* 7 Stage Sections — with detail rows for drill-down */}
           {STAGE_ORDER.map(sn => {
-            const detailRows = getStageDetailRows(bundle, sn);
+            const detailRows = getStageDetailRows(bundle, sn, complaintsMode);
             return (
               <StageSection
                 key={sn}
@@ -262,6 +309,8 @@ export default function LDN() {
                 detailRows={detailRows.rows}
                 tenDayRows={detailRows.tenDayRows}
                 motionRows={detailRows.motionRows}
+                complaintsMode={sn === 'complaints' ? complaintsMode : undefined}
+                onComplaintsModeChange={sn === 'complaints' ? setComplaintsMode : undefined}
               />
             );
           })}
@@ -276,38 +325,44 @@ export default function LDN() {
 function getStageDetailRows(
   bundle: LdnReportBundle,
   stage: StageName,
+  complaintsMode: 'unfiled' | 'all',
 ): { rows: DrillRow[]; tenDayRows?: DrillRow[]; motionRows?: DrillRow[] } {
   switch (stage) {
-    case 'complaints':
-      return { rows: (bundle.complaints?.detailRows ?? []) as DrillRow[] };
+    case 'complaints': {
+      const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
+      if (complaintsMode === 'all') return { rows: allRows };
+      // Unfiled = Pre-Lit only (complaints should NOT use filterLitOnly — Pre-Lit is expected)
+      return { rows: allRows.filter(r => r['PI Status'] === 'Pre-Lit' || r['PI Status'] == null) };
+    }
     case 'service':
       return { rows: (bundle.service?.detailRows ?? []) as DrillRow[] };
     case 'answers':
       return { rows: (bundle.answers?.detailRows ?? []) as DrillRow[] };
     case 'formA':
-      return { rows: (bundle.formA?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterLitOnly(bundle.formA?.detailRows ?? []) as DrillRow[] };
     case 'formC':
       return {
-        rows: (bundle.formC?.detailRows ?? []) as DrillRow[],
+        rows: filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[],
         tenDayRows: (bundle.tenDay?.detailRows ?? []) as DrillRow[],
         motionRows: (bundle.motions?.detailRows ?? []) as DrillRow[],
       };
     case 'depositions':
-      return { rows: (bundle.deps?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[] };
     case 'ded':
-      return { rows: (bundle.openLit?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[] };
   }
 }
 
 // ─── Pipeline Summary Bar ───────────────────────────────────────────────────
 
 function PipelineSummaryBar({ bundle }: { bundle: LdnReportBundle }) {
-  const openLitCount = bundle.openLit?.detailRows?.length ?? 0;
-  const noComplaint = bundle.complaints?.detailRows?.length ?? 0;
+  const litOpenLit = filterLitOnly(bundle.openLit?.detailRows ?? []);
+  const openLitCount = litOpenLit.length;
+  const noComplaint = filterLitOnly(bundle.complaints?.detailRows ?? []).length;
   const noService = bundle.service?.detailRows?.length ?? 0;
   const noAnswer = bundle.answers?.detailRows?.length ?? 0;
-  const noDiscovery = (bundle.formA?.detailRows?.length ?? 0) + (bundle.formC?.detailRows?.length ?? 0);
-  const pastDed = (bundle.openLit?.detailRows ?? []).filter(r => {
+  const noDiscovery = filterLitOnly(bundle.formA?.detailRows ?? []).length + filterLitOnly(bundle.formC?.detailRows ?? []).length;
+  const pastDed = litOpenLit.filter(r => {
     const v = r['Discovery End Date'];
     if (!v || v === '-') return false;
     const d = new Date(v as string);

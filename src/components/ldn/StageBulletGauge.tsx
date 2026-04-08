@@ -16,7 +16,11 @@ export function StageBulletGauge({ gauge, className }: Props) {
           <div className="text-[10px] text-muted-foreground shrink-0 ml-2">{gauge.count} items</div>
         </div>
         <div className="flex items-center h-10 px-3 rounded bg-muted/30 border border-border/50">
-          <span className="text-xs text-muted-foreground">No aging data available for this stage</span>
+          <span className="text-xs text-muted-foreground">
+            {gauge.label === 'Service'
+              ? 'All items in this report are past due'
+              : 'No aging data available for this stage'}
+          </span>
         </div>
       </div>
     );
