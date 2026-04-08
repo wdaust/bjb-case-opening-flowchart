@@ -115,7 +115,7 @@ export default function LDN() {
 
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
-  const portfolioStages = useMemo(() => computePortfolioFromScores(scores), [scores]);
+  const portfolioStages = useMemo(() => computePortfolioFromScores(scores, bundle), [scores, bundle]);
 
   // ── Stage Overview aggregates from LDN scores (no litProgMetrics dependency) ──
   const stageAggregates = useMemo(() => computeStageAggregatesFromLdn(scores), [scores]);

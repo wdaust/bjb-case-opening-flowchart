@@ -879,69 +879,61 @@ export function computePortfolioStages(bundle: LdnReportBundle): Record<StageNam
 
 // ─── Portfolio from attorney scores (attorney-scoped, matches Stage Overview) ─
 
-/** Aggregate stage metrics from attorney scores so totals match Stage Overview exactly. */
-export function computePortfolioFromScores(scores: LdnAttorneyScore[]): Record<StageName, LdnStageMetrics> {
-  const result = {} as Record<StageName, LdnStageMetrics>;
+/**
+ * Aggregate stage metrics from attorney scores so card totals match Stage Overview exactly.
+ * Also accepts the bundle to recompute gauges from raw attorney-filtered rows.
+ */
+export function computePortfolioFromScores(scores: LdnAttorneyScore[], bundle: LdnReportBundle): Record<StageName, LdnStageMetrics> {
+  // Build the set of known attorneys so we can filter raw rows to match
+  const attorneySet = new Set(scores.map(s => s.attorney));
+  const lookup = buildFixedAttorneyLookup(bundle.openLit?.detailRows ?? []);
 
-  for (const stage of STAGE_ORDER) {
-    // Merge cards across attorneys
-    const template = scores[0]?.stages[stage];
-    if (!template) {
-      // Fallback — shouldn't happen if scores is non-empty
-      result[stage] = { stage, label: STAGE_LABELS[stage], cards: [], gauge: { label: STAGE_LABELS[stage], count: 0, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS[stage] }, rag: 'green' };
-      continue;
+  // Helper: filter rows to only those belonging to known attorneys
+  function filterToAttorneys(rows: Row[], useGroupingLabel: boolean): Row[] {
+    if (useGroupingLabel) {
+      return rows.filter(r => {
+        const atty = topAttorney(r._groupingLabel);
+        return atty && attorneySet.has(atty);
+      });
     }
-
-    const mergedCards: MetricCard[] = template.cards.map((tmpl, idx) => {
-      let sumValue = 0;
-      let worstCardRag: RagColor = 'green';
-      const ragPri: Record<RagColor, number> = { green: 0, amber: 1, red: 2 };
-
-      for (const s of scores) {
-        const card = s.stages[stage].cards[idx];
-        if (!card) continue;
-        if (typeof card.value === 'number') sumValue += card.value;
-        if (ragPri[card.rag] > ragPri[worstCardRag]) worstCardRag = card.rag;
-      }
-
-      // For string values (like "42d" or "80%"), recompute from sum
-      const isStringVal = typeof tmpl.value === 'string';
-      return {
-        label: tmpl.label,
-        value: isStringVal ? tmpl.value : sumValue, // string cards keep template value (will be overridden per-stage if needed)
-        rag: worstCardRag,
-        subMetrics: tmpl.subMetrics,
-      };
+    return rows.filter(r => {
+      const atty = topAttorney(r._groupingLabel);
+      if (atty && attorneySet.has(atty)) return true;
+      // Cross-ref lookup fallback
+      const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
+      const mapped = lookup.get(dn);
+      return mapped ? attorneySet.has(mapped) : false;
     });
-
-    // Merge gauge data
-    let totalCount = 0;
-    let noAgingData = true;
-    for (const s of scores) {
-      const g = s.stages[stage].gauge;
-      totalCount += g.count;
-      if (!g.noAgingData) noAgingData = false;
-    }
-
-    // Worst RAG across attorneys
-    let worstRag: RagColor = 'green';
-    const ragPri: Record<RagColor, number> = { green: 0, amber: 1, red: 2 };
-    for (const s of scores) {
-      if (ragPri[s.stages[stage].rag] > ragPri[worstRag]) worstRag = s.stages[stage].rag;
-    }
-
-    result[stage] = {
-      stage,
-      label: STAGE_LABELS[stage],
-      cards: mergedCards,
-      gauge: noAgingData
-        ? { label: STAGE_LABELS[stage], count: totalCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS[stage], noAgingData: true }
-        : { label: STAGE_LABELS[stage], count: totalCount, medianAge: template.gauge.medianAge, p90Age: template.gauge.p90Age, slaTarget: SLA_TARGETS[stage] },
-      rag: worstRag,
-    };
   }
 
-  return result;
+  // Recompute attorney-scoped metrics per stage from raw rows
+  const attyComplaints = filterToAttorneys(bundle.complaints?.detailRows ?? [], true);
+  const attyService = filterToAttorneys(bundle.service?.detailRows ?? [], true);
+  const attyAnswers = filterToAttorneys(bundle.answers?.detailRows ?? [], true);
+  const attyFormA = filterToAttorneys(filterLitOnly(bundle.formA?.detailRows ?? []), false);
+  const attyFormC = filterToAttorneys(filterLitOnly(bundle.formC?.detailRows ?? []), false);
+  const attyTenDay = filterToAttorneys(bundle.tenDay?.detailRows ?? [], true);
+  const attyMotions = filterToAttorneys(bundle.motions?.detailRows ?? [], true);
+  const attyDeps = filterToAttorneys(filterLitOnly(bundle.deps?.detailRows ?? []), false);
+  const attyOpenLit = filterToAttorneys(filterLitOnly(bundle.openLit?.detailRows ?? []), true);
+
+  const c = computeComplaints(attyComplaints);
+  const s = computeService(attyService);
+  const a = computeAnswers(attyAnswers);
+  const fa = computeFormA(attyFormA);
+  const fc = computeFormC(attyFormC, attyTenDay, attyMotions);
+  const dep = computeDepositions(attyDeps);
+  const ded = computeDED(attyOpenLit);
+
+  return {
+    complaints: c.metrics,
+    service: s.metrics,
+    answers: a.metrics,
+    formA: fa.metrics,
+    formC: fc.metrics,
+    depositions: dep.metrics,
+    ded: ded.metrics,
+  };
 }
 
 // ─── Stage aggregates from LDN scores (replaces litProgMetrics dependency) ──
