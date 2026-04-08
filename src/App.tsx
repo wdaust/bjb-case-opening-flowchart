@@ -74,7 +74,7 @@ import ReportDetail from './pages/ReportDetail.tsx';
 import Analytics from './pages/Analytics.tsx';
 import Insights from './pages/Insights.tsx';
 import OptimusStructure from './pages/OptimusStructure.tsx';
-import BJBShowcase from './pages/BJBShowcase.tsx';
+import LitProgression from './pages/LitProgression.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 
@@ -185,7 +185,7 @@ export default function App() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="insights" element={<Insights />} />
             <Route path="optimus-structure" element={<OptimusStructure />} />
-            <Route path="bjb-showcase" element={<BJBShowcase />} />
+            <Route path="lit-progression" element={<LitProgression />} />
             <Route path="mos-entry" element={<MosEntry />} />
           </Route>
         </Routes>

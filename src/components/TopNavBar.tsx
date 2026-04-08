@@ -12,6 +12,7 @@ const mainLinks = [
 ];
 
 const moreLinksBase = [
+  { label: 'Lit Progression', to: '/lit-progression' },
   { label: 'LCI Report', to: '/lci-report' },
   { label: 'Analytics', to: '/analytics' },
   { label: 'Insights', to: '/insights' },
@@ -21,9 +22,7 @@ const moreLinksBase = [
 ];
 
 /** Links only visible to specific users */
-const restrictedMoreLinks = [
-  { label: 'BJB Showcase', to: '/bjb-showcase', allowedUsers: ['wdaust', 'jbillingsley'] },
-];
+const restrictedMoreLinks: { label: string; to: string; allowedUsers: string[] }[] = [];
 
 export function TopNavBar() {
   const [mobileOpen, setMobileOpen] = useState(false);

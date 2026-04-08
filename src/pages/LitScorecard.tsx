@@ -59,8 +59,6 @@ const SCORECARD_KPIS: KpiDef[] = [
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
-type Row = Record<string, unknown>;
-
 function parseDate(s: unknown): Date | null {
   if (typeof s !== 'string' || s === '-' || !s) return null;
   const d = new Date(s);
@@ -245,7 +243,7 @@ function computeKpisForAttorney(attorney: string, b: ReportBundle): KpiValues {
 
 // ─── Cell formatting ────────────────────────────────────────────────────────
 
-function formatValue(key: string, value: number | null, kpi: KpiDef): string {
+function formatValue(_key: string, value: number | null, kpi: KpiDef): string {
   if (value === null || value === undefined) return '—';
   switch (kpi.format) {
     case 'currency': return fmt$(value);
