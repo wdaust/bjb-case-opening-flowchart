@@ -313,8 +313,8 @@ function ScorecardTable({
     <div className="overflow-auto rounded-lg border border-border scorecard-scroll h-full">
       <table className="text-xs w-full" style={{ minWidth: SCORECARD_KPIS.length * 120 + 200 }}>
         <thead>
-          <tr className="border-b border-border bg-muted/50 sticky top-0 z-10">
-            <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 bg-muted/80 backdrop-blur z-20 min-w-[200px] border-r border-border">
+          <tr className="border-b border-border bg-muted sticky top-0 z-10">
+            <th className="text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky left-0 bg-muted z-20 min-w-[200px] border-r border-border">
               Attorney
             </th>
             {SCORECARD_KPIS.map(kpi => (
