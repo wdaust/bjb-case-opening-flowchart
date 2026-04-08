@@ -353,7 +353,8 @@ function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionab
 
   const daysArr = rows.map(r => {
     const v = r['Answer Date to Today'];
-    if (typeof v === 'number') return v;
+    const num = typeof v === 'number' ? v : Number(v);
+    if (!isNaN(num)) return num;
     const d = parseDate(r['Answer Filed'] as string);
     return d ? daysSinceToday(d) : null;
   }).filter((d): d is number => d != null);
@@ -374,13 +375,14 @@ function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionab
   const issues: ActionableIssue[] = rows
     .filter(r => {
       const v = r['Answer Date to Today'];
-      return typeof v === 'number' ? v > 60 : false;
+      const num = typeof v === 'number' ? v : Number(v);
+      return !isNaN(num) && num > 60;
     })
     .map(r => ({
       stage: 'Form A',
       description: `${r['Matter Name'] || 'Unknown'} — Form A past due`,
-      daysOverdue: (r['Answer Date to Today'] as number) ?? 0,
-      priority: ((r['Answer Date to Today'] as number) ?? 0) >= 90 ? 'red' as RagColor : 'amber' as RagColor,
+      daysOverdue: Number(r['Answer Date to Today']) || 0,
+      priority: (Number(r['Answer Date to Today']) || 0) >= 90 ? 'red' as RagColor : 'amber' as RagColor,
       suggestedAction: 'Serve Form A or follow up on attorney review',
     }));
 
@@ -395,8 +397,8 @@ function computeFormC(crossRefRows: Row[], tenDayRows: Row[], motionRows: Row[])
 
   const daysArr = crossRefRows.map(r => {
     const v = r['Answer Date to Today'];
-    if (typeof v === 'number') return v;
-    return null;
+    const num = typeof v === 'number' ? v : Number(v);
+    return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
 
   const cards: MetricCard[] = [
@@ -430,7 +432,11 @@ function computeFormC(crossRefRows: Row[], tenDayRows: Row[], motionRows: Row[])
 
 function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   const total = rows.length;
-  const daysArr = rows.map(r => r['Time from Filed Date'] ?? r['Time from Filed']).filter((v): v is number => typeof v === 'number');
+  const daysArr = rows.map(r => {
+    const v = r['Time from Filed Date'] ?? r['Time from Filed'];
+    const num = typeof v === 'number' ? v : Number(v);
+    return isNaN(num) ? null : num;
+  }).filter((d): d is number => d != null);
   const overdue180 = daysArr.filter(d => d >= 180).length;
   const scheduled = rows.filter(r => {
     const cd = r['Client Deposition'] ?? r['Client Depo Date'];
@@ -615,17 +621,20 @@ export function computePortfolioGauges(bundle: LdnReportBundle): Record<StageNam
 
   const formADays = filterLitOnly(bundle.formA?.detailRows ?? []).map(r => {
     const v = r['Answer Date to Today'];
-    return typeof v === 'number' ? v : null;
+    const num = typeof v === 'number' ? v : Number(v);
+    return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
 
   const formCDays = filterLitOnly(bundle.formC?.detailRows ?? []).map(r => {
     const v = r['Answer Date to Today'];
-    return typeof v === 'number' ? v : null;
+    const num = typeof v === 'number' ? v : Number(v);
+    return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
 
   const depDays = filterLitOnly(bundle.deps?.detailRows ?? []).map(r => {
     const v = r['Time from Filed Date'] ?? r['Time from Filed'];
-    return typeof v === 'number' ? v : null;
+    const num = typeof v === 'number' ? v : Number(v);
+    return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
 
   const dedDays = filterLitOnly(bundle.openLit?.detailRows ?? [])
@@ -791,7 +800,8 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     'Outstanding': identity,
     'Overdue 180+': (row) => {
       const v = row['Time from Filed Date'] ?? row['Time from Filed'];
-      return typeof v === 'number' && v >= 180;
+      const num = typeof v === 'number' ? v : Number(v);
+      return !isNaN(num) && num >= 180;
     },
     'Avg Days from Filed': identity,
     '% Scheduled': (row) => {

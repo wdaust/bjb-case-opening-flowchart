@@ -35,8 +35,19 @@ export function evaluateKpi(
   kpi: string,
   kpiType?: KpiType,
   kpiDirection?: KpiDirection,
+  isRock?: boolean,
 ): 'green' | 'red' | null {
-  if (!value?.trim() || !kpi?.trim() || !kpiDirection) return null;
+  const trimmed = value?.trim().toLowerCase();
+  if (!trimmed) return null;
+
+  // Rocks: simple on-track / off-track evaluation
+  if (isRock) {
+    if (trimmed === 'on track') return 'green';
+    if (trimmed === 'off track') return 'red';
+    return null;
+  }
+
+  if (!kpi?.trim() || !kpiDirection) return null;
   if (kpiType === 'text' || (!kpiType && !/^\d/.test(kpi.replace(/[^0-9.\-]/g, '')))) return null;
 
   const parseNum = (s: string) => parseFloat(s.replace(/[^0-9.\-]/g, ''));

@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { SectionHeader } from '../components/dashboard/SectionHeader.tsx';
-import { StatCard } from '../components/dashboard/StatCard.tsx';
-import { DashboardGrid } from '../components/dashboard/DashboardGrid.tsx';
 import { initDb, loadGenericSection, saveGenericSection } from '../utils/db.ts';
 import { ensureMosMigration } from '../utils/mosMigration.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
@@ -9,8 +7,9 @@ import { cn } from '../utils/cn.ts';
 import type { MeetingDef, MetricDef, MosMetricDefsData, MosContributorsData } from '../types/mos.ts';
 import { MEETINGS as FALLBACK_MEETINGS } from '../data/mosMeetings.ts';
 import {
-  CheckCircle, AlertCircle, Loader2, ChevronDown, ChevronRight, Target, Users, Plus, GripVertical, Trash2,
+  CheckCircle, AlertCircle, Loader2, ChevronDown, ChevronRight, Target, Users, Plus, GripVertical, Trash2, X, Layers, Settings,
 } from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover.tsx';
 import { ContributorManager } from '../components/mos/ContributorManager.tsx';
 import { InlineEdit } from '../components/mos/InlineEdit.tsx';
 import { ResponsibleDropdown } from '../components/mos/ResponsibleDropdown.tsx';
@@ -20,7 +19,7 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/core';
 import {
-  SortableContext, verticalListSortingStrategy, useSortable, arrayMove,
+  SortableContext, verticalListSortingStrategy, horizontalListSortingStrategy, useSortable, arrayMove,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
@@ -60,8 +59,10 @@ export function generateWeeks(count: number): string[] {
   return weeks;
 }
 
-const WEEKS = generateWeeks(17);
 const CURRENT_WEEK = getWeekKey(new Date());
+const DEFAULT_WEEK_COUNT = 17;
+
+type WeekConfig = { weekCount: number; hiddenWeeks: string[] };
 
 // ─── Merge-on-save hook ─────────────────────────────────────────────────────
 
@@ -159,6 +160,10 @@ export function ScorecardTable({
   onDeleteMetric,
   allResponsibles,
   onReorder,
+  onDeleteSection,
+  weeks,
+  hiddenWeeks,
+  onUnhideWeek,
 }: {
   meeting: MeetingDef;
   weeklyData: WeeklyData;
@@ -168,6 +173,10 @@ export function ScorecardTable({
   onDeleteMetric: (uid: string) => void;
   allResponsibles: string[];
   onReorder: (activeId: string, overId: string) => void;
+  onDeleteSection: (uid: string) => void;
+  weeks: string[];
+  hiddenWeeks: Set<string>;
+  onUnhideWeek?: (weekKey: string) => void;
 }) {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
@@ -195,7 +204,7 @@ export function ScorecardTable({
 
   return (
     <div className="overflow-x-auto rounded-lg border border-border">
-      <table className="text-xs w-full" style={{ minWidth: WEEKS.length * 80 + 400 + (isAdmin ? 24 : 0) }}>
+      <table className="text-xs w-full" style={{ minWidth: weeks.filter(w => !hiddenWeeks.has(w)).length * 80 + hiddenWeeks.size * 12 + 400 + (isAdmin ? 24 : 0) }}>
         <thead>
           <tr className="border-b border-border bg-muted/50 sticky top-0 z-10">
             {isAdmin && <th className="w-6 sticky left-0 bg-muted/50 z-20" />}
@@ -203,7 +212,16 @@ export function ScorecardTable({
             <th className={cn("text-left py-2 px-3 font-medium text-muted-foreground whitespace-nowrap sticky bg-muted/50 z-20 min-w-[240px]", stickyLeftOffset2)}>Metric</th>
             <th className="text-center py-2 px-3 font-medium text-muted-foreground whitespace-nowrap min-w-[70px]">KPI</th>
             {isAdmin && <th className="w-8" />}
-            {WEEKS.map(w => (
+            {weeks.map(w => hiddenWeeks.has(w) ? (
+              <th
+                key={w}
+                className="w-[12px] max-w-[12px] px-0 bg-muted/30 cursor-pointer group"
+                title={`Show ${getWeekLabel(w)}`}
+                onClick={() => onUnhideWeek?.(w)}
+              >
+                <div className="w-1 h-3 mx-auto rounded-full bg-muted-foreground/20 group-hover:bg-primary/50 transition-colors" />
+              </th>
+            ) : (
               <th
                 key={w}
                 className={cn(
@@ -225,7 +243,7 @@ export function ScorecardTable({
                   return (
                     <SortableRow key={m.uid} id={m.uid} isAdmin={isAdmin}>
                       <td
-                        colSpan={3 + WEEKS.length + (isAdmin ? 1 : 0)}
+                        colSpan={3 + weeks.length + (isAdmin ? 1 : 0)}
                         className="py-2.5 px-3 font-semibold text-primary text-xs cursor-pointer select-none"
                         onClick={() => setCollapsed(prev => ({ ...prev, [m.metric]: !prev[m.metric] }))}
                       >
@@ -237,6 +255,20 @@ export function ScorecardTable({
                               onSave={v => onMetricUpdate(m.uid, 'metric', v)}
                             />
                           ) : m.metric}
+                          {isAdmin && (
+                            <button
+                              onClick={e => {
+                                e.stopPropagation();
+                                if (window.confirm(`Delete section "${m.metric}" and all metrics under it?`)) {
+                                  onDeleteSection(m.uid);
+                                }
+                              }}
+                              className="text-muted-foreground/40 hover:text-red-400 transition-colors ml-2"
+                              title="Delete section and its metrics"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          )}
                         </span>
                       </td>
                     </SortableRow>
@@ -311,9 +343,12 @@ export function ScorecardTable({
                         </button>
                       </td>
                     )}
-                    {WEEKS.map(w => {
+                    {weeks.map(w => {
+                      if (hiddenWeeks.has(w)) {
+                        return <td key={w} className="w-[12px] max-w-[12px] px-0 bg-muted/20" />;
+                      }
                       const val = weeklyData[cellKey(w)] ?? '';
-                      const evaluation = evaluateKpi(val, m.kpi, m.kpiType, m.kpiDirection);
+                      const evaluation = evaluateKpi(val, m.kpi, m.kpiType, m.kpiDirection, m.isRock);
                       return (
                         <td
                           key={w}
@@ -324,19 +359,38 @@ export function ScorecardTable({
                             evaluation === 'red' && "bg-red-500/10",
                           )}
                         >
-                          <input
-                            type="text"
-                            value={val}
-                            onChange={e => onCellChange(cellKey(w), e.target.value)}
-                            className={cn(
-                              "w-full text-center text-xs py-1 px-1 rounded bg-transparent border border-transparent",
-                              "focus:border-primary/40 focus:bg-primary/5 focus:outline-none transition-colors",
-                              "hover:border-border",
-                              evaluation === 'green' && "text-green-400",
-                              evaluation === 'red' && "text-red-400",
-                            )}
-                            placeholder="—"
-                          />
+                          {m.isRock ? (
+                            <select
+                              value={val}
+                              onChange={e => onCellChange(cellKey(w), e.target.value)}
+                              className={cn(
+                                "w-full text-center text-xs py-1 px-0.5 rounded bg-transparent border border-transparent",
+                                "focus:border-primary/40 focus:bg-primary/5 focus:outline-none transition-colors",
+                                "hover:border-border cursor-pointer appearance-none",
+                                evaluation === 'green' && "text-green-400",
+                                evaluation === 'red' && "text-red-400",
+                                !val && "text-muted-foreground/40",
+                              )}
+                            >
+                              <option value="">—</option>
+                              <option value="On Track">On Track</option>
+                              <option value="Off Track">Off Track</option>
+                            </select>
+                          ) : (
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={e => onCellChange(cellKey(w), e.target.value)}
+                              className={cn(
+                                "w-full text-center text-xs py-1 px-1 rounded bg-transparent border border-transparent",
+                                "focus:border-primary/40 focus:bg-primary/5 focus:outline-none transition-colors",
+                                "hover:border-border",
+                                evaluation === 'green' && "text-green-400",
+                                evaluation === 'red' && "text-red-400",
+                              )}
+                              placeholder="—"
+                            />
+                          )}
                         </td>
                       );
                     })}
@@ -351,39 +405,34 @@ export function ScorecardTable({
   );
 }
 
-// ─── Summary KPIs for a meeting ──────────────────────────────────────────────
+// ─── Sortable Tab ────────────────────────────────────────────────────────────
 
-function MeetingSummary({ meeting, weeklyData }: { meeting: MeetingDef; weeklyData: WeeklyData }) {
-  let filledThisWeek = 0;
-  let totalMetrics = 0;
-  const responsibleSet = new Set<string>();
+function SortableTab({
+  id,
+  children,
+  disabled,
+}: {
+  id: string;
+  children: React.ReactNode;
+  disabled?: boolean;
+}) {
+  const {
+    attributes, listeners, setNodeRef, transform, transition, isDragging,
+  } = useSortable({ id, disabled });
 
-  meeting.metrics.forEach((m) => {
-    if (m.isSection) return;
-    totalMetrics++;
-    if (m.responsible) responsibleSet.add(m.responsible);
-    const key = `${meeting.id}:${m.uid}:${CURRENT_WEEK}`;
-    if (weeklyData[key]?.trim()) filledThisWeek++;
-  });
-
-  const rocks = meeting.metrics.filter(m => m.isRock).length;
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 30 : undefined,
+    opacity: isDragging ? 0.8 : undefined,
+  };
 
   return (
-    <DashboardGrid cols={4} className="mb-6">
-      <StatCard label="Team Members" value={responsibleSet.size} variant="glass" />
-      <StatCard label="Total Metrics" value={totalMetrics} variant="glass" />
-      <StatCard label="Rocks" value={rocks} variant="glass" />
-      <StatCard
-        label="This Week Completion"
-        value={`${filledThisWeek}/${totalMetrics}`}
-        delta={totalMetrics > 0 ? `${Math.round((filledThisWeek / totalMetrics) * 100)}%` : '0%'}
-        deltaType={filledThisWeek / totalMetrics > 0.7 ? 'positive' : 'negative'}
-        variant="glass"
-      />
-    </DashboardGrid>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      {children}
+    </div>
   );
 }
-
 
 // ─── Main page ───────────────────────────────────────────────────────────────
 
@@ -396,18 +445,20 @@ export default function MOS() {
   const [loaded, setLoaded] = useState(false);
   const [contributorManagerOpen, setContributorManagerOpen] = useState(false);
   const [contributorNames, setContributorNames] = useState<string[]>([]);
+  const [weekCount, setWeekCount] = useState(DEFAULT_WEEK_COUNT);
+  const [hiddenWeeks, setHiddenWeeks] = useState<Set<string>>(new Set());
   const changedKeysRef = useRef<Set<string>>(new Set());
   const metricSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const weekConfigSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const syncStatus = useMergeOnSave('mos-kpi-scorecard', weeklyData, changedKeysRef, loaded);
+
+  const weeks = useMemo(() => generateWeeks(weekCount), [weekCount]);
 
   useEffect(() => {
     (async () => {
       await initDb();
-      const TAB_ORDER = ['ryans-mtg', 'johns-mtg', 'marcs-mtg'];
-      const sortTabs = (arr: MeetingDef[]) =>
-        [...arr].sort((a, b) => (TAB_ORDER.indexOf(a.id) === -1 ? 999 : TAB_ORDER.indexOf(a.id)) - (TAB_ORDER.indexOf(b.id) === -1 ? 999 : TAB_ORDER.indexOf(b.id)));
       try {
-        const migrated = sortTabs(await ensureMosMigration());
+        const migrated = await ensureMosMigration();
         setMeetings(migrated);
         setActiveTab(migrated[0]?.id ?? '');
       } catch (err) {
@@ -429,6 +480,11 @@ export default function MOS() {
       if (contribData?.contributors) {
         setContributorNames(contribData.contributors.filter(c => c.active).map(c => c.displayName));
       }
+      const weekConfig = await loadGenericSection<WeekConfig>('mos-week-config');
+      if (weekConfig) {
+        if (weekConfig.weekCount >= 4 && weekConfig.weekCount <= 52) setWeekCount(weekConfig.weekCount);
+        if (weekConfig.hiddenWeeks?.length) setHiddenWeeks(new Set(weekConfig.hiddenWeeks));
+      }
       setLoaded(true);
     })();
   }, []);
@@ -437,6 +493,48 @@ export default function MOS() {
     changedKeysRef.current.add(key);
     setWeeklyData(prev => ({ ...prev, [key]: value }));
   }, []);
+
+  // Debounced save for week config changes
+  const saveWeekConfig = useCallback((wc: number, hw: Set<string>) => {
+    clearTimeout(weekConfigSaveTimerRef.current);
+    weekConfigSaveTimerRef.current = setTimeout(async () => {
+      await saveGenericSection<WeekConfig>('mos-week-config', {
+        weekCount: wc,
+        hiddenWeeks: Array.from(hw),
+      });
+    }, 800);
+  }, []);
+
+  const handleWeekCountChange = useCallback((val: number) => {
+    const clamped = Math.max(4, Math.min(52, val));
+    setWeekCount(clamped);
+    setHiddenWeeks(prev => {
+      // Remove hidden weeks that no longer exist in the new range
+      const newWeeks = new Set(generateWeeks(clamped));
+      const next = new Set([...prev].filter(w => newWeeks.has(w)));
+      saveWeekConfig(clamped, next);
+      return next;
+    });
+  }, [saveWeekConfig]);
+
+  const handleToggleWeekVisibility = useCallback((weekKey: string) => {
+    setHiddenWeeks(prev => {
+      const next = new Set(prev);
+      if (next.has(weekKey)) next.delete(weekKey);
+      else next.add(weekKey);
+      saveWeekConfig(weekCount, next);
+      return next;
+    });
+  }, [weekCount, saveWeekConfig]);
+
+  const handleUnhideWeek = useCallback((weekKey: string) => {
+    setHiddenWeeks(prev => {
+      const next = new Set(prev);
+      next.delete(weekKey);
+      saveWeekConfig(weekCount, next);
+      return next;
+    });
+  }, [weekCount, saveWeekConfig]);
 
   // Debounced save for metric def changes
   const saveMetricDefs = useCallback((updated: MeetingDef[]) => {
@@ -511,6 +609,104 @@ export default function MOS() {
     });
   }, [activeTab, saveMetricDefs]);
 
+  const handleAddSection = useCallback(() => {
+    setMeetings(prev => {
+      const updated = prev.map(m => {
+        if (m.id !== activeTab) return m;
+        const newSection: MetricDef = {
+          uid: crypto.randomUUID(),
+          responsible: '',
+          metric: 'New Section',
+          kpi: '',
+          isSection: true,
+          order: 0,
+        };
+        const reindexed = m.metrics.map(x => ({ ...x, order: x.order + 1 }));
+        return { ...m, metrics: [newSection, ...reindexed] };
+      });
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [activeTab, saveMetricDefs]);
+
+  const handleDeleteSection = useCallback((sectionUid: string) => {
+    setMeetings(prev => {
+      const updated = prev.map(m => {
+        if (m.id !== activeTab) return m;
+        const sectionIdx = m.metrics.findIndex(x => x.uid === sectionUid);
+        if (sectionIdx === -1) return m;
+        // Find the next section (or end of list)
+        let endIdx = m.metrics.length;
+        for (let i = sectionIdx + 1; i < m.metrics.length; i++) {
+          if (m.metrics[i].isSection) { endIdx = i; break; }
+        }
+        const filtered = m.metrics.filter((_, i) => i < sectionIdx || i >= endIdx);
+        return { ...m, metrics: filtered.map((x, i) => ({ ...x, order: i })) };
+      });
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [activeTab, saveMetricDefs]);
+
+  const handleAddTab = useCallback(() => {
+    setMeetings(prev => {
+      const newId = crypto.randomUUID();
+      const newMeeting: MeetingDef = {
+        id: newId,
+        label: 'New Meeting',
+        title: 'New Meeting',
+        subtitle: '',
+        metrics: [],
+      };
+      const updated = [...prev, newMeeting];
+      setActiveTab(newId);
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [saveMetricDefs]);
+
+  const handleRenameTab = useCallback((meetingId: string, newLabel: string) => {
+    setMeetings(prev => {
+      const updated = prev.map(m =>
+        m.id === meetingId ? { ...m, label: newLabel, title: newLabel } : m
+      );
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [saveMetricDefs]);
+
+  const handleDeleteTab = useCallback((meetingId: string) => {
+    setMeetings(prev => {
+      if (prev.length <= 1) return prev;
+      const meeting = prev.find(m => m.id === meetingId);
+      if (!meeting) return prev;
+      if (!window.confirm(`Delete "${meeting.label}"? All metrics and scorecard data for this meeting will be lost.`)) return prev;
+      const updated = prev.filter(m => m.id !== meetingId);
+      if (activeTab === meetingId) setActiveTab(updated[0]?.id ?? '');
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [activeTab, saveMetricDefs]);
+
+  const handleTabReorder = useCallback((activeId: string, overId: string) => {
+    setMeetings(prev => {
+      const oldIdx = prev.findIndex(m => m.id === activeId);
+      const newIdx = prev.findIndex(m => m.id === overId);
+      if (oldIdx === -1 || newIdx === -1) return prev;
+      const updated = arrayMove(prev, oldIdx, newIdx);
+      saveMetricDefs(updated);
+      return updated;
+    });
+  }, [saveMetricDefs]);
+
+  const [editingTabId, setEditingTabId] = useState<string | null>(null);
+  const [editingTabValue, setEditingTabValue] = useState('');
+
+  const tabSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor),
+  );
+
   const activeMeeting = meetings.find(m => m.id === activeTab);
 
   // Collect all unique responsible names across all meetings + contributors
@@ -548,12 +744,63 @@ export default function MOS() {
                 Rock
               </button>
               <button
+                onClick={handleAddSection}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-dashed border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+              >
+                <Layers size={14} />
+                Section
+              </button>
+              <button
                 onClick={() => setContributorManagerOpen(true)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
               >
                 <Users size={14} />
                 Contributors
               </button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    className="inline-flex items-center gap-1.5 px-2 py-1.5 text-xs font-medium rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                    title="Week settings"
+                  >
+                    <Settings size={14} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-72 p-3 space-y-3">
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1.5">Week Count</label>
+                    <input
+                      type="number"
+                      min={4}
+                      max={52}
+                      value={weekCount}
+                      onChange={e => handleWeekCountChange(parseInt(e.target.value) || DEFAULT_WEEK_COUNT)}
+                      className="w-full text-sm px-2 py-1.5 rounded-md bg-muted/50 border border-border focus:border-primary/40 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground block mb-1.5">Week Visibility</label>
+                    <div className="max-h-48 overflow-y-auto space-y-0.5 pr-1">
+                      {weeks.map(w => (
+                        <label key={w} className="flex items-center gap-2 py-0.5 px-1 rounded hover:bg-muted/50 cursor-pointer text-xs">
+                          <input
+                            type="checkbox"
+                            checked={!hiddenWeeks.has(w)}
+                            onChange={() => handleToggleWeekVisibility(w)}
+                            className="rounded border-border"
+                          />
+                          <span className={cn(
+                            w === CURRENT_WEEK && "text-primary font-medium",
+                          )}>
+                            {getWeekLabel(w)}
+                            {w === CURRENT_WEEK && " (current)"}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </>
           )}
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -565,24 +812,77 @@ export default function MOS() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-border">
-        {meetings.map(m => (
+      <div className="flex gap-1 border-b border-border items-end">
+        <DndContext sensors={tabSensors} collisionDetection={closestCenter} onDragEnd={e => {
+          const { active, over } = e;
+          if (over && active.id !== over.id) handleTabReorder(active.id as string, over.id as string);
+        }}>
+          <SortableContext items={meetings.map(m => m.id)} strategy={horizontalListSortingStrategy}>
+            {meetings.map(m => (
+              <SortableTab key={m.id} id={m.id} disabled={!isAdmin}>
+                <div
+                  className={cn(
+                    "group px-4 py-2.5 text-sm font-medium transition-colors relative flex items-center gap-1.5 cursor-pointer select-none",
+                    activeTab === m.id
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                  onClick={() => setActiveTab(m.id)}
+                  onDoubleClick={() => {
+                    if (!isAdmin) return;
+                    setEditingTabId(m.id);
+                    setEditingTabValue(m.label);
+                  }}
+                >
+                  {editingTabId === m.id ? (
+                    <input
+                      autoFocus
+                      value={editingTabValue}
+                      onChange={e => setEditingTabValue(e.target.value)}
+                      onBlur={() => {
+                        if (editingTabValue.trim()) handleRenameTab(m.id, editingTabValue.trim());
+                        setEditingTabId(null);
+                      }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                          if (editingTabValue.trim()) handleRenameTab(m.id, editingTabValue.trim());
+                          setEditingTabId(null);
+                        } else if (e.key === 'Escape') {
+                          setEditingTabId(null);
+                        }
+                      }}
+                      onClick={e => e.stopPropagation()}
+                      className="bg-transparent border border-primary/40 rounded px-1 py-0 text-sm font-medium outline-none w-28"
+                    />
+                  ) : (
+                    m.label
+                  )}
+                  {isAdmin && meetings.length > 1 && editingTabId !== m.id && (
+                    <button
+                      onClick={e => { e.stopPropagation(); handleDeleteTab(m.id); }}
+                      className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-red-400 transition-all"
+                      title="Delete meeting"
+                    >
+                      <X size={12} />
+                    </button>
+                  )}
+                  {activeTab === m.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t" />
+                  )}
+                </div>
+              </SortableTab>
+            ))}
+          </SortableContext>
+        </DndContext>
+        {isAdmin && (
           <button
-            key={m.id}
-            onClick={() => setActiveTab(m.id)}
-            className={cn(
-              "px-4 py-2.5 text-sm font-medium transition-colors relative",
-              activeTab === m.id
-                ? "text-primary"
-                : "text-muted-foreground hover:text-foreground",
-            )}
+            onClick={handleAddTab}
+            className="px-3 py-2.5 text-muted-foreground/50 hover:text-foreground transition-colors"
+            title="Add meeting tab"
           >
-            {m.label}
-            {activeTab === m.id && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t" />
-            )}
+            <Plus size={16} />
           </button>
-        ))}
+        )}
       </div>
 
       {/* Active meeting */}
@@ -598,8 +898,6 @@ export default function MOS() {
             <p className="text-xs text-muted-foreground mt-0.5">{activeMeeting.subtitle}</p>
           </div>
 
-          <MeetingSummary meeting={activeMeeting} weeklyData={weeklyData} />
-
           <ScorecardTable
             meeting={activeMeeting}
             weeklyData={weeklyData}
@@ -609,6 +907,10 @@ export default function MOS() {
             onDeleteMetric={handleDeleteMetric}
             allResponsibles={allResponsibles}
             onReorder={handleReorder}
+            onDeleteSection={handleDeleteSection}
+            weeks={weeks}
+            hiddenWeeks={hiddenWeeks}
+            onUnhideWeek={isAdmin ? handleUnhideWeek : undefined}
           />
         </div>
       ) : null}

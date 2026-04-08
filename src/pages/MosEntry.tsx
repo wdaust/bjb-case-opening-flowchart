@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { initDb, loadGenericSection, saveGenericSection } from '../utils/db.ts';
 import { ensureMosMigration } from '../utils/mosMigration.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import type { MeetingDef, MetricDef, MosMetricDefsData } from '../types/mos.ts';
-import { ScorecardTable } from './MOS.tsx';
+import { ScorecardTable, generateWeeks } from './MOS.tsx';
 import {
   CheckCircle, AlertCircle, Loader2,
 } from 'lucide-react';
@@ -61,6 +61,8 @@ export default function MosEntry() {
   const [loaded, setLoaded] = useState(false);
   const changedKeysRef = useRef<Set<string>>(new Set());
   const syncStatus = useMergeOnSave('mos-kpi-scorecard', weeklyData, changedKeysRef, loaded);
+  const defaultWeeks = useMemo(() => generateWeeks(17), []);
+  const emptyHidden = useMemo(() => new Set<string>(), []);
 
   useEffect(() => {
     (async () => {
@@ -151,6 +153,9 @@ export default function MosEntry() {
               onDeleteMetric={() => {}}
               allResponsibles={[]}
               onReorder={() => {}}
+              onDeleteSection={() => {}}
+              weeks={defaultWeeks}
+              hiddenWeeks={emptyHidden}
             />
           </div>
         ))
