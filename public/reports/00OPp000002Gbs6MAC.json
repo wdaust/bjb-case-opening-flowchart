@@ -1,0 +1,2299 @@
+{
+  "reportId": "00OPp000002Gbs6MAC",
+  "reportName": "Complaints Filed Monthly (YTD)",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Record Count",
+      "value": 319
+    }
+  ],
+  "groupings": [
+    {
+      "key": "0",
+      "label": "January 2026",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 112
+        }
+      ]
+    },
+    {
+      "key": "1",
+      "label": "February 2026",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 100
+        }
+      ]
+    },
+    {
+      "key": "2",
+      "label": "March 2026",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 87
+        }
+      ]
+    },
+    {
+      "key": "3",
+      "label": "April 2026",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 19
+        }
+      ]
+    },
+    {
+      "key": "4",
+      "label": "June 2026",
+      "aggregates": [
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": true,
+  "detailRows": [
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25101672187",
+      "PI Status": "Litigation",
+      "Display Name": "Marlo Ackerman | 10/8/2025 | NY Construction",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25090870453",
+      "PI Status": "Litigation",
+      "Display Name": "Tabatha Checksfield | 8/26/2025 | Animal Incident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25062467314",
+      "PI Status": "Litigation",
+      "Display Name": "Donald Flannery | 6/17/2025 | NY Construction",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25010853738",
+      "PI Status": "Litigation",
+      "Display Name": "Donna Hunter | 12/20/2024 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24061045041",
+      "PI Status": "Litigation",
+      "Display Name": "Luredean Bennett | 6/4/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25100371511",
+      "PI Status": "Litigation",
+      "Display Name": "Caroline Kowalchik | 10/1/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25090870461",
+      "PI Status": "Litigation",
+      "Display Name": "Joseph Bongiorno | 9/6/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25082069652",
+      "PI Status": "Litigation",
+      "Display Name": "Joseph Gerbino | 8/19/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25081769574",
+      "PI Status": "Litigation",
+      "Display Name": "Joyce Lee | 8/8/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25061767115",
+      "PI Status": "Litigation",
+      "Display Name": "Lisa Brown | 6/14/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25061066889",
+      "PI Status": "Litigation",
+      "Display Name": "Calvin A. McGrath | 5/9/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25042164985",
+      "PI Status": "Litigation",
+      "Display Name": "Carlos Argueta | 4/4/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25020354706",
+      "PI Status": "Litigation",
+      "Display Name": "Herma Elise Black | 1/23/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25020354705",
+      "PI Status": "Litigation",
+      "Display Name": "Janet Howard | 1/23/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25012854463",
+      "PI Status": "Litigation",
+      "Display Name": "Carolann Lane | 1/27/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25010353507",
+      "PI Status": "Litigation",
+      "Display Name": "Angie Boddy | 12/30/2024 | Premises Liability",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24101850447",
+      "PI Status": "Litigation",
+      "Display Name": "Emily Daprato | 10/8/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24072646547",
+      "PI Status": "Litigation",
+      "Display Name": "Ayesha Davis | 7/13/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24061745230",
+      "PI Status": "Litigation",
+      "Display Name": "Dina Patti | 6/12/2024 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24052244477",
+      "PI Status": "Litigation",
+      "Display Name": "Tiffany Renee Campbell | 5/20/2024 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24051344176",
+      "PI Status": "Litigation",
+      "Display Name": "Prince Ampadu | 5/10/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25022562878",
+      "PI Status": "Litigation",
+      "Display Name": "Maria Arnone | 2/20/2025 | Heavy Trucking Incident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25012254215",
+      "PI Status": "Litigation",
+      "Display Name": "Olukunle Owolabi Ajayi | 1/20/2025 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24123053343",
+      "PI Status": "Litigation",
+      "Display Name": "Vanessa Santiago-Verges | 12/28/2024 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24122353089",
+      "PI Status": "Litigation",
+      "Display Name": "Jeevitha Anthony | 12/22/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24122353090",
+      "PI Status": "Litigation",
+      "Display Name": "Elisha Muntazar | 12/22/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24101450212",
+      "PI Status": "Litigation",
+      "Display Name": "John Parliman | 10/12/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24082348012",
+      "PI Status": "Litigation",
+      "Display Name": "Maria Alejandra Urdiales Nuela | 8/16/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24061445167",
+      "PI Status": "Litigation",
+      "Display Name": "Gilberto Triguero | 6/3/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24041243337",
+      "PI Status": "Litigation",
+      "Display Name": "Jackie Yon | 4/9/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25091770766",
+      "PI Status": "Litigation",
+      "Display Name": "Xiaorui Lu | 9/8/2025 | Animal Incident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25071168095",
+      "PI Status": "Litigation",
+      "Display Name": "Cornelia Moyer | 4/25/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25062667449",
+      "PI Status": "Litigation",
+      "Display Name": "Portia Kissel | 6/18/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25032964079",
+      "PI Status": "Litigation",
+      "Display Name": "Carlos Beltran | 3/28/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24061845243",
+      "PI Status": "Litigation",
+      "Display Name": "Neina Susana Villegas Taylor | 6/3/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24121852962",
+      "PI Status": "Litigation",
+      "Display Name": "Susan Lanotte | 8/17/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24102550851",
+      "PI Status": "Litigation",
+      "Display Name": "Anthony Bruno | 8/30/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24102150491",
+      "PI Status": "Litigation",
+      "Display Name": "Patricia A. Gardocki-Schultz | 10/4/2024 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24080947302",
+      "PI Status": "Litigation",
+      "Display Name": "Jonathan Laboy | 8/3/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24062845581",
+      "PI Status": "Litigation",
+      "Display Name": "Godley Boulin | 6/2/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24062745486",
+      "PI Status": "Litigation",
+      "Display Name": "Joshua Persaud | 6/6/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24062745485",
+      "PI Status": "Litigation",
+      "Display Name": "Raviena Sukhra | 6/6/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25120174356",
+      "PI Status": "Litigation",
+      "Display Name": "Allyson C. Koch | 11/24/2025 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25072268351",
+      "PI Status": "Litigation",
+      "Display Name": "Kenneth Lazarte | 6/17/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25072168317",
+      "PI Status": "Litigation",
+      "Display Name": "Allen Shentu | 7/19/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25062567369",
+      "PI Status": "Litigation",
+      "Display Name": "Alfredo Ugalde | 6/15/2025 | Automobile Accident",
+      "Stage": "Ready for Demand"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25041164552",
+      "PI Status": "Litigation",
+      "Display Name": "Juan Sebastian Rincon Ramirez | 4/9/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25012154129",
+      "PI Status": "Litigation",
+      "Display Name": "Aileen Flores | 12/3/2024 | Automobile Accident",
+      "Stage": "Ready for Demand"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24111451603",
+      "PI Status": "Litigation",
+      "Display Name": "Kenneth Jhossuan Diaz Abrego | 7/17/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24111451602",
+      "PI Status": "Litigation",
+      "Display Name": "Nazareth Abigail Diaz Abrego | 7/17/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24102550887",
+      "PI Status": "Litigation",
+      "Display Name": "Tiago Barbosa | 10/22/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24070145603",
+      "PI Status": "Litigation",
+      "Display Name": "Mark Monroe | 6/28/2024 | Premises Liability",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25071668211",
+      "PI Status": "Litigation",
+      "Display Name": "Kirby Fisher | 7/14/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25061066893",
+      "PI Status": "Litigation",
+      "Display Name": "Ashley Arzu | 6/3/2025 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25052766259",
+      "PI Status": "Litigation",
+      "Display Name": "Peter Miller | 5/26/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25050865622",
+      "PI Status": "Litigation",
+      "Display Name": "Markiesha Newman | 4/24/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25031363500",
+      "PI Status": "Litigation",
+      "Display Name": "Tara Kellogg | 3/7/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25030163106",
+      "PI Status": "Litigation",
+      "Display Name": "Mejia Fantroy | 2/10/2025 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25022062745",
+      "PI Status": "Litigation",
+      "Display Name": "Mohammed Hossain | 2/19/2025 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25021555164",
+      "PI Status": "Litigation",
+      "Display Name": "Tina Hossain | 2/10/2025 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25011453962",
+      "PI Status": "Litigation",
+      "Display Name": "Katie Breitbeck | 12/12/2024 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24070845835",
+      "PI Status": "Litigation",
+      "Display Name": "Ernesto Espana Sagastume | 7/5/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25090270226",
+      "PI Status": "Litigation",
+      "Display Name": "Julio Pagan | 9/2/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25081869584",
+      "PI Status": "Litigation",
+      "Display Name": "Ahmad Abnoosi | 8/18/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25071868302",
+      "PI Status": "Litigation",
+      "Display Name": "Kasie Thomas | 7/7/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25060666858",
+      "PI Status": "Litigation",
+      "Display Name": "Johana Estefanía Quevedo Burbano | 6/3/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25020554781",
+      "PI Status": "Litigation",
+      "Display Name": "Ahmad Abnoosi | 2/4/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25011754098",
+      "PI Status": "Litigation",
+      "Display Name": "Robert Genovese | 1/16/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24120952490",
+      "PI Status": "Litigation",
+      "Display Name": "Joel Alexander | 12/8/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24120952484",
+      "PI Status": "Litigation",
+      "Display Name": "Yuron Cornneilous Henry Towns JR | 12/8/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24091048775",
+      "PI Status": "Litigation",
+      "Display Name": "Laura Soto | 9/10/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25012354247",
+      "PI Status": "Litigation",
+      "Display Name": "Sherene Williamson | 12/18/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25052866308",
+      "PI Status": "Litigation",
+      "Display Name": "Donghoon Kim | 5/25/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25042765211",
+      "PI Status": "Litigation",
+      "Display Name": "Noor Panjwani | 4/26/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24121552790",
+      "PI Status": "Litigation",
+      "Display Name": "Wilbert Ayala | 6/30/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24091849110",
+      "PI Status": "Litigation",
+      "Display Name": "Alicia Recko | 9/7/2024 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25071768278",
+      "PI Status": "Litigation",
+      "Display Name": "Catherine Calderon | 7/16/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25040764445",
+      "PI Status": "Litigation",
+      "Display Name": "Diana Simpler | 3/16/2025 | Premises Liability",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25021555166",
+      "PI Status": "Litigation",
+      "Display Name": "Aminata Conde | 2/12/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25081969607",
+      "PI Status": "Litigation",
+      "Display Name": "Brayan Klinkert | 8/18/2025 | Heavy Trucking Incident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25020554797",
+      "PI Status": "Litigation",
+      "Display Name": "Hector Castillo | 11/26/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24112251959",
+      "PI Status": "Litigation",
+      "Display Name": "Rexford Tetteh | 11/19/2024 | Heavy Trucking Incident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24103050975",
+      "PI Status": "Litigation",
+      "Display Name": "William Murawski | 10/29/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24092449361",
+      "PI Status": "Litigation",
+      "Display Name": "Jake Charles Smithline | 6/28/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25100971941",
+      "PI Status": "Litigation",
+      "Display Name": "Drishti Kalia | 9/29/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25100871862",
+      "PI Status": "Litigation",
+      "Display Name": "Priyam Sheth | 9/29/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25082770037",
+      "PI Status": "Litigation",
+      "Display Name": "Ruth Daly Sanchez Luciano | 8/22/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25080268882",
+      "PI Status": "Litigation",
+      "Display Name": "Stacey M. Streater | 12/19/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25073168813",
+      "PI Status": "Litigation",
+      "Display Name": "Michaelah Valentine | 7/29/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25051265763",
+      "PI Status": "Litigation",
+      "Display Name": "Phillip R. Burrowes | 3/25/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25040964478",
+      "PI Status": "Litigation",
+      "Display Name": "Liam Smith Lopez | 3/28/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25032864075",
+      "PI Status": "Litigation",
+      "Display Name": "Smith Lopez | 3/28/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25012154132",
+      "PI Status": "Litigation",
+      "Display Name": "Christine Burgess | 1/13/2025 | Premises Liability",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25010853758",
+      "PI Status": "Litigation",
+      "Display Name": "Yashira Diaz | 1/7/2025 | Premises Liability",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24090948728",
+      "PI Status": "Litigation",
+      "Display Name": "Joselin Perdomo | 9/3/2024 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-24071546039",
+      "PI Status": "Litigation",
+      "Display Name": "William Pena | 7/14/2024 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25091970896",
+      "PI Status": "Litigation",
+      "Display Name": "Christopher Bonomini | 7/24/2025 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25091670698",
+      "PI Status": "Litigation",
+      "Display Name": "George McKay | 9/14/2025 | Animal Incident",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25012254219",
+      "PI Status": "Litigation",
+      "Display Name": "Danielle Spressert | 12/24/2024 | Premises Liability",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25090970508",
+      "PI Status": "Litigation",
+      "Display Name": "Feliciano Velasquez Garcia | 9/1/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25043065294",
+      "PI Status": "Litigation",
+      "Display Name": "Juan Diego Rengifo Betancur | 4/29/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25012954485",
+      "PI Status": "Litigation",
+      "Display Name": "Smerlin Valentin | 1/28/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25032063730",
+      "PI Status": "Litigation",
+      "Display Name": "Pauline Egarr | 9/18/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-26011776723",
+      "PI Status": "Litigation",
+      "Display Name": "Michael Hardesty | 1/5/2026 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-26011676714",
+      "PI Status": "Litigation",
+      "Display Name": "Ashley Murphy | 1/5/2026 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-26010876269",
+      "PI Status": "Litigation",
+      "Display Name": "Andrew Paez | 1/5/2026 | Automobile Accident",
+      "Stage": "Written Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-26010876254",
+      "PI Status": "Litigation",
+      "Display Name": "Talisha Diller | 1/5/2026 | Premises Liability",
+      "Stage": "Written Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25062667472",
+      "PI Status": "Litigation",
+      "Display Name": "James Carlson | 6/20/2025 | Automobile Accident",
+      "Stage": "Deposition"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25051665932",
+      "PI Status": "Litigation",
+      "Display Name": "Kristina Timberlake | 3/25/2025 | Heavy Trucking Incident",
+      "Stage": "Written Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25102172336",
+      "PI Status": "Litigation",
+      "Display Name": "Vanessa Mathurin | 3/20/2024 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25021455160",
+      "PI Status": "Litigation",
+      "Display Name": "Denelia Ford | 2/13/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25112073930",
+      "PI Status": "Litigation",
+      "Display Name": "Jeannette Henderson | 3/1/2024 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25050965660",
+      "PI Status": "Litigation",
+      "Display Name": "Stacey Borders | 5/8/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24100749843",
+      "PI Status": "Litigation",
+      "Display Name": "Mollie Rothenberg | 10/6/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24080847277",
+      "PI Status": "Litigation",
+      "Display Name": "Moneffa Edwards Charles | 8/6/2024 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25010653675",
+      "PI Status": "Litigation",
+      "Display Name": "Washington SantaMaria | 12/26/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25080268870",
+      "PI Status": "Litigation",
+      "Display Name": "Bryan Germain | 7/25/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25050865628",
+      "PI Status": "Litigation",
+      "Display Name": "Yordanys Lazcano-Oquendo | 4/28/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25022062670",
+      "PI Status": "Litigation",
+      "Display Name": "Tisha C. Cathcart | 1/15/2025 | Automobile Accident",
+      "Stage": "Deps / Med Exams / Narratives"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25021955285",
+      "PI Status": "Litigation",
+      "Display Name": "Fatmire Qosaj | 3/6/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25012754447",
+      "PI Status": "Litigation",
+      "Display Name": "Wilson Garrido | 1/26/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24111551657",
+      "PI Status": "Litigation",
+      "Display Name": "Ivan Carbajo | 11/4/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24081247321",
+      "PI Status": "Litigation",
+      "Display Name": "Ayo Prisca Kolade | 8/10/2024 | Automobile Accident",
+      "Stage": "Litigation Review"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24051044156",
+      "PI Status": "Litigation",
+      "Display Name": "Victor Angomas Guerrero | 4/25/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24050844090",
+      "PI Status": "Litigation",
+      "Display Name": "Alejandro Aubreu | 4/25/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25092971310",
+      "PI Status": "Litigation",
+      "Display Name": "Richard Davis | 9/27/2025 | Automobile Accident",
+      "Stage": "Ready for Demand"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25092771267",
+      "PI Status": "Litigation",
+      "Display Name": "Devon Drayton | 9/21/2025 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25080769148",
+      "PI Status": "Litigation",
+      "Display Name": "Minh Pham | 8/4/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25070367736",
+      "PI Status": "Litigation",
+      "Display Name": "Nassir Thomas Washington | 5/15/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25051565926",
+      "PI Status": "Litigation",
+      "Display Name": "Maria Guadalupe Albarran Marquez | 5/15/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25050465430",
+      "PI Status": "Litigation",
+      "Display Name": "Lynderia Mansfield | 5/3/2025 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25021855232",
+      "PI Status": "Litigation",
+      "Display Name": "Michael Powell | 2/7/2025 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25020554834",
+      "PI Status": "Litigation",
+      "Display Name": "Elizabeth Figueroa Nunez | 2/4/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24122153040",
+      "PI Status": "Litigation",
+      "Display Name": "Kaya Frances Sanzone | 12/19/2024 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24110651329",
+      "PI Status": "Litigation",
+      "Display Name": "Joan Centeno Montemayor | 11/4/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24100449779",
+      "PI Status": "Litigation",
+      "Display Name": "Joshua Pratt | 10/2/2024 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24090548474",
+      "PI Status": "Litigation",
+      "Display Name": "Danielle Dibenedetto | 7/31/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24090448366",
+      "PI Status": "Litigation",
+      "Display Name": "Amah Kangni-Teyi | 8/26/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24012641064",
+      "PI Status": "Litigation",
+      "Display Name": "Andrea Schank | 1/10/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-26011276464",
+      "PI Status": "Litigation",
+      "Display Name": "Kendra Savage | 12/29/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25041164585",
+      "PI Status": "Litigation",
+      "Display Name": "Rosalyn Morales | 3/29/2025 | Premises Liability",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24072246308",
+      "PI Status": "Litigation",
+      "Display Name": "Jordyn A. Pappolla | 7/21/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24060344878",
+      "PI Status": "Litigation",
+      "Display Name": "Alexandra Terrero | 6/1/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25111473610",
+      "PI Status": "Litigation",
+      "Display Name": "Antonee Hill | 1/23/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25081269285",
+      "PI Status": "Litigation",
+      "Display Name": "Edineide Batista-DaSilva | 7/13/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25062467360",
+      "PI Status": "Litigation",
+      "Display Name": "Kimberly Beggs | 5/30/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25053066457",
+      "PI Status": "Litigation",
+      "Display Name": "Stacey Mestre | 5/29/2025 | Premises Liability",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24102250544",
+      "PI Status": "Litigation",
+      "Display Name": "Sophia Lazo | 10/7/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24102250539",
+      "PI Status": "Litigation",
+      "Display Name": "Maria Yunga | 10/7/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24092349323",
+      "PI Status": "Litigation",
+      "Display Name": "John Ayala | 9/21/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24091148796",
+      "PI Status": "Litigation",
+      "Display Name": "Akram Khan Naizi | 9/8/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24072946642",
+      "PI Status": "Litigation",
+      "Display Name": "El-Habib Bouali | 7/29/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25100171393",
+      "PI Status": "Litigation",
+      "Display Name": "Gregory Robinson | 9/30/2025 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25093071313",
+      "PI Status": "Litigation",
+      "Display Name": "Vinaben Patel | 8/15/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25050665545",
+      "PI Status": "Litigation",
+      "Display Name": "Randy D. Rosario | 4/22/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25040964505",
+      "PI Status": "Litigation",
+      "Display Name": "Tia Tenesha Campbell | 4/2/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24111651664",
+      "PI Status": "Litigation",
+      "Display Name": "Eze Omar Sanabria | 11/12/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24111251501",
+      "PI Status": "Litigation",
+      "Display Name": "Renay Ebelle | 11/5/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24092049276",
+      "PI Status": "Litigation",
+      "Display Name": "Mustamirr Muslim | 9/18/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24072646560",
+      "PI Status": "Litigation",
+      "Display Name": "Luis Alberto Castillo Sala | 7/13/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24071646086",
+      "PI Status": "Litigation",
+      "Display Name": "Ratiba Lazizi | 7/14/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24070245638",
+      "PI Status": "Litigation",
+      "Display Name": "Madelyn Kim | 7/1/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25020954969",
+      "PI Status": "Litigation",
+      "Display Name": "Dawn Duren | 2/7/2025 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24122053013",
+      "PI Status": "Litigation",
+      "Display Name": "Nicholas Garcia | 12/20/2024 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24081647685",
+      "PI Status": "Litigation",
+      "Display Name": "Brianna Cooper | 8/10/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24081647681",
+      "PI Status": "Litigation",
+      "Display Name": "Anika Graham | 8/10/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24070545810",
+      "PI Status": "Litigation",
+      "Display Name": "Frankie Collins | 6/21/2024 | NY Construction",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25090870411",
+      "PI Status": "Litigation",
+      "Display Name": "Louise Valera | 9/6/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25033164132",
+      "PI Status": "Litigation",
+      "Display Name": "Juan David Cabrera Lavao | 3/24/2025 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25012854472",
+      "PI Status": "Litigation",
+      "Display Name": "Briyette Jean Charles | 1/27/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25011754095",
+      "PI Status": "Litigation",
+      "Display Name": "Antonia Genovese | 1/16/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24091048774",
+      "PI Status": "Litigation",
+      "Display Name": "Jocel Agustin Rodriguez | 9/10/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25051665976",
+      "PI Status": "Litigation",
+      "Display Name": "Victoria Dipaolo-Castelonia | 5/2/2025 | Animal Incident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25050965683",
+      "PI Status": "Litigation",
+      "Display Name": "Robin Rosales | 5/8/2025 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24080546934",
+      "PI Status": "Litigation",
+      "Display Name": "Michaela D. Lao | 7/31/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24072246301",
+      "PI Status": "Litigation",
+      "Display Name": "Dmeriah Cuavers | 6/12/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24052244449",
+      "PI Status": "Litigation",
+      "Display Name": "Alejandro Brito | 5/16/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25102272397",
+      "PI Status": "Litigation",
+      "Display Name": "Jooree Alnusairat | 9/30/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25060266522",
+      "PI Status": "Litigation",
+      "Display Name": "Brandon Holmes | 5/29/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25040964474",
+      "PI Status": "Litigation",
+      "Display Name": "Gail Bonilla | 4/6/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25040964473",
+      "PI Status": "Litigation",
+      "Display Name": "Kenneth Webster | 4/6/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24082348002",
+      "PI Status": "Litigation",
+      "Display Name": "Rigaudin Sanon | 8/22/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24082348001",
+      "PI Status": "Litigation",
+      "Display Name": "Sebastien Pierre | 8/22/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24110851458",
+      "PI Status": "Litigation",
+      "Display Name": "Daniel Santos Garcia | 7/18/2024 | Heavy Trucking Incident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24061945250",
+      "PI Status": "Litigation",
+      "Display Name": "Shadram Adjeisawh | 4/20/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25122275561",
+      "PI Status": "Litigation",
+      "Display Name": "Harold Serrano-Rueda | 12/11/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25091670725",
+      "PI Status": "Litigation",
+      "Display Name": "Harold Serrano-Rueda | 9/15/2025 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25022562890",
+      "PI Status": "Litigation",
+      "Display Name": "Jeffrey Pomaski | 1/24/2025 | Animal Incident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24091048781",
+      "PI Status": "Litigation",
+      "Display Name": "Boniface Udenta | 7/3/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24090748616",
+      "PI Status": "Litigation",
+      "Display Name": "Eileen Mroczek | 9/4/2024 | Animal Incident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24081347408",
+      "PI Status": "Litigation",
+      "Display Name": "Diana Lorena Bueno | 6/24/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25031463589",
+      "PI Status": "Litigation",
+      "Display Name": "Deja Fuller | 2/19/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25072168338",
+      "PI Status": "Litigation",
+      "Display Name": "Hajar Elidrissi Elbouzadi | 7/19/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25071868300",
+      "PI Status": "Litigation",
+      "Display Name": "Mary Ann Stevenson | 7/16/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25061066901",
+      "PI Status": "Litigation",
+      "Display Name": "Dariel Mena | 6/9/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25052866306",
+      "PI Status": "Litigation",
+      "Display Name": "Ewa Coura | 5/12/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25050765570",
+      "PI Status": "Litigation",
+      "Display Name": "Usman Shoukat | 5/5/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24031142437",
+      "PI Status": "Litigation",
+      "Display Name": "Jackson Todd | 2/13/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-26012176846",
+      "PI Status": "Litigation",
+      "Display Name": "Angie Gardner | 12/21/2025 | Automobile Accident",
+      "Stage": "Written Discovery"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-26010876267",
+      "PI Status": "Litigation",
+      "Display Name": "Hannah Goldman | 1/3/2026 | Automobile Accident",
+      "Stage": "Written Discovery"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25091670739",
+      "PI Status": "Litigation",
+      "Display Name": "Angel Lasha Bonner | 9/16/2025 | Automobile Accident",
+      "Stage": "Pleadings"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25063067590",
+      "PI Status": "Litigation",
+      "Display Name": "Fatimata Sy | 6/19/2025 | Automobile Accident",
+      "Stage": "Written Discovery"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25050165356",
+      "PI Status": "Litigation",
+      "Display Name": "Easter Smith | 4/24/2025 | Heavy Trucking Incident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25060566834",
+      "PI Status": "Litigation",
+      "Display Name": "Eman Zaki | 6/4/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24102950932",
+      "PI Status": "Litigation",
+      "Display Name": "Brittany Burkowski | 10/18/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-26020377438",
+      "PI Status": "Litigation",
+      "Display Name": "Bernadette Baldwin | 12/16/2021 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25123075928",
+      "PI Status": "Litigation",
+      "Display Name": "Rena Nelson-Burroughs | 12/26/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25120474641",
+      "PI Status": "Litigation",
+      "Display Name": "Ediel Rodriguez | 4/10/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25110773359",
+      "PI Status": "Litigation",
+      "Display Name": "Eric Endicott | 8/30/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25022562883",
+      "PI Status": "Litigation",
+      "Display Name": "Mark Washington | 2/17/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25051665972",
+      "PI Status": "Litigation",
+      "Display Name": "Marcella Bowles | 5/13/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-24052244456",
+      "PI Status": "Litigation",
+      "Display Name": "Bobi Jo Holes | 5/13/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25102472493",
+      "PI Status": "Litigation",
+      "Display Name": "Eloy Torres-Castellano | 10/6/2025 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25070267668",
+      "PI Status": "Litigation",
+      "Display Name": "Arial Harvey | 6/26/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25052866312",
+      "PI Status": "Litigation",
+      "Display Name": "Estate of Jean Cary Marsden | 3/7/2025 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24111551654",
+      "PI Status": "Litigation",
+      "Display Name": "Marcia Robinson | 9/30/2024 | Premises Liability",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-23070634767",
+      "PI Status": "Litigation",
+      "Display Name": "William Lewis | 6/24/2023 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25103172957",
+      "PI Status": "Litigation",
+      "Display Name": "Christopher Morante | 10/25/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25062067213",
+      "PI Status": "Litigation",
+      "Display Name": "Jolene DeFusco | 6/1/2025 | Premises Liability",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24122253041",
+      "PI Status": "Litigation",
+      "Display Name": "Misty Pancamo | 12/21/2024 | Premises Liability",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24111851698",
+      "PI Status": "Litigation",
+      "Display Name": "Victoria Iacovino | 11/16/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24102350631",
+      "PI Status": "Litigation",
+      "Display Name": "Hanif Boone | 10/4/2024 | Premises Liability",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24080546947",
+      "PI Status": "Litigation",
+      "Display Name": "Luisa Pena-Diaz | 7/15/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25013054612",
+      "PI Status": "Litigation",
+      "Display Name": "Cory Thomas | 1/23/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24031542599",
+      "PI Status": "Litigation",
+      "Display Name": "Frank Sollo | 3/14/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26031779498",
+      "PI Status": "Litigation",
+      "Display Name": "Josephine Nieves | 2/19/2026 | Product Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26031379267",
+      "PI Status": "Litigation",
+      "Display Name": "Estate of Delores Brady | 11/13/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26010275999",
+      "PI Status": "Litigation",
+      "Display Name": "John Lettieri | 1/1/2026 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25111873712",
+      "PI Status": "Litigation",
+      "Display Name": "Annika Brown | 11/13/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25111473559",
+      "PI Status": "Litigation",
+      "Display Name": "Charbel Solta | 8/14/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25092671253",
+      "PI Status": "Litigation",
+      "Display Name": "Harold Miller | 5/17/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25080869189",
+      "PI Status": "Litigation",
+      "Display Name": "Gerard Harreld | 8/6/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25111973812",
+      "PI Status": "Litigation",
+      "Display Name": "Maurice Brassell | 4/21/2025 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26021077798",
+      "PI Status": "Litigation",
+      "Display Name": "Babita Hira | 1/25/2026 | Premises Liability",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24083048305",
+      "PI Status": "Litigation",
+      "Display Name": "Ariel C. Kairu | 8/25/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24083048304",
+      "PI Status": "Litigation",
+      "Display Name": "Lakera Benjamin | 8/25/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24082948233",
+      "PI Status": "Litigation",
+      "Display Name": "Estate of Greg Vitulli | 8/24/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24112552059",
+      "PI Status": "Litigation",
+      "Display Name": "Teshell Elaine Ruffins Davis | 6/25/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25092571221",
+      "PI Status": "Litigation",
+      "Display Name": "Paulina Minjivar-Merlo | 9/13/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25032864066",
+      "PI Status": "Litigation",
+      "Display Name": "Kalaigh M Curtis Mostyn | 3/10/2025 | Premises Liability",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24121752902",
+      "PI Status": "Litigation",
+      "Display Name": "Saar Timsit | 11/22/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25080569053",
+      "PI Status": "Litigation",
+      "Display Name": "Gloria Jarrin | 8/4/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24061345143",
+      "PI Status": "Litigation",
+      "Display Name": "Arianne Townshend | 6/10/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24043043877",
+      "PI Status": "Litigation",
+      "Display Name": "Darice Sidra Gonzalez | 4/24/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25102372420",
+      "PI Status": "Litigation",
+      "Display Name": "Travis Flood | 10/2/2025 | Heavy Trucking Incident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25101271997",
+      "PI Status": "Litigation",
+      "Display Name": "Lino Rosario | 10/6/2025 | Heavy Trucking Incident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25080869197",
+      "PI Status": "Litigation",
+      "Display Name": "Shachee Neeraj Kumar | 7/29/2025 | Heavy Trucking Incident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25051365826",
+      "PI Status": "Litigation",
+      "Display Name": "Matthew Rodriguez | 3/20/2025 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24121352763",
+      "PI Status": "Litigation",
+      "Display Name": "Sade Baker | 12/12/2024 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25111373521",
+      "PI Status": "Litigation",
+      "Display Name": "Sara Navarro | 8/3/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24103051011",
+      "PI Status": "Litigation",
+      "Display Name": "Constantina Panicucci | 10/28/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24100349677",
+      "PI Status": "Litigation",
+      "Display Name": "Ramon Canales | 10/2/2024 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24062645465",
+      "PI Status": "Litigation",
+      "Display Name": "Ciro Soca | 6/20/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25100771826",
+      "PI Status": "Litigation",
+      "Display Name": "Madison Montgomery | 10/1/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25091670729",
+      "PI Status": "Litigation",
+      "Display Name": "Jeanne Idamise Marseille | 9/14/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25051465859",
+      "PI Status": "Litigation",
+      "Display Name": "Carmen Gonzalez De Fanjul | 4/14/2025 | Premises Liability",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25021355081",
+      "PI Status": "Litigation",
+      "Display Name": "Zyaire Jones | 2/1/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24120752469",
+      "PI Status": "Pre-Lit",
+      "Display Name": "Rosabella Geneus | 11/27/2024 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24120752468",
+      "PI Status": "Litigation",
+      "Display Name": "Gabriella Geneus | 11/27/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24113052187",
+      "PI Status": "Litigation",
+      "Display Name": "Emanuel McPhee | 11/28/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24100749851",
+      "PI Status": "Litigation",
+      "Display Name": "Kimberly Kelly | 9/23/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24083148308",
+      "PI Status": "Litigation",
+      "Display Name": "Shmiea Reid | 8/30/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24081847700",
+      "PI Status": "Litigation",
+      "Display Name": "Ruby A. Chavez | 8/17/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24071045918",
+      "PI Status": "Litigation",
+      "Display Name": "Mayjor Tripp | 6/10/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24061745202",
+      "PI Status": "Litigation",
+      "Display Name": "Isabella Borda | 6/11/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25080268883",
+      "PI Status": "Litigation",
+      "Display Name": "Mass Mbow | 7/28/2025 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25052866375",
+      "PI Status": "Litigation",
+      "Display Name": "Elvis Perez | 5/23/2025 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24091849108",
+      "PI Status": "Litigation",
+      "Display Name": "Sandro Caseneuve | 8/28/2024 | Animal Incident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24091148808",
+      "PI Status": "Litigation",
+      "Display Name": "Ryan Dinal | 9/10/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24082848128",
+      "PI Status": "Litigation",
+      "Display Name": "Anwar Smith | 8/21/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24081547561",
+      "PI Status": "Litigation",
+      "Display Name": "Dina Arthur | 6/28/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24080747139",
+      "PI Status": "Litigation",
+      "Display Name": "Linda Dixon | 7/21/2024 | Premises Liability",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25122275523",
+      "PI Status": "Litigation",
+      "Display Name": "Melissa Strickland | 12/16/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26012176839",
+      "PI Status": "Litigation",
+      "Display Name": "Dianna R Guinn | 1/10/2026 | Premises Liability",
+      "Stage": "Pleadings"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25062067219",
+      "PI Status": "Litigation",
+      "Display Name": "Timothy Findley Jr. | 6/19/2025 | Automobile Accident",
+      "Stage": "Pleadings"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25082569869",
+      "PI Status": "Litigation",
+      "Display Name": "Ronald Brooks | 8/14/2025 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25031063362",
+      "PI Status": "Litigation",
+      "Display Name": "Nyjah Mcdade | 3/8/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25021255057",
+      "PI Status": "Litigation",
+      "Display Name": "Clamy Succes | 2/6/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24120952519",
+      "PI Status": "Litigation",
+      "Display Name": "Chloe Judd | 12/4/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24120952517",
+      "PI Status": "Litigation",
+      "Display Name": "Thomas Judd | 12/4/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25080869188",
+      "PI Status": "Litigation",
+      "Display Name": "Donna Napolitan | 4/6/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26022378449",
+      "PI Status": "Litigation",
+      "Display Name": "Terri Winkle | 4/10/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26012677026",
+      "PI Status": "Litigation",
+      "Display Name": "Jose Rodriguez | 5/27/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26012376956",
+      "PI Status": "Litigation",
+      "Display Name": "Narcisco Trinidad | 4/10/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26012376954",
+      "PI Status": "Litigation",
+      "Display Name": "Cristian Trinaded | 4/10/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-26012376952",
+      "PI Status": "Litigation",
+      "Display Name": "Teresa Chavez | 4/10/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25051665996",
+      "PI Status": "Litigation",
+      "Display Name": "Denise Landry | 3/6/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24111751674",
+      "PI Status": "Litigation",
+      "Display Name": "Estate of Elaine Podlogar | 11/10/2024 | Premises Liability",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25031763607",
+      "PI Status": "Litigation",
+      "Display Name": "Tyerone Dixon | 3/5/2025 | Automobile Accident",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24011740729",
+      "PI Status": "Litigation",
+      "Display Name": "Christina Jonathan | 12/26/2023 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25110673253",
+      "PI Status": "Litigation",
+      "Display Name": "Ryan Sclafani | 10/27/2025 | Premises Liability",
+      "Stage": "Case Checkpoint"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25053066494",
+      "PI Status": "Litigation",
+      "Display Name": "LaKeisha Garnett | 5/16/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24082648068",
+      "PI Status": "Litigation",
+      "Display Name": "Alexander Riley | 5/4/2024 | Automobile Accident",
+      "Stage": "Discovery"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24072946694",
+      "PI Status": "Litigation",
+      "Display Name": "Michelle Williams | 7/15/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24062545439",
+      "PI Status": "Litigation",
+      "Display Name": "Anthony Stocks | 6/21/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24061145086",
+      "PI Status": "Litigation",
+      "Display Name": "Ulugbek Ganiev | 6/6/2024 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-25032663945",
+      "PI Status": "Litigation",
+      "Display Name": "Roxanne Anderson | 3/25/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24123153402",
+      "PI Status": "Litigation",
+      "Display Name": "Esther Joseph | 12/16/2024 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "March 2026",
+      "Matter: Matter Name": "MAT-24053044699",
+      "PI Status": "Litigation",
+      "Display Name": "Diane Foster | 3/22/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-26011376528",
+      "PI Status": "Litigation",
+      "Display Name": "Monica DeMartino | 1/10/2026 | Automobile Accident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25121975478",
+      "PI Status": "Litigation",
+      "Display Name": "Yoko Funasaka | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25082169686",
+      "PI Status": "Litigation",
+      "Display Name": "Maria Perpetua Ramirez | 8/17/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25041364674",
+      "PI Status": "Litigation",
+      "Display Name": "April Gould | 4/10/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25052866328",
+      "PI Status": "Litigation",
+      "Display Name": "Jamie McKnight | 5/27/2025 | Premises Liability",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25031963692",
+      "PI Status": "Litigation",
+      "Display Name": "Shahroze Naqvi | 3/16/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25031263435",
+      "PI Status": "Litigation",
+      "Display Name": "Angel Rodriguez | 3/10/2025 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24061245102",
+      "PI Status": "Litigation",
+      "Display Name": "Eduarda Machado | 6/9/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-26012977182",
+      "PI Status": "Litigation",
+      "Display Name": "Gazzie Glenn | 12/13/2025 | Premises Liability",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-26010776233",
+      "PI Status": "Litigation",
+      "Display Name": "Ronald Sunder | 12/13/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25122675753",
+      "PI Status": "Litigation",
+      "Display Name": "Rolfy Espinal | 12/15/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25093071361",
+      "PI Status": "Litigation",
+      "Display Name": "Anthony Oliveira | 8/29/2025 | Heavy Trucking Incident",
+      "Stage": "Accounts Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24101050052",
+      "PI Status": "Litigation",
+      "Display Name": "Josephine Lopez | 7/21/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24101550282",
+      "PI Status": "Litigation",
+      "Display Name": "Lilia Gonzalez-Ponce | 10/6/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24101550276",
+      "PI Status": "Litigation",
+      "Display Name": "Axel Gonzalez-Ponce | 10/6/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24101550275",
+      "PI Status": "Litigation",
+      "Display Name": "Alejandro Gonzalez-Ponce | 10/6/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24121352732",
+      "PI Status": "Litigation",
+      "Display Name": "Tracey Dunbar | 11/29/2024 | Automobile Accident",
+      "Stage": "C/F"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25081069212",
+      "PI Status": "Litigation",
+      "Display Name": "Rodger Oakes | 8/4/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25051966008",
+      "PI Status": "Litigation",
+      "Display Name": "Victoria Boyer | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "June 2026",
+      "Matter: Matter Name": "MAT-21111521959",
+      "PI Status": "Litigation",
+      "Display Name": "Lea Tribbey | 11/9/2021 | Automobile Accident",
+      "Stage": "Written Discovery"
+    }
+  ]
+}

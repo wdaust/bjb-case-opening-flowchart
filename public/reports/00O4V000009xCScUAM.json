@@ -1,0 +1,882 @@
+{
+  "reportId": "00O4V000009xCScUAM",
+  "reportName": "Unit Goals (Leaders)",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Sum of Annual Gross Settlements (LIT PI)",
+      "value": 35166827.53
+    },
+    {
+      "label": "Sum of % Toward Annual Gross Goal",
+      "value": 1247
+    },
+    {
+      "label": "Sum of Annual Gross Goal",
+      "value": 115883883
+    },
+    {
+      "label": "Sum of Annual Cases Settled (LIT PI)",
+      "value": 369
+    },
+    {
+      "label": "Sum of Monthly Gross Goal w Pacing",
+      "value": 10363864.7
+    }
+  ],
+  "groupings": [
+    {
+      "key": "0",
+      "label": "Chris Bradley",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 50000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 1
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 6500000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 1
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 714444.44
+        }
+      ]
+    },
+    {
+      "key": "1",
+      "label": "Mark Dumas",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 82500
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 2
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 750000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 2
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 81944.44
+        }
+      ]
+    },
+    {
+      "key": "2",
+      "label": "John Carucci",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 170000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 45
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 300000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 4
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 25000
+        }
+      ]
+    },
+    {
+      "key": "3",
+      "label": "Todd Greenwell",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 269340.76
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 26
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 575719
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 14
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 47976.58
+        }
+      ]
+    },
+    {
+      "key": "4",
+      "label": "Joel Moore",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 358400
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 408
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 85000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 19
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 7083.33
+        }
+      ]
+    },
+    {
+      "key": "5",
+      "label": "Eric Plantier",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 435000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 8
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 5500000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 7
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 562777.78
+        }
+      ]
+    },
+    {
+      "key": "6",
+      "label": "Ryan Veilleux",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 473000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 15
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 3000000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 10
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 282222.22
+        }
+      ]
+    },
+    {
+      "key": "7",
+      "label": "Raymond Carroll",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 532500
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 10
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 5085800
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 9
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 505922.22
+        }
+      ]
+    },
+    {
+      "key": "8",
+      "label": "Christopher Leeds",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 805400
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 0
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 2214427
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 22
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 246047.44
+        }
+      ]
+    },
+    {
+      "key": "9",
+      "label": "William Firth",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 845000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 24
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 3599262
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 14
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 302695.78
+        }
+      ]
+    },
+    {
+      "key": "10",
+      "label": "Stephen Mennella",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 928500
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 19
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 5000000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 13
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 449611.11
+        }
+      ]
+    },
+    {
+      "key": "11",
+      "label": "David Rehe",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 978500
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 20
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 5000000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 9
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 446833.33
+        }
+      ]
+    },
+    {
+      "key": "12",
+      "label": "Marc Borden",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 1035000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 16
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 6500000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 9
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 607222.22
+        }
+      ]
+    },
+    {
+      "key": "13",
+      "label": "Heath Murphy",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 1201250
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 12
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 4686003
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 48
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 457267
+        }
+      ]
+    },
+    {
+      "key": "14",
+      "label": "Mark Grodberg",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 1259000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 254
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 500000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 9
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 41666.67
+        }
+      ]
+    },
+    {
+      "key": "15",
+      "label": "Jason Richman",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 1425000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 32
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 4500000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 3
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 375000
+        }
+      ]
+    },
+    {
+      "key": "16",
+      "label": "Matthew Futerfas",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 1460000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 24
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 6000000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 18
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 510000
+        }
+      ]
+    },
+    {
+      "key": "17",
+      "label": "Gregory Shaffer",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 1535000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 26
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 6000000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 18
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 500000
+        }
+      ]
+    },
+    {
+      "key": "18",
+      "label": "Melissa Perrotta Marinelli",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 1630000
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 33
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 5000000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 20
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 416666.67
+        }
+      ]
+    },
+    {
+      "key": "19",
+      "label": "John VanDyken",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 2259500
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 37
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 6161022
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 25
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 513418.5
+        }
+      ]
+    },
+    {
+      "key": "20",
+      "label": "Lisa Lehrer",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 2279500
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 23
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 9960389
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 12
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 856209.89
+        }
+      ]
+    },
+    {
+      "key": "21",
+      "label": "Christopher Karounos",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 2495800
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 36
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 6700000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 15
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 558333.33
+        }
+      ]
+    },
+    {
+      "key": "22",
+      "label": "Paul A Krauss",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 2777500
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 46
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 6000000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 18
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 500000
+        }
+      ]
+    },
+    {
+      "key": "23",
+      "label": "Brian Lehrer",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 3789500
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 62
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 7266261
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 40
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 605521.75
+        }
+      ]
+    },
+    {
+      "key": "24",
+      "label": "Paul F Romano",
+      "aggregates": [
+        {
+          "label": "Sum of Annual Gross Settlements (LIT PI)",
+          "value": 6091636.77
+        },
+        {
+          "label": "Sum of % Toward Annual Gross Goal",
+          "value": 68
+        },
+        {
+          "label": "Sum of Annual Gross Goal",
+          "value": 9000000
+        },
+        {
+          "label": "Sum of Annual Cases Settled (LIT PI)",
+          "value": 10
+        },
+        {
+          "label": "Sum of Monthly Gross Goal w Pacing",
+          "value": 750000
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": true,
+  "detailRows": [
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Annual Gross Settlements (LIT PI)": "$6,091,636.77",
+      "% Toward Annual Gross Goal": "68%",
+      "Annual Gross Goal": "$9,000,000.00",
+      "Annual Cases Settled (LIT PI)": "10",
+      "Monthly Gross Goal w Pacing": "$750,000.00"
+    },
+    {
+      "_groupingLabel": "Chris Bradley",
+      "Annual Gross Settlements (LIT PI)": "$50,000.00",
+      "% Toward Annual Gross Goal": "1%",
+      "Annual Gross Goal": "$6,500,000.00",
+      "Annual Cases Settled (LIT PI)": "1",
+      "Monthly Gross Goal w Pacing": "$714,444.44"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer",
+      "Annual Gross Settlements (LIT PI)": "$3,789,500.00",
+      "% Toward Annual Gross Goal": "62%",
+      "Annual Gross Goal": "$7,266,261.00",
+      "Annual Cases Settled (LIT PI)": "40",
+      "Monthly Gross Goal w Pacing": "$605,521.75"
+    },
+    {
+      "_groupingLabel": "Mark Dumas",
+      "Annual Gross Settlements (LIT PI)": "$82,500.00",
+      "% Toward Annual Gross Goal": "2%",
+      "Annual Gross Goal": "$750,000.00",
+      "Annual Cases Settled (LIT PI)": "2",
+      "Monthly Gross Goal w Pacing": "$81,944.44"
+    },
+    {
+      "_groupingLabel": "Paul A Krauss",
+      "Annual Gross Settlements (LIT PI)": "$2,777,500.00",
+      "% Toward Annual Gross Goal": "46%",
+      "Annual Gross Goal": "$6,000,000.00",
+      "Annual Cases Settled (LIT PI)": "18",
+      "Monthly Gross Goal w Pacing": "$500,000.00"
+    },
+    {
+      "_groupingLabel": "John Carucci",
+      "Annual Gross Settlements (LIT PI)": "$170,000.00",
+      "% Toward Annual Gross Goal": "45%",
+      "Annual Gross Goal": "$300,000.00",
+      "Annual Cases Settled (LIT PI)": "4",
+      "Monthly Gross Goal w Pacing": "$25,000.00"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Annual Gross Settlements (LIT PI)": "$2,495,800.00",
+      "% Toward Annual Gross Goal": "36%",
+      "Annual Gross Goal": "$6,700,000.00",
+      "Annual Cases Settled (LIT PI)": "15",
+      "Monthly Gross Goal w Pacing": "$558,333.33"
+    },
+    {
+      "_groupingLabel": "Todd Greenwell",
+      "Annual Gross Settlements (LIT PI)": "$269,340.76",
+      "% Toward Annual Gross Goal": "26%",
+      "Annual Gross Goal": "$575,719.00",
+      "Annual Cases Settled (LIT PI)": "14",
+      "Monthly Gross Goal w Pacing": "$47,976.58"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Annual Gross Settlements (LIT PI)": "$2,279,500.00",
+      "% Toward Annual Gross Goal": "23%",
+      "Annual Gross Goal": "$9,960,389.00",
+      "Annual Cases Settled (LIT PI)": "12",
+      "Monthly Gross Goal w Pacing": "$856,209.89"
+    },
+    {
+      "_groupingLabel": "Joel Moore",
+      "Annual Gross Settlements (LIT PI)": "$358,400.00",
+      "% Toward Annual Gross Goal": "408%",
+      "Annual Gross Goal": "$85,000.00",
+      "Annual Cases Settled (LIT PI)": "19",
+      "Monthly Gross Goal w Pacing": "$7,083.33"
+    },
+    {
+      "_groupingLabel": "Eric Plantier",
+      "Annual Gross Settlements (LIT PI)": "$435,000.00",
+      "% Toward Annual Gross Goal": "8%",
+      "Annual Gross Goal": "$5,500,000.00",
+      "Annual Cases Settled (LIT PI)": "7",
+      "Monthly Gross Goal w Pacing": "$562,777.78"
+    },
+    {
+      "_groupingLabel": "Ryan Veilleux",
+      "Annual Gross Settlements (LIT PI)": "$473,000.00",
+      "% Toward Annual Gross Goal": "15%",
+      "Annual Gross Goal": "$3,000,000.00",
+      "Annual Cases Settled (LIT PI)": "10",
+      "Monthly Gross Goal w Pacing": "$282,222.22"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll",
+      "Annual Gross Settlements (LIT PI)": "$532,500.00",
+      "% Toward Annual Gross Goal": "10%",
+      "Annual Gross Goal": "$5,085,800.00",
+      "Annual Cases Settled (LIT PI)": "9",
+      "Monthly Gross Goal w Pacing": "$505,922.22"
+    },
+    {
+      "_groupingLabel": "Christopher Leeds",
+      "Annual Gross Settlements (LIT PI)": "$805,400.00",
+      "% Toward Annual Gross Goal": "-",
+      "Annual Gross Goal": "$2,214,427.00",
+      "Annual Cases Settled (LIT PI)": "22",
+      "Monthly Gross Goal w Pacing": "$246,047.44"
+    },
+    {
+      "_groupingLabel": "William Firth",
+      "Annual Gross Settlements (LIT PI)": "$845,000.00",
+      "% Toward Annual Gross Goal": "24%",
+      "Annual Gross Goal": "$3,599,262.00",
+      "Annual Cases Settled (LIT PI)": "14",
+      "Monthly Gross Goal w Pacing": "$302,695.78"
+    },
+    {
+      "_groupingLabel": "Jason Richman",
+      "Annual Gross Settlements (LIT PI)": "$1,425,000.00",
+      "% Toward Annual Gross Goal": "32%",
+      "Annual Gross Goal": "$4,500,000.00",
+      "Annual Cases Settled (LIT PI)": "3",
+      "Monthly Gross Goal w Pacing": "$375,000.00"
+    },
+    {
+      "_groupingLabel": "Mark Grodberg",
+      "Annual Gross Settlements (LIT PI)": "$1,259,000.00",
+      "% Toward Annual Gross Goal": "254%",
+      "Annual Gross Goal": "$500,000.00",
+      "Annual Cases Settled (LIT PI)": "9",
+      "Monthly Gross Goal w Pacing": "$41,666.67"
+    },
+    {
+      "_groupingLabel": "Heath Murphy",
+      "Annual Gross Settlements (LIT PI)": "$1,201,250.00",
+      "% Toward Annual Gross Goal": "12%",
+      "Annual Gross Goal": "$4,686,003.00",
+      "Annual Cases Settled (LIT PI)": "48",
+      "Monthly Gross Goal w Pacing": "$457,267.00"
+    },
+    {
+      "_groupingLabel": "Marc Borden",
+      "Annual Gross Settlements (LIT PI)": "$1,035,000.00",
+      "% Toward Annual Gross Goal": "16%",
+      "Annual Gross Goal": "$6,500,000.00",
+      "Annual Cases Settled (LIT PI)": "9",
+      "Monthly Gross Goal w Pacing": "$607,222.22"
+    },
+    {
+      "_groupingLabel": "Stephen Mennella",
+      "Annual Gross Settlements (LIT PI)": "$928,500.00",
+      "% Toward Annual Gross Goal": "19%",
+      "Annual Gross Goal": "$5,000,000.00",
+      "Annual Cases Settled (LIT PI)": "13",
+      "Monthly Gross Goal w Pacing": "$449,611.11"
+    },
+    {
+      "_groupingLabel": "David Rehe",
+      "Annual Gross Settlements (LIT PI)": "$978,500.00",
+      "% Toward Annual Gross Goal": "20%",
+      "Annual Gross Goal": "$5,000,000.00",
+      "Annual Cases Settled (LIT PI)": "9",
+      "Monthly Gross Goal w Pacing": "$446,833.33"
+    },
+    {
+      "_groupingLabel": "John VanDyken",
+      "Annual Gross Settlements (LIT PI)": "$2,259,500.00",
+      "% Toward Annual Gross Goal": "37%",
+      "Annual Gross Goal": "$6,161,022.00",
+      "Annual Cases Settled (LIT PI)": "25",
+      "Monthly Gross Goal w Pacing": "$513,418.50"
+    },
+    {
+      "_groupingLabel": "Melissa Perrotta Marinelli",
+      "Annual Gross Settlements (LIT PI)": "$1,630,000.00",
+      "% Toward Annual Gross Goal": "33%",
+      "Annual Gross Goal": "$5,000,000.00",
+      "Annual Cases Settled (LIT PI)": "20",
+      "Monthly Gross Goal w Pacing": "$416,666.67"
+    },
+    {
+      "_groupingLabel": "Gregory Shaffer",
+      "Annual Gross Settlements (LIT PI)": "$1,535,000.00",
+      "% Toward Annual Gross Goal": "26%",
+      "Annual Gross Goal": "$6,000,000.00",
+      "Annual Cases Settled (LIT PI)": "18",
+      "Monthly Gross Goal w Pacing": "$500,000.00"
+    },
+    {
+      "_groupingLabel": "Matthew Futerfas",
+      "Annual Gross Settlements (LIT PI)": "$1,460,000.00",
+      "% Toward Annual Gross Goal": "24%",
+      "Annual Gross Goal": "$6,000,000.00",
+      "Annual Cases Settled (LIT PI)": "18",
+      "Monthly Gross Goal w Pacing": "$510,000.00"
+    }
+  ]
+}

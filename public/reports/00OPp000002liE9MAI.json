@@ -1,0 +1,1259 @@
+{
+  "reportId": "00OPp000002liE9MAI",
+  "reportName": "Past Due Service",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Matter Count",
+      "value": 40
+    },
+    {
+      "label": "Record Count",
+      "value": 77
+    }
+  ],
+  "groupings": [
+    {
+      "key": "0",
+      "label": "Austin Qi",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 2
+        },
+        {
+          "label": "Record Count",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "key": "1",
+      "label": "Brian Lehrer",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 1
+        },
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "2",
+      "label": "Christopher Karounos",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 6
+        },
+        {
+          "label": "Record Count",
+          "value": 16
+        }
+      ]
+    },
+    {
+      "key": "3",
+      "label": "David Rehe",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 2
+        },
+        {
+          "label": "Record Count",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "key": "4",
+      "label": "Eric Plantier",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 2
+        },
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "5",
+      "label": "Joel Moore",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 1
+        },
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "6",
+      "label": "John VanDyken",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 4
+        },
+        {
+          "label": "Record Count",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "key": "7",
+      "label": "Lisa Lehrer",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 5
+        },
+        {
+          "label": "Record Count",
+          "value": 12
+        }
+      ]
+    },
+    {
+      "key": "8",
+      "label": "Mark Dumas",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 1
+        },
+        {
+          "label": "Record Count",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "key": "9",
+      "label": "Mark Grodberg",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 1
+        },
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "10",
+      "label": "Matthew Futerfas",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 1
+        },
+        {
+          "label": "Record Count",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "key": "11",
+      "label": "Paul A Krauss",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 2
+        },
+        {
+          "label": "Record Count",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "key": "12",
+      "label": "Paul F Romano",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 5
+        },
+        {
+          "label": "Record Count",
+          "value": 9
+        }
+      ]
+    },
+    {
+      "key": "13",
+      "label": "Raymond Carroll",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 1
+        },
+        {
+          "label": "Record Count",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "key": "14",
+      "label": "Stephen Mennella",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 1
+        },
+        {
+          "label": "Record Count",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "key": "15",
+      "label": "Todd Greenwell",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 3
+        },
+        {
+          "label": "Record Count",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "key": "16",
+      "label": "William Firth",
+      "aggregates": [
+        {
+          "label": "Matter Count",
+          "value": 2
+        },
+        {
+          "label": "Record Count",
+          "value": 3
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": true,
+  "detailRows": [
+    {
+      "_groupingLabel": "Todd Greenwell",
+      "Matter Name": "MAT-25050165356",
+      "Client Name": "Easter Smith",
+      "Defendant (Party Name)": "Clayton Homes",
+      "Case Type Name": "Heavy Trucking Incident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Todd Greenwell",
+      "Matter Name": "MAT-26011676714",
+      "Client Name": "Ashley Murphy",
+      "Defendant (Party Name)": "John Gatlin",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "2/26/2026",
+      "First Answer Filed - From Matter": "2/26/2026",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Todd Greenwell",
+      "Matter Name": "MAT-26011776723",
+      "Client Name": "Michael Hardesty",
+      "Defendant (Party Name)": "John Gatlin",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "2/26/2026",
+      "First Answer Filed - From Matter": "2/26/2026",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Stephen Mennella",
+      "Matter Name": "MAT-25081769574",
+      "Client Name": "Joyce Lee",
+      "Defendant (Party Name)": "5 Milton Ave LLC",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll",
+      "Matter Name": "MAT-24110851458",
+      "Client Name": "Daniel Santos Garcia",
+      "Defendant (Party Name)": "SWIFT HORSE TRANSPORT INC.",
+      "Case Type Name": "Heavy Trucking Incident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll",
+      "Matter Name": "MAT-24110851458",
+      "Client Name": "Daniel Santos Garcia",
+      "Defendant (Party Name)": "Guo Zukai",
+      "Case Type Name": "Heavy Trucking Incident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll",
+      "Matter Name": "MAT-24110851458",
+      "Client Name": "Daniel Santos Garcia",
+      "Defendant (Party Name)": "RTSL Inc.",
+      "Case Type Name": "Heavy Trucking Incident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Austin Qi",
+      "Matter Name": "MAT-24081347408",
+      "Client Name": "Diana Lorena Bueno",
+      "Defendant (Party Name)": "Yvonne Bolt",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Austin Qi",
+      "Matter Name": "MAT-24081347408",
+      "Client Name": "Diana Lorena Bueno",
+      "Defendant (Party Name)": "Cryenne Boltdefreitas",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Austin Qi",
+      "Matter Name": "MAT-25091670725",
+      "Client Name": "Harold Serrano-Rueda",
+      "Defendant (Party Name)": "Edwin Montesclaros",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Austin Qi",
+      "Matter Name": "MAT-25091670725",
+      "Client Name": "Harold Serrano-Rueda",
+      "Defendant (Party Name)": "Michael Ferraro",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Austin Qi",
+      "Matter Name": "MAT-25091670725",
+      "Client Name": "Harold Serrano-Rueda",
+      "Defendant (Party Name)": "Gerald Eglentowicz",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-24082348002",
+      "Client Name": "Rigaudin Sanon",
+      "Defendant (Party Name)": "Craig Belvin",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-24082348002",
+      "Client Name": "Rigaudin Sanon",
+      "Defendant (Party Name)": "State Farm Insurance Company (Claims)",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-25021555166",
+      "Client Name": "Aminata Conde",
+      "Defendant (Party Name)": "Dollar Tree Stores, Inc.",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-25021555166",
+      "Client Name": "Aminata Conde",
+      "Defendant (Party Name)": "Osborne Capital LLC",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-25040964474",
+      "Client Name": "Gail Bonilla",
+      "Defendant (Party Name)": "Christina Bonilla",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-25060266522",
+      "Client Name": "Brandon Holmes",
+      "Defendant (Party Name)": "Township of Maplewood",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-25071768278",
+      "Client Name": "Catherine Calderon",
+      "Defendant (Party Name)": "Target Kearny",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-25071768278",
+      "Client Name": "Catherine Calderon",
+      "Defendant (Party Name)": "DVL Kearny Holdings, LLC",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul F Romano",
+      "Matter Name": "MAT-25071768278",
+      "Client Name": "Catherine Calderon",
+      "Defendant (Party Name)": "Target Corporation",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer",
+      "Matter Name": "MAT-25062667449",
+      "Client Name": "Portia Kissel",
+      "Defendant (Party Name)": "Chris Llivicota-Guaman",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer",
+      "Matter Name": "MAT-25062667449",
+      "Client Name": "Portia Kissel",
+      "Defendant (Party Name)": "Erika Llivicota-Guaman",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Matthew Futerfas",
+      "Matter Name": "MAT-25050965660",
+      "Client Name": "Stacey Borders",
+      "Defendant (Party Name)": "Advance Auto Parts",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Matthew Futerfas",
+      "Matter Name": "MAT-25050965660",
+      "Client Name": "Stacey Borders",
+      "Defendant (Party Name)": "Joseph Leber",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul A Krauss",
+      "Matter Name": "MAT-24072246301",
+      "Client Name": "Dmeriah Cuavers",
+      "Defendant (Party Name)": "Let It Grow, Inc.",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul A Krauss",
+      "Matter Name": "MAT-25062467364",
+      "Client Name": "Omolade Olowa",
+      "Defendant (Party Name)": "Mamado Bah",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Paul A Krauss",
+      "Matter Name": "MAT-25062467364",
+      "Client Name": "Omolade Olowa",
+      "Defendant (Party Name)": "Nazir Cummings",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-24072946642",
+      "Client Name": "El-Habib Bouali",
+      "Defendant (Party Name)": "Krystal M. Gutierrez",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-24072946642",
+      "Client Name": "El-Habib Bouali",
+      "Defendant (Party Name)": "Melissa Neira",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-24072946642",
+      "Client Name": "El-Habib Bouali",
+      "Defendant (Party Name)": "Ismail Elatrache",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-24102250539",
+      "Client Name": "Maria Yunga",
+      "Defendant (Party Name)": "Eduardo Ortiz-Garcia",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-24102250544",
+      "Client Name": "Sophia Lazo",
+      "Defendant (Party Name)": "EDUARDO ORTIZ-GRACIA",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-24102550851",
+      "Client Name": "Anthony Bruno",
+      "Defendant (Party Name)": "Kenneth W. Johnson",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25053066457",
+      "Client Name": "Stacey Mestre",
+      "Defendant (Party Name)": "THE SHOPPES ON 57 LLC",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25053066457",
+      "Client Name": "Stacey Mestre",
+      "Defendant (Party Name)": "Mansfield Twp Dev LLC",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25053066457",
+      "Client Name": "Stacey Mestre",
+      "Defendant (Party Name)": "Town of Hackettstown - Department of Public Works",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25053066457",
+      "Client Name": "Stacey Mestre",
+      "Defendant (Party Name)": "Town of Hackettstown",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25053066457",
+      "Client Name": "Stacey Mestre",
+      "Defendant (Party Name)": "County of Warren",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25053066457",
+      "Client Name": "Stacey Mestre",
+      "Defendant (Party Name)": "COUNTY OF WARREN DEPARTMENT OF PUBLIC WORKS",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25053066457",
+      "Client Name": "Stacey Mestre",
+      "Defendant (Party Name)": "STATE OF NEW JERSEY DEPARTMENT OF LAW AND SAFETY",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25053066457",
+      "Client Name": "Stacey Mestre",
+      "Defendant (Party Name)": "State of New Jersey",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25081269285",
+      "Client Name": "Edineide Batista-DaSilva",
+      "Defendant (Party Name)": "Olaide E. Falae",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos",
+      "Matter Name": "MAT-25081269285",
+      "Client Name": "Edineide Batista-DaSilva",
+      "Defendant (Party Name)": "Victoria A. Falae",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "David Rehe",
+      "Matter Name": "MAT-24081247321",
+      "Client Name": "Ayo Prisca Kolade",
+      "Defendant (Party Name)": "Gilberto Avila Ventura",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "David Rehe",
+      "Matter Name": "MAT-24081247321",
+      "Client Name": "Ayo Prisca Kolade",
+      "Defendant (Party Name)": "Erik J. Gonzalez",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "David Rehe",
+      "Matter Name": "MAT-25050865628",
+      "Client Name": "Yordanys Lazcano-Oquendo",
+      "Defendant (Party Name)": "Kiesha Lovett",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "David Rehe",
+      "Matter Name": "MAT-25050865628",
+      "Client Name": "Yordanys Lazcano-Oquendo",
+      "Defendant (Party Name)": "State of New Jersey Department of the Treasury",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "David Rehe",
+      "Matter Name": "MAT-25050865628",
+      "Client Name": "Yordanys Lazcano-Oquendo",
+      "Defendant (Party Name)": "City of Trenton",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "David Rehe",
+      "Matter Name": "MAT-25050865628",
+      "Client Name": "Yordanys Lazcano-Oquendo",
+      "Defendant (Party Name)": "City of Trenton Public Works Department",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Eric Plantier",
+      "Matter Name": "MAT-25033164132",
+      "Client Name": "Juan David Cabrera Lavao",
+      "Defendant (Party Name)": "SPACIOUS STARKES",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Eric Plantier",
+      "Matter Name": "MAT-25071868302",
+      "Client Name": "Kasie Thomas",
+      "Defendant (Party Name)": "HART TIRE INCORPORATED",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Joel Moore",
+      "Matter Name": "MAT-25031963710",
+      "Client Name": "Dennis Hernandez",
+      "Defendant (Party Name)": "Tommy Lee Smith",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "John VanDyken",
+      "Matter Name": "MAT-25070367736",
+      "Client Name": "Nassir Thomas Washington",
+      "Defendant (Party Name)": "Richard Roman",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "John VanDyken",
+      "Matter Name": "MAT-25080769148",
+      "Client Name": "Minh Pham",
+      "Defendant (Party Name)": "Bryan Battaglia",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "John VanDyken",
+      "Matter Name": "MAT-25092771267",
+      "Client Name": "Devon Drayton",
+      "Defendant (Party Name)": "800 Radio Road LLC",
+      "Case Type Name": "Premises Liability",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "John VanDyken",
+      "Matter Name": "MAT-25092971310",
+      "Client Name": "Richard Davis",
+      "Defendant (Party Name)": "Thomas Hodgson",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-24070245638",
+      "Client Name": "Madelyn Kim",
+      "Defendant (Party Name)": "Antonio Chitic",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-24070245638",
+      "Client Name": "Madelyn Kim",
+      "Defendant (Party Name)": "Geico Insurance Company (Claims)",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-24072646560",
+      "Client Name": "Luis Alberto Castillo Sala",
+      "Defendant (Party Name)": "Alex D. Rodriguez Diaz",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-24072646560",
+      "Client Name": "Luis Alberto Castillo Sala",
+      "Defendant (Party Name)": "Allstate Insurance Company",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-25012154129",
+      "Client Name": "Aileen Flores",
+      "Defendant (Party Name)": "Jessica Rayburn",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "2/10/2026",
+      "First Answer Filed - From Matter": "2/10/2026",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-25012154129",
+      "Client Name": "Aileen Flores",
+      "Defendant (Party Name)": "Geico Insurance Company",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "2/10/2026",
+      "First Answer Filed - From Matter": "2/10/2026",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-25041164552",
+      "Client Name": "Juan Sebastian Rincon Ramirez",
+      "Defendant (Party Name)": "Jose Miguel Estevez Fernandez",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-25041164552",
+      "Client Name": "Juan Sebastian Rincon Ramirez",
+      "Defendant (Party Name)": "Lisa M. Debarbrie",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-25041164552",
+      "Client Name": "Juan Sebastian Rincon Ramirez",
+      "Defendant (Party Name)": "UBER TECHNOLOGIES, INC.",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-25041164552",
+      "Client Name": "Juan Sebastian Rincon Ramirez",
+      "Defendant (Party Name)": "RASIER LLC",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-25120174356",
+      "Client Name": "Allyson C. Koch",
+      "Defendant (Party Name)": "Pedro M. Siguencia Guzman",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-25120174356",
+      "Client Name": "Allyson C. Koch",
+      "Defendant (Party Name)": "MCIP Trucking, LLC",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Mark Dumas",
+      "Matter Name": "MAT-25031463589",
+      "Client Name": "Deja Fuller",
+      "Defendant (Party Name)": "New York City Transit Authority",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Mark Dumas",
+      "Matter Name": "MAT-25031463589",
+      "Client Name": "Deja Fuller",
+      "Defendant (Party Name)": "New York City MTA",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Mark Dumas",
+      "Matter Name": "MAT-25031463589",
+      "Client Name": "Deja Fuller",
+      "Defendant (Party Name)": "Manhattan & Bronx Surface Transit Operating Authority",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Mark Dumas",
+      "Matter Name": "MAT-25031463589",
+      "Client Name": "Deja Fuller",
+      "Defendant (Party Name)": "MTA BUS COMPANY",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "Mark Grodberg",
+      "Matter Name": "MAT-24102950932",
+      "Client Name": "Brittany Burkowski",
+      "Defendant (Party Name)": "Grace Coyle",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "William Firth",
+      "Matter Name": "MAT-24081647685",
+      "Client Name": "Brianna Cooper",
+      "Defendant (Party Name)": "JALEN MCGILL",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "William Firth",
+      "Matter Name": "MAT-25030163106",
+      "Client Name": "Mejia Fantroy",
+      "Defendant (Party Name)": "Capital District Transportation Authority",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    },
+    {
+      "_groupingLabel": "William Firth",
+      "Matter Name": "MAT-25030163106",
+      "Client Name": "Mejia Fantroy",
+      "Defendant (Party Name)": "Denny Dyal",
+      "Case Type Name": "Automobile Accident",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Service complete date": "-"
+    }
+  ]
+}

@@ -5,19 +5,19 @@
   "grandTotals": [
     {
       "label": "Unique Count of Matter ID",
-      "value": 15
+      "value": 16
     },
     {
       "label": "Average Time from Filed Date",
-      "value": 428.40909090909093
+      "value": 417.8695652173913
     },
     {
       "label": "Average Answer Date to Today",
-      "value": 342.5
+      "value": 334.5217391304348
     },
     {
       "label": "Average Form A Served to Today",
-      "value": 179.0909090909091
+      "value": 171.30434782608697
     }
   ],
   "groupings": [
@@ -137,19 +137,19 @@
       "aggregates": [
         {
           "label": "Unique Count of Matter ID",
-          "value": 5
+          "value": 6
         },
         {
           "label": "Average Time from Filed Date",
-          "value": 301.22222222222223
+          "value": 289.7
         },
         {
           "label": "Average Answer Date to Today",
-          "value": 235
+          "value": 227.4
         },
         {
           "label": "Average Form A Served to Today",
-          "value": 29.333333333333332
+          "value": 26.4
         }
       ]
     }
@@ -240,6 +240,23 @@
       "Time from Filed Date": "1,176",
       "Answer Date to Today": "1,153",
       "Form A Served to Today": "726"
+    },
+    {
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-25010953845",
+      "Matter ID": "a0LPp000008pMt7",
+      "Display Name": "Brian Polito | 12/30/2024 | Premises Liability",
+      "Active Stage": "Case Checkpoint",
+      "Discovery Tracker Name": "DIS-7662",
+      "Defendant (Party Name)": "Citizens Financial Group, Inc.",
+      "Active Defendant?": "Active",
+      "Complaint Filed Date": "10/8/2025",
+      "Answer Filed": "11/13/2025",
+      "Date Form A Sent to Attorney for Review": "3/13/2026",
+      "Client Deposition": "-",
+      "Form A Served": "3/17/2026",
+      "Time from Filed Date": "181",
+      "Answer Date to Today": "145",
+      "Form A Served to Today": "21"
     },
     {
       "_groupingLabel": "Dep Overdue [Overdue 180+ Days] > MAT-23022031054",
@@ -344,21 +361,21 @@
       "Form A Served to Today": "511"
     },
     {
-      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-25010953845",
-      "Matter ID": "a0LPp000008pMt7",
-      "Display Name": "Brian Polito | 12/30/2024 | Premises Liability",
+      "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-24081247325",
+      "Matter ID": "a0LPp00000613mp",
+      "Display Name": "Cheyenne Fitch | 8/5/2024 | Premises Liability",
       "Active Stage": "Case Checkpoint",
-      "Discovery Tracker Name": "DIS-7662",
-      "Defendant (Party Name)": "Citizens Financial Group, Inc.",
+      "Discovery Tracker Name": "DIS-7621",
+      "Defendant (Party Name)": "Aura Ventura",
       "Active Defendant?": "Active",
-      "Complaint Filed Date": "10/8/2025",
-      "Answer Filed": "11/13/2025",
-      "Date Form A Sent to Attorney for Review": "3/13/2026",
+      "Complaint Filed Date": "10/3/2025",
+      "Answer Filed": "10/30/2025",
+      "Date Form A Sent to Attorney for Review": "3/10/2026",
       "Client Deposition": "-",
-      "Form A Served": "3/17/2026",
-      "Time from Filed Date": "181",
-      "Answer Date to Today": "145",
-      "Form A Served to Today": "21"
+      "Form A Served": "4/7/2026",
+      "Time from Filed Date": "186",
+      "Answer Date to Today": "159",
+      "Form A Served to Today": "0"
     },
     {
       "_groupingLabel": "Not Due Yet 30-75 Days to Due Date > MAT-23080935836",

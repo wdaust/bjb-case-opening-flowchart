@@ -5,7 +5,7 @@
   "grandTotals": [
     {
       "label": "Average Date Assigned to Team to Today",
-      "value": 47.13934426229508
+      "value": 45.892561983471076
     },
     {
       "label": "Average Date Assigned to Team to Filed",
@@ -13,7 +13,7 @@
     },
     {
       "label": "Record Count",
-      "value": 122
+      "value": 121
     }
   ],
   "groupings": [
@@ -23,7 +23,7 @@
       "aggregates": [
         {
           "label": "Average Date Assigned to Team to Today",
-          "value": 8.878787878787879
+          "value": 8.371428571428572
         },
         {
           "label": "Average Date Assigned to Team to Filed",
@@ -31,7 +31,7 @@
         },
         {
           "label": "Record Count",
-          "value": 33
+          "value": 35
         }
       ]
     },
@@ -95,7 +95,7 @@
       "aggregates": [
         {
           "label": "Average Date Assigned to Team to Today",
-          "value": 72.23076923076923
+          "value": 72.91666666666667
         },
         {
           "label": "Average Date Assigned to Team to Filed",
@@ -103,7 +103,7 @@
         },
         {
           "label": "Record Count",
-          "value": 13
+          "value": 12
         }
       ]
     },
@@ -121,7 +121,7 @@
         },
         {
           "label": "Record Count",
-          "value": 2
+          "value": 1
         }
       ]
     },
@@ -149,7 +149,7 @@
       "aggregates": [
         {
           "label": "Average Date Assigned to Team to Today",
-          "value": 22.06451612903226
+          "value": 21.833333333333332
         },
         {
           "label": "Average Date Assigned to Team to Filed",
@@ -157,7 +157,7 @@
         },
         {
           "label": "Record Count",
-          "value": 31
+          "value": 30
         }
       ]
     }
@@ -657,6 +657,36 @@
       "Approx. Date of Accident": "6/29/2024",
       "Display Name": "Janet McKiernan | 6/29/2024 | Automobile Accident",
       "Open Date": "3/27/2026",
+      "Date Assigned to Team to Filed": "-"
+    },
+    {
+      "_groupingLabel": "15-30 Days to Due Date",
+      "Matter: Matter Name": "MAT-24092049267",
+      "Incident Date": "9/14/2024",
+      "PI Status": "Pre-Lit",
+      "Blocker to Filing Complaint": "-",
+      "Complaint Filed Date": "-",
+      "Date Assigned To Litigation Unit": "4/7/2026",
+      "Last Matter Team Change Date": "4/7/2026",
+      "Date Assigned to Team to Today": "0",
+      "Approx. Date of Accident": "9/14/2024",
+      "Display Name": "Greta Whitney | 9/14/2024 | Automobile Accident",
+      "Open Date": "9/20/2024",
+      "Date Assigned to Team to Filed": "-"
+    },
+    {
+      "_groupingLabel": "15-30 Days to Due Date",
+      "Matter: Matter Name": "MAT-24101050040",
+      "Incident Date": "10/1/2024",
+      "PI Status": "Pre-Lit",
+      "Blocker to Filing Complaint": "-",
+      "Complaint Filed Date": "-",
+      "Date Assigned To Litigation Unit": "4/7/2026",
+      "Last Matter Team Change Date": "4/7/2026",
+      "Date Assigned to Team to Today": "0",
+      "Approx. Date of Accident": "10/1/2024",
+      "Display Name": "Greta Whitney | 10/1/2024 | Automobile Accident",
+      "Open Date": "10/10/2024",
       "Date Assigned to Team to Filed": "-"
     },
     {
@@ -1396,21 +1426,6 @@
     },
     {
       "_groupingLabel": "Overdue 30-59",
-      "Matter: Matter Name": "MAT-26011376528",
-      "Incident Date": "1/10/2026",
-      "PI Status": "Pre-Lit",
-      "Blocker to Filing Complaint": "-",
-      "Complaint Filed Date": "-",
-      "Date Assigned To Litigation Unit": "2/2/2026",
-      "Last Matter Team Change Date": "2/2/2026",
-      "Date Assigned to Team to Today": "64",
-      "Approx. Date of Accident": "1/10/2026",
-      "Display Name": "Monica DeMartino | 1/10/2026 | Automobile Accident",
-      "Open Date": "1/13/2026",
-      "Date Assigned to Team to Filed": "-"
-    },
-    {
-      "_groupingLabel": "Overdue 30-59",
       "Matter: Matter Name": "MAT-25101572147",
       "Incident Date": "10/4/2025",
       "PI Status": "Pre-Lit",
@@ -1437,21 +1452,6 @@
       "Approx. Date of Accident": "10/17/2024",
       "Display Name": "Lateefah Hutchinson | 10/17/2024 | Premises Liability",
       "Open Date": "10/22/2024",
-      "Date Assigned to Team to Filed": "-"
-    },
-    {
-      "_groupingLabel": "Overdue 60-89",
-      "Matter: Matter Name": "MAT-25091070522",
-      "Incident Date": "8/20/2025",
-      "PI Status": "Pre-Lit",
-      "Blocker to Filing Complaint": "-",
-      "Complaint Filed Date": "-",
-      "Date Assigned To Litigation Unit": "12/23/2025",
-      "Last Matter Team Change Date": "12/23/2025",
-      "Date Assigned to Team to Today": "105",
-      "Approx. Date of Accident": "8/20/2025",
-      "Display Name": "Eric Leonard | 8/20/2025 | Automobile Accident",
-      "Open Date": "9/10/2025",
       "Date Assigned to Team to Filed": "-"
     },
     {
@@ -1527,21 +1527,6 @@
       "Approx. Date of Accident": "10/1/2025",
       "Display Name": "Joseph Gerbino | Premises Liability",
       "Open Date": "10/4/2025",
-      "Date Assigned to Team to Filed": "-"
-    },
-    {
-      "_groupingLabel": "Within 0-14 Days to Due Date",
-      "Matter: Matter Name": "MAT-25031263435",
-      "Incident Date": "3/10/2025",
-      "PI Status": "Pre-Lit",
-      "Blocker to Filing Complaint": "-",
-      "Complaint Filed Date": "-",
-      "Date Assigned To Litigation Unit": "3/9/2026",
-      "Last Matter Team Change Date": "3/9/2026",
-      "Date Assigned to Team to Today": "29",
-      "Approx. Date of Accident": "3/10/2025",
-      "Display Name": "Angel Rodriguez | 3/10/2025 | Automobile Accident",
-      "Open Date": "3/12/2025",
       "Date Assigned to Team to Filed": "-"
     },
     {

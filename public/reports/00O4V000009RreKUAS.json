@@ -5,23 +5,23 @@
   "grandTotals": [
     {
       "label": "Average Age in Litigation",
-      "value": 317.9353526220615
+      "value": 317.98415572657314
     },
     {
       "label": "Sum of Case Rating Midpoint",
-      "value": 195374500
+      "value": 195580000
     },
     {
       "label": "Sum of Historical True Value",
-      "value": 166985697.72
+      "value": 166861333.47
     },
     {
       "label": "Sum of Max Negotiation Offer",
-      "value": 27792558.56
+      "value": 27807558.56
     },
     {
       "label": "Record Count",
-      "value": 2212
+      "value": 2209
     }
   ],
   "groupings": [
@@ -57,7 +57,7 @@
       "aggregates": [
         {
           "label": "Average Age in Litigation",
-          "value": 66.2
+          "value": 60.18181818181818
         },
         {
           "label": "Sum of Case Rating Midpoint",
@@ -73,7 +73,7 @@
         },
         {
           "label": "Record Count",
-          "value": 20
+          "value": 22
         }
       ]
     },
@@ -147,7 +147,7 @@
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 1381732.66
+          "value": 1419232.66
         },
         {
           "label": "Record Count",
@@ -213,23 +213,23 @@
       "aggregates": [
         {
           "label": "Average Age in Litigation",
-          "value": 431.69767441860466
+          "value": 432.98823529411766
         },
         {
           "label": "Sum of Case Rating Midpoint",
-          "value": 11246000
+          "value": 11208000
         },
         {
           "label": "Sum of Historical True Value",
-          "value": 9749452.73
+          "value": 9704391.51
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 2089300
+          "value": 2014300
         },
         {
           "label": "Record Count",
-          "value": 86
+          "value": 85
         }
       ]
     },
@@ -329,7 +329,7 @@
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 1299325
+          "value": 1349325
         },
         {
           "label": "Record Count",
@@ -451,7 +451,7 @@
         },
         {
           "label": "Sum of Case Rating Midpoint",
-          "value": 2147000
+          "value": 2154500
         },
         {
           "label": "Sum of Historical True Value",
@@ -459,7 +459,7 @@
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 143897.09
+          "value": 168897.09
         },
         {
           "label": "Record Count",
@@ -485,7 +485,7 @@
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 137000
+          "value": 162000
         },
         {
           "label": "Record Count",
@@ -629,23 +629,23 @@
       "aggregates": [
         {
           "label": "Average Age in Litigation",
-          "value": 365.22727272727275
+          "value": 366.95402298850576
         },
         {
           "label": "Sum of Case Rating Midpoint",
-          "value": 7155500
+          "value": 7135000
         },
         {
           "label": "Sum of Historical True Value",
-          "value": 5857002.73
+          "value": 5832275.46
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 1284180
+          "value": 1249180
         },
         {
           "label": "Record Count",
-          "value": 88
+          "value": 87
         }
       ]
     },
@@ -737,7 +737,7 @@
         },
         {
           "label": "Sum of Case Rating Midpoint",
-          "value": 10712500
+          "value": 10887500
         },
         {
           "label": "Sum of Historical True Value",
@@ -837,23 +837,23 @@
       "aggregates": [
         {
           "label": "Average Age in Litigation",
-          "value": 204.06451612903226
+          "value": 205.15384615384616
         },
         {
           "label": "Sum of Case Rating Midpoint",
-          "value": 8512500
+          "value": 8497500
         },
         {
           "label": "Sum of Historical True Value",
-          "value": 6616145.92
+          "value": 6561570.16
         },
         {
           "label": "Sum of Max Negotiation Offer",
-          "value": 152523
+          "value": 140023
         },
         {
           "label": "Record Count",
-          "value": 93
+          "value": 91
         }
       ]
     },
@@ -889,11 +889,11 @@
       "aggregates": [
         {
           "label": "Average Age in Litigation",
-          "value": 464.13684210526316
+          "value": 469.0744680851064
         },
         {
           "label": "Sum of Case Rating Midpoint",
-          "value": 7975000
+          "value": 8071500
         },
         {
           "label": "Sum of Historical True Value",
@@ -905,7 +905,7 @@
         },
         {
           "label": "Record Count",
-          "value": 95
+          "value": 94
         }
       ]
     }
@@ -3571,26 +3571,6 @@
       "Historical True Value": "-",
       "Max Negotiation Offer": "-",
       "Date Assigned To Litigation Unit": "3/26/2026"
-    },
-    {
-      "_groupingLabel": "Matthew Futerfas > Pre-Lit",
-      "Client": "Monica DeMartino",
-      "Display Name": "Monica DeMartino | 1/10/2026 | Automobile Accident",
-      "Matter: Matter Name": "MAT-26011376528",
-      "Case Type": "Automobile Accident",
-      "Matter Case Rating": "C - 51k-100k",
-      "Active Stage": "Accounts Opening",
-      "Discovery End Date": "-",
-      "Age in Litigation": "-",
-      "Open Date": "1/13/2026",
-      "Complaint Filed Date": "-",
-      "Matter State": "NJ New Jersey",
-      "Statute of Limitations": "1/9/2028",
-      "Description": "Alex  and Fiancé Monica were broken down on Saturday night 1/10 in Atlantic city Nj  .  Alex says Monica was standing by side of car when DEF hit her. sever injuries and multiple SX . only thing is Alex  says they don't have good relationship with the co...",
-      "Case Rating Midpoint": "$75,500.00",
-      "Historical True Value": "-",
-      "Max Negotiation Offer": "$0.00",
-      "Date Assigned To Litigation Unit": "2/2/2026"
     },
     {
       "_groupingLabel": "Matthew Futerfas > Pre-Lit",
@@ -7069,7 +7049,7 @@
       "Description": "On January 28, 2025 Client slipped while at working at a Meathouse by the name of Benson J Donald located in Philadelphia, PA. He was assigned there through a temp agency by the name of Kay Enterprise. Incident happened due to company making him do a pro...",
       "Case Rating Midpoint": "$0.00",
       "Historical True Value": "-",
-      "Max Negotiation Offer": "-",
+      "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "-"
     },
     {
@@ -10429,7 +10409,7 @@
       "Description": "The SOL on any malpractice case against the prior lawyer is going to be May 16 of 2024.\r\n\r\nSo, basically, I think what is needed here is a new matter entitled Michael Puchalski vs. The Law Offices of James Dezao – Legal Malpractice matter with an onset d...",
       "Case Rating Midpoint": "$175,000.00",
       "Historical True Value": "$156,063",
-      "Max Negotiation Offer": "$0.00",
+      "Max Negotiation Offer": "$50,000.00",
       "Date Assigned To Litigation Unit": "3/6/2024"
     },
     {
@@ -10669,7 +10649,7 @@
       "Description": "D sideswipped\r\nUM?\r\n\r\nHerns C3-4 (annular tear), C6-7, bulges C4-5, C5-6, L3-4, L4-5, 1 lumbar injection, done tx (per john b boc call 9.30.25)",
       "Case Rating Midpoint": "$20,500.00",
       "Historical True Value": "$40,314",
-      "Max Negotiation Offer": "$0.00",
+      "Max Negotiation Offer": "-",
       "Date Assigned To Litigation Unit": "9/3/2025"
     },
     {
@@ -13631,6 +13611,46 @@
       "Historical True Value": "$180,900",
       "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "-"
+    },
+    {
+      "_groupingLabel": "Stephen Mennella > Litigation",
+      "Client": "John Underwood",
+      "Display Name": "John Underwood | 10/15/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22102028590",
+      "Case Type": "Automobile Accident",
+      "Matter Case Rating": "B - 101k-250k",
+      "Active Stage": "Deps / Med Exams / Narratives",
+      "Discovery End Date": "3/27/2026",
+      "Age in Litigation": "978",
+      "Open Date": "10/20/2022",
+      "Complaint Filed Date": "8/3/2023",
+      "Matter State": "NJ New Jersey",
+      "Statute of Limitations": "10/14/2024",
+      "Description": "Client was passenger in an Uber vehicle that rearended another vehicle. Client stated that the driver of the Uber exited the vehicel and spoke to the  drive rof the other vehicle, who said she was going to contact the police. The Uber driver got back int...",
+      "Case Rating Midpoint": "$175,000.00",
+      "Historical True Value": "$180,900",
+      "Max Negotiation Offer": "$470,000.00",
+      "Date Assigned To Litigation Unit": "-"
+    },
+    {
+      "_groupingLabel": "Stephen Mennella > Litigation",
+      "Client": "Aaron Joseph",
+      "Display Name": "Aaron Joseph | 10/31/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22110329011",
+      "Case Type": "Automobile Accident",
+      "Matter Case Rating": "C - 51k-100k",
+      "Active Stage": "Case Opening",
+      "Discovery End Date": "12/13/2024",
+      "Age in Litigation": "872",
+      "Open Date": "11/3/2022",
+      "Complaint Filed Date": "11/17/2023",
+      "Matter State": "NJ New Jersey",
+      "Statute of Limitations": "10/30/2024",
+      "Description": "**  PASSENGER IN WORK VAN**     Client works for Roto Rooter, he was a passenger. He was on his way to another job site and a tractor trailer hit another vehicle, that vehicle then went across a few lanes and his driver hit them\nC/O neck, knee",
+      "Case Rating Midpoint": "$75,500.00",
+      "Historical True Value": "$87,918",
+      "Max Negotiation Offer": "$15,000.00",
+      "Date Assigned To Litigation Unit": "8/10/2023"
     },
     {
       "_groupingLabel": "Raymond Carroll > Litigation",
@@ -16829,7 +16849,7 @@
       "Description": "-",
       "Case Rating Midpoint": "$7,500.00",
       "Historical True Value": "$7,500",
-      "Max Negotiation Offer": "-",
+      "Max Negotiation Offer": "$25,000.00",
       "Date Assigned To Litigation Unit": "10/21/2025"
     },
     {
@@ -16998,7 +17018,7 @@
       "Display Name": "Rena Nelson-Burroughs | 12/26/2024 | Automobile Accident",
       "Matter: Matter Name": "MAT-25123075928",
       "Case Type": "Automobile Accident",
-      "Matter Case Rating": "-",
+      "Matter Case Rating": "F - 0-15k",
       "Active Stage": "Case Opening",
       "Discovery End Date": "-",
       "Age in Litigation": "55",
@@ -17007,7 +17027,7 @@
       "Matter State": "OH Ohio",
       "Statute of Limitations": "12/25/2026",
       "Description": "Client driving on Mackie Road in Cincinatti when def was driving in the opposite direction hit the car in front of it, pushing the vehicle head-on into the client. c/o back (3rd, 4th, 5th vertebrae).",
-      "Case Rating Midpoint": "$0.00",
+      "Case Rating Midpoint": "$7,500.00",
       "Historical True Value": "-",
       "Max Negotiation Offer": "$9,058.00",
       "Date Assigned To Litigation Unit": "12/30/2025"
@@ -20794,6 +20814,26 @@
     },
     {
       "_groupingLabel": "John VanDyken > Litigation",
+      "Client": "Angel Rodriguez",
+      "Display Name": "Angel Rodriguez | 3/10/2025 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25031263435",
+      "Case Type": "Automobile Accident",
+      "Matter Case Rating": "B - 101k-250k",
+      "Active Stage": "Case Opening",
+      "Discovery End Date": "-",
+      "Age in Litigation": "0",
+      "Open Date": "3/12/2025",
+      "Complaint Filed Date": "4/7/2026",
+      "Matter State": "NJ New Jersey",
+      "Statute of Limitations": "3/9/2027",
+      "Description": "On March 10, 2025 client was driving on the Atlantic City Expressway in Sicklerville, NJ and was putting change in the toll booth and was suddenly struck in the rear.  Police responded to the accident scene.  \nC/O  Neck, Lower back,",
+      "Case Rating Midpoint": "$175,000.00",
+      "Historical True Value": "$175,000",
+      "Max Negotiation Offer": "$0.00",
+      "Date Assigned To Litigation Unit": "3/9/2026"
+    },
+    {
+      "_groupingLabel": "John VanDyken > Litigation",
       "Client": "Louise Harkins",
       "Display Name": "Louise Harkins | 1/14/2025 | Premises Liability",
       "Matter: Matter Name": "MAT-25031763632",
@@ -21134,46 +21174,6 @@
     },
     {
       "_groupingLabel": "Robert Davant > Pre-Lit",
-      "Client": "Victoria Boyer",
-      "Display Name": "Victoria Boyer | Premises Liability",
-      "Matter: Matter Name": "MAT-25051966008",
-      "Case Type": "Premises Liability",
-      "Matter Case Rating": "-",
-      "Active Stage": "Opening",
-      "Discovery End Date": "-",
-      "Age in Litigation": "-",
-      "Open Date": "5/19/2025",
-      "Complaint Filed Date": "-",
-      "Matter State": "PA Pennsylvania",
-      "Statute of Limitations": "-",
-      "Description": "Client was walking in the dark when she \"flew\" outside her slippers. Client tripped on her appt outside \nC/o:  Elbow pain / Hip pain / knee pain / Right elbow / right arm / right shoulder / back pain \napt report: they do not answer \nUrgent care: no / not...",
-      "Case Rating Midpoint": "$0.00",
-      "Historical True Value": "-",
-      "Max Negotiation Offer": "-",
-      "Date Assigned To Litigation Unit": "2/20/2026"
-    },
-    {
-      "_groupingLabel": "Robert Davant > Pre-Lit",
-      "Client": "Rodger Oakes",
-      "Display Name": "Rodger Oakes | 8/4/2025 | Premises Liability",
-      "Matter: Matter Name": "MAT-25081069212",
-      "Case Type": "Premises Liability",
-      "Matter Case Rating": "C - 51k-100k",
-      "Active Stage": "Opening",
-      "Discovery End Date": "-",
-      "Age in Litigation": "-",
-      "Open Date": "8/10/2025",
-      "Complaint Filed Date": "-",
-      "Matter State": "PA Pennsylvania",
-      "Statute of Limitations": "8/3/2027",
-      "Description": "Client was entering the parking lot, at the Dairy Queen, 779 N Center Ave, Somerset, PA 15501, on his electric scooter; and there was lip where his wheels got stuck and threw him over the handlebars.  Client went home and then went by ambulance to Conema...",
-      "Case Rating Midpoint": "$75,500.00",
-      "Historical True Value": "-",
-      "Max Negotiation Offer": "$0.00",
-      "Date Assigned To Litigation Unit": "-"
-    },
-    {
-      "_groupingLabel": "Robert Davant > Pre-Lit",
       "Client": "Kathleen Papp",
       "Display Name": "Kathleen Papp | 8/17/2025 | Premises Liability",
       "Matter: Matter Name": "MAT-25081969621",
@@ -21459,7 +21459,7 @@
       "Matter: Matter Name": "MAT-25030163096",
       "Case Type": "Premises Liability",
       "Matter Case Rating": "C - 51k-100k",
-      "Active Stage": "Deps / Med Exams / Narratives",
+      "Active Stage": "Arbitration / Settlement Conference",
       "Discovery End Date": "-",
       "Age in Litigation": "802",
       "Open Date": "3/1/2025",
@@ -21469,7 +21469,7 @@
       "Description": "S+F on ice\r\nR rotator cuff tear (injections)\r\nWorsening of lumbar and L hip sx",
       "Case Rating Midpoint": "$75,500.00",
       "Historical True Value": "$81,958",
-      "Max Negotiation Offer": "$20,000.00",
+      "Max Negotiation Offer": "$45,000.00",
       "Date Assigned To Litigation Unit": "3/11/2025"
     },
     {
@@ -23829,7 +23829,7 @@
       "Description": "MVA on 4/28 in Pennsauken, NJ client was proceeding thru intersection when hit by def who failed to stop at stop sign\nc/o neck, R knee",
       "Case Rating Midpoint": "$38,000.00",
       "Historical True Value": "-",
-      "Max Negotiation Offer": "-",
+      "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "1/9/2026"
     },
     {
@@ -24689,7 +24689,7 @@
       "Description": "On 1/23/25 client was involved in an accident caused by a PSE&G company van. It occurred around 8am where the sun is extremely bright, and due to the dried up snow on my windshield from it snowing the prior day it made it really hard to see the full stre...",
       "Case Rating Midpoint": "$38,000.00",
       "Historical True Value": "-",
-      "Max Negotiation Offer": "-",
+      "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "1/5/2026"
     },
     {
@@ -24856,26 +24856,6 @@
       "_groupingLabel": "Jason Richman > Pre-Lit",
       "Client": "Louise Rombaut",
       "Display Name": "Louise Rombaut | Premises Liability",
-      "Matter: Matter Name": "MAT-25030563204",
-      "Case Type": "Premises Liability",
-      "Matter Case Rating": "-",
-      "Active Stage": "Accounts Opening",
-      "Discovery End Date": "-",
-      "Age in Litigation": "-",
-      "Open Date": "3/5/2025",
-      "Complaint Filed Date": "-",
-      "Matter State": "NY New York",
-      "Statute of Limitations": "-",
-      "Description": "Client s/f fell twice the week on 2/24/25, first time on 2/24/25 & the second time was on 2/26/25. Monday 2/24/2025 our client s/f on black ice uneasy pavement stepped out of the apartment n crack/raise on the sidewalk.\nsidewalk is outside her apartment ...",
-      "Case Rating Midpoint": "$0.00",
-      "Historical True Value": "-",
-      "Max Negotiation Offer": "-",
-      "Date Assigned To Litigation Unit": "2/16/2026"
-    },
-    {
-      "_groupingLabel": "Jason Richman > Pre-Lit",
-      "Client": "Louise Rombaut",
-      "Display Name": "Louise Rombaut | Premises Liability",
       "Matter: Matter Name": "MAT-25022863092",
       "Case Type": "Premises Liability",
       "Matter Case Rating": "-",
@@ -24891,6 +24871,26 @@
       "Historical True Value": "-",
       "Max Negotiation Offer": "-",
       "Date Assigned To Litigation Unit": "3/26/2026"
+    },
+    {
+      "_groupingLabel": "Jason Richman > Pre-Lit",
+      "Client": "Louise Rombaut",
+      "Display Name": "Louise Rombaut | Premises Liability",
+      "Matter: Matter Name": "MAT-25030563204",
+      "Case Type": "Premises Liability",
+      "Matter Case Rating": "-",
+      "Active Stage": "Accounts Opening",
+      "Discovery End Date": "-",
+      "Age in Litigation": "-",
+      "Open Date": "3/5/2025",
+      "Complaint Filed Date": "-",
+      "Matter State": "NY New York",
+      "Statute of Limitations": "-",
+      "Description": "Client s/f fell twice the week on 2/24/25, first time on 2/24/25 & the second time was on 2/26/25. Monday 2/24/2025 our client s/f on black ice uneasy pavement stepped out of the apartment n crack/raise on the sidewalk.\nsidewalk is outside her apartment ...",
+      "Case Rating Midpoint": "$0.00",
+      "Historical True Value": "-",
+      "Max Negotiation Offer": "-",
+      "Date Assigned To Litigation Unit": "2/16/2026"
     },
     {
       "_groupingLabel": "Jason Richman > Pre-Lit",
@@ -26554,26 +26554,6 @@
     },
     {
       "_groupingLabel": "Ryan Veilleux > Litigation",
-      "Client": "John Egan",
-      "Display Name": "John Egan | 8/25/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24082848106",
-      "Case Type": "Premises Liability",
-      "Matter Case Rating": "F - 0-15k",
-      "Active Stage": "Case Opening",
-      "Discovery End Date": "-",
-      "Age in Litigation": "169",
-      "Open Date": "8/28/2024",
-      "Complaint Filed Date": "10/20/2025",
-      "Matter State": "CT Connecticut",
-      "Statute of Limitations": "8/1/2026",
-      "Description": "Client was injured on 8/25/24 as he walking into the bathroom, opened door handle, once he twisted the knob, the knob split into two pieces, fake diamond looking doorknob, broke into serrated glass and cut into his finger. Has not informed the homeowner ...",
-      "Case Rating Midpoint": "$7,500.00",
-      "Historical True Value": "$14,159",
-      "Max Negotiation Offer": "$5,000.00",
-      "Date Assigned To Litigation Unit": "8/8/2025"
-    },
-    {
-      "_groupingLabel": "Ryan Veilleux > Litigation",
       "Client": "Nicolas Adames Liriano",
       "Display Name": "Nicolas Adames Liriano | 8/13/2024 | Automobile Accident",
       "Matter: Matter Name": "MAT-24092849458",
@@ -26790,26 +26770,6 @@
       "Case Rating Midpoint": "$38,000.00",
       "Historical True Value": "$40,625",
       "Max Negotiation Offer": "$0.00",
-      "Date Assigned To Litigation Unit": "8/8/2025"
-    },
-    {
-      "_groupingLabel": "Ryan Veilleux > Litigation",
-      "Client": "Mary Howard",
-      "Display Name": "Mary Howard | 11/17/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24112552006",
-      "Case Type": "Automobile Accident",
-      "Matter Case Rating": "F - 0-15k",
-      "Active Stage": "Case Opening",
-      "Discovery End Date": "-",
-      "Age in Litigation": "140",
-      "Open Date": "11/24/2024",
-      "Complaint Filed Date": "11/18/2025",
-      "Matter State": "CT Connecticut",
-      "Statute of Limitations": "11/16/2026",
-      "Description": "Client was hit in the rear by def on Flanders Rd. Def fled the scene, but police were able to ID the driver. C/O: lower back pain",
-      "Case Rating Midpoint": "$7,500.00",
-      "Historical True Value": "$40,417",
-      "Max Negotiation Offer": "$7,500.00",
       "Date Assigned To Litigation Unit": "8/8/2025"
     },
     {
@@ -28414,26 +28374,6 @@
     },
     {
       "_groupingLabel": "Christopher Karounos > Litigation",
-      "Client": "Jamila Bey",
-      "Display Name": "Jamila Bey | 8/6/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24080847247",
-      "Case Type": "Premises Liability",
-      "Matter Case Rating": "D - 26k-50k",
-      "Active Stage": "Discovery",
-      "Discovery End Date": "6/13/2026",
-      "Age in Litigation": "322",
-      "Open Date": "8/8/2024",
-      "Complaint Filed Date": "5/20/2025",
-      "Matter State": "NJ New Jersey",
-      "Statute of Limitations": "8/5/2026",
-      "Description": "Target-1900 Deptford Center Rd, Deptford, NJ 08096\r\nClient stated she was walking in an isle at Target when a stack of chairs fell on her. Incident report was created.\r\nShe went to an urgent care and was recommended to go to the ER due to her head pain.\r...",
-      "Case Rating Midpoint": "$38,000.00",
-      "Historical True Value": "$45,061",
-      "Max Negotiation Offer": "$75,000.00",
-      "Date Assigned To Litigation Unit": "2/12/2025"
-    },
-    {
-      "_groupingLabel": "Christopher Karounos > Litigation",
       "Client": "Jonathan Laboy",
       "Display Name": "Jonathan Laboy | 8/3/2024 | Automobile Accident",
       "Matter: Matter Name": "MAT-24080947302",
@@ -29994,26 +29934,6 @@
     },
     {
       "_groupingLabel": "Matthew Futerfas > Litigation",
-      "Client": "Davene Grover",
-      "Display Name": "Davene Grover | 12/12/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24010440279",
-      "Case Type": "Automobile Accident",
-      "Matter Case Rating": "E - 16k-25k",
-      "Active Stage": "Case Opening",
-      "Discovery End Date": "10/18/2026",
-      "Age in Litigation": "215",
-      "Open Date": "1/4/2024",
-      "Complaint Filed Date": "9/4/2025",
-      "Matter State": "NJ New Jersey",
-      "Statute of Limitations": "12/11/2025",
-      "Description": "Client was driving straight when traffic stopped and she was hit from behind. C/O neck, back, knee pain.",
-      "Case Rating Midpoint": "$20,500.00",
-      "Historical True Value": "$24,727",
-      "Max Negotiation Offer": "$35,000.00",
-      "Date Assigned To Litigation Unit": "6/12/2025"
-    },
-    {
-      "_groupingLabel": "Matthew Futerfas > Litigation",
       "Client": "Marta Rodriguez",
       "Display Name": "Marta Rodriguez | 12/9/2023 | Automobile Accident",
       "Matter: Matter Name": "MAT-24011140527",
@@ -30813,6 +30733,26 @@
       "Date Assigned To Litigation Unit": "1/26/2026"
     },
     {
+      "_groupingLabel": "Matthew Futerfas > Litigation",
+      "Client": "Monica DeMartino",
+      "Display Name": "Monica DeMartino | 1/10/2026 | Automobile Accident",
+      "Matter: Matter Name": "MAT-26011376528",
+      "Case Type": "Automobile Accident",
+      "Matter Case Rating": "C - 51k-100k",
+      "Active Stage": "Accounts Opening",
+      "Discovery End Date": "-",
+      "Age in Litigation": "0",
+      "Open Date": "1/13/2026",
+      "Complaint Filed Date": "4/7/2026",
+      "Matter State": "NJ New Jersey",
+      "Statute of Limitations": "1/9/2028",
+      "Description": "Alex  and Fiancé Monica were broken down on Saturday night 1/10 in Atlantic city Nj  .  Alex says Monica was standing by side of car when DEF hit her. sever injuries and multiple SX . only thing is Alex  says they don't have good relationship with the co...",
+      "Case Rating Midpoint": "$75,500.00",
+      "Historical True Value": "-",
+      "Max Negotiation Offer": "$0.00",
+      "Date Assigned To Litigation Unit": "2/2/2026"
+    },
+    {
       "_groupingLabel": "Paul A Krauss > Pre-Lit",
       "Client": "John Yachouh",
       "Display Name": "John Yachouh | 8/31/2025 | Premises Liability",
@@ -30898,7 +30838,7 @@
       "Display Name": "Ann Goodrich | Premises Liability",
       "Matter: Matter Name": "MAT-26012276924",
       "Case Type": "Premises Liability",
-      "Matter Case Rating": "-",
+      "Matter Case Rating": "B - 101k-250k",
       "Active Stage": "Case Opening",
       "Discovery End Date": "-",
       "Age in Litigation": "-",
@@ -30907,7 +30847,7 @@
       "Matter State": "NJ New Jersey",
       "Statute of Limitations": "-",
       "Description": "FA-Client had surgery at Garden State Surgery Center for a knee replacement, and was not assisted to the car when she tripped on the carpet and fell resulting in all the staples coming out of the surgical site and tearing her quadricepses tendon-emergenc...",
-      "Case Rating Midpoint": "$0.00",
+      "Case Rating Midpoint": "$175,000.00",
       "Historical True Value": "-",
       "Max Negotiation Offer": "-",
       "Date Assigned To Litigation Unit": "2/25/2026"
@@ -32549,7 +32489,7 @@
       "Description": "Client stated he was driving on 40st and as he is passing 8th st light was green for him when out of the sudden another car hit the client on the passenger side. def car was a police officer. Police to the scene - PR filled. Client stated police officer ...",
       "Case Rating Midpoint": "$0.00",
       "Historical True Value": "-",
-      "Max Negotiation Offer": "-",
+      "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "3/25/2026"
     },
     {
@@ -32651,6 +32591,46 @@
       "Historical True Value": "-",
       "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "3/20/2026"
+    },
+    {
+      "_groupingLabel": "Andrew Nirchio > Pre-Lit",
+      "Client": "Greta Whitney",
+      "Display Name": "Greta Whitney | 9/14/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24092049267",
+      "Case Type": "Automobile Accident",
+      "Matter Case Rating": "-",
+      "Active Stage": "Case Checkpoint",
+      "Discovery End Date": "-",
+      "Age in Litigation": "-",
+      "Open Date": "9/20/2024",
+      "Complaint Filed Date": "-",
+      "Matter State": "NJ New Jersey",
+      "Statute of Limitations": "9/13/2026",
+      "Description": "Client was involved in an MVA on 9/14/24 while driving her normal route home from work in Cranford, NJ. Client states she was on Commerce Dr with Atria Assisted Living on Jackson St to her right. She states she was on a double yellow line road, no traffi...",
+      "Case Rating Midpoint": "$0.00",
+      "Historical True Value": "-",
+      "Max Negotiation Offer": "$0.00",
+      "Date Assigned To Litigation Unit": "4/7/2026"
+    },
+    {
+      "_groupingLabel": "Andrew Nirchio > Pre-Lit",
+      "Client": "Greta Whitney",
+      "Display Name": "Greta Whitney | 10/1/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24101050040",
+      "Case Type": "Automobile Accident",
+      "Matter Case Rating": "-",
+      "Active Stage": "Case Checkpoint",
+      "Discovery End Date": "-",
+      "Age in Litigation": "-",
+      "Open Date": "10/10/2024",
+      "Complaint Filed Date": "-",
+      "Matter State": "NJ New Jersey",
+      "Statute of Limitations": "9/30/2026",
+      "Description": "MVA in Old Bridge NJ on 10/1 rear ended while stopped at red light\r\nc/o aggravated back, neck, shoulders \r\nemt transported to ER",
+      "Case Rating Midpoint": "$0.00",
+      "Historical True Value": "-",
+      "Max Negotiation Offer": "$0.00",
+      "Date Assigned To Litigation Unit": "4/7/2026"
     },
     {
       "_groupingLabel": "Andrew Nirchio > Pre-Lit",
@@ -35549,7 +35529,7 @@
       "Description": "S 2nd & Clinton Ave.  Commercial dump truck stuck the front driver's side door.  Plainfield PD filed PR.  Plainfield First Aid was on scene.  Next day, Perth Amboy Medical Center, Perth Amboy, NJ.  Told to follow up with PCP.  (Was passenger - Companion ...",
       "Case Rating Midpoint": "$38,000.00",
       "Historical True Value": "$46,032",
-      "Max Negotiation Offer": "$0.00",
+      "Max Negotiation Offer": "$15,000.00",
       "Date Assigned To Litigation Unit": "4/6/2024"
     },
     {
@@ -35569,7 +35549,7 @@
       "Description": "S 2nd & Clinton Ave. Commercial dump truck stuck the front driver's side door. Plainfield PD filed PR. Plainfield First Aid was on scene. Next day, Perth Amboy Medical Center, Perth Amboy, NJ. Told to follow up with PCP.  (Driver - Companion case with Ja...",
       "Case Rating Midpoint": "$38,000.00",
       "Historical True Value": "$46,032",
-      "Max Negotiation Offer": "$0.00",
+      "Max Negotiation Offer": "$22,500.00",
       "Date Assigned To Litigation Unit": "4/6/2024"
     },
     {
@@ -37609,7 +37589,7 @@
       "Description": "the case is for his son. He was playing around the house outside and there was a hole in the parking lot with a small cone over it. He was on his scooter, he fell in the hole and had a broken tooth and a stitch in his nose.  Client was playing with his f...",
       "Case Rating Midpoint": "$0.00",
       "Historical True Value": "-",
-      "Max Negotiation Offer": "-",
+      "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "2/24/2026"
     },
     {
@@ -37731,26 +37711,6 @@
       "Historical True Value": "-",
       "Max Negotiation Offer": "$12,000.00",
       "Date Assigned To Litigation Unit": "2/27/2026"
-    },
-    {
-      "_groupingLabel": "John VanDyken > Pre-Lit",
-      "Client": "Angel Rodriguez",
-      "Display Name": "Angel Rodriguez | 3/10/2025 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25031263435",
-      "Case Type": "Automobile Accident",
-      "Matter Case Rating": "B - 101k-250k",
-      "Active Stage": "Package Out",
-      "Discovery End Date": "-",
-      "Age in Litigation": "-",
-      "Open Date": "3/12/2025",
-      "Complaint Filed Date": "-",
-      "Matter State": "NJ New Jersey",
-      "Statute of Limitations": "3/9/2027",
-      "Description": "On March 10, 2025 client was driving on the Atlantic City Expressway in Sicklerville, NJ and was putting change in the toll booth and was suddenly struck in the rear.  Police responded to the accident scene.  \nC/O  Neck, Lower back,",
-      "Case Rating Midpoint": "$175,000.00",
-      "Historical True Value": "$175,000",
-      "Max Negotiation Offer": "$0.00",
-      "Date Assigned To Litigation Unit": "3/9/2026"
     },
     {
       "_groupingLabel": "John VanDyken > Pre-Lit",
@@ -38394,6 +38354,26 @@
     },
     {
       "_groupingLabel": "Robert Davant > Litigation",
+      "Client": "Victoria Boyer",
+      "Display Name": "Victoria Boyer | Premises Liability",
+      "Matter: Matter Name": "MAT-25051966008",
+      "Case Type": "Premises Liability",
+      "Matter Case Rating": "-",
+      "Active Stage": "Opening",
+      "Discovery End Date": "-",
+      "Age in Litigation": "0",
+      "Open Date": "5/19/2025",
+      "Complaint Filed Date": "4/7/2026",
+      "Matter State": "PA Pennsylvania",
+      "Statute of Limitations": "-",
+      "Description": "Client was walking in the dark when she \"flew\" outside her slippers. Client tripped on her appt outside \nC/o:  Elbow pain / Hip pain / knee pain / Right elbow / right arm / right shoulder / back pain \napt report: they do not answer \nUrgent care: no / not...",
+      "Case Rating Midpoint": "$0.00",
+      "Historical True Value": "-",
+      "Max Negotiation Offer": "-",
+      "Date Assigned To Litigation Unit": "2/20/2026"
+    },
+    {
+      "_groupingLabel": "Robert Davant > Litigation",
       "Client": "Ronald Stuckey",
       "Display Name": "Ronald Stuckey | 2/14/2024 | Heavy Trucking Incident",
       "Matter: Matter Name": "MAT-25052166138",
@@ -38408,6 +38388,26 @@
       "Statute of Limitations": "2/13/2026",
       "Description": "passenger in MVA on 2/14 in St. Mary's, PA driver was stopped with signal on waiting to turn into parking lot when rear ended by tractor trailer\nc/o neck, (surgery in 2004) back (double back surgery 2019), concussion\nclient went to ER\ntx with Pain specia...",
       "Case Rating Midpoint": "$38,000.00",
+      "Historical True Value": "-",
+      "Max Negotiation Offer": "$0.00",
+      "Date Assigned To Litigation Unit": "-"
+    },
+    {
+      "_groupingLabel": "Robert Davant > Litigation",
+      "Client": "Rodger Oakes",
+      "Display Name": "Rodger Oakes | 8/4/2025 | Premises Liability",
+      "Matter: Matter Name": "MAT-25081069212",
+      "Case Type": "Premises Liability",
+      "Matter Case Rating": "C - 51k-100k",
+      "Active Stage": "Opening",
+      "Discovery End Date": "-",
+      "Age in Litigation": "0",
+      "Open Date": "8/10/2025",
+      "Complaint Filed Date": "4/7/2026",
+      "Matter State": "PA Pennsylvania",
+      "Statute of Limitations": "8/3/2027",
+      "Description": "Client was entering the parking lot, at the Dairy Queen, 779 N Center Ave, Somerset, PA 15501, on his electric scooter; and there was lip where his wheels got stuck and threw him over the handlebars.  Client went home and then went by ambulance to Conema...",
+      "Case Rating Midpoint": "$75,500.00",
       "Historical True Value": "-",
       "Max Negotiation Offer": "$0.00",
       "Date Assigned To Litigation Unit": "-"

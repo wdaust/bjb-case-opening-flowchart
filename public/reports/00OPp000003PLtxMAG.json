@@ -35,7 +35,7 @@
       "aggregates": [
         {
           "label": "Record Count",
-          "value": 47
+          "value": 46
         }
       ]
     },
@@ -75,7 +75,7 @@
       "aggregates": [
         {
           "label": "Record Count",
-          "value": 29
+          "value": 30
         }
       ]
     },
@@ -1259,16 +1259,6 @@
       "Display Name": "John Lettieri | 1/1/2026 | Premises Liability",
       "Expert Party Status": "Received, Not Yet Served",
       "Report Requested Date": "3/30/2026",
-      "Last Follow-Up for Report Date": "-",
-      "Report Served Date": "-"
-    },
-    {
-      "_groupingLabel": "Brian Lehrer > CompuWeather Forensic Weather Experts",
-      "Expert Name": "Expert-2763",
-      "Matter Name": "MAT-26011276464",
-      "Display Name": "Kendra Savage | 12/29/2025 | Premises Liability",
-      "Expert Party Status": "Received, Not Yet Served",
-      "Report Requested Date": "-",
       "Last Follow-Up for Report Date": "-",
       "Report Served Date": "-"
     },
@@ -2887,7 +2877,7 @@
       "Expert Name": "Expert-1701",
       "Matter Name": "MAT-25010253501",
       "Display Name": "Jacquie Shogeke | 12/26/2024 | Premises Liability",
-      "Expert Party Status": "Yes, Needed, Not Requested",
+      "Expert Party Status": "Requested",
       "Report Requested Date": "-",
       "Last Follow-Up for Report Date": "-",
       "Report Served Date": "-"
@@ -3027,7 +3017,7 @@
       "Expert Name": "Expert-1702",
       "Matter Name": "MAT-25010253501",
       "Display Name": "Jacquie Shogeke | 12/26/2024 | Premises Liability",
-      "Expert Party Status": "Yes, Needed, Not Requested",
+      "Expert Party Status": "Requested",
       "Report Requested Date": "-",
       "Last Follow-Up for Report Date": "-",
       "Report Served Date": "-"
@@ -3198,6 +3188,16 @@
       "Matter Name": "MAT-24122853281",
       "Display Name": "Juan Urena | 10/23/2024 | Premises Liability",
       "Expert Party Status": "Yes, Needed, Not Requested",
+      "Report Requested Date": "-",
+      "Last Follow-Up for Report Date": "-",
+      "Report Served Date": "-"
+    },
+    {
+      "_groupingLabel": "Gregory Shaffer > Robert Kayal",
+      "Expert Name": "Expert-2279",
+      "Matter Name": "MAT-24092549401",
+      "Display Name": "Lisbeth Carrillo | 9/21/2024 | Automobile Accident",
+      "Expert Party Status": "Requested",
       "Report Requested Date": "-",
       "Last Follow-Up for Report Date": "-",
       "Report Served Date": "-"
@@ -3533,20 +3533,20 @@
       "Report Served Date": "-"
     },
     {
-      "_groupingLabel": "Gregory Shaffer > Kayal Orthopedic Center",
-      "Expert Name": "Expert-3620",
-      "Matter Name": "MAT-24092249288",
-      "Display Name": "Zoe Zapata | 9/21/2024 | Premises Liability",
-      "Expert Party Status": "Yes, Needed, Not Requested",
-      "Report Requested Date": "-",
+      "_groupingLabel": "Eric Plantier > Steven Waldman",
+      "Expert Name": "Expert-3975",
+      "Matter Name": "MAT-24120952490",
+      "Display Name": "Joel Alexander | 12/8/2024 | Automobile Accident",
+      "Expert Party Status": "Received, Not Yet Served",
+      "Report Requested Date": "4/6/2026",
       "Last Follow-Up for Report Date": "-",
       "Report Served Date": "-"
     },
     {
       "_groupingLabel": "Gregory Shaffer > Kayal Orthopedic Center",
-      "Expert Name": "Expert-2279",
-      "Matter Name": "MAT-24092549401",
-      "Display Name": "Lisbeth Carrillo | 9/21/2024 | Automobile Accident",
+      "Expert Name": "Expert-3620",
+      "Matter Name": "MAT-24092249288",
+      "Display Name": "Zoe Zapata | 9/21/2024 | Premises Liability",
       "Expert Party Status": "Yes, Needed, Not Requested",
       "Report Requested Date": "-",
       "Last Follow-Up for Report Date": "-",

@@ -5,11 +5,11 @@
   "grandTotals": [
     {
       "label": "Unique Count of Client Name",
-      "value": 110
+      "value": 109
     },
     {
       "label": "Record Count",
-      "value": 191
+      "value": 189
     }
   ],
   "groupings": [
@@ -103,11 +103,11 @@
       "aggregates": [
         {
           "label": "Unique Count of Client Name",
-          "value": 8
+          "value": 9
         },
         {
           "label": "Record Count",
-          "value": 16
+          "value": 17
         }
       ]
     },
@@ -145,11 +145,11 @@
       "aggregates": [
         {
           "label": "Unique Count of Client Name",
-          "value": 8
+          "value": 7
         },
         {
           "label": "Record Count",
-          "value": 11
+          "value": 10
         }
       ]
     },
@@ -173,11 +173,11 @@
       "aggregates": [
         {
           "label": "Unique Count of Client Name",
-          "value": 6
+          "value": 5
         },
         {
           "label": "Record Count",
-          "value": 9
+          "value": 7
         }
       ]
     },
@@ -1512,38 +1512,6 @@
     },
     {
       "_groupingLabel": "Raymond Carroll",
-      "Matter Name": "MAT-24103050975",
-      "Client Name": "William Murawski",
-      "Defendant (Party Name)": "Rostgaard Logistics LLC",
-      "Case Type Name": "Automobile Accident",
-      "Answer Filed": "-",
-      "All Answers Filed": "-",
-      "Prim. Defendant First Answer Filed": "-",
-      "First Answer Filed - From Matter": "-",
-      "Default Entered Date": "-",
-      "Active Defendant?": "Active",
-      "Defendant Deposition": "-",
-      "Service Date Complete": "2/2/2026",
-      "Service Default Date": "-"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll",
-      "Matter Name": "MAT-24103050975",
-      "Client Name": "William Murawski",
-      "Defendant (Party Name)": "Norberto Liranzo-Gomez",
-      "Case Type Name": "Automobile Accident",
-      "Answer Filed": "-",
-      "All Answers Filed": "-",
-      "Prim. Defendant First Answer Filed": "-",
-      "First Answer Filed - From Matter": "-",
-      "Default Entered Date": "-",
-      "Active Defendant?": "Active",
-      "Defendant Deposition": "-",
-      "Service Date Complete": "2/12/2026",
-      "Service Default Date": "-"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll",
       "Matter Name": "MAT-24110851458",
       "Client Name": "Daniel Santos Garcia",
       "Defendant (Party Name)": "Guo Zukai",
@@ -2637,7 +2605,7 @@
       "Defendant (Party Name)": "Aziz Elkeshiry",
       "Case Type Name": "Automobile Accident",
       "Answer Filed": "-",
-      "All Answers Filed": "-",
+      "All Answers Filed": "3/23/2025",
       "Prim. Defendant First Answer Filed": "3/23/2026",
       "First Answer Filed - From Matter": "3/23/2026",
       "Default Entered Date": "-",
@@ -2779,6 +2747,22 @@
       "Matter Name": "MAT-24083048305",
       "Client Name": "Ariel C. Kairu",
       "Defendant (Party Name)": "Lyft, Inc",
+      "Case Type Name": "Automobile Accident",
+      "Answer Filed": "-",
+      "All Answers Filed": "-",
+      "Prim. Defendant First Answer Filed": "-",
+      "First Answer Filed - From Matter": "-",
+      "Default Entered Date": "-",
+      "Active Defendant?": "Active",
+      "Defendant Deposition": "-",
+      "Service Date Complete": "3/20/2026",
+      "Service Default Date": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer",
+      "Matter Name": "MAT-24083048304",
+      "Client Name": "Lakera Benjamin",
+      "Defendant (Party Name)": "John Charles",
       "Case Type Name": "Automobile Accident",
       "Answer Filed": "-",
       "All Answers Filed": "-",
@@ -3140,22 +3124,6 @@
       "Active Defendant?": "Active",
       "Defendant Deposition": "-",
       "Service Date Complete": "3/6/2026",
-      "Service Default Date": "-"
-    },
-    {
-      "_groupingLabel": "Paul A Krauss",
-      "Matter Name": "MAT-25050965683",
-      "Client Name": "Robin Rosales",
-      "Defendant (Party Name)": "Luis A. Quinteros",
-      "Case Type Name": "Automobile Accident",
-      "Answer Filed": "-",
-      "All Answers Filed": "-",
-      "Prim. Defendant First Answer Filed": "4/3/2026",
-      "First Answer Filed - From Matter": "4/3/2026",
-      "Default Entered Date": "-",
-      "Active Defendant?": "Active",
-      "Defendant Deposition": "-",
-      "Service Date Complete": "3/5/2026",
       "Service Default Date": "-"
     },
     {

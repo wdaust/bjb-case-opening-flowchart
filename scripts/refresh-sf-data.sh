@@ -24,6 +24,14 @@ REPORTS=(
   "00OPp000003LtarMAC"   # Dep Report for NJ PI LIT
   "00OPp000003Lte5MAC"   # Form C Past Due (NJ)
   "00OPp000003LtCfMAK"   # Missing All Ans, No Default NJ
+  # LIT Scorecard reports:
+  "00O4V000009xCScUAM"   # Unit Goals (Leaders)
+  "00OPp000002Gbs6MAC"   # Complaints Filed Monthly (YTD)
+  "00OPp000002liE9MAI"   # Past Due Service
+  "00OPp000002kk0HMAQ"   # Missing All Ans, no Default (Served Dt)
+  "00OPp000001jfxhMAA"   # Form C 10 Day Letters Needed
+  "00OPp000001n6q5MAA"   # Need Form C Rcv'd Dt or Motion to Compel
+  "00O4V000009d6Z0UAI"   # Arb and Mediation Matters next 60 Days
 )
 # NOTE: Matters Universe (00OPp000003OaGjMAK) is skipped — the SF report was
 # reconfigured and no longer provides the stage-grouped Open/Closed aggregates

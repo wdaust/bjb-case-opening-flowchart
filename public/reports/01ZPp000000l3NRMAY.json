@@ -14,7 +14,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 145
+              "value": 140
             }
           ]
         }
@@ -60,7 +60,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 12
+              "value": 17
             }
           ]
         },
@@ -88,7 +88,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 17
+              "value": 15
             }
           ]
         },
@@ -318,6 +318,15 @@
           ]
         },
         {
+          "label": "4/5/2026 - 4/11/2026",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 6
+            }
+          ]
+        },
+        {
           "label": "11/8/2099 - 11/14/2099",
           "values": [
             {
@@ -341,7 +350,7 @@
           "values": [
             {
               "label": "Matter Count",
-              "value": 23
+              "value": 22
             }
           ]
         }
@@ -360,7 +369,7 @@
           "values": [
             {
               "label": "Matter Count",
-              "value": 47
+              "value": 43
             }
           ]
         }
@@ -417,7 +426,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 122
+              "value": 111
             }
           ]
         }
@@ -455,7 +464,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 79
+              "value": 78
             }
           ]
         }
@@ -526,15 +535,6 @@
         "Record Count"
       ],
       "rows": [
-        {
-          "label": "10/5/2025 - 10/11/2025",
-          "values": [
-            {
-              "label": "Record Count",
-              "value": 1
-            }
-          ]
-        },
         {
           "label": "10/19/2025 - 10/25/2025",
           "values": [
@@ -787,7 +787,7 @@
           "values": [
             {
               "label": "Matter Count",
-              "value": 37
+              "value": 40
             }
           ]
         }
@@ -806,7 +806,7 @@
           "values": [
             {
               "label": "Matter Count",
-              "value": 21
+              "value": 25
             }
           ]
         }
