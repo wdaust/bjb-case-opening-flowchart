@@ -19,6 +19,7 @@ const moreLinksBase = [
   { label: 'Reports', to: '/reports' },
   { label: 'Litify Spec', to: '/specs' },
   { label: 'Optimus Structure', to: '/optimus-structure' },
+  { label: 'LDN', to: '/ldn' },
 ];
 
 /** Links only visible to specific users */
