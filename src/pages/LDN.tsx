@@ -35,7 +35,7 @@ import {
   type LdnStageMetrics,
   type DrillRow,
   filterLitOnly,
-  topAttorney,
+  buildFixedAttorneyLookup,
 } from '../utils/ldnMetrics';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
@@ -116,6 +116,8 @@ export default function LDN() {
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
   const portfolioStages = useMemo(() => computePortfolioFromScores(scores, bundle), [scores, bundle]);
+  // Cross-ref lookup for complaints (Display Name → attorney)
+  const complaintLookup = useMemo(() => buildFixedAttorneyLookup(bundle.openLit?.detailRows ?? []), [bundle.openLit]);
 
   // ── Stage Overview aggregates from LDN scores (no litProgMetrics dependency) ──
   const stageAggregates = useMemo(() => computeStageAggregatesFromLdn(scores), [scores]);
@@ -130,8 +132,10 @@ export default function LDN() {
     const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
     const attorneySet = new Set(scores.map(s => s.attorney));
     const attorneyRows = allRows.filter(r => {
-      const atty = topAttorney(r._groupingLabel);
-      return atty && attorneySet.has(atty);
+      // Complaints use Display Name cross-ref, not _groupingLabel
+      const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
+      const mapped = complaintLookup.get(dn);
+      return mapped ? attorneySet.has(mapped) : false;
     });
     const result = computeComplaints(attorneyRows);
     // Relabel first card for 'all' mode
@@ -139,7 +143,7 @@ export default function LDN() {
       result.metrics.cards[0].label = 'Total Complaints';
     }
     return result.metrics;
-  }, [complaintsMode, portfolioStages, bundle.complaints, scores]);
+  }, [complaintsMode, portfolioStages, bundle.complaints, scores, complaintLookup]);
 
   // ── LCI Computation ──
   const lci = useMemo(
@@ -322,7 +326,7 @@ export default function LDN() {
 
           {/* 7 Stage Sections — with detail rows for drill-down */}
           {STAGE_ORDER.map(sn => {
-            const detailRows = getStageDetailRows(bundle, sn, complaintsMode, scores);
+            const detailRows = getStageDetailRows(bundle, sn, complaintsMode, scores, complaintLookup);
             const metrics = sn === 'complaints' ? complaintMetrics : portfolioStages[sn];
             return (
               <StageSection
@@ -352,15 +356,17 @@ function getStageDetailRows(
   stage: StageName,
   complaintsMode: 'unfiled' | 'all',
   scores: { attorney: string }[],
+  lookup: Map<string, string>,
 ): { rows: DrillRow[]; tenDayRows?: DrillRow[]; motionRows?: DrillRow[] } {
   switch (stage) {
     case 'complaints': {
       const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
-      // Filter to attorney-attributed rows only (exclude orphans)
+      // Filter to attorney-attributed rows using cross-ref lookup
       const attorneySet = new Set(scores.map(s => s.attorney));
       const attorneyRows = allRows.filter(r => {
-        const atty = topAttorney(r._groupingLabel);
-        return atty && attorneySet.has(atty);
+        const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
+        const mapped = lookup.get(dn);
+        return mapped ? attorneySet.has(mapped) : false;
       });
       if (complaintsMode === 'all') return { rows: attorneyRows };
       // Unfiled = Pre-Lit only

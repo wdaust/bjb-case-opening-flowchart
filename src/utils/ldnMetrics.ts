@@ -179,7 +179,7 @@ function buildGauge(label: string, ages: number[], slaTarget: number): BulletGau
  * uses "Lisa Lehrer" (the grouping label). We apply topAttorney() to the stored
  * value so the cross-ref lookup matches.
  */
-function buildFixedAttorneyLookup(openLitRows: Row[]): Map<string, string> {
+export function buildFixedAttorneyLookup(openLitRows: Row[]): Map<string, string> {
   const raw = _buildAttorneyLookup(openLitRows as Array<Record<string, unknown> & { _groupingLabel?: string }>);
   const fixed = new Map<string, string>();
   for (const [dn, atty] of raw) {
@@ -889,17 +889,23 @@ export function computePortfolioFromScores(scores: LdnAttorneyScore[], bundle: L
   const lookup = buildFixedAttorneyLookup(bundle.openLit?.detailRows ?? []);
 
   // Helper: filter rows to only those belonging to known attorneys
-  function filterToAttorneys(rows: Row[], useGroupingLabel: boolean): Row[] {
-    if (useGroupingLabel) {
+  function filterToAttorneys(rows: Row[], mode: 'grouping' | 'crossref' | 'level2'): Row[] {
+    if (mode === 'grouping') {
       return rows.filter(r => {
         const atty = topAttorney(r._groupingLabel);
         return atty && attorneySet.has(atty);
       });
     }
+    if (mode === 'level2') {
+      return rows.filter(r => {
+        const atty = level2Attorney(r._groupingLabel);
+        return atty && attorneySet.has(atty);
+      });
+    }
+    // crossref: try _groupingLabel first, then Display Name lookup
     return rows.filter(r => {
       const atty = topAttorney(r._groupingLabel);
       if (atty && attorneySet.has(atty)) return true;
-      // Cross-ref lookup fallback
       const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
       const mapped = lookup.get(dn);
       return mapped ? attorneySet.has(mapped) : false;
@@ -907,15 +913,19 @@ export function computePortfolioFromScores(scores: LdnAttorneyScore[], bundle: L
   }
 
   // Recompute attorney-scoped metrics per stage from raw rows
-  const attyComplaints = filterToAttorneys(bundle.complaints?.detailRows ?? [], true);
-  const attyService = filterToAttorneys(bundle.service?.detailRows ?? [], true);
-  const attyAnswers = filterToAttorneys(bundle.answers?.detailRows ?? [], true);
-  const attyFormA = filterToAttorneys(filterLitOnly(bundle.formA?.detailRows ?? []), false);
-  const attyFormC = filterToAttorneys(filterLitOnly(bundle.formC?.detailRows ?? []), false);
-  const attyTenDay = filterToAttorneys(bundle.tenDay?.detailRows ?? [], true);
-  const attyMotions = filterToAttorneys(bundle.motions?.detailRows ?? [], true);
-  const attyDeps = filterToAttorneys(filterLitOnly(bundle.deps?.detailRows ?? []), false);
-  const attyOpenLit = filterToAttorneys(filterLitOnly(bundle.openLit?.detailRows ?? []), true);
+  // Must match how computeAllLdnMetrics assigns rows to attorneys:
+  //   complaints, formA, formC, deps → cross-ref (Display Name lookup)
+  //   service, answers, openLit → _groupingLabel (topAttorney)
+  //   tenDay, motions → _groupingLabel (level2Attorney)
+  const attyComplaints = filterToAttorneys(bundle.complaints?.detailRows ?? [], 'crossref');
+  const attyService = filterToAttorneys(bundle.service?.detailRows ?? [], 'grouping');
+  const attyAnswers = filterToAttorneys(bundle.answers?.detailRows ?? [], 'grouping');
+  const attyFormA = filterToAttorneys(filterLitOnly(bundle.formA?.detailRows ?? []), 'crossref');
+  const attyFormC = filterToAttorneys(filterLitOnly(bundle.formC?.detailRows ?? []), 'crossref');
+  const attyTenDay = filterToAttorneys(bundle.tenDay?.detailRows ?? [], 'level2');
+  const attyMotions = filterToAttorneys(bundle.motions?.detailRows ?? [], 'level2');
+  const attyDeps = filterToAttorneys(filterLitOnly(bundle.deps?.detailRows ?? []), 'crossref');
+  const attyOpenLit = filterToAttorneys(filterLitOnly(bundle.openLit?.detailRows ?? []), 'grouping');
 
   const c = computeComplaints(attyComplaints);
   const s = computeService(attyService);
