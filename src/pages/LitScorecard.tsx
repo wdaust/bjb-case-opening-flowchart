@@ -1,7 +1,5 @@
 import { useMemo, useState, useRef, useEffect, useCallback } from 'react';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
-import { StatCard } from '../components/dashboard/StatCard';
-import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { cn } from '../utils/cn';
 import { fmt$, fmtNum } from '../utils/sfHelpers';
@@ -276,29 +274,7 @@ function statusBadge(status: 'green' | 'yellow' | 'red') {
 
 // ─── Summary cards ──────────────────────────────────────────────────────────
 
-function ScorecardSummary({
-  attorneyCount,
-  kpiCount,
-  populatedPct,
-}: {
-  attorneyCount: number;
-  kpiCount: number;
-  populatedPct: number;
-}) {
-  return (
-    <DashboardGrid cols={3} className="mb-6">
-      <StatCard label="Total Attorneys" value={attorneyCount} variant="glass" />
-      <StatCard label="KPIs Tracked" value={kpiCount} variant="glass" />
-      <StatCard
-        label="Data Populated"
-        value={`${populatedPct}%`}
-        delta={populatedPct >= 50 ? 'Good coverage' : 'Limited data'}
-        deltaType={populatedPct >= 50 ? 'positive' : 'negative'}
-        variant="glass"
-      />
-    </DashboardGrid>
-  );
-}
+
 
 // ─── Scorecard table ────────────────────────────────────────────────────────
 
@@ -528,19 +504,7 @@ export default function LitScorecard() {
     return map;
   }, [attorneys, bundle]);
 
-  // Summary stats
-  const populatedPct = useMemo(() => {
-    if (attorneys.length === 0) return 0;
-    let filled = 0;
-    let total = 0;
-    for (const kpis of kpiData.values()) {
-      for (const kpi of SCORECARD_KPIS) {
-        total++;
-        if (kpis[kpi.key] !== null && kpis[kpi.key] !== undefined) filled++;
-      }
-    }
-    return total > 0 ? Math.round((filled / total) * 100) : 0;
-  }, [kpiData, attorneys]);
+
 
   const handleRefresh = () => { r1(); r2(); };
 
@@ -567,12 +531,6 @@ export default function LitScorecard() {
         </div>
       ) : (
         <>
-          <ScorecardSummary
-            attorneyCount={attorneys.length}
-            kpiCount={SCORECARD_KPIS.length}
-            populatedPct={populatedPct}
-          />
-
           <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
             <span className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-green-500/50" /> Live — data from SF reports
