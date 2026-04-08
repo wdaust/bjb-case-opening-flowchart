@@ -18,6 +18,7 @@ export interface BulletGauge {
   medianAge: number;   // P50
   p90Age: number;      // P90
   slaTarget: number;   // days
+  noAgingData?: boolean; // true when no usable date field exists
 }
 
 export interface LdnStageMetrics {
@@ -178,22 +179,27 @@ function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: Act
   const total = rows.length;
   const daysArr = rows.map(r => {
     const v = r['Date Assigned to Team to Today'];
-    if (typeof v === 'number') return v;
+    const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
+    if (!isNaN(num)) return num;
     const d = parseDate(r['Date Assigned To Litigation Unit']);
     return d ? daysSinceToday(d) : null;
   }).filter((d): d is number => d != null);
 
   const overdue = rows.filter(r => {
     const v = r['Date Assigned to Team to Today'];
-    if (typeof v === 'number') return v > 14;
+    const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
+    if (!isNaN(num)) return num > 14;
     const d = parseDate(r['Date Assigned To Litigation Unit']);
     return d ? daysSinceToday(d) > 14 : false;
   }).length;
 
   const blockers = rows.filter(r => {
-    const b = r['Blocker'] ?? r['Blocker to Filing Complaint'];
+    const b = r['Blocker to Filing Complaint'] ?? r['Blocker'];
     return b && b !== '-';
   }).length;
+
+  const filed = rows.filter(r => r['Complaint Filed Date'] && r['Complaint Filed Date'] !== '-').length;
+  const filingPct = total ? Math.round((filed / total) * 100) : 100;
 
   const avgDays = mean(daysArr);
 
@@ -218,6 +224,7 @@ function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: Act
         { label: '90+d', value: b90plus },
       ],
     },
+    { label: 'Filing Rate', value: `${filingPct}%`, rag: filingPct >= 80 ? 'green' : filingPct >= 50 ? 'amber' : 'red' },
   ];
 
   const worstRag = overdue >= 4 ? 'red' : overdue >= 1 ? 'amber' : 'green';
@@ -226,13 +233,15 @@ function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: Act
   const issues: ActionableIssue[] = rows
     .filter(r => {
       const v = r['Date Assigned to Team to Today'];
-      if (typeof v === 'number') return v > 14;
+      const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
+      if (!isNaN(num)) return num > 14;
       const d = parseDate(r['Date Assigned To Litigation Unit']);
       return d ? daysSinceToday(d) > 14 : false;
     })
     .map(r => {
       const v = r['Date Assigned to Team to Today'];
-      const days = typeof v === 'number' ? v : (() => {
+      const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
+      const days = !isNaN(num) ? num : (() => {
         const d = parseDate(r['Date Assigned To Litigation Unit']);
         return d ? daysSinceToday(d) : 0;
       })();
@@ -254,19 +263,19 @@ function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: Act
 function computeService(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   const total = rows.length;
   const matters = new Set(rows.map(r => String(r['Matter Name'] ?? ''))).size;
-
-  const daysArr = rows.map(r => {
-    const d = parseDate(r['Open Date'] as string);
-    return d ? daysSinceToday(d) : null;
-  }).filter((d): d is number => d != null);
+  const activeDefendants = rows.filter(r => r['Active Defendant?'] && r['Active Defendant?'] !== '-').length;
+  const hasFirstAnswer = rows.filter(r => r['Prim. Defendant First Answer Filed'] && r['Prim. Defendant First Answer Filed'] !== '-').length;
 
   const cards: MetricCard[] = [
     { label: 'Past-Due Items', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
     { label: 'Matters Affected', value: matters, rag: matters === 0 ? 'green' : matters <= 2 ? 'amber' : 'red' },
+    { label: 'Active Defendants', value: activeDefendants, rag: 'green' },
+    { label: 'Has First Answer', value: hasFirstAnswer, rag: 'green' },
   ];
 
   const worstRag = rag(total);
-  const gauge = buildGauge('Service', daysArr, SLA_TARGETS.service);
+  // Service report has no usable date field for aging
+  const gauge: BulletGauge = { label: 'Service', count: total, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.service, noAgingData: true };
 
   const issues: ActionableIssue[] = rows.map(r => {
     const d = parseDate(r['Open Date'] as string);
@@ -287,20 +296,20 @@ function computeAnswers(rows: Row[]): { metrics: LdnStageMetrics; issues: Action
   const total = rows.length;
   const defendants = new Set(rows.map(r => String(r['Defendant'] ?? r['Defendant (Party Name)'] ?? ''))).size;
   const defaults = rows.filter(r => r['Default Entered Date'] && r['Default Entered Date'] !== '-').length;
-
-  const daysArr = rows.map(r => {
-    const d = parseDate(r['Answer Filed'] as string);
-    return d ? daysSinceToday(d) : null;
-  }).filter((d): d is number => d != null);
+  const activeDefendants = rows.filter(r => r['Active Defendant?'] && r['Active Defendant?'] !== '-').length;
+  const hasDeposition = rows.filter(r => r['Defendant Deposition'] && r['Defendant Deposition'] !== '-').length;
 
   const cards: MetricCard[] = [
     { label: 'Missing Answers', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
     { label: 'Defendants Affected', value: defendants, rag: 'green' },
     { label: 'Defaults Entered', value: defaults, rag: defaults === 0 ? 'green' : defaults === 1 ? 'amber' : 'red' },
+    { label: 'Active Defendants', value: activeDefendants, rag: 'green' },
+    { label: 'Has Deposition', value: hasDeposition, rag: 'green' },
   ];
 
   const worstRag = rag(total);
-  const gauge = buildGauge('Answers', daysArr.length ? daysArr : [0], SLA_TARGETS.answers);
+  // Answer Filed is always '-' in this report (missing answers by definition) — no usable aging data
+  const gauge: BulletGauge = { label: 'Answers', count: total, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.answers, noAgingData: true };
 
   const issues: ActionableIssue[] = rows
     .filter(r => r['Default Entered Date'] && r['Default Entered Date'] !== '-')
@@ -437,6 +446,7 @@ function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: Ac
 }
 
 function computeDED(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+  const noDedSet = rows.filter(r => !r['Discovery End Date'] || r['Discovery End Date'] === '-').length;
   const withDED = rows.filter(r => r['Discovery End Date'] && r['Discovery End Date'] !== '-');
   const parsed = withDED.map(r => {
     const d = parseDate(r['Discovery End Date']);
@@ -458,6 +468,7 @@ function computeDED(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionable
     { label: 'At-Risk Cases', value: atRisk, rag: past.length > 0 ? 'red' : within30.length > 0 ? 'amber' : 'green' },
     { label: 'Past DED', value: past.length, rag: past.length === 0 ? 'green' : 'red' },
     { label: 'Within 30d', value: within30.length, rag: within30.length === 0 ? 'green' : 'amber' },
+    { label: 'No DED Set', value: noDedSet, rag: noDedSet === 0 ? 'green' : noDedSet <= 50 ? 'amber' : 'red' },
   ];
 
   const gauge = buildGauge('DED', agingValues, SLA_TARGETS.ded);
@@ -567,20 +578,14 @@ export function computePortfolioGauges(bundle: LdnReportBundle): Record<StageNam
   // Compute gauges from ALL rows (not per-attorney)
   const complaintDays = (bundle.complaints?.detailRows ?? []).map(r => {
     const v = r['Date Assigned to Team to Today'];
-    if (typeof v === 'number') return v;
+    const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
+    if (!isNaN(num)) return num;
     const d = parseDate(r['Date Assigned To Litigation Unit']);
     return d ? daysSinceToday(d) : null;
   }).filter((d): d is number => d != null);
 
-  const serviceDays = (bundle.service?.detailRows ?? []).map(r => {
-    const d = parseDate(r['Open Date'] as string);
-    return d ? daysSinceToday(d) : null;
-  }).filter((d): d is number => d != null);
-
-  const answerDays = (bundle.answers?.detailRows ?? []).map(r => {
-    const d = parseDate(r['Answer Filed'] as string);
-    return d ? daysSinceToday(d) : null;
-  }).filter((d): d is number => d != null);
+  const serviceCount = (bundle.service?.detailRows ?? []).length;
+  const answerCount = (bundle.answers?.detailRows ?? []).length;
 
   const formADays = (bundle.formA?.detailRows ?? []).map(r => {
     const v = r['Answer Date to Today'];
@@ -606,14 +611,57 @@ export function computePortfolioGauges(bundle: LdnReportBundle): Record<StageNam
 
   return {
     complaints: buildGauge('Complaints', complaintDays, SLA_TARGETS.complaints),
-    service: buildGauge('Service', serviceDays, SLA_TARGETS.service),
-    answers: buildGauge('Answers', answerDays.length ? answerDays : [0], SLA_TARGETS.answers),
+    service: { label: 'Service', count: serviceCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.service, noAgingData: true },
+    answers: { label: 'Answers', count: answerCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.answers, noAgingData: true },
     formA: buildGauge('Form A', formADays, SLA_TARGETS.formA),
     formC: buildGauge('Form C', formCDays, SLA_TARGETS.formC),
     depositions: buildGauge('Depositions', depDays, SLA_TARGETS.depositions),
     ded: buildGauge('DED', dedDays, SLA_TARGETS.ded),
   };
 }
+
+// ─── Tooltip info maps ──────────────────────────────────────────────────────
+
+export const STAGE_INFO: Record<StageName, string> = {
+  complaints: 'Tracks unfiled complaints from the date they were assigned to the litigation unit. SLA target is 14 days.',
+  service: 'Monitors past-due service items across matters. No reliable aging field exists in this report.',
+  answers: 'Tracks missing answers/responses from defendants. Answer Filed is typically empty since this is a missing-answers report.',
+  formA: 'Form A interrogatories tracking — measures time from answer date. Includes attorney review status and served percentage.',
+  formC: 'Form C document requests — includes 10-day demand letters and motions to compel for non-responsive parties.',
+  depositions: 'Outstanding depositions tracked from filing date. Monitors scheduling rate and 180-day overdue threshold.',
+  ded: 'Discovery End Date tracking across the open litigation portfolio. Flags past-DED cases and those approaching within 30/60 days.',
+};
+
+export const CARD_INFO: Record<string, string> = {
+  'Total Unfiled': 'Count of complaints assigned but not yet filed.',
+  'Overdue >14d': 'Complaints past the 14-day SLA target.',
+  'Avg Days Assigned': 'Average days since assignment to litigation unit.',
+  'Blockers': 'Cases with a documented blocker preventing filing. Sub-metrics show aging breakdown.',
+  'Filing Rate': 'Percentage of complaints that have a filed date vs total assigned.',
+  'Past-Due Items': 'Service items that are past due for completion.',
+  'Matters Affected': 'Unique matters with past-due service items.',
+  'Active Defendants': 'Defendants marked as active in the case.',
+  'Has First Answer': 'Cases where the primary defendant has filed a first answer.',
+  'Missing Answers': 'Defendants who have not filed an answer.',
+  'Defendants Affected': 'Unique defendants with missing answers.',
+  'Defaults Entered': 'Cases where a default judgment has been entered against a defendant.',
+  'Has Deposition': 'Defendants who have a deposition on file.',
+  'Past-Due Count': 'Total past-due Form A interrogatories.',
+  'At Attorney Review': 'Form A sent to attorney for review but not yet served.',
+  'Avg Days Since Answer': 'Average days elapsed since the answer was filed.',
+  '% Served': 'Percentage of Form A interrogatories that have been served.',
+  'Past-Due Form C': 'Form C document requests that are past due.',
+  'Need 10-Day Letter': 'Cases requiring a 10-day demand letter for Form C compliance.',
+  'Need Motion': 'Cases requiring a motion to compel for Form C non-response.',
+  'Outstanding': 'Total outstanding depositions not yet completed.',
+  'Overdue 180+': 'Depositions more than 180 days from the filing date.',
+  'Avg Days from Filed': 'Average days since the case was filed.',
+  '% Scheduled': 'Percentage of depositions that have been scheduled.',
+  'At-Risk Cases': 'Cases with DED that is past, within 30 days, or within 60 days.',
+  'Past DED': 'Cases where the Discovery End Date has already passed.',
+  'Within 30d': 'Cases with DED approaching within 30 days.',
+  'No DED Set': 'Open litigation cases with no Discovery End Date set — a key management gap.',
+};
 
 /** Compute portfolio-level metric cards for each stage (all attorneys combined). */
 export function computePortfolioStages(bundle: LdnReportBundle): Record<StageName, LdnStageMetrics> {

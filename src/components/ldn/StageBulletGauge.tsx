@@ -7,6 +7,21 @@ interface Props {
 
 /** Bullet chart gauge: qualitative range bands, median bar, P90 tick, SLA dashed line. */
 export function StageBulletGauge({ gauge, className }: Props) {
+  // When no aging data exists, show a compact message instead of misleading 0d values
+  if (gauge.noAgingData) {
+    return (
+      <div className={className}>
+        <div className="flex items-baseline justify-between mb-1">
+          <div className="text-sm font-semibold text-foreground truncate">{gauge.label}</div>
+          <div className="text-[10px] text-muted-foreground shrink-0 ml-2">{gauge.count} items</div>
+        </div>
+        <div className="flex items-center h-10 px-3 rounded bg-muted/30 border border-border/50">
+          <span className="text-xs text-muted-foreground">No aging data available for this stage</span>
+        </div>
+      </div>
+    );
+  }
+
   const barH = 22;
   const chartH = 40;
   const max = gauge.slaTarget * 2;

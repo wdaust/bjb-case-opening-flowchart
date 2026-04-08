@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { HeroSection } from '../components/dashboard/HeroSection';
 import { HeroTitle } from '../components/dashboard/HeroTitle';
 import { HeroSummaryTicker } from '../components/dashboard/HeroSummaryTicker';
@@ -23,6 +24,7 @@ import {
   STAGE_ORDER,
   type LdnReportBundle,
 } from '../utils/ldnMetrics';
+import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { RiskPanel } from '../components/litprog/RiskPanel';
 import { StageSection } from '../components/ldn/StageSection';
 import { AttorneyProfile } from '../components/ldn/AttorneyProfile';
@@ -68,6 +70,15 @@ export default function LDN() {
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
   const portfolioStages = useMemo(() => computePortfolioStages(bundle), [bundle]);
+
+  const stageHealthData = useMemo(() =>
+    STAGE_ORDER.map(sn => ({
+      name: portfolioStages[sn]?.label ?? sn,
+      Green: scores.filter(s => s.stages[sn].rag === 'green').length,
+      Amber: scores.filter(s => s.stages[sn].rag === 'amber').length,
+      Red: scores.filter(s => s.stages[sn].rag === 'red').length,
+    })),
+  [scores, portfolioStages]);
 
   const totalRedFlags = useMemo(() => scores.reduce((sum, s) => sum + s.redCount, 0), [scores]);
   const worstStage = useMemo(() => {
@@ -155,6 +166,28 @@ export default function LDN() {
             scores={riskPanelScores as never[]}
             onSelectAttorney={setSelectedAttorney}
           />
+
+          {/* Stage Health Chart */}
+          <section className="rounded-xl border border-border bg-card/50 p-5">
+            <SectionHeader
+              title="Stage Health Overview"
+              info="Stacked bar chart showing how many attorneys are Green, Amber, or Red in each litigation stage."
+            />
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart data={stageHealthData} layout="vertical" margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
+                <XAxis type="number" allowDecimals={false} tick={{ fill: '#888', fontSize: 12 }} />
+                <YAxis type="category" dataKey="name" width={100} tick={{ fill: '#ccc', fontSize: 12 }} />
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 8, fontSize: 12 }}
+                  labelStyle={{ color: '#fff' }}
+                />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Bar dataKey="Green" stackId="a" fill="#22c55e" radius={[0, 0, 0, 0]} />
+                <Bar dataKey="Amber" stackId="a" fill="#eab308" />
+                <Bar dataKey="Red" stackId="a" fill="#ef4444" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </section>
 
           {/* 7 Stage Sections */}
           {STAGE_ORDER.map(sn => (

@@ -3,8 +3,9 @@ import { StatCard } from '../dashboard/StatCard';
 import { DataTable } from '../dashboard/DataTable';
 import { StageBulletGauge } from './StageBulletGauge';
 import { SectionHeader } from '../dashboard/SectionHeader';
+import { InfoTooltip } from '../dashboard/InfoTooltip';
 import type { LdnAttorneyScore, ActionableIssue, StageName, RagColor } from '../../utils/ldnMetrics';
-import { STAGE_ORDER, STAGE_LABELS } from '../../utils/ldnMetrics';
+import { STAGE_ORDER, STAGE_LABELS, STAGE_INFO, CARD_INFO } from '../../utils/ldnMetrics';
 import type { Column } from '../dashboard/DataTable';
 import { cn } from '../../utils/cn';
 
@@ -106,17 +107,24 @@ export function AttorneyProfile({ score, onBack }: Props) {
               <div className="flex items-center gap-2 mb-3">
                 <span className={cn('w-2.5 h-2.5 rounded-full', sm.rag === 'red' ? 'bg-red-500' : sm.rag === 'amber' ? 'bg-amber-500' : 'bg-green-500')} />
                 <h3 className="text-sm font-semibold text-foreground">{sm.label}</h3>
+                {STAGE_INFO[sn] && <InfoTooltip text={STAGE_INFO[sn]} />}
                 <span className={cn('text-xs font-medium uppercase', ragStyle.text)}>{sm.rag}</span>
               </div>
-              <DashboardGrid cols={sm.cards.length <= 3 ? 3 : 4}>
+              <DashboardGrid cols={sm.cards.length <= 3 ? 3 : sm.cards.length <= 5 ? 5 : 4}>
                 {sm.cards.map(c => (
-                  <StatCard
-                    key={c.label}
-                    label={c.label}
-                    value={c.value}
-                    delta={c.rag}
-                    deltaType={c.rag === 'green' ? 'positive' : c.rag === 'red' ? 'negative' : 'neutral'}
-                  />
+                  <div key={c.label} className="relative">
+                    {CARD_INFO[c.label] && (
+                      <div className="absolute top-2 right-2 z-10">
+                        <InfoTooltip text={CARD_INFO[c.label]} />
+                      </div>
+                    )}
+                    <StatCard
+                      label={c.label}
+                      value={c.value}
+                      delta={c.rag}
+                      deltaType={c.rag === 'green' ? 'positive' : c.rag === 'red' ? 'negative' : 'neutral'}
+                    />
+                  </div>
                 ))}
               </DashboardGrid>
               <div className="mt-3">

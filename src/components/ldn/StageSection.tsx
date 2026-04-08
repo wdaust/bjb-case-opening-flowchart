@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Users } from 'lucide-react';
 import { SectionHeader } from '../dashboard/SectionHeader';
 import { DashboardGrid } from '../dashboard/DashboardGrid';
 import { StatCard } from '../dashboard/StatCard';
+import { InfoTooltip } from '../dashboard/InfoTooltip';
 import { DataTable } from '../dashboard/DataTable';
 import { StageBulletGauge } from './StageBulletGauge';
 import type { LdnStageMetrics, LdnAttorneyScore, StageName, RagColor } from '../../utils/ldnMetrics';
+import { STAGE_INFO, CARD_INFO } from '../../utils/ldnMetrics';
 import type { Column } from '../dashboard/DataTable';
 import { cn } from '../../utils/cn';
 
@@ -84,27 +86,35 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
     <section className={cn('rounded-xl border p-5', ragBorder, 'bg-card/50')}>
       <SectionHeader
         title={stageMetrics.label}
+        info={STAGE_INFO[stageName]}
         actions={
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center gap-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
+            <Users size={14} />
             {expanded ? 'Collapse' : 'Attorney Rankings'}
             {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
         }
       />
 
-      {/* Metric cards */}
-      <DashboardGrid cols={stageMetrics.cards.length <= 3 ? 3 : 4}>
+      {/* Metric cards with info tooltips */}
+      <DashboardGrid cols={stageMetrics.cards.length <= 3 ? 3 : stageMetrics.cards.length <= 5 ? 5 : 4}>
         {stageMetrics.cards.map(c => (
-          <StatCard
-            key={c.label}
-            label={c.label}
-            value={c.value}
-            delta={c.rag}
-            deltaType={c.rag === 'green' ? 'positive' : c.rag === 'red' ? 'negative' : 'neutral'}
-          />
+          <div key={c.label} className="relative">
+            {CARD_INFO[c.label] && (
+              <div className="absolute top-2 right-2 z-10">
+                <InfoTooltip text={CARD_INFO[c.label]} />
+              </div>
+            )}
+            <StatCard
+              label={c.label}
+              value={c.value}
+              delta={c.rag}
+              deltaType={c.rag === 'green' ? 'positive' : c.rag === 'red' ? 'negative' : 'neutral'}
+            />
+          </div>
         ))}
       </DashboardGrid>
 

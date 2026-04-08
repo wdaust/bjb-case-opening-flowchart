@@ -11,19 +11,19 @@ const mainLinks = [
   { label: 'MOS', to: '/performance-infrastructure/mos' },
 ];
 
-const moreLinksBase = [
-  { label: 'Lit Progression', to: '/lit-progression' },
-  { label: 'LCI Report', to: '/lci-report' },
-  { label: 'Analytics', to: '/analytics' },
-  { label: 'Insights', to: '/insights' },
-  { label: 'Reports', to: '/reports' },
-  { label: 'Litify Spec', to: '/specs' },
-  { label: 'Optimus Structure', to: '/optimus-structure' },
-  { label: 'LDN', to: '/ldn' },
-];
+const moreLinksBase: { label: string; to: string }[] = [];
 
 /** Links only visible to specific users */
-const restrictedMoreLinks: { label: string; to: string; allowedUsers: string[] }[] = [];
+const restrictedMoreLinks: { label: string; to: string; allowedUsers: string[] }[] = [
+  { label: 'Lit Progression', to: '/lit-progression', allowedUsers: ['wdaust', 'jbillingsley'] },
+  { label: 'LCI Report', to: '/lci-report', allowedUsers: ['wdaust', 'jbillingsley'] },
+  { label: 'Analytics', to: '/analytics', allowedUsers: ['wdaust', 'jbillingsley'] },
+  { label: 'Insights', to: '/insights', allowedUsers: ['wdaust', 'jbillingsley'] },
+  { label: 'Reports', to: '/reports', allowedUsers: ['wdaust', 'jbillingsley'] },
+  { label: 'Litify Spec', to: '/specs', allowedUsers: ['wdaust', 'jbillingsley'] },
+  { label: 'Optimus Structure', to: '/optimus-structure', allowedUsers: ['wdaust', 'jbillingsley'] },
+  { label: 'LDN', to: '/ldn', allowedUsers: ['wdaust', 'jbillingsley'] },
+];
 
 export function TopNavBar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -88,8 +88,8 @@ export function TopNavBar() {
             </NavLink>
           ))}
 
-          {/* More dropdown */}
-          <div ref={moreRef} className="relative" onMouseEnter={() => setMoreOpen(true)} onMouseLeave={() => setMoreOpen(false)}>
+          {/* More dropdown — hidden when user has no links */}
+          {moreLinks.length > 0 && <div ref={moreRef} className="relative" onMouseEnter={() => setMoreOpen(true)} onMouseLeave={() => setMoreOpen(false)}>
             <button
               onClick={() => setMoreOpen(o => !o)}
               className={cn(
@@ -126,7 +126,7 @@ export function TopNavBar() {
                 </div>
               </div>
             )}
-          </div>
+          </div>}
         </nav>
 
         {/* Right: User + Version */}
@@ -165,7 +165,7 @@ export function TopNavBar() {
               {link.label}
             </NavLink>
           ))}
-          <div className="mt-2 pt-2 border-t border-[#2a2a2a]">
+          {moreLinks.length > 0 && <div className="mt-2 pt-2 border-t border-[#2a2a2a]">
             <span className="block py-1 text-xs text-gray-600 uppercase tracking-wider">More</span>
             {moreLinks.map((link) => (
               <NavLink
@@ -184,7 +184,7 @@ export function TopNavBar() {
                 {link.label}
               </NavLink>
             ))}
-          </div>
+          </div>}
         </div>
       )}
     </header>
