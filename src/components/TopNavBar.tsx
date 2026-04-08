@@ -6,7 +6,7 @@ import { APP_VERSION } from '../utils/version';
 import { useAuth } from '../contexts/AuthContext';
 
 const mainLinks = [
-  { label: 'LDM', to: '/control-tower' },
+  { label: 'LDM', to: '/ldn' },
   { label: 'LIT Scorecard', to: '/lit-scorecard' },
   { label: 'MOS', to: '/performance-infrastructure/mos' },
 ];
@@ -15,14 +15,13 @@ const moreLinksBase: { label: string; to: string }[] = [];
 
 /** Links only visible to specific users */
 const restrictedMoreLinks: { label: string; to: string; allowedUsers: string[] }[] = [
-  { label: 'Lit Progression', to: '/lit-progression', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'LCI Report', to: '/lci-report', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Analytics', to: '/analytics', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Insights', to: '/insights', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Reports', to: '/reports', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Litify Spec', to: '/specs', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Optimus Structure', to: '/optimus-structure', allowedUsers: ['wdaust', 'jbillingsley'] },
-  { label: 'LDN', to: '/ldn', allowedUsers: ['wdaust', 'jbillingsley'] },
+  { label: 'LDM 2', to: '/control-tower', allowedUsers: ['wdaust', 'jbillingsley'] },
 ];
 
 export function TopNavBar() {
@@ -61,7 +60,7 @@ export function TopNavBar() {
     >
       <div className="h-14 flex items-center px-6">
         {/* Left: Logo */}
-        <Link to="/control-tower" className="shrink-0">
+        <Link to="/ldn" className="shrink-0">
           <img
             src={`${import.meta.env.BASE_URL}logo.png`}
             alt="Firm Logo"

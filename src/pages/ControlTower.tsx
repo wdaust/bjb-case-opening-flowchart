@@ -408,7 +408,7 @@ export default function ControlTower() {
           ═══════════════════════════════════════════════════════════════ */}
       <HeroSection>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-          <HeroTitle title="Optimus Control Tower" subtitle="LIT DISRUPTOR MODEL" />
+          <HeroTitle title="LDM 2 — Control Tower" subtitle="LIT DISRUPTOR MODEL" />
           <div className="flex items-center gap-3">
             <div className={cn("flex items-center gap-2 bg-white/[0.06] border rounded-lg px-3 py-1.5", isFiltered ? "border-primary/50" : "border-white/[0.1]")}>
               <Filter size={14} className="text-muted-foreground" />

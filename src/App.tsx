@@ -74,7 +74,6 @@ import ReportDetail from './pages/ReportDetail.tsx';
 import Analytics from './pages/Analytics.tsx';
 import Insights from './pages/Insights.tsx';
 import OptimusStructure from './pages/OptimusStructure.tsx';
-import LitProgression from './pages/LitProgression.tsx';
 import LDN from './pages/LDN.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
@@ -118,7 +117,7 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="top-nav-mockup" element={<TopNavMockup />} />
-            <Route index element={<Navigate to="/control-tower" replace />} />
+            <Route index element={<Navigate to="/ldn" replace />} />
 <Route path="control-tower" element={<ControlTower />} />
             <Route path="lit-scorecard" element={<LitScorecard />} />
             <Route path="stage/:stageId" element={<StageCommand />} />
@@ -186,7 +185,6 @@ export default function App() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="insights" element={<Insights />} />
             <Route path="optimus-structure" element={<OptimusStructure />} />
-            <Route path="lit-progression" element={<LitProgression />} />
             <Route path="ldn" element={<LDN />} />
             <Route path="mos-entry" element={<MosEntry />} />
           </Route>

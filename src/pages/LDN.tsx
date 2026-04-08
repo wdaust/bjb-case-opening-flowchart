@@ -27,12 +27,23 @@ import {
   type DrillRow,
 } from '../utils/ldnMetrics';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
+import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { RiskPanel } from '../components/litprog/RiskPanel';
+import { StageCard } from '../components/litprog/StageCard';
+import { AttorneyRankingTable } from '../components/litprog/AttorneyRankingTable';
 import { StageSection } from '../components/ldn/StageSection';
 import { AttorneyProfile } from '../components/ldn/AttorneyProfile';
+import {
+  computeAllAttorneyStageMetrics,
+  computeStageAggregates,
+  STAGE_LABELS,
+  type StageName as LitProgStageName,
+  type ReportBundle,
+} from '../utils/litProgMetrics';
 
 export default function LDN() {
   const [selectedAttorney, setSelectedAttorney] = useState<string>('');
+  const [expandedStage, setExpandedStage] = useState<LitProgStageName | null>(null);
 
   // ── Data fetching (same 9 reports as LitProgression) ──
   const { data: complaints, loading: l1 } = useSalesforceReport<ReportSummaryResponse>({
@@ -72,6 +83,19 @@ export default function LDN() {
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
   const portfolioStages = useMemo(() => computePortfolioStages(bundle), [bundle]);
+
+  // ── LitProg Stage Overview metrics (reuse existing bundle) ──
+  const allLitProgScores = useMemo(() => computeAllAttorneyStageMetrics(bundle as unknown as ReportBundle), [bundle]);
+  const stageAggregates = useMemo(() => computeStageAggregates(allLitProgScores), [allLitProgScores]);
+
+  const handleStageClick = (stage: LitProgStageName) => {
+    setExpandedStage(prev => prev === stage ? null : stage);
+  };
+
+  const handleSelectAttorneyFromStage = (attorney: string) => {
+    setSelectedAttorney(attorney);
+    setExpandedStage(null);
+  };
 
   const stageHealthData = useMemo(() =>
     STAGE_ORDER.map(sn => ({
@@ -135,7 +159,7 @@ export default function LDN() {
       <HeroSection>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-2">
-            <HeroTitle title="Litigation Dashboard Navigator" subtitle="Attorney performance deep-dive with actionable intelligence" />
+            <HeroTitle title="Litigation Dashboard Manager" subtitle="Attorney performance deep-dive with actionable intelligence" />
             <HeroSummaryTicker items={[
               { label: 'attorneys', value: attorneys.length },
               { label: 'red flags', value: totalRedFlags },
@@ -164,6 +188,36 @@ export default function LDN() {
         />
       ) : (
         <>
+          {/* Stage Overview Cards */}
+          <section>
+            <SectionHeader title="Stage Overview" subtitle="Click a stage to see attorney rankings" />
+            <DashboardGrid cols={4}>
+              {stageAggregates.map(agg => (
+                <StageCard
+                  key={agg.stage}
+                  aggregate={agg}
+                  isExpanded={expandedStage === agg.stage}
+                  onClick={() => handleStageClick(agg.stage)}
+                />
+              ))}
+            </DashboardGrid>
+          </section>
+
+          {/* Expanded Stage Drill-Down */}
+          {expandedStage && (
+            <section>
+              <SectionHeader
+                title={`${STAGE_LABELS[expandedStage]} — Attorney Rankings`}
+                subtitle="Click an attorney row for detail view"
+              />
+              <AttorneyRankingTable
+                scores={allLitProgScores}
+                stage={expandedStage}
+                onSelectAttorney={handleSelectAttorneyFromStage}
+              />
+            </section>
+          )}
+
           {/* Pipeline Summary Bar */}
           <PipelineSummaryBar bundle={bundle} />
 
