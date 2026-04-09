@@ -70,6 +70,7 @@ export function buildAttorneyList(bundle: LdnReportBundle): string[] {
   bundle.answers?.groupings.forEach(g => { if (g.label) set.add(topAttorney(g.label)); });
   bundle.service?.groupings.forEach(g => { if (g.label) set.add(topAttorney(g.label)); });
   set.delete('');
+  set.delete('Micronetbd User');
   return Array.from(set).sort();
 }
 
