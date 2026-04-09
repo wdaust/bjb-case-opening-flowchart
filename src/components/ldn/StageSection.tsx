@@ -12,6 +12,37 @@ import { STAGE_INFO, CARD_INFO, STAGE_DRILL_COLUMNS, CARD_FILTERS } from '../../
 import type { Column } from '../dashboard/DataTable';
 import { cn } from '../../utils/cn';
 
+/** Controlled number input that allows clearing/retyping without snapping to 1 */
+function SlaInput({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [draft, setDraft] = useState<string>(String(value));
+  const [focused, setFocused] = useState(false);
+
+  // Sync from parent when not focused (e.g. reset)
+  const display = focused ? draft : String(value);
+
+  return (
+    <input
+      type="number"
+      min={1}
+      max={365}
+      value={display}
+      onChange={e => {
+        setDraft(e.target.value);
+        const n = Number(e.target.value);
+        if (n >= 1 && n <= 365) onChange(n);
+      }}
+      onFocus={e => { setFocused(true); setDraft(e.target.value); e.target.select(); }}
+      onBlur={() => {
+        setFocused(false);
+        const n = Math.max(1, Math.min(365, Math.round(Number(draft) || value)));
+        setDraft(String(n));
+        onChange(n);
+      }}
+      className="w-14 bg-white/5 border border-white/10 rounded px-1.5 py-0.5 text-xs text-foreground tabular-nums text-center"
+    />
+  );
+}
+
 interface Props {
   stageMetrics: LdnStageMetrics;
   scores: LdnAttorneyScore[];
@@ -167,14 +198,7 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
             {onSlaChange && slaOverride != null && (
               <div className="flex items-center gap-1.5 pb-0.5 shrink-0">
                 <label className="text-[10px] text-muted-foreground whitespace-nowrap">SLA target</label>
-                <input
-                  type="number"
-                  min={1}
-                  max={365}
-                  value={slaOverride}
-                  onChange={e => onSlaChange(Math.max(1, Number(e.target.value) || 1))}
-                  className="w-14 bg-white/5 border border-white/10 rounded px-1.5 py-0.5 text-xs text-foreground tabular-nums text-center"
-                />
+                <SlaInput value={slaOverride} onChange={onSlaChange} />
                 <span className="text-[10px] text-muted-foreground">days</span>
               </div>
             )}
