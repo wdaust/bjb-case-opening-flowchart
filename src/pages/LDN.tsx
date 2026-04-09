@@ -4,7 +4,7 @@ import { Loader2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { HeroSection } from '../components/dashboard/HeroSection';
 import { HeroTitle } from '../components/dashboard/HeroTitle';
-import { HeroSummaryTicker } from '../components/dashboard/HeroSummaryTicker';
+
 import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import {
   COMPLAINTS_REPORT_ID,
@@ -218,11 +218,35 @@ export default function LDN() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="space-y-2">
             <HeroTitle title="Lit Disruptor Model" subtitle="Attorney performance deep-dive with actionable intelligence" />
-            <HeroSummaryTicker items={[
-              { label: 'attorneys', value: attorneys.length },
-              { label: 'red flags', value: totalRedFlags },
-              { label: `Worst: ${worstStage?.label ?? '-'}`, value: worstStage?.redCount ?? 0 },
-            ]} />
+            {/* Inline Pipeline */}
+            {(() => {
+              const openLitCount = filterLitOnly(bundle.openLit?.detailRows ?? []).length;
+              const noComplaint = stageAggregates.find(a => a.stage === 'complaints')?.totalItems ?? 0;
+              const noService = stageAggregates.find(a => a.stage === 'service')?.totalItems ?? 0;
+              const noAnswer = stageAggregates.find(a => a.stage === 'answers')?.totalItems ?? 0;
+              const noDiscovery = (stageAggregates.find(a => a.stage === 'formA')?.totalItems ?? 0) + (stageAggregates.find(a => a.stage === 'formC')?.totalItems ?? 0);
+              const pastDed = stageAggregates.find(a => a.stage === 'ded')?.totalItems ?? 0;
+              const items = [
+                { label: 'Open Lit', value: openLitCount, color: 'text-white/90' },
+                { label: 'No Complaint', value: noComplaint, color: noComplaint > 0 ? 'text-red-400' : 'text-green-400' },
+                { label: 'No Service', value: noService, color: noService > 0 ? 'text-red-400' : 'text-green-400' },
+                { label: 'No Answer', value: noAnswer, color: noAnswer > 0 ? 'text-red-400' : 'text-green-400' },
+                { label: 'No Discovery', value: noDiscovery, color: noDiscovery > 0 ? 'text-amber-400' : 'text-green-400' },
+                { label: 'Past DED', value: pastDed, color: pastDed > 0 ? 'text-red-400' : 'text-green-400' },
+              ];
+              return (
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="text-xs font-medium text-white/50 mr-2 shrink-0">Pipeline:</span>
+                  {items.map((item, i) => (
+                    <div key={item.label} className="flex items-center gap-1 shrink-0">
+                      {i > 0 && <span className="text-white/30 mx-1">/</span>}
+                      <span className={`text-sm font-bold ${item.color}`}>{item.value}</span>
+                      <span className="text-xs text-white/60">{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
           <select
             value={selectedAttorney}
@@ -292,9 +316,6 @@ export default function LDN() {
               ))}
             </DashboardGrid>
           </section>
-
-          {/* Pipeline Summary Bar */}
-          <PipelineSummaryBar bundle={bundle} />
 
           {/* Risk Summary */}
           <RiskPanel
@@ -391,41 +412,3 @@ function getStageDetailRows(
   }
 }
 
-// ─── Pipeline Summary Bar ───────────────────────────────────────────────────
-
-function PipelineSummaryBar({ bundle }: { bundle: LdnReportBundle }) {
-  const litOpenLit = filterLitOnly(bundle.openLit?.detailRows ?? []);
-  const openLitCount = litOpenLit.length;
-  const noComplaint = filterLitOnly(bundle.complaints?.detailRows ?? []).length;
-  const noService = bundle.service?.detailRows?.length ?? 0;
-  const noAnswer = bundle.answers?.detailRows?.length ?? 0;
-  const noDiscovery = filterLitOnly(bundle.formA?.detailRows ?? []).length + filterLitOnly(bundle.formC?.detailRows ?? []).length;
-  const pastDed = litOpenLit.filter(r => {
-    const v = r['Discovery End Date'];
-    if (!v || v === '-') return false;
-    const d = new Date(v as string);
-    return !isNaN(d.getTime()) && d < new Date();
-  }).length;
-
-  const items = [
-    { label: 'Open Lit', value: openLitCount, color: 'text-foreground' },
-    { label: 'No Complaint', value: noComplaint, color: noComplaint > 0 ? 'text-red-400' : 'text-green-400' },
-    { label: 'No Service', value: noService, color: noService > 0 ? 'text-red-400' : 'text-green-400' },
-    { label: 'No Answer', value: noAnswer, color: noAnswer > 0 ? 'text-red-400' : 'text-green-400' },
-    { label: 'No Discovery', value: noDiscovery, color: noDiscovery > 0 ? 'text-amber-400' : 'text-green-400' },
-    { label: 'Past DED', value: pastDed, color: pastDed > 0 ? 'text-red-400' : 'text-green-400' },
-  ];
-
-  return (
-    <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-card/50 px-4 py-3">
-      <span className="text-xs font-medium text-muted-foreground mr-2 shrink-0">Pipeline:</span>
-      {items.map((item, i) => (
-        <div key={item.label} className="flex items-center gap-1 shrink-0">
-          {i > 0 && <span className="text-muted-foreground/40 mx-1">/</span>}
-          <span className={`text-sm font-bold ${item.color}`}>{item.value}</span>
-          <span className="text-xs text-muted-foreground">{item.label}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
