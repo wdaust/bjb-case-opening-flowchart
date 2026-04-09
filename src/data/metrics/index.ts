@@ -39,5 +39,9 @@ export type { LCIResult, LCIBand, LayerMetric, LayerScore, AttorneyLCIRow, Alert
 export { computeDiscoveryFlow } from './discoveryFlow';
 export type { DiscoveryFlowData, BlockedMatter, PipelineStage, SankeyData } from './discoveryFlow';
 
+// Case Timing
+export { computeCaseTimingStages, DEFAULT_THRESHOLDS } from './caseTiming';
+export type { TimingThresholds, TimingStageResult } from './caseTiming';
+
 // Card definitions
 export { CARD_FILTERS, CARD_INFO, CARD_TIMING, STAGE_INFO, STAGE_DRILL_COLUMNS } from './cardDefs';
