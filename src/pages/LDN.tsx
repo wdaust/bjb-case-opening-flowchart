@@ -36,6 +36,7 @@ import {
   type DrillRow,
   filterLitOnly,
   buildFixedAttorneyLookup,
+  topAttorney,
 } from '../utils/ldnMetrics';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
@@ -395,32 +396,47 @@ function getStageDetailRows(
   scores: { attorney: string }[],
   lookup: Map<string, string>,
 ): { rows: DrillRow[] } {
+  const attorneySet = new Set(scores.map(s => s.attorney));
+
+  // Match computePortfolioFromScores filtering: grouping = topAttorney(_groupingLabel)
+  function filterByGrouping(rows: DrillRow[]): DrillRow[] {
+    return rows.filter(r => {
+      const atty = topAttorney(r._groupingLabel);
+      return atty && attorneySet.has(atty);
+    });
+  }
+
+  // Match computePortfolioFromScores filtering: crossref = try _groupingLabel then Display Name lookup
+  function filterByCrossref(rows: DrillRow[]): DrillRow[] {
+    return rows.filter(r => {
+      const atty = topAttorney(r._groupingLabel);
+      if (atty && attorneySet.has(atty)) return true;
+      const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
+      const mapped = lookup.get(dn);
+      return mapped ? attorneySet.has(mapped) : false;
+    });
+  }
+
   switch (stage) {
     case 'complaints': {
       const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
-      // Filter to attorney-attributed rows using cross-ref lookup
-      const attorneySet = new Set(scores.map(s => s.attorney));
-      const attorneyRows = allRows.filter(r => {
-        const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
-        const mapped = lookup.get(dn);
-        return mapped ? attorneySet.has(mapped) : false;
-      });
+      const attorneyRows = filterByCrossref(allRows);
       if (complaintsMode === 'all') return { rows: attorneyRows };
       // Unfiled = Pre-Lit only
       return { rows: attorneyRows.filter(r => r['PI Status'] === 'Pre-Lit' || r['PI Status'] == null) };
     }
     case 'service':
-      return { rows: (bundle.service?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterByGrouping((bundle.service?.detailRows ?? []) as DrillRow[]) };
     case 'answers':
-      return { rows: (bundle.answers?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterByGrouping((bundle.answers?.detailRows ?? []) as DrillRow[]) };
     case 'formA':
-      return { rows: filterLitOnly(bundle.formA?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterByCrossref(filterLitOnly(bundle.formA?.detailRows ?? []) as DrillRow[]) };
     case 'formC':
-      return { rows: filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterByCrossref(filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[]) };
     case 'depositions':
-      return { rows: filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterByCrossref(filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[]) };
     case 'ded':
-      return { rows: filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[] };
+      return { rows: filterByGrouping(filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[]) };
   }
 }
 
