@@ -116,6 +116,20 @@ export function filterLitOnly(rows: Row[]): Row[] {
   });
 }
 
+// ─── Grouping-label bucket helpers ──────────────────────────────────────────
+
+/** Extract Form A status bucket from _groupingLabel like "Form A Overdue [Overdue 60-89 Days] > MAT-xxx" */
+function formABucket(row: Record<string, unknown>): string {
+  const gl = String(row._groupingLabel ?? '');
+  return gl.split(' > ')[0].trim();
+}
+
+/** Extract Form C status bucket from _groupingLabel like "Need to File Motion > MAT-xxx" */
+function formCBucket(row: Record<string, unknown>): string {
+  const gl = String(row._groupingLabel ?? '');
+  return gl.split(' > ')[0].trim();
+}
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 type Row = Record<string, unknown>;
@@ -385,35 +399,38 @@ function computeAnswers(rows: Row[]): { metrics: LdnStageMetrics; issues: Action
 }
 
 function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  const total = rows.length;
-  const atReview = rows.filter(r => {
-    const sent = r['Date Form A Sent to Attorney for Review'];
-    const served = r['Form A Served'];
-    return sent && sent !== '-' && (!served || served === '-');
-  }).length;
+  // Use grouping-label buckets to correctly categorize rows
+  const overdueRows = rows.filter(r => formABucket(r).startsWith('Form A Overdue'));
+  const approachingRows = rows.filter(r => {
+    const b = formABucket(r);
+    return b.includes('Days to Due Date');
+  });
+  const atReviewRows = rows.filter(r => formABucket(r) === 'With Attorney for Review');
 
-  const daysArr = rows.map(r => {
+  const overdue = overdueRows.length;
+  const approaching = approachingRows.length;
+  const atReview = atReviewRows.length;
+
+  // Aging from OVERDUE rows only
+  const overdueDaysArr = overdueRows.map(r => {
     const v = r['Answer Date to Today'];
     const num = typeof v === 'number' ? v : Number(v);
-    if (!isNaN(num)) return num;
-    const d = parseDate(r['Answer Filed'] as string);
-    return d ? daysSinceToday(d) : null;
+    return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
 
-  const served = rows.filter(r => r['Form A Served'] && r['Form A Served'] !== '-').length;
-  const pctServed = total ? Math.round((served / total) * 100) : 100;
+  const avgOverdue = mean(overdueDaysArr);
 
   const cards: MetricCard[] = [
-    { label: 'Past-Due Count', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
+    { label: 'Overdue', value: overdue, rag: overdue === 0 ? 'green' : overdue <= 5 ? 'amber' : 'red' },
+    { label: 'Approaching Due', value: approaching, rag: approaching === 0 ? 'green' : approaching <= 10 ? 'amber' : 'red' },
     { label: 'At Attorney Review', value: atReview, rag: atReview === 0 ? 'green' : 'amber' },
-    { label: 'Avg Days Since Answer', value: `${mean(daysArr)}d`, rag: mean(daysArr) < 60 ? 'green' : mean(daysArr) < 90 ? 'amber' : 'red' },
-    { label: '% Served', value: `${pctServed}%`, rag: pctServed >= 80 ? 'green' : pctServed >= 50 ? 'amber' : 'red' },
+    { label: 'Avg Days Overdue', value: `${avgOverdue}d`, rag: avgOverdue < 30 ? 'green' : avgOverdue < 60 ? 'amber' : 'red' },
   ];
 
-  const worstRag = rag(total);
-  const gauge = buildGauge('Form A', daysArr, SLA_TARGETS.formA);
+  const worstRag = overdue > 5 ? 'red' : overdue > 0 ? 'amber' : 'green';
+  const gauge = buildGauge('Form A', overdueDaysArr, SLA_TARGETS.formA);
 
-  const issues: ActionableIssue[] = rows
+  const issues: ActionableIssue[] = overdueRows
     .filter(r => {
       const v = r['Answer Date to Today'];
       const num = typeof v === 'number' ? v : Number(v);
@@ -421,7 +438,7 @@ function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionab
     })
     .map(r => ({
       stage: 'Form A',
-      description: `${r['Matter Name'] || 'Unknown'} — Form A past due`,
+      description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — Form A overdue`,
       daysOverdue: Number(r['Answer Date to Today']) || 0,
       priority: (Number(r['Answer Date to Today']) || 0) >= 90 ? 'red' as RagColor : 'amber' as RagColor,
       suggestedAction: 'Serve Form A or follow up on attorney review',
@@ -430,39 +447,51 @@ function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionab
   return { metrics: { stage: 'formA', label: STAGE_LABELS.formA, cards, gauge, rag: worstRag }, issues };
 }
 
-function computeFormC(crossRefRows: Row[], tenDayRows: Row[], motionRows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  const primary = crossRefRows.length;
-  const need10Day = tenDayRows.length;
-  const needMotion = motionRows.length;
-  const total = primary + need10Day + needMotion;
+function computeFormC(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+  // Use grouping-label buckets from the single main Form C report
+  const needMotionRows = rows.filter(r => formCBucket(r) === 'Need to File Motion');
+  const need10DayRows = rows.filter(r => formCBucket(r) === 'Need a 10-Day Letter');
+  const pendingRows = rows.filter(r => {
+    const b = formCBucket(r);
+    return b.startsWith('10-Day Letter Out') || b.startsWith('60 Days');
+  });
+  const withinTimeRows = rows.filter(r => formCBucket(r) === 'Within Time');
 
-  const daysArr = crossRefRows.map(r => {
+  const needMotion = needMotionRows.length;
+  const need10Day = need10DayRows.length;
+  const pending = pendingRows.length;
+  const withinTime = withinTimeRows.length;
+
+  // Gauge from overdue rows (Need Motion + Need 10-Day Letter)
+  const overdueRows = [...needMotionRows, ...need10DayRows];
+  const daysArr = overdueRows.map(r => {
     const v = r['Answer Date to Today'];
     const num = typeof v === 'number' ? v : Number(v);
     return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
 
   const cards: MetricCard[] = [
-    { label: 'Past-Due Form C', value: primary, rag: primary === 0 ? 'green' : primary <= 3 ? 'amber' : 'red' },
+    { label: 'Need Motion', value: needMotion, rag: needMotion === 0 ? 'green' : needMotion <= 5 ? 'amber' : 'red' },
     { label: 'Need 10-Day Letter', value: need10Day, rag: need10Day === 0 ? 'green' : 'amber' },
-    { label: 'Need Motion', value: needMotion, rag: needMotion === 0 ? 'green' : 'red' },
+    { label: 'Pending Response', value: pending, rag: 'green' },
+    { label: 'Within Time', value: withinTime, rag: 'green' },
   ];
 
-  const worstRag = rag(total);
+  const worstRag = needMotion > 5 ? 'red' : needMotion > 0 ? 'amber' : 'green';
   const gauge = buildGauge('Form C', daysArr, SLA_TARGETS.formC);
 
   const issues: ActionableIssue[] = [
-    ...motionRows.map(r => ({
+    ...needMotionRows.map(r => ({
       stage: 'Form C',
-      description: `${r['Matter Name'] || 'Unknown'} — needs motion to compel`,
-      daysOverdue: 0,
+      description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — needs motion to compel`,
+      daysOverdue: Number(r['Answer Date to Today']) || 0,
       priority: 'red' as RagColor,
       suggestedAction: 'File motion to compel Form C',
     })),
-    ...tenDayRows.map(r => ({
+    ...need10DayRows.map(r => ({
       stage: 'Form C',
-      description: `${r['Matter Name'] || 'Unknown'} — needs 10-day letter`,
-      daysOverdue: 0,
+      description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — needs 10-day letter`,
+      daysOverdue: Number(r['Answer Date to Today']) || 0,
       priority: 'amber' as RagColor,
       suggestedAction: 'Send 10-day demand letter',
     })),
@@ -580,9 +609,7 @@ export function computeAllLdnMetrics(bundle: LdnReportBundle): LdnAttorneyScore[
     const serviceRows = (bundle.service?.detailRows ?? []).filter(r => topAttorney(r._groupingLabel) === attorney);
     const answerRows = (bundle.answers?.detailRows ?? []).filter(r => topAttorney(r._groupingLabel) === attorney);
     const formARows = filterRowsByAttorney(litFormA, lookup, attorney);
-    const formCCrossRef = filterRowsByAttorney(litFormC, lookup, attorney);
-    const tenDayRows = (bundle.tenDay?.detailRows ?? []).filter(r => level2Attorney(r._groupingLabel) === attorney);
-    const motionRows = (bundle.motions?.detailRows ?? []).filter(r => level2Attorney(r._groupingLabel) === attorney);
+    const formCRows = filterRowsByAttorney(litFormC, lookup, attorney);
     const depRows = filterRowsByAttorney(litDeps, lookup, attorney);
     const openLitRows = litOpenLit.filter(r => topAttorney(r._groupingLabel) === attorney);
 
@@ -596,7 +623,7 @@ export function computeAllLdnMetrics(bundle: LdnReportBundle): LdnAttorneyScore[
     const s = computeService(serviceRows, svc30Rows);
     const a = computeAnswers(answerRows);
     const fa = computeFormA(formARows);
-    const fc = computeFormC(formCCrossRef, tenDayRows, motionRows);
+    const fc = computeFormC(formCRows);
     const dep = computeDepositions(depRows);
     const ded = computeDED(openLitRows);
 
@@ -715,8 +742,8 @@ export const STAGE_INFO: Record<StageName, string> = {
   complaints: 'Tracks unfiled complaints from the date they were assigned to the litigation unit. SLA target is 14 days.',
   service: 'Monitors past-due service items across matters. No reliable aging field exists in this report.',
   answers: 'Tracks missing answers/responses from defendants. Answer Filed is typically empty since this is a missing-answers report.',
-  formA: 'Form A interrogatories tracking — measures time from answer date. Includes attorney review status and served percentage.',
-  formC: 'Form C document requests — includes 10-day demand letters and motions to compel for non-responsive parties.',
+  formA: 'Form A interrogatories — uses SF report status buckets (Overdue, Approaching Due, At Attorney Review) for accurate categorization.',
+  formC: 'Form C document requests — uses SF report status buckets (Need Motion, Need 10-Day Letter, Pending Response, Within Time) from a single source report.',
   depositions: 'Outstanding depositions tracked from filing date. Monitors scheduling rate and 180-day overdue threshold.',
   ded: 'Discovery End Date tracking across the open litigation portfolio. Flags past-DED cases and those approaching within 30/60 days.',
 };
@@ -836,19 +863,16 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     'Has Deposition': hasVal('Defendant Deposition'),
   },
   formA: {
-    'Past-Due Count': identity,
-    'At Attorney Review': (row) => {
-      const sent = row['Date Form A Sent to Attorney for Review'];
-      const served = row['Form A Served'];
-      return (sent != null && sent !== '' && sent !== '-') && (!served || served === '-');
-    },
-    'Avg Days Since Answer': identity,
-    '% Served': hasVal('Form A Served'),
+    'Overdue': (row) => formABucket(row).startsWith('Form A Overdue'),
+    'Approaching Due': (row) => formABucket(row).includes('Days to Due Date'),
+    'At Attorney Review': (row) => formABucket(row) === 'With Attorney for Review',
+    'Avg Days Overdue': (row) => formABucket(row).startsWith('Form A Overdue'),
   },
   formC: {
-    'Past-Due Form C': identity, // will use formC rows
-    'Need 10-Day Letter': identity, // will use tenDay rows
-    'Need Motion': identity, // will use motion rows
+    'Need Motion': (row) => formCBucket(row) === 'Need to File Motion',
+    'Need 10-Day Letter': (row) => formCBucket(row) === 'Need a 10-Day Letter',
+    'Pending Response': (row) => { const b = formCBucket(row); return b.startsWith('10-Day Letter Out') || b.startsWith('60 Days'); },
+    'Within Time': (row) => formCBucket(row) === 'Within Time',
   },
   depositions: {
     'Outstanding': identity,
@@ -898,13 +922,14 @@ export const CARD_INFO: Record<string, string> = {
   'Defendants Affected': 'Unique defendants with missing answers.',
   'Defaults Entered': 'Cases where a default judgment has been entered against a defendant.',
   'Has Deposition': 'Defendants who have a deposition on file.',
-  'Past-Due Count': 'Total past-due Form A interrogatories.',
+  'Overdue': 'Form A rows in overdue status buckets (60-89, 90-119, 120+ days past answer).',
+  'Approaching Due': 'Form A rows within 0-30 days of the due date — not yet overdue.',
   'At Attorney Review': 'Form A sent to attorney for review but not yet served.',
-  'Avg Days Since Answer': 'Average days elapsed since the answer was filed.',
-  '% Served': 'Percentage of Form A interrogatories that have been served.',
-  'Past-Due Form C': 'Form C document requests that are past due.',
-  'Need 10-Day Letter': 'Cases requiring a 10-day demand letter for Form C compliance.',
-  'Need Motion': 'Cases requiring a motion to compel for Form C non-response.',
+  'Avg Days Overdue': 'Average days since answer for overdue Form A rows only.',
+  'Need Motion': 'Form C rows where a motion to compel is needed (from SF report bucket).',
+  'Need 10-Day Letter': 'Form C rows where a 10-day demand letter is needed (from SF report bucket).',
+  'Pending Response': 'Form C rows where a 10-day letter is out or 60-day deadline is approaching.',
+  'Within Time': 'Form C rows that are within the allowed time — no action needed.',
   'Outstanding': 'Total outstanding depositions not yet completed.',
   'Overdue 180+': 'Depositions more than 180 days from the filing date.',
   'Avg Days from Filed': 'Average days since the case was filed.',
@@ -925,8 +950,6 @@ export function computePortfolioStages(bundle: LdnReportBundle): Record<StageNam
   const allAnswers = bundle.answers?.detailRows ?? [];
   const allFormA = filterLitOnly(bundle.formA?.detailRows ?? []);
   const allFormC = filterLitOnly(bundle.formC?.detailRows ?? []);
-  const allTenDay = bundle.tenDay?.detailRows ?? [];
-  const allMotions = bundle.motions?.detailRows ?? [];
   const allDeps = filterLitOnly(bundle.deps?.detailRows ?? []);
   const allOpenLit = filterLitOnly(bundle.openLit?.detailRows ?? []);
   const allSvc30 = bundle.service30Day?.detailRows ?? [];
@@ -936,7 +959,7 @@ export function computePortfolioStages(bundle: LdnReportBundle): Record<StageNam
     service: computeService(allService, allSvc30).metrics,
     answers: computeAnswers(allAnswers).metrics,
     formA: computeFormA(allFormA).metrics,
-    formC: computeFormC(allFormC, allTenDay, allMotions).metrics,
+    formC: computeFormC(allFormC).metrics,
     depositions: computeDepositions(allDeps).metrics,
     ded: computeDED(allOpenLit).metrics,
   };
@@ -981,14 +1004,11 @@ export function computePortfolioFromScores(scores: LdnAttorneyScore[], bundle: L
   // Must match how computeAllLdnMetrics assigns rows to attorneys:
   //   complaints, formA, formC, deps → cross-ref (Display Name lookup)
   //   service, answers, openLit → _groupingLabel (topAttorney)
-  //   tenDay, motions → _groupingLabel (level2Attorney)
   const attyComplaints = filterToAttorneys(bundle.complaints?.detailRows ?? [], 'crossref');
   const attyService = filterToAttorneys(bundle.service?.detailRows ?? [], 'grouping');
   const attyAnswers = filterToAttorneys(bundle.answers?.detailRows ?? [], 'grouping');
   const attyFormA = filterToAttorneys(filterLitOnly(bundle.formA?.detailRows ?? []), 'crossref');
   const attyFormC = filterToAttorneys(filterLitOnly(bundle.formC?.detailRows ?? []), 'crossref');
-  const attyTenDay = filterToAttorneys(bundle.tenDay?.detailRows ?? [], 'level2');
-  const attyMotions = filterToAttorneys(bundle.motions?.detailRows ?? [], 'level2');
   const attyDeps = filterToAttorneys(filterLitOnly(bundle.deps?.detailRows ?? []), 'crossref');
   const attyOpenLit = filterToAttorneys(filterLitOnly(bundle.openLit?.detailRows ?? []), 'grouping');
   const attySvc30 = filterToAttorneys(bundle.service30Day?.detailRows ?? [], 'crossref');
@@ -997,7 +1017,7 @@ export function computePortfolioFromScores(scores: LdnAttorneyScore[], bundle: L
   const s = computeService(attyService, attySvc30);
   const a = computeAnswers(attyAnswers);
   const fa = computeFormA(attyFormA);
-  const fc = computeFormC(attyFormC, attyTenDay, attyMotions);
+  const fc = computeFormC(attyFormC);
   const dep = computeDepositions(attyDeps);
   const ded = computeDED(attyOpenLit);
 

@@ -13,8 +13,6 @@ import {
   FORM_A_REPORT_ID,
   FORM_C_REPORT_ID,
   DEP_REPORT_ID,
-  FORM_C_10DAY_ID,
-  NEED_FORM_C_MOTION_ID,
   OPEN_LIT_ID,
   RESOLUTIONS_ID,
   STATS_ID,
@@ -80,12 +78,6 @@ export default function LDN() {
   const { data: deps, loading: l6 } = useSalesforceReport<ReportSummaryResponse>({
     id: DEP_REPORT_ID, type: 'report', mode: 'full',
   });
-  const { data: tenDay, loading: l7 } = useSalesforceReport<ReportSummaryResponse>({
-    id: FORM_C_10DAY_ID, type: 'report', mode: 'full',
-  });
-  const { data: motions, loading: l8 } = useSalesforceReport<ReportSummaryResponse>({
-    id: NEED_FORM_C_MOTION_ID, type: 'report', mode: 'full',
-  });
   const { data: openLit, loading: l9 } = useSalesforceReport<ReportSummaryResponse>({
     id: OPEN_LIT_ID, type: 'report', mode: 'full',
   });
@@ -110,12 +102,12 @@ export default function LDN() {
     id: EXPERTS_ID, type: 'report',
   });
 
-  const loading = l1 || l2 || l3 || l4 || l5 || l6 || l7 || l8 || l9 || l15;
+  const loading = l1 || l2 || l3 || l4 || l5 || l6 || l9 || l15;
   const lciLoading = l10 || l11 || l12 || l13 || l14;
 
   const bundle: LdnReportBundle = useMemo(() => ({
-    complaints, service, answers, formA, formC, deps, tenDay, motions, openLit, service30Day,
-  }), [complaints, service, answers, formA, formC, deps, tenDay, motions, openLit, service30Day]);
+    complaints, service, answers, formA, formC, deps, tenDay: null, motions: null, openLit, service30Day,
+  }), [complaints, service, answers, formA, formC, deps, openLit, service30Day]);
 
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
@@ -352,8 +344,6 @@ export default function LDN() {
                 scores={scores}
                 onSelectAttorney={setSelectedAttorney}
                 detailRows={detailRows.rows}
-                tenDayRows={detailRows.tenDayRows}
-                motionRows={detailRows.motionRows}
                 complaintsMode={sn === 'complaints' ? complaintsMode : undefined}
                 onComplaintsModeChange={sn === 'complaints' ? setComplaintsMode : undefined}
               />
@@ -373,7 +363,7 @@ function getStageDetailRows(
   complaintsMode: 'unfiled' | 'all',
   scores: { attorney: string }[],
   lookup: Map<string, string>,
-): { rows: DrillRow[]; tenDayRows?: DrillRow[]; motionRows?: DrillRow[] } {
+): { rows: DrillRow[] } {
   switch (stage) {
     case 'complaints': {
       const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
@@ -395,11 +385,7 @@ function getStageDetailRows(
     case 'formA':
       return { rows: filterLitOnly(bundle.formA?.detailRows ?? []) as DrillRow[] };
     case 'formC':
-      return {
-        rows: filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[],
-        tenDayRows: (bundle.tenDay?.detailRows ?? []) as DrillRow[],
-        motionRows: (bundle.motions?.detailRows ?? []) as DrillRow[],
-      };
+      return { rows: filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[] };
     case 'depositions':
       return { rows: filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[] };
     case 'ded':

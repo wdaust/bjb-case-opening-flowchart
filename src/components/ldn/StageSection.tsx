@@ -18,8 +18,6 @@ interface Props {
   stageName: StageName;
   onSelectAttorney: (attorney: string) => void;
   detailRows?: DrillRow[];
-  tenDayRows?: DrillRow[];
-  motionRows?: DrillRow[];
   complaintsMode?: 'unfiled' | 'all';
   onComplaintsModeChange?: (mode: 'unfiled' | 'all') => void;
 }
@@ -36,7 +34,7 @@ interface RankRow {
   [key: string]: unknown;
 }
 
-export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney, detailRows, tenDayRows, motionRows, complaintsMode, onComplaintsModeChange }: Props) {
+export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney, detailRows, complaintsMode, onComplaintsModeChange }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [drillDownCard, setDrillDownCard] = useState<string | null>(null);
 
@@ -87,12 +85,6 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
   // Drill-down: determine which rows to show for the clicked card
   function getDrillRows(cardLabel: string): DrillRow[] {
     if (!detailRows) return [];
-    // Form C has special sub-sources
-    if (stageName === 'formC') {
-      if (cardLabel === 'Need 10-Day Letter') return tenDayRows ?? [];
-      if (cardLabel === 'Need Motion') return motionRows ?? [];
-      // 'Past-Due Form C' uses the main detailRows
-    }
     const filterFn = CARD_FILTERS[stageName]?.[cardLabel];
     if (!filterFn) return detailRows;
     return detailRows.filter(filterFn);

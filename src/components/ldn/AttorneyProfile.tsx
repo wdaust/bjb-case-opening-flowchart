@@ -56,7 +56,7 @@ const issueColumns: Column<ActionableIssue>[] = [
 ];
 
 /** Filter bundle detail rows to a single attorney */
-function getAttorneyStageRows(bundle: LdnReportBundle, stage: StageName, attorney: string): { rows: DrillRow[]; tenDayRows?: DrillRow[]; motionRows?: DrillRow[] } {
+function getAttorneyStageRows(bundle: LdnReportBundle, stage: StageName, attorney: string): { rows: DrillRow[] } {
   const filterByGrouping = (rows: DrillRow[]) =>
     rows.filter(r => topAttorney(r._groupingLabel) === attorney);
   const filterByDisplayName = (rows: DrillRow[], allOpenLit: DrillRow[]) => {
@@ -84,20 +84,7 @@ function getAttorneyStageRows(bundle: LdnReportBundle, stage: StageName, attorne
     case 'formA':
       return { rows: filterByDisplayName((bundle.formA?.detailRows ?? []) as DrillRow[], openLitRows) };
     case 'formC':
-      return {
-        rows: filterByDisplayName((bundle.formC?.detailRows ?? []) as DrillRow[], openLitRows),
-        tenDayRows: ((bundle.tenDay?.detailRows ?? []) as DrillRow[]).filter(r => {
-          // tenDay uses level2 grouping
-          const label = r._groupingLabel as string;
-          const parts = (label ?? '').split(' > ');
-          return parts.length >= 2 ? parts[1].trim() === attorney : parts[0]?.trim() === attorney;
-        }),
-        motionRows: ((bundle.motions?.detailRows ?? []) as DrillRow[]).filter(r => {
-          const label = r._groupingLabel as string;
-          const parts = (label ?? '').split(' > ');
-          return parts.length >= 2 ? parts[1].trim() === attorney : parts[0]?.trim() === attorney;
-        }),
-      };
+      return { rows: filterByDisplayName((bundle.formC?.detailRows ?? []) as DrillRow[], openLitRows) };
     case 'depositions':
       return { rows: filterByDisplayName((bundle.deps?.detailRows ?? []) as DrillRow[], openLitRows) };
     case 'ded':
@@ -120,10 +107,6 @@ export function AttorneyProfile({ score, bundle, onBack }: Props) {
     if (!drillDown) return [];
     const { stage, card } = drillDown;
     const stageRows = getAttorneyStageRows(bundle, stage, score.attorney);
-    if (stage === 'formC') {
-      if (card === 'Need 10-Day Letter') return stageRows.tenDayRows ?? [];
-      if (card === 'Need Motion') return stageRows.motionRows ?? [];
-    }
     const filterFn = CARD_FILTERS[stage]?.[card];
     if (!filterFn) return stageRows.rows;
     return stageRows.rows.filter(filterFn);
