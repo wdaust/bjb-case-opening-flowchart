@@ -109,14 +109,48 @@ const STAGE_EXTRACTORS: Record<StageName, StageExtractor> = {
   },
 };
 
+/** Get a matter-level key from a row. Tries Matter Name first, then Display Name. */
+function matterKey(row: DrillRow): string {
+  const mn = row['Matter Name'];
+  if (typeof mn === 'string' && mn && mn !== '-') return mn;
+  const dn = row['Display Name'];
+  if (typeof dn === 'string' && dn && dn !== '-') return dn;
+  // Fallback: use the row reference itself (no dedup possible)
+  return `_unknown_${Math.random()}`;
+}
+
+/**
+ * Deduplicate rows to one per matter, keeping the row with the WORST (max) days.
+ * This ensures each matter is counted once, classified by its slowest defendant.
+ */
+function dedupeByMatter(
+  rows: DrillRow[],
+  getDays: (row: DrillRow) => number | null,
+): DrillRow[] {
+  const best = new Map<string, { row: DrillRow; days: number }>();
+  for (const row of rows) {
+    const days = getDays(row);
+    if (days === null) continue;
+    const key = matterKey(row);
+    const existing = best.get(key);
+    if (!existing || days > existing.days) {
+      best.set(key, { row, days });
+    }
+  }
+  return Array.from(best.values()).map(e => e.row);
+}
+
 export function computeCaseTimingStages(
   bundle: LdnReportBundle,
   thresholds: Record<StageName, TimingThresholds>,
 ): TimingStageResult[] {
   return STAGE_ORDER.map((stage) => {
     const extractor = STAGE_EXTRACTORS[stage];
-    const rows = extractor.getRows(bundle);
+    const rawRows = extractor.getRows(bundle);
     const t = thresholds[stage];
+
+    // Deduplicate to one row per matter (worst defendant wins)
+    const rows = dedupeByMatter(rawRows, extractor.getDays);
 
     const greenRows: DrillRow[] = [];
     const amberRows: DrillRow[] = [];
