@@ -351,6 +351,25 @@ function computeMetricsFromRows(stage: StageName, rows: DrillRow[], svc30Rows: D
 
 // ─── Helper: map stage name to the right detail rows from the bundle ────────
 
+/** Deduplicate rows to one per matter. Keeps the first row encountered per matter key. */
+function dedupeByMatter(rows: DrillRow[]): DrillRow[] {
+  const seen = new Map<string, DrillRow>();
+  for (const r of rows) {
+    let key: string | undefined;
+    for (const k of ['Matter Name', 'Matter: Matter Name']) {
+      const v = r[k];
+      if (typeof v === 'string' && v && v !== '-') { key = v; break; }
+    }
+    if (!key) {
+      const dn = r['Display Name'];
+      if (typeof dn === 'string' && dn && dn !== '-') key = dn;
+    }
+    if (!key) { seen.set(`_u${seen.size}`, r); continue; }
+    if (!seen.has(key)) seen.set(key, r);
+  }
+  return Array.from(seen.values());
+}
+
 function getStageDetailRows(
   bundle: LdnReportBundle,
   stage: StageName,
@@ -385,25 +404,25 @@ function getStageDetailRows(
       const attorneyRows = filterByCrossref(allRows);
       // Always filter to Pre-Lit
       const preLitRows = attorneyRows.filter(r => r['PI Status'] === 'Pre-Lit' || r['PI Status'] == null);
-      if (complaintsMode === 'includeBlockers') return { rows: preLitRows };
+      if (complaintsMode === 'includeBlockers') return { rows: dedupeByMatter(preLitRows) };
       // Exclude rows with a blocker
-      return { rows: preLitRows.filter(r => {
+      return { rows: dedupeByMatter(preLitRows.filter(r => {
         const b = r['Blocker to Filing Complaint'] ?? r['Blocker'];
         return !b || b === '-';
-      }) };
+      })) };
     }
     case 'service':
-      return { rows: filterByGrouping((bundle.service?.detailRows ?? []) as DrillRow[]) };
+      return { rows: dedupeByMatter(filterByGrouping((bundle.service?.detailRows ?? []) as DrillRow[])) };
     case 'answers':
-      return { rows: filterByGrouping((bundle.answers?.detailRows ?? []) as DrillRow[]) };
+      return { rows: dedupeByMatter(filterByGrouping((bundle.answers?.detailRows ?? []) as DrillRow[])) };
     case 'formA':
-      return { rows: filterByCrossref(filterLitOnly(bundle.formA?.detailRows ?? []) as DrillRow[]) };
+      return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.formA?.detailRows ?? []) as DrillRow[])) };
     case 'formC':
-      return { rows: filterByCrossref(filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[]) };
+      return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[])) };
     case 'depositions':
-      return { rows: filterByCrossref(filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[]) };
+      return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[])) };
     case 'ded':
-      return { rows: filterByGrouping(filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[]) };
+      return { rows: dedupeByMatter(filterByGrouping(filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[])) };
   }
 }
 

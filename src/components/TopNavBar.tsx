@@ -6,7 +6,7 @@ import { APP_VERSION } from '../utils/version';
 import { useAuth } from '../contexts/AuthContext';
 
 const mainLinks = [
-  { label: 'LDM', to: '/ldn' },
+  { label: 'LDM', to: '/ldm' },
   { label: 'Discovery Flow', to: '/discovery-flow' },
   { label: 'LIT Scorecard', to: '/lit-scorecard' },
   { label: 'MOS', to: '/performance-infrastructure/mos' },

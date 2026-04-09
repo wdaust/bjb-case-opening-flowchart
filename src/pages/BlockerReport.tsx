@@ -105,11 +105,11 @@ export default function BlockerReport() {
       <HeroSection>
         <div className="flex items-center gap-4">
           <button
-            onClick={() => navigate('/ldn')}
+            onClick={() => navigate('/ldm')}
             className="flex items-center gap-1.5 text-white/70 hover:text-white transition-colors"
           >
             <ArrowLeft size={18} />
-            <span className="text-sm">Back to LDN</span>
+            <span className="text-sm">Back to LDM</span>
           </button>
           <HeroTitle title="Blocker Report" subtitle="Pre-Lit complaints with documented blockers preventing filing" />
         </div>

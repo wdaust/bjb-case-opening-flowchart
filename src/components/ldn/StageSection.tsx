@@ -162,7 +162,7 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
                   </button>
                 </div>
                 <button
-                  onClick={() => navigate('/ldn/blockers')}
+                  onClick={() => navigate('/ldm/blockers')}
                   className="flex items-center gap-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
                   Blocker Report &rarr;

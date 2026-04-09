@@ -120,7 +120,7 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route path="top-nav-mockup" element={<TopNavMockup />} />
-            <Route index element={<Navigate to="/ldn" replace />} />
+            <Route index element={<Navigate to="/ldm" replace />} />
 <Route path="control-tower" element={<ControlTower />} />
             <Route path="lit-scorecard" element={<LitScorecard />} />
             <Route path="stage/:stageId" element={<StageCommand />} />
@@ -188,8 +188,10 @@ export default function App() {
             <Route path="analytics" element={<Analytics />} />
             <Route path="insights" element={<Insights />} />
             <Route path="optimus-structure" element={<OptimusStructure />} />
-            <Route path="ldn" element={<LDN />} />
-            <Route path="ldn/blockers" element={<BlockerReport />} />
+            <Route path="ldm" element={<LDN />} />
+            <Route path="ldm/blockers" element={<BlockerReport />} />
+            <Route path="ldn" element={<Navigate to="/ldm" replace />} />
+            <Route path="ldn/blockers" element={<Navigate to="/ldm/blockers" replace />} />
             <Route path="discovery-flow" element={<DiscoveryFlow />} />
             <Route path="case-timing" element={<CaseTiming />} />
             <Route path="mos-entry" element={<MosEntry />} />
