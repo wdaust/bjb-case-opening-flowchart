@@ -32,8 +32,8 @@ export {
 export { ESCALATION_FILTERS, countOverdue } from './escalations';
 
 // LCI
-export { computeRealLCI, computeAttorneyMetrics, getRealEscalations, getRedAmberMetrics } from './lci';
-export type { LCIResult, LCIBand, LayerMetric, LayerScore, AttorneyLCIRow, AlertMetric, EscalationItem, RealLCIInput } from './lci';
+export { computeRealLCI, computeAttorneyMetrics, getRealEscalations, getRedAmberMetrics, computeStageLCI } from './lci';
+export type { LCIResult, LCIBand, LayerMetric, LayerScore, AttorneyLCIRow, AlertMetric, EscalationItem, RealLCIInput, StageLCIRow, StageLCIResult } from './lci';
 
 // Discovery Flow
 export { computeDiscoveryFlow } from './discoveryFlow';

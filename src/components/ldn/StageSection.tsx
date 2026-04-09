@@ -205,8 +205,8 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
         ))}
       </DashboardGrid>
 
-      {/* Bullet gauge (hidden for answers — no usable aging data) */}
-      {stageName !== 'answers' && (
+      {/* Bullet gauge (hidden when no aging data available) */}
+      {!stageMetrics.gauge.noAgingData && (
         <div className="mt-4">
           <div className="flex items-end gap-4">
             <div className="flex-1">

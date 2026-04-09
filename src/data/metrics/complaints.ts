@@ -60,6 +60,7 @@ export function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issu
   const worstRag: RagColor = overdue >= 4 ? 'red' : overdue >= 1 ? 'amber' : 'green';
   const gauge = buildGauge('Complaints', daysArr, SLA_TARGETS.complaints);
 
+  const seenComplaints = new Set<string>();
   const issues: ActionableIssue[] = rows
     .filter(r => {
       const v = r['Date Assigned to Team to Today'];
@@ -68,21 +69,25 @@ export function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issu
       const d = parseDate(r['Date Assigned To Litigation Unit']);
       return d ? daysSinceToday(d) > 14 : false;
     })
-    .map(r => {
+    .reduce<ActionableIssue[]>((acc, r) => {
+      const matter = String(r['Matter Name'] || r['Display Name'] || 'Unknown');
+      if (seenComplaints.has(matter)) return acc;
+      seenComplaints.add(matter);
       const v = r['Date Assigned to Team to Today'];
       const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
       const days = !isNaN(num) ? num : (() => {
         const d = parseDate(r['Date Assigned To Litigation Unit']);
         return d ? daysSinceToday(d) : 0;
       })();
-      return {
+      acc.push({
         stage: 'Complaints',
-        description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — unfiled complaint`,
+        description: `${matter} — unfiled complaint`,
         daysOverdue: days,
         priority: (days >= 30 ? 'red' : 'amber') as RagColor,
         suggestedAction: 'File complaint or escalate blocker',
-      };
-    });
+      });
+      return acc;
+    }, []);
 
   return {
     metrics: { stage: 'complaints', label: STAGE_LABELS.complaints, cards, gauge, rag: worstRag },

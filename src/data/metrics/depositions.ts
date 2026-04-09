@@ -1,5 +1,5 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { buildGauge, rag } from './shared';
+import { buildGauge, rag, uniqueMatterCount } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
@@ -26,27 +26,31 @@ export function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; iss
   // Box 2: Completed Timely — disabled (no completed depo report)
   // Box 3: Completed Untimely — disabled (no completed depo report)
 
-  // Box 4: Uncompleted & Untimely — not completed and past 120d SLA
-  const uncompletedUntimelyRows = rows.filter(r => noDepo(r) && answerDays(r) >= 120);
+  const undone120Count = uniqueMatterCount(undone120Rows);
 
   const cards: MetricCard[] = [
-    { label: 'Undone 120d+', value: undone120Rows.length, rag: undone120Rows.length === 0 ? 'green' : undone120Rows.length <= 3 ? 'amber' : 'red' },
+    { label: 'Undone 120d+', value: undone120Count, rag: undone120Count === 0 ? 'green' : undone120Count <= 3 ? 'amber' : 'red' },
     { label: 'Completed Timely', value: '-', rag: 'green', disabled: true, badge: 'Needs Report' },
     { label: 'Completed Untimely', value: '-', rag: 'green', disabled: true, badge: 'Needs Report' },
-    { label: 'Uncompleted & Untimely', value: uncompletedUntimelyRows.length, rag: uncompletedUntimelyRows.length === 0 ? 'green' : 'red' },
   ];
 
-  const worstRag = rag(undone120Rows.length, [1, 3]);
-  const gauge = buildGauge('Depositions', daysArr, SLA_TARGETS.depositions, rows.length);
+  const worstRag = rag(undone120Count, [1, 3]);
+  const gauge = buildGauge('Depositions', daysArr, SLA_TARGETS.depositions, uniqueMatterCount(rows));
 
-  const issues: ActionableIssue[] = undone120Rows
-    .map(r => ({
+  const seenDepo = new Set<string>();
+  const issues: ActionableIssue[] = undone120Rows.reduce<ActionableIssue[]>((acc, r) => {
+    const matter = String(r['Matter Name'] || r['Display Name'] || 'Unknown');
+    if (seenDepo.has(matter)) return acc;
+    seenDepo.add(matter);
+    acc.push({
       stage: 'Depositions',
-      description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — deposition overdue (${answerDays(r)}d from answer)`,
+      description: `${matter} — deposition overdue (${answerDays(r)}d from answer)`,
       daysOverdue: answerDays(r),
       priority: 'red' as RagColor,
       suggestedAction: 'Schedule deposition or file motion to compel',
-    }));
+    });
+    return acc;
+  }, []);
 
   return { metrics: { stage: 'depositions', label: STAGE_LABELS.depositions, cards, gauge, rag: worstRag }, issues };
 }

@@ -7,6 +7,7 @@ export {
   computeAttorneyMetrics,
   getRealEscalations,
   getRedAmberMetrics,
+  computeStageLCI,
   REAL_LAYER_DEFINITIONS,
   LAYER_METRICS,
   type LCIBand,
@@ -17,4 +18,6 @@ export {
   type AlertMetric,
   type EscalationItem,
   type RealLCIInput,
+  type StageLCIRow,
+  type StageLCIResult,
 } from '../lciEngineReal';

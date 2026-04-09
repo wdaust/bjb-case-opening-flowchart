@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronRight, ChevronsUpDown } from 'lucide-react';
 import { cn } from '../utils/cn';
-import { fmt$, fmtNum } from '../utils/sfHelpers';
+import { fmt$ } from '../utils/sfHelpers';
 import { Breadcrumbs } from '../components/dashboard/Breadcrumbs';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
@@ -10,20 +10,22 @@ import { StatCard } from '../components/dashboard/StatCard';
 import { ScoreGauge } from '../components/scoring/ScoreGauge';
 import { LCIBadge } from '../components/dashboard/LCIBadge';
 import { MiniSparkline } from '../components/dashboard/MiniSparkline';
-import { MetricAlertBanner } from '../components/dashboard/MetricAlertBanner';
 import { Skeleton } from '../components/ui/skeleton';
-import { useSalesforceReport } from '../hooks/useSalesforceReport';
 import { saveMetricSnapshots, useMetricHistory } from '../hooks/useMetricHistory';
+import { useLdnBundle } from '../data/queries/bundles';
 import {
-  computeRealLCI,
+  computeAllLdnMetrics,
   computeAttorneyMetrics,
-  getRedAmberMetrics,
-  REAL_LAYER_DEFINITIONS,
-  type LCIBand,
-} from '../data/metrics/lci';
-import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
-
-import { RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';
+  computeStageLCI,
+  STAGE_ORDER,
+  type StageName,
+  type LdnReportBundle,
+  type LdnStageMetrics,
+} from '../data/metrics';
+import type { LCIBand } from '../data/metrics/lci';
+import type { ReportSummaryResponse } from '../types/salesforce';
+import { RESOLUTIONS_ID } from '../data/sfReportIds';
+import { useSalesforceReport } from '../hooks/useSalesforceReport';
 
 function bandColor(band: LCIBand): string {
   if (band === 'green') return '#22c55e';
@@ -43,21 +45,11 @@ function bandBadgeClasses(band: LCIBand): string {
   return 'bg-red-500/15 text-red-600 dark:text-red-400';
 }
 
-function formatMetricValue(value: number, unit: string): string {
-  if (unit === '$') return fmt$(value);
-  if (unit === '%') return `${value.toFixed(1)}%`;
-  if (unit === 'days') return `${value}d`;
-  if (unit === 'count') return fmtNum(value);
-  return value.toFixed(1);
-}
-
-function formatTarget(target: number, unit: string): string {
-  if (unit === '$') return fmt$(target);
-  if (unit === '%') return `${target}%`;
-  if (unit === 'days') return `${target}d`;
-  if (unit === 'count') return fmtNum(target);
-  return `${target}`;
-}
+const RAG_DOT: Record<string, string> = {
+  green: 'bg-emerald-500',
+  amber: 'bg-amber-500',
+  red: 'bg-red-500',
+};
 
 // ── Loading Skeleton ────────────────────────────────────────────────────
 
@@ -70,7 +62,7 @@ function LCISkeleton() {
       </div>
       <Skeleton className="h-52 w-full rounded-xl" />
       <div className="space-y-2">
-        {Array.from({ length: 4 }).map((_, i) => (
+        {Array.from({ length: 7 }).map((_, i) => (
           <Skeleton key={i} className="h-14 w-full rounded-xl" />
         ))}
       </div>
@@ -87,91 +79,121 @@ function LCISkeleton() {
 
 export default function LCIReport() {
   const navigate = useNavigate();
-  const [expandedLayers, setExpandedLayers] = useState<Set<number>>(new Set());
+  const [expandedStages, setExpandedStages] = useState<Set<StageName>>(new Set());
 
-  // ── Load 5 SF reports (no Matters needed for LCI) ────────────────────
+  // ── LDN bundle (7 stages) ────────────────────────────────────────────
+  const {
+    complaints, service, answers, formA, formC, deps, openLit, service30Day,
+    loading: ldnLoading,
+  } = useLdnBundle();
+
+  const bundle: LdnReportBundle = useMemo(() => ({
+    complaints, service, answers, formA, formC, deps, tenDay: null, motions: null, openLit, service30Day,
+  }), [complaints, service, answers, formA, formC, deps, openLit, service30Day]);
+
+  // ── Attorney Leaderboard (from Resolutions) ───────────────────────────
   const { data: resData, loading: resLoading } =
     useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report' });
-  const { data: statsData, loading: statsLoading } =
-    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
-  const { data: timingData, loading: timingLoading } =
-    useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
-  const { data: discData, loading: discLoading } =
-    useSalesforceReport<ReportSummaryResponse>({ id: DISCOVERY_ID, type: 'report' });
-  const { data: expertsData, loading: expertsLoading } =
-    useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
 
-  const allLoading = resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
+  const allLoading = ldnLoading || resLoading;
 
-  // ── Metric history hooks (before early return) ─────────────────────
+  // ── Metric history ──────────────────────────────────────────────────
   const histComposite = useMetricHistory('lci-composite');
 
-  // ── Compute LCI ─────────────────────────────────────────────────────
-  const lci = useMemo(() => {
-    if (allLoading) return null;
-    return computeRealLCI({ resData, statsData, timingData, discData, expertsData });
-  }, [allLoading, resData, statsData, timingData, discData, expertsData]);
+  // ── Compute LDN metrics + stage LCI ──────────────────────────────────
+  const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
 
-  const alerts = useMemo(() => (lci ? getRedAmberMetrics(lci) : []), [lci]);
+  // Build firm-wide stage metrics from all rows (not per-attorney)
+  const firmStageMetrics = useMemo((): Record<StageName, LdnStageMetrics> | null => {
+    if (ldnLoading || scores.length === 0) return null;
+    // Aggregate: use the first attorney's stage keys, but sum across all
+    const result = {} as Record<StageName, LdnStageMetrics>;
+    for (const sn of STAGE_ORDER) {
+      // Count RAG distribution across attorneys
+      let redCount = 0, amberCount = 0, greenCount = 0;
+      for (const s of scores) {
+        const m = s.stages[sn];
+        if (m.rag === 'red') redCount++;
+        else if (m.rag === 'amber') amberCount++;
+        else greenCount++;
+      }
+      // Use the portfolio-level view: stage from first score as template, override RAG
+      const template = scores[0].stages[sn];
+      const totalPrimary = scores.reduce((sum, s) => {
+        const v = s.stages[sn].cards[0]?.value;
+        return sum + (typeof v === 'number' ? v : 0);
+      }, 0);
+
+      // Firm-wide RAG
+      const firmRag = redCount > 0 ? 'red' as const : amberCount > 0 ? 'amber' as const : 'green' as const;
+
+      result[sn] = {
+        ...template,
+        rag: firmRag,
+        cards: template.cards.map((c, i) => i === 0 ? { ...c, value: totalPrimary, rag: firmRag } : c),
+        gauge: { ...template.gauge, count: totalPrimary },
+      };
+    }
+    return result;
+  }, [ldnLoading, scores]);
+
+  const stageLCI = useMemo(() => {
+    if (!firmStageMetrics) return null;
+    return computeStageLCI(firmStageMetrics);
+  }, [firmStageMetrics]);
 
   const attorneys = useMemo(() => computeAttorneyMetrics(resData), [resData]);
-
   const topPerformers = useMemo(() => attorneys.slice(0, 10), [attorneys]);
   const needsAttention = useMemo(
     () => [...attorneys].reverse().filter(a => a.cases > 0).slice(0, 10),
     [attorneys],
   );
 
+  // ── Alerts from stages with red/amber ──────────────────────────────
+  const alerts = useMemo(() => {
+    if (!stageLCI) return [];
+    return stageLCI.stages.filter(s => s.band === 'red' || s.band === 'amber');
+  }, [stageLCI]);
+
   // ── Save metric snapshots ──────────────────────────────────────────
   useEffect(() => {
-    if (!lci) return;
+    if (!stageLCI) return;
     const snapshots: Record<string, number> = {
-      'lci-composite': lci.score,
+      'lci-composite': stageLCI.score,
     };
-    for (const layer of lci.layers) {
-      const key = layer.name.toLowerCase().replace(/\s+/g, '-');
-      snapshots[`lci-${key}`] = layer.score;
+    for (const s of stageLCI.stages) {
+      snapshots[`lci-${s.stage}`] = s.score;
     }
     saveMetricSnapshots(snapshots);
-  }, [lci]);
+  }, [stageLCI]);
 
-  // ── Layer health counts ────────────────────────────────────────────
-  const greenLayers = lci?.layers.filter(l => l.band === 'green').length ?? 0;
-  const amberLayers = lci?.layers.filter(l => l.band === 'amber').length ?? 0;
-  const redLayers = lci?.layers.filter(l => l.band === 'red').length ?? 0;
-  const totalMetrics = lci?.layers.reduce((sum, l) => sum + l.metrics.length, 0) ?? 0;
+  // ── Stage health counts ────────────────────────────────────────────
+  const greenStages = stageLCI?.stages.filter(s => s.band === 'green').length ?? 0;
+  const amberStages = stageLCI?.stages.filter(s => s.band === 'amber').length ?? 0;
+  const redStages = stageLCI?.stages.filter(s => s.band === 'red').length ?? 0;
 
-  // ── Escalation stats ──────────────────────────────────────────────
-  const redAlerts = alerts.filter(a => a.band === 'red').length;
-  const amberAlerts = alerts.filter(a => a.band === 'amber').length;
-  const worstLayer = useMemo(() => {
-    if (!lci) return 'N/A';
-    return [...lci.layers].sort((a, b) => a.score - b.score)[0]?.name ?? 'N/A';
-  }, [lci]);
-
-  const toggleLayer = (layerId: number) => {
-    setExpandedLayers(prev => {
+  const toggleStage = (stage: StageName) => {
+    setExpandedStages(prev => {
       const next = new Set(prev);
-      if (next.has(layerId)) next.delete(layerId);
-      else next.add(layerId);
+      if (next.has(stage)) next.delete(stage);
+      else next.add(stage);
       return next;
     });
   };
 
   const toggleAll = () => {
-    if (expandedLayers.size === REAL_LAYER_DEFINITIONS.length) {
-      setExpandedLayers(new Set());
+    if (expandedStages.size === STAGE_ORDER.length) {
+      setExpandedStages(new Set());
     } else {
-      setExpandedLayers(new Set(REAL_LAYER_DEFINITIONS.map(l => l.id)));
+      setExpandedStages(new Set(STAGE_ORDER));
     }
   };
 
   // ── Loading state ─────────────────────────────────────────────────
-  if (allLoading || !lci) {
+  if (allLoading || !stageLCI) {
     return <LCISkeleton />;
   }
 
-  // Trend sparkline data
   const hasTrend = histComposite.length >= 3;
 
   return (
@@ -183,21 +205,21 @@ export default function LCIReport() {
           { label: 'LCI Report' },
         ]} />
         <h1 className="text-2xl font-bold text-foreground mt-2">Litigation Control Index Report</h1>
-        <p className="text-xs text-muted-foreground mt-1">Real-time composite score from 5 Salesforce reports</p>
+        <p className="text-xs text-muted-foreground mt-1">7-stage composite score derived from LDM litigation metrics</p>
       </div>
 
       {/* Section 2: Composite Score Summary */}
       <SectionHeader
         title="Composite Score"
-        info="Overall Litigation Control Index combining four weighted layers into a single 0-100 score."
+        info="Overall Litigation Control Index combining seven LDM stages into a single 0-100 score. Each stage contributes equally."
       />
       <div className="rounded-xl border border-border bg-card p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
           {/* Left: Gauge + Band */}
           <div className="flex flex-col items-center gap-2">
-            <ScoreGauge score={lci.score} maxScore={100} size={140} label="Firm LCI" />
-            <span className={cn('text-sm font-semibold px-3 py-1 rounded-full', bandBadgeClasses(lci.band))}>
-              {bandLabel(lci.band)}
+            <ScoreGauge score={stageLCI.score} maxScore={100} size={140} label="Firm LCI" />
+            <span className={cn('text-sm font-semibold px-3 py-1 rounded-full', bandBadgeClasses(stageLCI.band))}>
+              {bandLabel(stageLCI.band)}
             </span>
           </div>
 
@@ -205,7 +227,7 @@ export default function LCIReport() {
           <div className="flex flex-col items-center gap-1">
             <p className="text-xs font-medium text-muted-foreground mb-1">Composite Trend</p>
             {hasTrend ? (
-              <MiniSparkline data={histComposite} color={bandColor(lci.band)} height={60} />
+              <MiniSparkline data={histComposite} color={bandColor(stageLCI.band)} height={60} />
             ) : (
               <div className="text-center py-4">
                 <p className="text-xs text-muted-foreground">Collecting trend data...</p>
@@ -216,39 +238,39 @@ export default function LCIReport() {
             )}
           </div>
 
-          {/* Right: Layer Health Summary */}
+          {/* Right: Stage Health Summary */}
           <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground">Layer Health</p>
+            <p className="text-xs font-medium text-muted-foreground">Stage Health</p>
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1 text-sm">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                {greenLayers} Green
+                {greenStages} Green
               </span>
               <span className="flex items-center gap-1 text-sm">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                {amberLayers} Amber
+                {amberStages} Amber
               </span>
               <span className="flex items-center gap-1 text-sm">
                 <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                {redLayers} Red
+                {redStages} Red
               </span>
             </div>
             <div className="text-sm text-muted-foreground">
-              {totalMetrics} metrics across {REAL_LAYER_DEFINITIONS.length} layers
+              7 stages across {scores.length} attorneys
             </div>
             <div className="text-sm text-muted-foreground">
-              {alerts.length} alert{alerts.length !== 1 ? 's' : ''} active
+              {alerts.length} stage{alerts.length !== 1 ? 's' : ''} needing attention
             </div>
           </div>
         </div>
       </div>
 
-      {/* Section 3: 4-Layer Breakdown */}
+      {/* Section 3: 7-Stage Breakdown */}
       <div>
         <SectionHeader
-          title="4-Layer Breakdown"
-          subtitle="Expand each layer to view individual metrics"
-          info="Individual layer scores with metric details. Expand to see current values vs targets."
+          title="7-Stage Breakdown"
+          subtitle="Expand each stage to view per-attorney distribution"
+          info="Individual stage scores derived from LDM metrics. Expand to see on-track %, stuck count, and RAG status."
           actions={
             <button
               type="button"
@@ -256,39 +278,36 @@ export default function LCIReport() {
               className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded border border-border hover:bg-accent/50"
             >
               <ChevronsUpDown size={14} />
-              {expandedLayers.size === REAL_LAYER_DEFINITIONS.length ? 'Collapse All' : 'Expand All'}
+              {expandedStages.size === STAGE_ORDER.length ? 'Collapse All' : 'Expand All'}
             </button>
           }
         />
         <div className="space-y-2">
-          {lci.layers.map(layer => {
-            const isExpanded = expandedLayers.has(layer.layerId);
-            const weightedContribution = (layer.score * layer.weight).toFixed(1);
+          {stageLCI.stages.map(stageRow => {
+            const isExpanded = expandedStages.has(stageRow.stage);
             return (
-              <div key={layer.layerId} className="rounded-xl border border-border bg-card overflow-hidden">
+              <div key={stageRow.stage} className="rounded-xl border border-border bg-card overflow-hidden">
                 {/* Collapsed Row */}
                 <button
                   type="button"
-                  onClick={() => toggleLayer(layer.layerId)}
+                  onClick={() => toggleStage(stageRow.stage)}
                   className="flex w-full items-center gap-3 px-4 py-3 hover:bg-accent/30 transition-colors"
                 >
                   <span className={cn(
-                    'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0',
-                    bandBadgeClasses(layer.band),
-                  )}>
-                    {layer.layerId + 1}
-                  </span>
+                    'w-3 h-3 rounded-full shrink-0',
+                    RAG_DOT[stageRow.band],
+                  )} />
                   <span className="text-sm font-medium text-foreground text-left flex-1 min-w-0 truncate">
-                    {layer.name}
+                    {stageRow.label}
                   </span>
-                  <span className="text-xs text-muted-foreground shrink-0">
-                    {(layer.weight * 100).toFixed(0)}%
+                  <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
+                    {stageRow.onTrackPct}% on-track
                   </span>
-                  <ScoreGauge score={layer.score} maxScore={100} size={50} />
-                  <LCIBadge score={Math.round(layer.score)} size="sm" />
-                  <span className="text-xs text-muted-foreground shrink-0 w-16 text-right">
-                    +{weightedContribution}
+                  <span className="text-xs text-muted-foreground shrink-0 tabular-nums w-20 text-right">
+                    {stageRow.stuckCount} stuck
                   </span>
+                  <ScoreGauge score={stageRow.score} maxScore={100} size={50} />
+                  <LCIBadge score={Math.round(stageRow.score)} size="sm" />
                   {isExpanded ? (
                     <ChevronDown size={16} className="text-muted-foreground shrink-0" />
                   ) : (
@@ -296,41 +315,52 @@ export default function LCIReport() {
                   )}
                 </button>
 
-                {/* Expanded Panel */}
+                {/* Expanded Panel — per-attorney breakdown for this stage */}
                 {isExpanded && (
                   <div className="border-t border-border px-4 py-3 animate-fade-in-up">
                     <div className="overflow-x-auto">
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="text-xs text-muted-foreground border-b border-border">
-                            <th className="text-left py-2 pr-4 font-medium">Metric Name</th>
-                            <th className="text-right py-2 px-3 font-medium">Current</th>
-                            <th className="text-right py-2 px-3 font-medium">Target</th>
-                            <th className="text-left py-2 px-3 font-medium">Unit</th>
-                            <th className="text-center py-2 px-3 font-medium">Band</th>
+                            <th className="text-left py-2 pr-4 font-medium">Attorney</th>
+                            <th className="text-center py-2 px-3 font-medium">Status</th>
+                            <th className="text-right py-2 px-3 font-medium">Primary</th>
+                            {firmStageMetrics?.[stageRow.stage]?.cards.slice(1).map(c => (
+                              <th key={c.label} className="text-right py-2 px-3 font-medium">{c.label}</th>
+                            ))}
                           </tr>
                         </thead>
                         <tbody>
-                          {layer.metrics.map(metric => (
-                            <tr key={metric.id} className="border-b border-border/50 last:border-b-0">
-                              <td className="py-2 pr-4 text-foreground font-medium">{metric.name}</td>
-                              <td className="py-2 px-3 text-right tabular-nums">
-                                {formatMetricValue(metric.value, metric.unit)}
-                              </td>
-                              <td className="py-2 px-3 text-right tabular-nums text-muted-foreground">
-                                {formatTarget(metric.target, metric.unit)}
-                              </td>
-                              <td className="py-2 px-3 text-muted-foreground">{metric.unit}</td>
-                              <td className="py-2 px-3 text-center">
-                                <span className={cn(
-                                  'inline-block w-3 h-3 rounded-full',
-                                  metric.band === 'green' && 'bg-emerald-500',
-                                  metric.band === 'amber' && 'bg-amber-500',
-                                  metric.band === 'red' && 'bg-red-500',
-                                )} />
-                              </td>
-                            </tr>
-                          ))}
+                          {scores
+                            .map(s => ({ attorney: s.attorney, metrics: s.stages[stageRow.stage] }))
+                            .sort((a, b) => {
+                              const pri = { red: 0, amber: 1, green: 2 } as const;
+                              return (pri[a.metrics.rag] ?? 2) - (pri[b.metrics.rag] ?? 2);
+                            })
+                            .slice(0, 20)
+                            .map(({ attorney, metrics }) => (
+                              <tr key={attorney} className="border-b border-border/50 last:border-b-0">
+                                <td className="py-2 pr-4">
+                                  <button
+                                    onClick={() => navigate(`/attorney/${encodeURIComponent(attorney)}`)}
+                                    className="text-blue-400 hover:text-blue-300 hover:underline text-left text-sm"
+                                  >
+                                    {attorney}
+                                  </button>
+                                </td>
+                                <td className="py-2 px-3 text-center">
+                                  <span className={cn('inline-block w-3 h-3 rounded-full', RAG_DOT[metrics.rag])} />
+                                </td>
+                                <td className="py-2 px-3 text-right tabular-nums">
+                                  {String(metrics.cards[0]?.value ?? '-')}
+                                </td>
+                                {metrics.cards.slice(1).map(c => (
+                                  <td key={c.label} className="py-2 px-3 text-right tabular-nums text-muted-foreground">
+                                    {String(c.value ?? '-')}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
                         </tbody>
                       </table>
                     </div>
@@ -342,23 +372,26 @@ export default function LCIReport() {
         </div>
       </div>
 
-      {/* Section 4: Red/Amber Alerts */}
-      <div>
-        <SectionHeader title="Metrics Needing Attention" info="Red and amber metrics that are underperforming against their targets." />
-        <MetricAlertBanner alerts={alerts} />
-        <div className="mt-4">
-          <DashboardGrid cols={4}>
-            <StatCard label="Total Alerts" value={alerts.length} />
-            <StatCard label="Red" value={redAlerts} deltaType={redAlerts > 0 ? 'negative' : 'neutral'} />
-            <StatCard label="Amber" value={amberAlerts} deltaType={amberAlerts > 0 ? 'negative' : 'neutral'} />
-            <StatCard label="Weakest Layer" value={worstLayer} />
+      {/* Section 4: Stages Needing Attention */}
+      {alerts.length > 0 && (
+        <div>
+          <SectionHeader title="Stages Needing Attention" info="Stages with red or amber status that are dragging down the composite score." />
+          <DashboardGrid cols={Math.min(alerts.length, 4) as 1 | 2 | 3 | 4}>
+            {alerts.map(a => (
+              <StatCard
+                key={a.stage}
+                label={a.label}
+                value={`${a.stuckCount} stuck`}
+                deltaType={a.band === 'red' ? 'negative' : 'neutral'}
+              />
+            ))}
           </DashboardGrid>
         </div>
-      </div>
+      )}
 
       {/* Section 5: Attorney Leaderboard */}
       <div>
-        <SectionHeader title="Attorney Leaderboard" subtitle="From Resolutions report — settlement performance" info="Attorneys ranked by composite LCI score. Top and bottom performers highlighted." />
+        <SectionHeader title="Attorney Leaderboard" subtitle="From Resolutions report — settlement performance" info="Attorneys ranked by settlement volume. Top and bottom performers highlighted." />
         <DashboardGrid cols={2}>
           {/* Top Performers */}
           <div className="rounded-xl border border-border bg-card p-4">

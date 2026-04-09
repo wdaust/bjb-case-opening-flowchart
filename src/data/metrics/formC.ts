@@ -1,5 +1,5 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { buildGauge, parseDate, daysSinceToday } from './shared';
+import { buildGauge, parseDate, daysSinceToday, uniqueMatterCount } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
@@ -44,8 +44,8 @@ const letterExpired = (r: Row): boolean => {
 };
 
 export function computeFormC(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  // Box 1: Missing Form C (30d+) — answer filed 30+ days ago, no Form C received
-  const missingRows = rows.filter(r => noFormC(r) && answerDays(r) >= 30);
+  // Box 1: 10 Day Letters Needed — 60d+ from answer, no Form C, Form A served, no 10-day letter sent
+  const missingRows = rows.filter(r => noFormC(r) && hasFormAServed(r) && !has10DayLetter(r) && answerDays(r) >= 60);
 
   // Box 2: Ready for Motion — Form A served, 10-day letter sent 10+ days ago, no motion filed
   const readyMotionRows = rows.filter(r =>
@@ -60,23 +60,35 @@ export function computeFormC(rows: Row[]): { metrics: LdnStageMetrics; issues: A
 
   const daysArr = missingRows.map(r => answerDays(r)).filter(d => d > 0);
 
+  const missingCount = uniqueMatterCount(missingRows);
+  const readyMotionCount = uniqueMatterCount(readyMotionRows);
+  const motionsLateCount = uniqueMatterCount(motionsLateRows);
+  const filedCount = uniqueMatterCount(filedRows);
+
   const cards: MetricCard[] = [
-    { label: 'Missing Form C (30d+)', value: missingRows.length, rag: missingRows.length === 0 ? 'green' : missingRows.length <= 10 ? 'amber' : 'red' },
-    { label: 'Ready for Motion', value: readyMotionRows.length, rag: readyMotionRows.length === 0 ? 'green' : readyMotionRows.length <= 5 ? 'amber' : 'red' },
-    { label: 'Motions Late', value: motionsLateRows.length, rag: motionsLateRows.length === 0 ? 'green' : 'red' },
-    { label: 'Filed Timely', value: filedRows.length, rag: 'green' },
+    { label: '10 Day Letters Needed', value: missingCount, rag: missingCount === 0 ? 'green' : missingCount <= 10 ? 'amber' : 'red' },
+    { label: 'Ready for Motion', value: readyMotionCount, rag: readyMotionCount === 0 ? 'green' : readyMotionCount <= 5 ? 'amber' : 'red' },
+    { label: 'Motions Late', value: motionsLateCount, rag: motionsLateCount === 0 ? 'green' : 'red' },
+    { label: 'Filed Timely', value: filedCount, rag: 'green' },
   ];
 
-  const worstRag: RagColor = readyMotionRows.length > 5 ? 'red' : readyMotionRows.length > 0 ? 'amber' : 'green';
+  const worstRag: RagColor = readyMotionCount > 5 ? 'red' : readyMotionCount > 0 ? 'amber' : 'green';
   const gauge = buildGauge('Form C', daysArr, SLA_TARGETS.formC);
 
-  const issues: ActionableIssue[] = readyMotionRows.map(r => ({
-    stage: 'Form C',
-    description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — ready for motion to compel`,
-    daysOverdue: answerDays(r),
-    priority: 'red' as RagColor,
-    suggestedAction: 'File motion to compel Form C (R. 4:23-1)',
-  }));
+  const seenFormC = new Set<string>();
+  const issues: ActionableIssue[] = readyMotionRows.reduce<ActionableIssue[]>((acc, r) => {
+    const matter = String(r['Matter Name'] || r['Display Name'] || 'Unknown');
+    if (seenFormC.has(matter)) return acc;
+    seenFormC.add(matter);
+    acc.push({
+      stage: 'Form C',
+      description: `${matter} — ready for motion to compel`,
+      daysOverdue: answerDays(r),
+      priority: 'red' as RagColor,
+      suggestedAction: 'File motion to compel Form C (R. 4:23-1)',
+    });
+    return acc;
+  }, []);
 
   return { metrics: { stage: 'formC', label: STAGE_LABELS.formC, cards, gauge, rag: worstRag }, issues };
 }

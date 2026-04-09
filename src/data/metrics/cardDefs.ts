@@ -44,9 +44,34 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     'Culpable Defendants Not Served': identity,
   },
   answers: {
-    'Missing Answers': identity,
-    'Defaults Entered': hasVal('Default Entered Date'),
-    'Active Defendants': hasVal('Active Defendant?'),
+    'Untimely Answers': (row) => {
+      const ans = row['Answer Filed'];
+      const hasAns = ans != null && ans !== '' && ans !== '-';
+      const def = row['Default Entered Date'];
+      const hasDef = def != null && def !== '' && def !== '-';
+      if (hasAns || hasDef) return false;
+      const d = parseDate(row['Service Date Complete']);
+      if (!d) return false;
+      return daysSinceToday(d) >= 35;
+    },
+    'Defaults Filed Timely': (row) => {
+      const def = row['Default Entered Date'];
+      const hasDef = def != null && def !== '' && def !== '-';
+      if (!hasDef) return false;
+      const d = parseDate(row['Service Date Complete']);
+      if (!d) return false;
+      return daysSinceToday(d) <= 40;
+    },
+    'Defaults Remaining Untimely': (row) => {
+      const ans = row['Answer Filed'];
+      const hasAns = ans != null && ans !== '' && ans !== '-';
+      const def = row['Default Entered Date'];
+      const hasDef = def != null && def !== '' && def !== '-';
+      if (hasAns || hasDef) return false;
+      const d = parseDate(row['Service Date Complete']);
+      if (!d) return false;
+      return daysSinceToday(d) > 40;
+    },
   },
   formA: {
     'Overdue': (row) => {
@@ -74,7 +99,14 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     },
   },
   formC: {
-    'Missing Form C (30d+)': (row) => noVal('Form C Received')(row) && answerDaysNum(row) >= 30,
+    '10 Day Letters Needed': (row) => {
+      if (!noVal('Form C Received')(row)) return false;
+      if (!hasVal('Form A Served')(row)) return false;
+      // No 10-day letter sent yet
+      const letter = row['10 Day Letter Sent'];
+      if (letter != null && letter !== '' && letter !== '-') return false;
+      return answerDaysNum(row) >= 60;
+    },
     'Ready for Motion': (row) => {
       if (!noVal('Form C Received')(row)) return false;
       if (!hasVal('Form A Served')(row)) return false;
@@ -100,11 +132,6 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     },
     'Completed Timely': () => false, // disabled — no report
     'Completed Untimely': () => false, // disabled — no report
-    'Uncompleted & Untimely': (row) => {
-      const cd = row['Client Deposition'] ?? row['Client Depo Date'];
-      const noDepo = !cd || cd === '' || cd === '-';
-      return noDepo && answerDaysNum(row) >= 120;
-    },
   },
   ded: {
     'Active Open Cases': (row) => {
@@ -140,17 +167,17 @@ export const CARD_INFO: Record<string, string> = {
   'Past-Due Items': 'Matters where service of process is past due. Each matter counted once regardless of number of defendants.',
   'Days to Service': 'Median days to complete service after filing. Min and max show the full range — a single outlier won\'t skew the number.',
   'Culpable Defendants Not Served': 'Coming in v2.0 — defendants identified as culpable but not yet served.',
-  // Answers
-  'Active Defendants': 'Defendants currently marked as active in the case.',
-  'Missing Answers': 'Matters where one or more defendants have not filed an answer to our complaint.',
-  'Defaults Entered': 'Matters where a default judgment has been entered because a defendant failed to respond.',
+  // Defendant Answers
+  'Untimely Answers': 'Matters where no answer has been filed and no default entered, 35+ days from service. These need follow-up.',
+  'Defaults Filed Timely': 'Matters where a default was entered within 40 days of service — handled promptly.',
+  'Defaults Remaining Untimely': 'Matters with no answer and no default filed, 40+ days from service. These are problem cases needing immediate action.',
   // Form A
   'Overdue': 'Matters where our Form A interrogatories are 60+ days past due for service — above SLA threshold.',
   'Approaching Due': 'Matters approaching their Form A due date, or flagged overdue by SF but still under our 60-day SLA.',
   'At Attorney Review': 'Form A answers sent to an attorney for review but not yet served on the defendant.',
   'Days Overdue': 'Median days overdue for Form A items past the 60-day SLA. Min and max show the full range.',
   // Form C (new)
-  'Missing Form C (30d+)': 'Defendants whose answer was filed 30+ days ago but no Form C has been received. This is the total universe of the Form C problem.',
+  '10 Day Letters Needed': 'Answer received, no Form C, Form A served, 60+ days — 10-day letter needs to be sent.',
   'Ready for Motion': 'All prerequisites met: Form A served, 10-day letter sent 10+ days ago, no motion filed yet. These are actionable NOW — file motion to compel (R. 4:23-1).',
   'Motions Late': 'Cases where motion criteria have been met but no motion has been filed. Currently mirrors "Ready for Motion" until motions start being filed.',
   'Filed Timely': 'Motions to compel that have been filed. Will populate as the team begins filing motions.',
@@ -158,7 +185,6 @@ export const CARD_INFO: Record<string, string> = {
   'Undone 120d+': 'Depositions not completed and 120+ days past the answer date — past our SLA. The answer date (not filed date) starts the clock per NJ rules.',
   'Completed Timely': 'Depositions completed within the 120-day SLA from answer. Needs a "completed depositions" report in the SF bundle to populate.',
   'Completed Untimely': 'Depositions completed but after the 120-day SLA from answer. Needs a "completed depositions" report to populate.',
-  'Uncompleted & Untimely': 'Depositions not completed and past the 120-day SLA from answer date — these are overdue and need immediate scheduling.',
   // DED (new)
   'Active Open Cases': 'Active open litigation matters with a Discovery End Date set. Baseline count for tracking DED compliance.',
   'Avg Days Past DED': 'Average number of days past the Discovery End Date for matters whose DED has expired.',
@@ -167,6 +193,13 @@ export const CARD_INFO: Record<string, string> = {
 };
 
 export const CARD_TIMING: Record<string, string> = {
+  // Defendant Answers
+  'Untimely Answers':
+    'Day 0: Defendant served\nDay 35+: No answer filed, no default entered\n→ Follow up or file for default',
+  'Defaults Filed Timely':
+    'Day 0: Defendant served\nDay ≤40: Default entered\n✓ Handled promptly',
+  'Defaults Remaining Untimely':
+    'Day 0: Defendant served\nDay 40+: No answer, no default\n✗ Problem case — immediate action needed',
   // Form A
   'Overdue':
     'Day 0: Answer filed\nDay 60: Form A SLA expires\n\u2192 Counts matters 60+ days past answer with Form A not served',
@@ -177,8 +210,8 @@ export const CARD_TIMING: Record<string, string> = {
   'Days Overdue':
     'Day 0: Answer filed\nDay 60: SLA expired\nDay 60+: Median days past the 60-day SLA\n\u2192 Shows how late overdue items are',
   // Form C
-  'Missing Form C (30d+)':
-    'Day 0: Answer filed\nDay 30+: Form C should have been received\n\u2192 Counts defendants 30+ days past answer with no Form C',
+  '10 Day Letters Needed':
+    'Day 0: Answer filed\nDay 60+: No Form C received, Form A served\n\u2192 10-day letter needs to be sent',
   'Ready for Motion':
     'Day 0: Answer filed\n\u2192 Form A served to defendant\n\u2192 10-day letter sent\nDay +10: Letter expired, no response\n\u2192 Motion to compel can now be filed (R. 4:23-1)',
   'Motions Late':
@@ -192,8 +225,6 @@ export const CARD_TIMING: Record<string, string> = {
     'Day 0: Answer filed\nDay \u2264120: Deposition completed\n\u2713 Within SLA',
   'Completed Untimely':
     'Day 0: Answer filed\nDay >120: Deposition completed late\n\u2717 Past SLA',
-  'Uncompleted & Untimely':
-    'Day 0: Answer filed\nDay 120: SLA expired\n\u2192 Deposition not completed past deadline\n\u2717 Overdue — schedule immediately',
   // DED
   'Active Open Cases':
     'Active open litigation matters with DED set\n\u2192 All discovery must complete by this date\n\u2192 Baseline count for DED compliance tracking',
@@ -208,10 +239,10 @@ export const CARD_TIMING: Record<string, string> = {
 export const STAGE_INFO: Record<StageName, string> = {
   complaints: 'After a case is assigned to the litigation team, a complaint must be filed within 14 days. This stage tracks how many are still waiting and how long they\'ve been sitting.',
   service: 'Once a complaint is filed, we must serve the defendant (deliver legal papers). This tracks matters where service is past due and how quickly we typically complete it.',
-  answers: 'After being served, defendants must file an answer. This tracks matters where answers are still missing and flags any defaults entered against non-responsive defendants.',
+  answers: 'After being served, defendants must file an answer within 35 days. This tracks untimely answers, timely defaults, and problem cases where neither has happened by day 40.',
   formA: 'Form A interrogatories are written questions we serve on defendants. Our SLA is 60 days from answer date. Counts are deduplicated by matter; the "Days Overdue" card shows median with min/max range.',
   formC: 'Form C follows the NJ discovery process (R. 4:17-4): after our Form A is served, the defendant owes Form C answers within 60 days. If overdue, we send a 10-day demand letter (R. 4:23-1), then file a motion to compel. Cards track each step of this process.',
-  depositions: 'Depositions are sworn testimony taken before trial. SLA is 120 days from the answer date (not filed date). Tracks outstanding depositions and flags those past due.',
+  depositions: 'Plaintiff depositions are sworn testimony taken before trial. SLA is 120 days from the answer date (not filed date). Tracks outstanding depositions and flags those past due.',
   ded: 'The Discovery End Date (DED) is the court-set deadline for completing all discovery. Tracks how many matters have a DED, how far past it they are, and flags 90+ and 180+ day outliers.',
 };
 

@@ -49,19 +49,26 @@ export function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: A
   const worstRag: RagColor = overdue > 5 ? 'red' : overdue > 0 ? 'amber' : 'green';
   const gauge = buildGauge('Form A Overdue', overdueDaysArr, SLA_TARGETS.formA);
 
+  const seenFormA = new Set<string>();
   const issues: ActionableIssue[] = overdueRows
     .filter(r => {
       const v = r['Answer Date to Today'];
       const num = typeof v === 'number' ? v : Number(v);
       return !isNaN(num) && num > 60;
     })
-    .map(r => ({
-      stage: 'Form A Overdue',
-      description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — Form A overdue`,
-      daysOverdue: Number(r['Answer Date to Today']) || 0,
-      priority: ((Number(r['Answer Date to Today']) || 0) >= 90 ? 'red' : 'amber') as RagColor,
-      suggestedAction: 'Serve Form A or follow up on attorney review',
-    }));
+    .reduce<ActionableIssue[]>((acc, r) => {
+      const matter = String(r['Matter Name'] || r['Display Name'] || 'Unknown');
+      if (seenFormA.has(matter)) return acc;
+      seenFormA.add(matter);
+      acc.push({
+        stage: 'Form A Overdue',
+        description: `${matter} — Form A overdue`,
+        daysOverdue: Number(r['Answer Date to Today']) || 0,
+        priority: ((Number(r['Answer Date to Today']) || 0) >= 90 ? 'red' : 'amber') as RagColor,
+        suggestedAction: 'Serve Form A or follow up on attorney review',
+      });
+      return acc;
+    }, []);
 
   return { metrics: { stage: 'formA', label: STAGE_LABELS.formA, cards, gauge, rag: worstRag }, issues };
 }

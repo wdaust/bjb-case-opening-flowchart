@@ -1,5 +1,5 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { mean, buildGauge, parseDate, daysFromToday } from './shared';
+import { mean, buildGauge, parseDate, daysFromToday, uniqueMatterCount } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
@@ -26,28 +26,39 @@ export function computeDED(rows: Row[]): { metrics: LdnStageMetrics; issues: Act
   // Box 4: 180+ Days Past DED
   const past180Rows = past.filter(d => Math.abs(d.days) >= 180);
 
+  const activeCount = uniqueMatterCount(withDED);
+  const past90Count = uniqueMatterCount(past90Rows.map(d => d.row));
+  const past180Count = uniqueMatterCount(past180Rows.map(d => d.row));
+
   let ragColor: RagColor = 'green';
-  if (past180Rows.length > 0) ragColor = 'red';
-  else if (past90Rows.length > 0) ragColor = 'amber';
+  if (past180Count > 0) ragColor = 'red';
+  else if (past90Count > 0) ragColor = 'amber';
 
   const agingValues = parsed.map(d => Math.abs(d.days));
 
   const cards: MetricCard[] = [
-    { label: 'Active Open Cases', value: withDED.length, rag: 'green' },
+    { label: 'Active Open Cases', value: activeCount, rag: 'green' },
     { label: 'Avg Days Past DED', value: pastDays.length > 0 ? `${avgPast}d` : '-', rag: avgPast >= 180 ? 'red' : avgPast >= 90 ? 'amber' : 'green' },
-    { label: '90+ Days Past', value: past90Rows.length, rag: past90Rows.length === 0 ? 'green' : 'amber' },
-    { label: '180+ Days Past', value: past180Rows.length, rag: past180Rows.length === 0 ? 'green' : 'red' },
+    { label: '90+ Days Past', value: past90Count, rag: past90Count === 0 ? 'green' : 'amber' },
+    { label: '180+ Days Past', value: past180Count, rag: past180Count === 0 ? 'green' : 'red' },
   ];
 
-  const gauge = buildGauge('DED', agingValues, SLA_TARGETS.ded);
+  const gauge = buildGauge('DED', agingValues, SLA_TARGETS.ded, uniqueMatterCount(rows));
 
-  const issues: ActionableIssue[] = past.map(({ days, row }) => ({
-    stage: 'DED',
-    description: `${row['Matter Name'] || row['Display Name'] || 'Unknown'} — ${Math.abs(days)} days past DED`,
-    daysOverdue: Math.abs(days),
-    priority: (Math.abs(days) >= 180 ? 'red' : 'amber') as RagColor,
-    suggestedAction: 'File extension or close discovery',
-  }));
+  const seenDed = new Set<string>();
+  const issues: ActionableIssue[] = past.reduce<ActionableIssue[]>((acc, { days, row }) => {
+    const matter = String(row['Matter Name'] || row['Display Name'] || 'Unknown');
+    if (seenDed.has(matter)) return acc;
+    seenDed.add(matter);
+    acc.push({
+      stage: 'DED',
+      description: `${matter} — ${Math.abs(days)} days past DED`,
+      daysOverdue: Math.abs(days),
+      priority: (Math.abs(days) >= 180 ? 'red' : 'amber') as RagColor,
+      suggestedAction: 'File extension or close discovery',
+    });
+    return acc;
+  }, []);
 
   return { metrics: { stage: 'ded', label: STAGE_LABELS.ded, cards, gauge, rag: ragColor }, issues };
 }

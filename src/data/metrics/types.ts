@@ -58,10 +58,10 @@ export interface DrillColumn {
 export const STAGE_LABELS: Record<StageName, string> = {
   complaints: 'Complaints',
   service: 'Service',
-  answers: 'Answers',
+  answers: 'Defendant Answers',
   formA: 'Form A Overdue',
   formC: 'Form C',
-  depositions: 'Depositions',
+  depositions: 'Plaintiff Deposition',
   ded: 'DED',
 };
 
@@ -70,7 +70,7 @@ export const STAGE_ORDER: StageName[] = ['complaints', 'service', 'answers', 'fo
 export const SLA_TARGETS: Record<StageName, number> = {
   complaints: 14,
   service: 30,
-  answers: 45,
+  answers: 35,
   formA: 60,
   formC: 90,
   depositions: 180,
