@@ -1,5 +1,5 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { buildGauge, rag, uniqueMatterCount } from './shared';
+import { buildGauge, rag } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
@@ -22,23 +22,21 @@ export function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; iss
 
   // Box 1: Undone 120d+ — depositions past 120 days from answer, not completed
   const undone120Rows = rows.filter(r => noDepo(r) && answerDays(r) >= 120);
-  const undone120 = uniqueMatterCount(undone120Rows);
 
   // Box 2: Completed Timely — disabled (no completed depo report)
   // Box 3: Completed Untimely — disabled (no completed depo report)
 
-  // Box 4: Within Time — undone but under 120 days from answer (still on track)
-  const withinTimeRows = rows.filter(r => noDepo(r) && answerDays(r) < 120);
-  const withinTime = uniqueMatterCount(withinTimeRows);
+  // Box 4: Uncompleted & Untimely — not completed and past 120d SLA
+  const uncompletedUntimelyRows = rows.filter(r => noDepo(r) && answerDays(r) >= 120);
 
   const cards: MetricCard[] = [
-    { label: 'Undone 120d+', value: undone120, rag: undone120 === 0 ? 'green' : undone120 <= 3 ? 'amber' : 'red' },
+    { label: 'Undone 120d+', value: undone120Rows.length, rag: undone120Rows.length === 0 ? 'green' : undone120Rows.length <= 3 ? 'amber' : 'red' },
     { label: 'Completed Timely', value: '-', rag: 'green', disabled: true, badge: 'Needs Report' },
     { label: 'Completed Untimely', value: '-', rag: 'green', disabled: true, badge: 'Needs Report' },
-    { label: 'Within Time', value: withinTime, rag: 'green' },
+    { label: 'Uncompleted & Untimely', value: uncompletedUntimelyRows.length, rag: uncompletedUntimelyRows.length === 0 ? 'green' : 'red' },
   ];
 
-  const worstRag = rag(undone120, [1, 3]);
+  const worstRag = rag(undone120Rows.length, [1, 3]);
   const gauge = buildGauge('Depositions', daysArr, SLA_TARGETS.depositions, rows.length);
 
   const issues: ActionableIssue[] = undone120Rows

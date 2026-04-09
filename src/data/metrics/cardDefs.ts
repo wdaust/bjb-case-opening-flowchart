@@ -100,14 +100,14 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     },
     'Completed Timely': () => false, // disabled — no report
     'Completed Untimely': () => false, // disabled — no report
-    'Within Time': (row) => {
+    'Uncompleted & Untimely': (row) => {
       const cd = row['Client Deposition'] ?? row['Client Depo Date'];
       const noDepo = !cd || cd === '' || cd === '-';
-      return noDepo && answerDaysNum(row) < 120;
+      return noDepo && answerDaysNum(row) >= 120;
     },
   },
   ded: {
-    'Cases with DED': (row) => {
+    'Active Open Cases': (row) => {
       const v = row['Discovery End Date'];
       return v != null && v !== '' && v !== '-';
     },
@@ -158,15 +158,24 @@ export const CARD_INFO: Record<string, string> = {
   'Undone 120d+': 'Depositions not completed and 120+ days past the answer date — past our SLA. The answer date (not filed date) starts the clock per NJ rules.',
   'Completed Timely': 'Depositions completed within the 120-day SLA from answer. Needs a "completed depositions" report in the SF bundle to populate.',
   'Completed Untimely': 'Depositions completed but after the 120-day SLA from answer. Needs a "completed depositions" report to populate.',
-  'Within Time': 'Depositions not yet completed but still within the 120-day SLA from answer — on track, no action needed.',
+  'Uncompleted & Untimely': 'Depositions not completed and past the 120-day SLA from answer date — these are overdue and need immediate scheduling.',
   // DED (new)
-  'Cases with DED': 'Total matters that have a Discovery End Date set. Baseline count for tracking DED compliance.',
+  'Active Open Cases': 'Active open litigation matters with a Discovery End Date set. Baseline count for tracking DED compliance.',
   'Avg Days Past DED': 'Average number of days past the Discovery End Date for matters whose DED has expired.',
   '90+ Days Past': 'Matters whose Discovery End Date passed 90+ days ago — extensions should have been filed.',
   '180+ Days Past': 'Matters whose Discovery End Date passed 180+ days ago — significant risk, immediate action required.',
 };
 
 export const CARD_TIMING: Record<string, string> = {
+  // Form A
+  'Overdue':
+    'Day 0: Answer filed\nDay 60: Form A SLA expires\n\u2192 Counts matters 60+ days past answer with Form A not served',
+  'Approaching Due':
+    'Day 0: Answer filed\nDay 30\u201360: Approaching Form A SLA\n\u2192 Matters nearing the 60-day deadline or flagged overdue but under SLA',
+  'At Attorney Review':
+    'Day 0: Answer filed\n\u2192 Form A sent to attorney for review\n\u2192 Waiting for attorney sign-off before service',
+  'Days Overdue':
+    'Day 0: Answer filed\nDay 60: SLA expired\nDay 60+: Median days past the 60-day SLA\n\u2192 Shows how late overdue items are',
   // Form C
   'Missing Form C (30d+)':
     'Day 0: Answer filed\nDay 30+: Form C should have been received\n\u2192 Counts defendants 30+ days past answer with no Form C',
@@ -183,11 +192,11 @@ export const CARD_TIMING: Record<string, string> = {
     'Day 0: Answer filed\nDay \u2264120: Deposition completed\n\u2713 Within SLA',
   'Completed Untimely':
     'Day 0: Answer filed\nDay >120: Deposition completed late\n\u2717 Past SLA',
-  'Within Time':
-    'Day 0: Answer filed\nDay <120: Still within SLA window\n\u2192 No action needed yet',
+  'Uncompleted & Untimely':
+    'Day 0: Answer filed\nDay 120: SLA expired\n\u2192 Deposition not completed past deadline\n\u2717 Overdue — schedule immediately',
   // DED
-  'Cases with DED':
-    'Discovery End Date set by court\n\u2192 All discovery must complete by this date\n\u2192 Baseline count of matters with DED on file',
+  'Active Open Cases':
+    'Active open litigation matters with DED set\n\u2192 All discovery must complete by this date\n\u2192 Baseline count for DED compliance tracking',
   'Avg Days Past DED':
     'DED has passed\n\u2192 Average days elapsed since DED\n\u2192 Extensions should be filed promptly',
   '90+ Days Past':
