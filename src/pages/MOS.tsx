@@ -329,15 +329,19 @@ export function ScorecardTable({
                       ) : m.metric}
                     </td>
                     <td className="py-1.5 px-3 text-center whitespace-nowrap">
-                      <KpiPopover
-                        kpi={m.kpi}
-                        kpiType={m.kpiType}
-                        kpiDirection={m.kpiDirection}
-                        onKpiChange={v => onMetricUpdate(m.uid, 'kpi', v)}
-                        onTypeChange={v => onMetricUpdate(m.uid, 'kpiType', v)}
-                        onDirectionChange={v => onMetricUpdate(m.uid, 'kpiDirection', v)}
-                        isAdmin={isAdmin}
-                      />
+                      {m.isRock ? (
+                        <span className="text-xs text-amber-400/70">On Track / Off Track</span>
+                      ) : (
+                        <KpiPopover
+                          kpi={m.kpi}
+                          kpiType={m.kpiType}
+                          kpiDirection={m.kpiDirection}
+                          onKpiChange={v => onMetricUpdate(m.uid, 'kpi', v)}
+                          onTypeChange={v => onMetricUpdate(m.uid, 'kpiType', v)}
+                          onDirectionChange={v => onMetricUpdate(m.uid, 'kpiDirection', v)}
+                          isAdmin={isAdmin}
+                        />
+                      )}
                     </td>
                     {isAdmin && (
                       <td className="py-1 px-1 text-center whitespace-nowrap">
