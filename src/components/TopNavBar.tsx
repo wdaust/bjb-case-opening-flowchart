@@ -7,7 +7,6 @@ import { useAuth } from '../contexts/AuthContext';
 
 const mainLinks = [
   { label: 'LDM', to: '/ldm' },
-  { label: 'Discovery Flow', to: '/discovery-flow' },
   { label: 'LIT Scorecard', to: '/lit-scorecard' },
   { label: 'MOS', to: '/performance-infrastructure/mos' },
 ];
@@ -16,6 +15,7 @@ const moreLinksBase: { label: string; to: string }[] = [];
 
 /** Links only visible to specific users */
 const restrictedMoreLinks: { label: string; to: string; allowedUsers: string[] }[] = [
+  { label: 'Discovery Flow', to: '/discovery-flow', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'LCI Report', to: '/lci-report', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Analytics', to: '/analytics', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Insights', to: '/insights', allowedUsers: ['wdaust', 'jbillingsley'] },

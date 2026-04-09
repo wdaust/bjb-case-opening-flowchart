@@ -64,16 +64,6 @@ const FLOW_STAGE_KEYS: Record<string, StageName> = {
   'DED': 'ded',
 };
 
-const STAGE_COLORS: Record<string, string> = {
-  'Complaints': '#ef4444',
-  'Service': '#f97316',
-  'Answers': '#eab308',
-  'Form A': '#3b82f6',
-  'Form C': '#8b5cf6',
-  'Depositions': '#06b6d4',
-  'DED': '#10b981',
-  'Complete': '#22c55e',
-};
 
 /** Build a set of matter names present in a report's detail rows. */
 function matterSet(rows: Row[] | undefined, key = 'Display Name'): Set<string> {
@@ -271,12 +261,16 @@ export function computeDiscoveryFlow(bundle: LdnReportBundle): DiscoveryFlowData
   // Sort blocked by days descending
   blocked.sort((a, b) => b.days - a.days);
 
-  // Build Sankey data
-  const nodes: FlowNode[] = FLOW_STAGES.map(s => ({
-    id: s,
-    nodeColor: STAGE_COLORS[s],
-  }));
+  // Build Sankey data — color nodes by health, not stage
+  const pipelineMap = new Map(pipeline.map(p => [p.stage, p]));
+  const nodes: FlowNode[] = FLOW_STAGES.map(s => {
+    const p = pipelineMap.get(s);
+    const pct = p?.onTrackPct ?? 100;
+    const color = pct >= 70 ? '#22c55e' : pct >= 40 ? '#eab308' : '#ef4444';
+    return { id: s, nodeColor: color };
+  });
 
+  const nodeColorMap = new Map(nodes.map(n => [n.id, n.nodeColor]));
   const links: FlowLink[] = [];
   for (let i = 0; i < FLOW_STAGES.length - 1; i++) {
     const from = FLOW_STAGES[i];
@@ -289,8 +283,8 @@ export function computeDiscoveryFlow(bundle: LdnReportBundle): DiscoveryFlowData
       source: from,
       target: to,
       value: flowThrough,
-      startColor: STAGE_COLORS[from],
-      endColor: STAGE_COLORS[to],
+      startColor: nodeColorMap.get(from),
+      endColor: nodeColorMap.get(to),
     });
   }
 
