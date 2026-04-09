@@ -22,7 +22,7 @@ export function RiskPanel({ scores, onSelectAttorney }: Props) {
         ) : (
           <ol className="space-y-3">
             {needsAttention.map((s, i) => (
-              <li key={s.attorney}>
+              <li key={s.attorney} className="min-h-[4.5rem]">
                 <button
                   onClick={() => onSelectAttorney(s.attorney)}
                   className="text-left w-full hover:bg-white/5 rounded-lg px-2 py-1.5 -mx-2 transition-colors cursor-pointer"
@@ -52,7 +52,7 @@ export function RiskPanel({ scores, onSelectAttorney }: Props) {
         ) : (
           <ol className="space-y-3">
             {topPerformers.map((s, i) => (
-              <li key={s.attorney}>
+              <li key={s.attorney} className="min-h-[4.5rem]">
                 <button
                   onClick={() => onSelectAttorney(s.attorney)}
                   className="text-left w-full hover:bg-white/5 rounded-lg px-2 py-1.5 -mx-2 transition-colors cursor-pointer"
