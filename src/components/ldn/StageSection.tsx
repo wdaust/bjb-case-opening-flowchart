@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronUp, Users } from 'lucide-react';
 import { SectionHeader } from '../dashboard/SectionHeader';
 import { DashboardGrid } from '../dashboard/DashboardGrid';
@@ -49,8 +50,8 @@ interface Props {
   stageName: StageName;
   onSelectAttorney: (attorney: string) => void;
   detailRows?: DrillRow[];
-  complaintsMode?: 'unfiled' | 'all';
-  onComplaintsModeChange?: (mode: 'unfiled' | 'all') => void;
+  complaintsMode?: 'excludeBlockers' | 'includeBlockers';
+  onComplaintsModeChange?: (mode: 'excludeBlockers' | 'includeBlockers') => void;
   slaOverride?: number;
   onSlaChange?: (value: number) => void;
 }
@@ -68,6 +69,7 @@ interface RankRow {
 }
 
 export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney, detailRows, complaintsMode, onComplaintsModeChange, slaOverride, onSlaChange }: Props) {
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [drillDownCard, setDrillDownCard] = useState<string | null>(null);
 
@@ -133,30 +135,38 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
         actions={
           <div className="flex items-center gap-2">
             {stageName === 'complaints' && complaintsMode && onComplaintsModeChange && (
-              <div className="flex rounded-lg border border-white/10 overflow-hidden">
+              <>
+                <div className="flex rounded-lg border border-white/10 overflow-hidden">
+                  <button
+                    onClick={() => onComplaintsModeChange('excludeBlockers')}
+                    className={cn(
+                      'px-3 py-1.5 text-xs transition-colors',
+                      complaintsMode === 'excludeBlockers'
+                        ? 'bg-white/15 text-foreground font-medium'
+                        : 'bg-white/5 text-muted-foreground hover:bg-white/10',
+                    )}
+                  >
+                    Excluding Blockers
+                  </button>
+                  <button
+                    onClick={() => onComplaintsModeChange('includeBlockers')}
+                    className={cn(
+                      'px-3 py-1.5 text-xs transition-colors',
+                      complaintsMode === 'includeBlockers'
+                        ? 'bg-white/15 text-foreground font-medium'
+                        : 'bg-white/5 text-muted-foreground hover:bg-white/10',
+                    )}
+                  >
+                    Including Blockers
+                  </button>
+                </div>
                 <button
-                  onClick={() => onComplaintsModeChange('unfiled')}
-                  className={cn(
-                    'px-3 py-1.5 text-xs transition-colors',
-                    complaintsMode === 'unfiled'
-                      ? 'bg-white/15 text-foreground font-medium'
-                      : 'bg-white/5 text-muted-foreground hover:bg-white/10',
-                  )}
+                  onClick={() => navigate('/ldn/blockers')}
+                  className="flex items-center gap-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Unfiled
+                  Blocker Report &rarr;
                 </button>
-                <button
-                  onClick={() => onComplaintsModeChange('all')}
-                  className={cn(
-                    'px-3 py-1.5 text-xs transition-colors',
-                    complaintsMode === 'all'
-                      ? 'bg-white/15 text-foreground font-medium'
-                      : 'bg-white/5 text-muted-foreground hover:bg-white/10',
-                  )}
-                >
-                  All
-                </button>
-              </div>
+              </>
             )}
             <button
               onClick={() => setExpanded(!expanded)}
@@ -173,16 +183,21 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
       {/* Metric cards with info tooltips — now clickable for drill-down */}
       <DashboardGrid cols={stageMetrics.cards.length <= 3 ? 3 : stageMetrics.cards.length <= 5 ? 5 : 4}>
         {stageMetrics.cards.map(c => (
-          <div key={c.label} className="relative">
+          <div key={c.label} className={cn('relative', c.disabled && 'opacity-50 cursor-not-allowed')}>
             {CARD_INFO[c.label] && (
               <div className="absolute top-2 right-2 z-10">
                 <InfoTooltip text={CARD_INFO[c.label]} />
               </div>
             )}
+            {c.badge && (
+              <span className="absolute top-2 left-2 z-10 text-[10px] font-medium bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded-full">
+                v{c.badge}
+              </span>
+            )}
             <StatCard
               label={c.label}
               value={c.value}
-              onClick={detailRows ? () => setDrillDownCard(c.label) : undefined}
+              onClick={!c.disabled && detailRows ? () => setDrillDownCard(c.label) : undefined}
             />
           </div>
         ))}

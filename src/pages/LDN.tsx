@@ -24,8 +24,13 @@ import {
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
   computeAllLdnMetrics,
-  computePortfolioFromScores,
   computeComplaints,
+  computeService,
+  computeAnswers,
+  computeFormA,
+  computeFormC,
+  computeDepositions,
+  computeDED,
   buildAttorneyList,
   computeStageAggregatesFromLdn,
   STAGE_ORDER,
@@ -59,7 +64,7 @@ export default function LDN() {
   const navigate = useNavigate();
   const [selectedAttorney, setSelectedAttorney] = useState<string>('');
   const [expandedStage, setExpandedStage] = useState<StageName | null>(null);
-  const [complaintsMode, setComplaintsMode] = useState<'unfiled' | 'all'>('unfiled');
+  const [complaintsMode, setComplaintsMode] = useState<'excludeBlockers' | 'includeBlockers'>('excludeBlockers');
   const [stateFilter, setStateFilter] = useState('');
   const [caseTypeFilter, setCaseTypeFilter] = useState('');
   const [slaOverrides, setSlaOverrides] = useState<Record<StageName, number>>({ ...SLA_TARGETS });
@@ -116,35 +121,30 @@ export default function LDN() {
 
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
-  const portfolioStages = useMemo(() => computePortfolioFromScores(scores, bundle), [scores, bundle]);
   // Cross-ref lookup for complaints (Display Name → attorney)
   const complaintLookup = useMemo(() => buildFixedAttorneyLookup(bundle.openLit?.detailRows ?? []), [bundle.openLit]);
+
+  // Attorney-scoped service 30-day rows (needed for service stage metrics)
+  const attySvc30Rows = useMemo(() => {
+    const attorneySet = new Set(scores.map(s => s.attorney));
+    return (bundle.service30Day?.detailRows ?? []).filter(r => {
+      const atty = topAttorney(r._groupingLabel);
+      if (atty && attorneySet.has(atty)) return true;
+      const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
+      const mapped = complaintLookup.get(dn);
+      return mapped ? attorneySet.has(mapped) : false;
+    }) as DrillRow[];
+  }, [scores, bundle.service30Day, complaintLookup]);
 
   // ── Stage Overview aggregates from LDN scores (no litProgMetrics dependency) ──
   const stageAggregates = useMemo(() => computeStageAggregatesFromLdn(scores), [scores]);
 
   // ── Complaints toggle: recompute metrics for unfiled vs all mode ──
+  // Both modes derive from the drill-down rows so card values always match
   const complaintMetrics = useMemo((): LdnStageMetrics => {
-    if (complaintsMode === 'unfiled') {
-      // Default: use attorney-scoped Pre-Lit metrics from portfolioStages
-      return portfolioStages['complaints'];
-    }
-    // 'all' mode: collect ALL complaint rows attributed to attorneys (Pre-Lit + Litigation)
-    const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
-    const attorneySet = new Set(scores.map(s => s.attorney));
-    const attorneyRows = allRows.filter(r => {
-      // Complaints use Display Name cross-ref, not _groupingLabel
-      const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
-      const mapped = complaintLookup.get(dn);
-      return mapped ? attorneySet.has(mapped) : false;
-    });
-    const result = computeComplaints(attorneyRows);
-    // Relabel first card for 'all' mode
-    if (result.metrics.cards[0]) {
-      result.metrics.cards[0].label = 'Total Complaints';
-    }
-    return result.metrics;
-  }, [complaintsMode, portfolioStages, bundle.complaints, scores, complaintLookup]);
+    const drillRows = getStageDetailRows(bundle, 'complaints', complaintsMode, scores, complaintLookup).rows;
+    return computeComplaints(drillRows).metrics;
+  }, [complaintsMode, bundle, scores, complaintLookup]);
 
   // ── LCI Computation ──
   const lci = useMemo(
@@ -159,12 +159,12 @@ export default function LDN() {
 
   const stageHealthData = useMemo(() =>
     STAGE_ORDER.map(sn => ({
-      name: portfolioStages[sn]?.label ?? sn,
+      name: scores[0]?.stages[sn]?.label ?? sn,
       Green: scores.filter(s => s.stages[sn].rag === 'green').length,
       Amber: scores.filter(s => s.stages[sn].rag === 'amber').length,
       Red: scores.filter(s => s.stages[sn].rag === 'red').length,
     })),
-  [scores, portfolioStages]);
+  [scores]);
 
   // Selected attorney data
   const selectedScore = useMemo(
@@ -364,7 +364,10 @@ export default function LDN() {
             <SectionHeader title="LIT Deep Dive" subtitle="Stage-by-stage metrics with editable SLA targets" />
             {STAGE_ORDER.map(sn => {
               const detailRows = getStageDetailRows(bundle, sn, complaintsMode, scores, complaintLookup);
-              const metrics = sn === 'complaints' ? complaintMetrics : portfolioStages[sn];
+              // Derive metrics FROM the drill-down rows so card values always match row counts
+              const metrics = sn === 'complaints'
+                ? complaintMetrics
+                : computeMetricsFromRows(sn, detailRows.rows, attySvc30Rows);
               return (
                 <StageSection
                   key={sn}
@@ -387,12 +390,26 @@ export default function LDN() {
   );
 }
 
+// ─── Helper: compute stage metrics from the same rows used for drill-down ───
+
+function computeMetricsFromRows(stage: StageName, rows: DrillRow[], svc30Rows: DrillRow[]): LdnStageMetrics {
+  switch (stage) {
+    case 'complaints': return computeComplaints(rows).metrics;
+    case 'service': return computeService(rows, svc30Rows).metrics;
+    case 'answers': return computeAnswers(rows).metrics;
+    case 'formA': return computeFormA(rows).metrics;
+    case 'formC': return computeFormC(rows).metrics;
+    case 'depositions': return computeDepositions(rows).metrics;
+    case 'ded': return computeDED(rows).metrics;
+  }
+}
+
 // ─── Helper: map stage name to the right detail rows from the bundle ────────
 
 function getStageDetailRows(
   bundle: LdnReportBundle,
   stage: StageName,
-  complaintsMode: 'unfiled' | 'all',
+  complaintsMode: 'excludeBlockers' | 'includeBlockers',
   scores: { attorney: string }[],
   lookup: Map<string, string>,
 ): { rows: DrillRow[] } {
@@ -421,9 +438,14 @@ function getStageDetailRows(
     case 'complaints': {
       const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
       const attorneyRows = filterByCrossref(allRows);
-      if (complaintsMode === 'all') return { rows: attorneyRows };
-      // Unfiled = Pre-Lit only
-      return { rows: attorneyRows.filter(r => r['PI Status'] === 'Pre-Lit' || r['PI Status'] == null) };
+      // Always filter to Pre-Lit
+      const preLitRows = attorneyRows.filter(r => r['PI Status'] === 'Pre-Lit' || r['PI Status'] == null);
+      if (complaintsMode === 'includeBlockers') return { rows: preLitRows };
+      // Exclude rows with a blocker
+      return { rows: preLitRows.filter(r => {
+        const b = r['Blocker to Filing Complaint'] ?? r['Blocker'];
+        return !b || b === '-';
+      }) };
     }
     case 'service':
       return { rows: filterByGrouping((bundle.service?.detailRows ?? []) as DrillRow[]) };

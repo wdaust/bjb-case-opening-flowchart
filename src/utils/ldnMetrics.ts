@@ -34,6 +34,8 @@ export interface MetricCard {
   value: number | string;
   rag: RagColor;
   subMetrics?: { label: string; value: number | string }[];
+  disabled?: boolean;
+  badge?: string;
 }
 
 export interface ActionableIssue {
@@ -175,11 +177,11 @@ function percentile(sorted: number[], p: number): number {
   return sorted[Math.max(0, idx)] ?? 0;
 }
 
-function buildGauge(label: string, ages: number[], slaTarget: number): BulletGauge {
+function buildGauge(label: string, ages: number[], slaTarget: number, totalCount?: number): BulletGauge {
   const sorted = [...ages].sort((a, b) => a - b);
   return {
     label,
-    count: sorted.length,
+    count: totalCount ?? sorted.length,
     medianAge: percentile(sorted, 50),
     p90Age: percentile(sorted, 90),
     slaTarget,
@@ -294,17 +296,11 @@ export function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issu
   };
 }
 
-function computeService(rows: Row[], service30DayRows?: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+export function computeService(rows: Row[], service30DayRows?: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   const total = rows.length;
-  const matters = new Set(rows.map(r => String(r['Matter Name'] ?? ''))).size;
-  const activeDefendants = rows.filter(r => r['Active Defendant?'] && r['Active Defendant?'] !== '-').length;
-  const hasFirstAnswer = rows.filter(r => r['Prim. Defendant First Answer Filed'] && r['Prim. Defendant First Answer Filed'] !== '-').length;
 
   const cards: MetricCard[] = [
     { label: 'Past-Due Items', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
-    { label: 'Matters Affected', value: matters, rag: matters === 0 ? 'green' : matters <= 2 ? 'amber' : 'red' },
-    { label: 'Active Defendants', value: activeDefendants, rag: 'green' },
-    { label: 'Has First Answer', value: hasFirstAnswer, rag: 'green' },
   ];
 
   // Add service 30-day KPI cards when data is available
@@ -316,13 +312,13 @@ function computeService(rows: Row[], service30DayRows?: Row[]): { metrics: LdnSt
       if (!isNaN(num) && num >= 0) svcDays.push(num);
     }
     const avgDays = svcDays.length ? Math.round(svcDays.reduce((a, b) => a + b, 0) / svcDays.length) : 0;
-    const within30 = svcDays.filter(d => d <= 30).length;
-    const pct30 = svcDays.length ? Math.round((within30 / svcDays.length) * 100) : 100;
     cards.push(
       { label: 'Avg Days to Service', value: `${avgDays}d`, rag: avgDays <= 30 ? 'green' : avgDays <= 60 ? 'amber' : 'red' },
-      { label: '% ≤ 30 Days', value: `${pct30}%`, rag: pct30 >= 80 ? 'green' : pct30 >= 50 ? 'amber' : 'red' },
     );
   }
+
+  // Placeholder for future metric
+  cards.push({ label: 'Culpable Defendants Not Served', value: '—', rag: 'green', disabled: true, badge: '2.0' });
 
   const worstRag = rag(total);
 
@@ -366,19 +362,15 @@ function computeService(rows: Row[], service30DayRows?: Row[]): { metrics: LdnSt
   return { metrics: { stage: 'service', label: STAGE_LABELS.service, cards, gauge, rag: worstRag }, issues };
 }
 
-function computeAnswers(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+export function computeAnswers(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   const total = rows.length;
-  const defendants = new Set(rows.map(r => String(r['Defendant'] ?? r['Defendant (Party Name)'] ?? ''))).size;
   const defaults = rows.filter(r => r['Default Entered Date'] && r['Default Entered Date'] !== '-').length;
   const activeDefendants = rows.filter(r => r['Active Defendant?'] && r['Active Defendant?'] !== '-').length;
-  const hasDeposition = rows.filter(r => r['Defendant Deposition'] && r['Defendant Deposition'] !== '-').length;
 
   const cards: MetricCard[] = [
     { label: 'Missing Answers', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
-    { label: 'Defendants Affected', value: defendants, rag: 'green' },
     { label: 'Defaults Entered', value: defaults, rag: defaults === 0 ? 'green' : defaults === 1 ? 'amber' : 'red' },
     { label: 'Active Defendants', value: activeDefendants, rag: 'green' },
-    { label: 'Has Deposition', value: hasDeposition, rag: 'green' },
   ];
 
   const worstRag = rag(total);
@@ -398,7 +390,7 @@ function computeAnswers(rows: Row[]): { metrics: LdnStageMetrics; issues: Action
   return { metrics: { stage: 'answers', label: STAGE_LABELS.answers, cards, gauge, rag: worstRag }, issues };
 }
 
-function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+export function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   // Use grouping-label buckets to correctly categorize rows
   // Overdue = SF bucket "Form A Overdue" AND Answer Date to Today >= 60 (SLA threshold)
   const overdueRows = rows.filter(r => {
@@ -460,7 +452,7 @@ function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionab
   return { metrics: { stage: 'formA', label: STAGE_LABELS.formA, cards, gauge, rag: worstRag }, issues };
 }
 
-function computeFormC(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+export function computeFormC(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   // Use grouping-label buckets from the single main Form C report
   const needMotionRows = rows.filter(r => formCBucket(r) === 'Need to File Motion');
   const need10DayRows = rows.filter(r => formCBucket(r) === 'Need a 10-Day Letter');
@@ -513,7 +505,7 @@ function computeFormC(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionab
   return { metrics: { stage: 'formC', label: STAGE_LABELS.formC, cards, gauge, rag: worstRag }, issues };
 }
 
-function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+export function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   const total = rows.length;
   const daysArr = rows.map(r => {
     const v = r['Time from Filed Date'] ?? r['Time from Filed'];
@@ -521,21 +513,20 @@ function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: Ac
     return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
   const overdue180 = daysArr.filter(d => d >= 180).length;
-  const scheduled = rows.filter(r => {
+  const notComplete = rows.filter(r => {
     const cd = r['Client Deposition'] ?? r['Client Depo Date'];
-    return cd && cd !== '-';
+    return !cd || cd === '-';
   }).length;
-  const pctScheduled = total ? Math.round((scheduled / total) * 100) : 100;
 
   const cards: MetricCard[] = [
     { label: 'Outstanding', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
     { label: 'Overdue 180+', value: overdue180, rag: overdue180 === 0 ? 'green' : overdue180 <= 2 ? 'amber' : 'red' },
     { label: 'Avg Days from Filed', value: `${mean(daysArr)}d`, rag: mean(daysArr) < 180 ? 'green' : 'red' },
-    { label: '% Scheduled', value: `${pctScheduled}%`, rag: pctScheduled >= 80 ? 'green' : pctScheduled >= 50 ? 'amber' : 'red' },
+    { label: 'Not Marked Complete', value: notComplete, rag: notComplete === 0 ? 'green' : notComplete <= 5 ? 'amber' : 'red' },
   ];
 
   const worstRag = rag(overdue180, [1, 3]);
-  const gauge = buildGauge('Depositions', daysArr, SLA_TARGETS.depositions);
+  const gauge = buildGauge('Depositions', daysArr, SLA_TARGETS.depositions, total);
 
   const issues: ActionableIssue[] = rows
     .filter(r => {
@@ -553,7 +544,7 @@ function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: Ac
   return { metrics: { stage: 'depositions', label: STAGE_LABELS.depositions, cards, gauge, rag: worstRag }, issues };
 }
 
-function computeDED(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+export function computeDED(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   const noDedSet = rows.filter(r => !r['Discovery End Date'] || r['Discovery End Date'] === '-').length;
   const withDED = rows.filter(r => r['Discovery End Date'] && r['Discovery End Date'] !== '-');
   const parsed = withDED.map(r => {
@@ -864,16 +855,13 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
   },
   service: {
     'Past-Due Items': identity,
-    'Matters Affected': identity,
-    'Active Defendants': hasVal('Active Defendant?'),
-    'Has First Answer': hasVal('Prim. Defendant First Answer Filed'),
+    'Avg Days to Service': identity,
+    'Culpable Defendants Not Served': identity,
   },
   answers: {
     'Missing Answers': identity,
-    'Defendants Affected': identity,
     'Defaults Entered': hasVal('Default Entered Date'),
     'Active Defendants': hasVal('Active Defendant?'),
-    'Has Deposition': hasVal('Defendant Deposition'),
   },
   formA: {
     'Overdue': (row) => {
@@ -914,9 +902,9 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
       return !isNaN(num) && num >= 180;
     },
     'Avg Days from Filed': identity,
-    '% Scheduled': (row) => {
+    'Not Marked Complete': (row) => {
       const cd = row['Client Deposition'] ?? row['Client Depo Date'];
-      return cd != null && cd !== '' && cd !== '-';
+      return !cd || cd === '' || cd === '-';
     },
   },
   ded: {
@@ -945,15 +933,12 @@ export const CARD_INFO: Record<string, string> = {
   'Overdue >14d': 'Complaints past the 14-day SLA target.',
   'Avg Days Assigned': 'Average days since assignment to litigation unit.',
   'Blockers': 'Cases with a documented blocker preventing filing. Sub-metrics show aging breakdown.',
-  'Total Complaints': 'Count of all complaints (filed and unfiled).',
   'Past-Due Items': 'Service items that are past due for completion.',
-  'Matters Affected': 'Unique matters with past-due service items.',
+  'Avg Days to Service': 'Average number of days to complete service (from 30-day service report).',
+  'Culpable Defendants Not Served': 'Placeholder for v2.0 — culpable defendants not yet served.',
   'Active Defendants': 'Defendants marked as active in the case.',
-  'Has First Answer': 'Cases where the primary defendant has filed a first answer.',
   'Missing Answers': 'Defendants who have not filed an answer.',
-  'Defendants Affected': 'Unique defendants with missing answers.',
   'Defaults Entered': 'Cases where a default judgment has been entered against a defendant.',
-  'Has Deposition': 'Defendants who have a deposition on file.',
   'Overdue': 'Form A rows ≥60 days since answer (SLA threshold).',
   'Approaching Due': 'Rows approaching due date, plus items SF flags as overdue but under the 60-day SLA.',
   'At Attorney Review': 'Form A sent to attorney for review but not yet served.',
@@ -965,7 +950,7 @@ export const CARD_INFO: Record<string, string> = {
   'Outstanding': 'Total outstanding depositions not yet completed.',
   'Overdue 180+': 'Depositions more than 180 days from the filing date.',
   'Avg Days from Filed': 'Average days since the case was filed.',
-  '% Scheduled': 'Percentage of depositions that have been scheduled.',
+  'Not Marked Complete': 'Depositions without a Client Deposition date — not yet marked complete.',
   'At-Risk Cases': 'Cases with DED that is past, within 30 days, or within 60 days.',
   'Past DED': 'Cases where the Discovery End Date has already passed.',
   'Within 30d': 'Cases with DED approaching within 30 days.',
