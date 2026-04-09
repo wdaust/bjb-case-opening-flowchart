@@ -330,7 +330,22 @@ export function ScorecardTable({
                     </td>
                     <td className="py-1.5 px-3 text-center whitespace-nowrap">
                       {m.isRock ? (
-                        <span className="text-xs text-amber-400/70">On Track / Off Track</span>
+                        <select
+                          value={m.kpi || ''}
+                          onChange={e => onMetricUpdate(m.uid, 'kpi', e.target.value)}
+                          className={cn(
+                            "text-xs py-1 px-1.5 rounded bg-transparent border border-transparent",
+                            "focus:border-primary/40 focus:outline-none transition-colors",
+                            "hover:border-border cursor-pointer appearance-none",
+                            m.kpi === 'On Track' && "text-green-400",
+                            m.kpi === 'Off Track' && "text-red-400",
+                            !m.kpi && "text-muted-foreground/40",
+                          )}
+                        >
+                          <option value="">—</option>
+                          <option value="On Track">On Track</option>
+                          <option value="Off Track">Off Track</option>
+                        </select>
                       ) : (
                         <KpiPopover
                           kpi={m.kpi}
