@@ -164,16 +164,6 @@ export default function LDN() {
     })),
   [scores, portfolioStages]);
 
-  const totalRedFlags = useMemo(() => scores.reduce((sum, s) => sum + s.redCount, 0), [scores]);
-  const worstStage = useMemo(() => {
-    const stageCounts = STAGE_ORDER.map(sn => ({
-      stage: sn,
-      label: portfolioStages[sn]?.label ?? sn,
-      redCount: scores.filter(s => s.stages[sn].rag === 'red').length,
-    }));
-    return stageCounts.sort((a, b) => b.redCount - a.redCount)[0];
-  }, [scores, portfolioStages]);
-
   // Selected attorney data
   const selectedScore = useMemo(
     () => scores.find(s => s.attorney === selectedAttorney),
