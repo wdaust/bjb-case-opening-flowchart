@@ -404,27 +404,26 @@ export interface StageLCIResult {
 
 /**
  * Compute LCI from LDN stage metrics (7 stages, equal weight).
- * Per-stage score = on-track percentage from card[0] value:
- *   - If card[0].value is 0 → 100% on-track
- *   - Otherwise compute from RAG: green=100, amber=75, red=50
- * Composite = average of 7 stage scores.
+ * Per-stage score = on-track % = (1 - stuckCount / universe) * 100.
+ * Composite = average of 7 stage scores = true portfolio health.
  */
-export function computeStageLCI(stageMetrics: Record<StageName, LdnStageMetrics>): StageLCIResult {
+export function computeStageLCI(
+  stageMetrics: Record<StageName, LdnStageMetrics>,
+  universeCount: { lit: number; complaints: number },
+): StageLCIResult {
   const stages: StageLCIRow[] = STAGE_ORDER.map(sn => {
     const m = stageMetrics[sn];
     const primaryVal = typeof m.cards[0]?.value === 'number' ? m.cards[0].value : 0;
 
-    // Score based on RAG status
-    let score: number;
-    if (m.rag === 'green') score = 100;
-    else if (m.rag === 'amber') score = 75;
-    else score = 50;
+    // Universe denominator: complaints uses its own (preLit stuck + lit), others use lit count
+    const universe = sn === 'complaints' ? universeCount.complaints : universeCount.lit;
+    const onTrackPct = universe > 0
+      ? Math.round(Math.max(0, (1 - primaryVal / universe)) * 100)
+      : 100;
 
-    // on-track % — inverse: fewer issues = higher on-track
-    const total = m.gauge.count || 1;
-    const onTrackPct = total > 0 ? Math.round(Math.max(0, (1 - primaryVal / total)) * 100) : 100;
-
-    const band: LCIBand = score >= 85 ? 'green' : score >= 70 ? 'amber' : 'red';
+    // Score = on-track %, making it a true health meter
+    const score = onTrackPct;
+    const band: LCIBand = score >= 90 ? 'green' : score >= 75 ? 'amber' : 'red';
 
     return {
       stage: sn,
@@ -438,7 +437,7 @@ export function computeStageLCI(stageMetrics: Record<StageName, LdnStageMetrics>
 
   const composite = stages.reduce((sum, s) => sum + s.score, 0) / stages.length;
   const score = Math.round(composite * 10) / 10;
-  const band: LCIBand = score >= 85 ? 'green' : score >= 70 ? 'amber' : 'red';
+  const band: LCIBand = score >= 90 ? 'green' : score >= 75 ? 'amber' : 'red';
 
   return { score, band, stages };
 }

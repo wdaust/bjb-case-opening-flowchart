@@ -9,12 +9,6 @@ import { useLdnBundle } from '../data/queries/bundles';
 import {
   computeAllLdnMetrics,
   computeComplaints,
-  computeService,
-  computeAnswers,
-  computeFormA,
-  computeFormC,
-  computeDepositions,
-  computeDED,
   buildAttorneyList,
   computeStageAggregatesFromLdn,
   STAGE_ORDER,
@@ -27,6 +21,7 @@ import {
   buildFixedAttorneyLookup,
   topAttorney,
 } from '../data/metrics';
+import { dedupeByMatter, getStageDetailRows, computeMetricsFromRows } from '../data/metrics/stageRows';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { RiskPanel } from '../components/litprog/RiskPanel';
@@ -81,8 +76,18 @@ export default function LDN() {
     }) as DrillRow[];
   }, [scores, bundle.service30Day, complaintLookup]);
 
-  // ── Stage Overview aggregates from LDN scores (no litProgMetrics dependency) ──
-  const stageAggregates = useMemo(() => computeStageAggregatesFromLdn(scores), [scores]);
+  // ── Stage Overview aggregates: base from LDN scores, totalItems overridden with drill-down row counts ──
+  const stageAggregates = useMemo(() => {
+    const baseAggs = computeStageAggregatesFromLdn(scores);
+    return baseAggs.map(agg => {
+      const drillRows = getStageDetailRows(bundle, agg.stage, complaintsMode, scores, complaintLookup).rows;
+      const metrics = agg.stage === 'complaints'
+        ? computeComplaints(drillRows).metrics
+        : computeMetricsFromRows(agg.stage, drillRows, attySvc30Rows);
+      const totalItems = typeof metrics.cards[0]?.value === 'number' ? metrics.cards[0].value : 0;
+      return { ...agg, totalItems };
+    });
+  }, [scores, bundle, complaintsMode, complaintLookup, attySvc30Rows]);
 
   // ── Complaints toggle: recompute metrics for unfiled vs all mode ──
   // Both modes derive from the drill-down rows so card values always match
@@ -157,7 +162,13 @@ export default function LDN() {
             <HeroTitle title="Lit Disruptor Model" subtitle="Attorney performance deep-dive with actionable intelligence" />
             {/* Inline Pipeline */}
             {(() => {
-              const openLitCount = filterLitOnly(bundle.openLit?.detailRows ?? []).length;
+              const attorneySet = new Set(scores.map(s => s.attorney));
+              const openLitCount = dedupeByMatter(
+                filterLitOnly(bundle.openLit?.detailRows ?? []).filter(r => {
+                  const atty = topAttorney((r as DrillRow)._groupingLabel);
+                  return atty && attorneySet.has(atty);
+                }) as DrillRow[]
+              ).length;
               const noComplaint = stageAggregates.find(a => a.stage === 'complaints')?.totalItems ?? 0;
               const noService = stageAggregates.find(a => a.stage === 'service')?.totalItems ?? 0;
               const noAnswer = stageAggregates.find(a => a.stage === 'answers')?.totalItems ?? 0;
@@ -335,94 +346,4 @@ export default function LDN() {
   );
 }
 
-// ─── Helper: compute stage metrics from the same rows used for drill-down ───
-
-function computeMetricsFromRows(stage: StageName, rows: DrillRow[], svc30Rows: DrillRow[]): LdnStageMetrics {
-  switch (stage) {
-    case 'complaints': return computeComplaints(rows).metrics;
-    case 'service': return computeService(rows, svc30Rows).metrics;
-    case 'answers': return computeAnswers(rows).metrics;
-    case 'formA': return computeFormA(rows).metrics;
-    case 'formC': return computeFormC(rows).metrics;
-    case 'depositions': return computeDepositions(rows).metrics;
-    case 'ded': return computeDED(rows).metrics;
-  }
-}
-
-// ─── Helper: map stage name to the right detail rows from the bundle ────────
-
-/** Deduplicate rows to one per matter. Keeps the first row encountered per matter key. */
-function dedupeByMatter(rows: DrillRow[]): DrillRow[] {
-  const seen = new Map<string, DrillRow>();
-  for (const r of rows) {
-    let key: string | undefined;
-    for (const k of ['Matter Name', 'Matter: Matter Name']) {
-      const v = r[k];
-      if (typeof v === 'string' && v && v !== '-') { key = v; break; }
-    }
-    if (!key) {
-      const dn = r['Display Name'];
-      if (typeof dn === 'string' && dn && dn !== '-') key = dn;
-    }
-    if (!key) { seen.set(`_u${seen.size}`, r); continue; }
-    if (!seen.has(key)) seen.set(key, r);
-  }
-  return Array.from(seen.values());
-}
-
-function getStageDetailRows(
-  bundle: LdnReportBundle,
-  stage: StageName,
-  complaintsMode: 'excludeBlockers' | 'includeBlockers',
-  scores: { attorney: string }[],
-  lookup: Map<string, string>,
-): { rows: DrillRow[] } {
-  const attorneySet = new Set(scores.map(s => s.attorney));
-
-  // Match computePortfolioFromScores filtering: grouping = topAttorney(_groupingLabel)
-  function filterByGrouping(rows: DrillRow[]): DrillRow[] {
-    return rows.filter(r => {
-      const atty = topAttorney(r._groupingLabel);
-      return atty && attorneySet.has(atty);
-    });
-  }
-
-  // Match computePortfolioFromScores filtering: crossref = try _groupingLabel then Display Name lookup
-  function filterByCrossref(rows: DrillRow[]): DrillRow[] {
-    return rows.filter(r => {
-      const atty = topAttorney(r._groupingLabel);
-      if (atty && attorneySet.has(atty)) return true;
-      const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
-      const mapped = lookup.get(dn);
-      return mapped ? attorneySet.has(mapped) : false;
-    });
-  }
-
-  switch (stage) {
-    case 'complaints': {
-      const allRows = (bundle.complaints?.detailRows ?? []) as DrillRow[];
-      const attorneyRows = filterByCrossref(allRows);
-      // Always filter to Pre-Lit
-      const preLitRows = attorneyRows.filter(r => r['PI Status'] === 'Pre-Lit' || r['PI Status'] == null);
-      if (complaintsMode === 'includeBlockers') return { rows: dedupeByMatter(preLitRows) };
-      // Exclude rows with a blocker
-      return { rows: dedupeByMatter(preLitRows.filter(r => {
-        const b = r['Blocker to Filing Complaint'] ?? r['Blocker'];
-        return !b || b === '-';
-      })) };
-    }
-    case 'service':
-      return { rows: dedupeByMatter(filterByGrouping((bundle.service?.detailRows ?? []) as DrillRow[])) };
-    case 'answers':
-      return { rows: dedupeByMatter(filterByGrouping((bundle.answers?.detailRows ?? []) as DrillRow[])) };
-    case 'formA':
-      return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.formA?.detailRows ?? []) as DrillRow[])) };
-    case 'formC':
-      return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[])) };
-    case 'depositions':
-      return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[])) };
-    case 'ded':
-      return { rows: dedupeByMatter(filterByGrouping(filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[])) };
-  }
-}
 

@@ -20,8 +20,12 @@ import {
   STAGE_ORDER,
   type StageName,
   type LdnReportBundle,
-  type LdnStageMetrics,
+  type DrillRow,
+  filterLitOnlyRaw as filterLitOnly,
+  buildFixedAttorneyLookup,
+  topAttorney,
 } from '../data/metrics';
+import { dedupeByMatter, getStageDetailRows, computeMetricsFromRows } from '../data/metrics/stageRows';
 import type { LCIBand } from '../data/metrics/lci';
 import type { ReportSummaryResponse } from '../types/salesforce';
 import { RESOLUTIONS_ID } from '../data/sfReportIds';
@@ -103,44 +107,51 @@ export default function LCIReport() {
   // ── Compute LDN metrics + stage LCI ──────────────────────────────────
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);
 
-  // Build firm-wide stage metrics from all rows (not per-attorney)
-  const firmStageMetrics = useMemo((): Record<StageName, LdnStageMetrics> | null => {
+  // Cross-ref lookup for complaints (Display Name → attorney)
+  const complaintLookup = useMemo(() => buildFixedAttorneyLookup(bundle.openLit?.detailRows ?? []), [bundle.openLit]);
+
+  // Attorney-scoped service 30-day rows (needed for service stage metrics)
+  const attySvc30Rows = useMemo(() => {
+    const attorneySet = new Set(scores.map(s => s.attorney));
+    return (bundle.service30Day?.detailRows ?? []).filter(r => {
+      const atty = topAttorney(r._groupingLabel);
+      if (atty && attorneySet.has(atty)) return true;
+      const dn = String(r['Display Name'] ?? r['Matter Name'] ?? '');
+      const mapped = complaintLookup.get(dn);
+      return mapped ? attorneySet.has(mapped) : false;
+    }) as DrillRow[];
+  }, [scores, bundle.service30Day, complaintLookup]);
+
+  // Build firm-wide stage metrics from drill-down rows (same source of truth as LDM bottom cards)
+  const firmStageMetrics = useMemo((): Record<StageName, import('../data/metrics').LdnStageMetrics> | null => {
     if (ldnLoading || scores.length === 0) return null;
-    // Aggregate: use the first attorney's stage keys, but sum across all
-    const result = {} as Record<StageName, LdnStageMetrics>;
+    const result = {} as Record<StageName, import('../data/metrics').LdnStageMetrics>;
     for (const sn of STAGE_ORDER) {
-      // Count RAG distribution across attorneys
-      let redCount = 0, amberCount = 0, greenCount = 0;
-      for (const s of scores) {
-        const m = s.stages[sn];
-        if (m.rag === 'red') redCount++;
-        else if (m.rag === 'amber') amberCount++;
-        else greenCount++;
-      }
-      // Use the portfolio-level view: stage from first score as template, override RAG
-      const template = scores[0].stages[sn];
-      const totalPrimary = scores.reduce((sum, s) => {
-        const v = s.stages[sn].cards[0]?.value;
-        return sum + (typeof v === 'number' ? v : 0);
-      }, 0);
-
-      // Firm-wide RAG
-      const firmRag = redCount > 0 ? 'red' as const : amberCount > 0 ? 'amber' as const : 'green' as const;
-
-      result[sn] = {
-        ...template,
-        rag: firmRag,
-        cards: template.cards.map((c, i) => i === 0 ? { ...c, value: totalPrimary, rag: firmRag } : c),
-        gauge: { ...template.gauge, count: totalPrimary },
-      };
+      const drillRows = getStageDetailRows(bundle, sn, 'excludeBlockers', scores, complaintLookup).rows;
+      result[sn] = computeMetricsFromRows(sn, drillRows, attySvc30Rows);
     }
     return result;
-  }, [ldnLoading, scores]);
+  }, [ldnLoading, scores, bundle, complaintLookup, attySvc30Rows]);
+
+  // Universe counts for on-track % denominator
+  const universeCount = useMemo(() => {
+    const attorneySet = new Set(scores.map(s => s.attorney));
+    const litRows = dedupeByMatter(
+      (filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[]).filter(r => {
+        const atty = topAttorney(r._groupingLabel);
+        return atty && attorneySet.has(atty);
+      })
+    );
+    const litCount = litRows.length;
+    const complaintsStuck = firmStageMetrics?.complaints.cards[0]?.value ?? 0;
+    const complaintsUniverse = (typeof complaintsStuck === 'number' ? complaintsStuck : 0) + litCount;
+    return { lit: litCount, complaints: complaintsUniverse };
+  }, [bundle.openLit, scores, firmStageMetrics]);
 
   const stageLCI = useMemo(() => {
     if (!firmStageMetrics) return null;
-    return computeStageLCI(firmStageMetrics);
-  }, [firmStageMetrics]);
+    return computeStageLCI(firmStageMetrics, universeCount);
+  }, [firmStageMetrics, universeCount]);
 
   const attorneys = useMemo(() => computeAttorneyMetrics(resData), [resData]);
   const topPerformers = useMemo(() => attorneys.slice(0, 10), [attorneys]);
