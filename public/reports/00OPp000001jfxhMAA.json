@@ -5,11 +5,11 @@
   "grandTotals": [
     {
       "label": "Matter Count",
-      "value": 42
+      "value": 40
     },
     {
       "label": "Record Count",
-      "value": 63
+      "value": 61
     }
   ],
   "groupings": [
@@ -19,11 +19,11 @@
       "aggregates": [
         {
           "label": "Matter Count",
-          "value": 5
+          "value": 4
         },
         {
           "label": "Record Count",
-          "value": 8
+          "value": 7
         }
       ]
     },
@@ -37,7 +37,7 @@
         },
         {
           "label": "Record Count",
-          "value": 18
+          "value": 19
         }
       ]
     },
@@ -47,11 +47,11 @@
       "aggregates": [
         {
           "label": "Matter Count",
-          "value": 22
+          "value": 21
         },
         {
           "label": "Record Count",
-          "value": 37
+          "value": 35
         }
       ]
     }
@@ -59,10 +59,26 @@
   "hasDetailRows": true,
   "detailRows": [
     {
-      "_groupingLabel": "Brian Lehrer > John VanDyken > MAT-24122353089",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8863",
+      "_groupingLabel": "Brian Lehrer > John VanDyken > MAT-24121752834",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-7338",
+      "Answer Filed": "9/16/2025",
+      "Form A Served": "4/8/2026",
+      "10 Day Letter Sent": "-",
+      "Form C Received": "-"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > John VanDyken > MAT-24121752834",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-9413",
+      "Answer Filed": "9/16/2025",
+      "Form A Served": "4/8/2026",
+      "10 Day Letter Sent": "-",
+      "Form C Received": "-"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > John VanDyken > MAT-24122353090",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-8860",
       "Answer Filed": "2/17/2026",
-      "Form A Served": "3/31/2026",
+      "Form A Served": "4/1/2026",
       "10 Day Letter Sent": "-",
       "Form C Received": "-"
     },
@@ -111,14 +127,6 @@
       "Discovery Tracker: Discovery Tracker Name": "DIS-8245",
       "Answer Filed": "2/4/2026",
       "Form A Served": "3/12/2026",
-      "10 Day Letter Sent": "-",
-      "Form C Received": "-"
-    },
-    {
-      "_groupingLabel": "Brian Lehrer > Brian Lehrer > MAT-26011276464",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-9428",
-      "Answer Filed": "-",
-      "Form A Served": "4/7/2026",
       "10 Day Letter Sent": "-",
       "Form C Received": "-"
     },
@@ -259,42 +267,42 @@
       "Form C Received": "-"
     },
     {
-      "_groupingLabel": "Marc Borden > MAT-25031163382",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-9136",
-      "Answer Filed": "2/18/2026",
-      "Form A Served": "3/23/2026",
-      "10 Day Letter Sent": "-",
-      "Form C Received": "-"
-    },
-    {
-      "_groupingLabel": "Marc Borden > MAT-25031163382",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-9266",
-      "Answer Filed": "2/18/2026",
-      "Form A Served": "3/23/2026",
-      "10 Day Letter Sent": "-",
-      "Form C Received": "-"
-    },
-    {
-      "_groupingLabel": "Lisa Lehrer > Raymond Carroll > MAT-24050243923",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8424",
-      "Answer Filed": "1/13/2026",
+      "_groupingLabel": "Marc Borden > MAT-25052466246",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-8951",
+      "Answer Filed": "12/23/2025",
       "Form A Served": "2/24/2026",
       "10 Day Letter Sent": "-",
       "Form C Received": "-"
     },
     {
-      "_groupingLabel": "Lisa Lehrer > Raymond Carroll > MAT-24050243923",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8425",
-      "Answer Filed": "1/13/2026",
+      "_groupingLabel": "Marc Borden > MAT-25052466246",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-8952",
+      "Answer Filed": "12/23/2025",
       "Form A Served": "2/24/2026",
       "10 Day Letter Sent": "-",
       "Form C Received": "-"
     },
     {
-      "_groupingLabel": "Marc Borden > MAT-24022141844",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-4303",
-      "Answer Filed": "7/28/2025",
-      "Form A Served": "2/18/2026",
+      "_groupingLabel": "Marc Borden > MAT-25052466246",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-8958",
+      "Answer Filed": "12/23/2025",
+      "Form A Served": "2/24/2026",
+      "10 Day Letter Sent": "-",
+      "Form C Received": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Raymond Carroll > MAT-24101650321",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-8694",
+      "Answer Filed": "1/27/2026",
+      "Form A Served": "2/10/2026",
+      "10 Day Letter Sent": "-",
+      "Form C Received": "-"
+    },
+    {
+      "_groupingLabel": "Marc Borden > MAT-25011353903",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-8586",
+      "Answer Filed": "2/20/2026",
+      "Form A Served": "3/18/2026",
       "10 Day Letter Sent": "-",
       "Form C Received": "-"
     },
@@ -323,14 +331,6 @@
       "Form C Received": "-"
     },
     {
-      "_groupingLabel": "Marc Borden > MAT-25072168337",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-9188",
-      "Answer Filed": "2/11/2026",
-      "Form A Served": "3/17/2026",
-      "10 Day Letter Sent": "-",
-      "Form C Received": "-"
-    },
-    {
       "_groupingLabel": "Brian Lehrer > John VanDyken > MAT-24061245129",
       "Discovery Tracker: Discovery Tracker Name": "DIS-7778",
       "Answer Filed": "12/18/2025",
@@ -355,10 +355,10 @@
       "Form C Received": "-"
     },
     {
-      "_groupingLabel": "Brian Lehrer > John VanDyken > MAT-24122353090",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8860",
+      "_groupingLabel": "Brian Lehrer > John VanDyken > MAT-24122353089",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-8863",
       "Answer Filed": "2/17/2026",
-      "Form A Served": "4/1/2026",
+      "Form A Served": "3/31/2026",
       "10 Day Letter Sent": "-",
       "Form C Received": "-"
     },
@@ -515,10 +515,18 @@
       "Form C Received": "-"
     },
     {
-      "_groupingLabel": "Marc Borden > MAT-25011353903",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8586",
-      "Answer Filed": "2/20/2026",
-      "Form A Served": "3/18/2026",
+      "_groupingLabel": "Marc Borden > MAT-25031163382",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-9136",
+      "Answer Filed": "2/18/2026",
+      "Form A Served": "3/23/2026",
+      "10 Day Letter Sent": "-",
+      "Form C Received": "-"
+    },
+    {
+      "_groupingLabel": "Marc Borden > MAT-25031163382",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-9266",
+      "Answer Filed": "2/18/2026",
+      "Form A Served": "3/23/2026",
       "10 Day Letter Sent": "-",
       "Form C Received": "-"
     },
@@ -531,34 +539,10 @@
       "Form C Received": "-"
     },
     {
-      "_groupingLabel": "Lisa Lehrer > Raymond Carroll > MAT-24101650321",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8694",
-      "Answer Filed": "1/27/2026",
-      "Form A Served": "2/10/2026",
-      "10 Day Letter Sent": "-",
-      "Form C Received": "-"
-    },
-    {
-      "_groupingLabel": "Marc Borden > MAT-25052466246",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8951",
-      "Answer Filed": "12/23/2025",
-      "Form A Served": "2/24/2026",
-      "10 Day Letter Sent": "-",
-      "Form C Received": "-"
-    },
-    {
-      "_groupingLabel": "Marc Borden > MAT-25052466246",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8952",
-      "Answer Filed": "12/23/2025",
-      "Form A Served": "2/24/2026",
-      "10 Day Letter Sent": "-",
-      "Form C Received": "-"
-    },
-    {
-      "_groupingLabel": "Marc Borden > MAT-25052466246",
-      "Discovery Tracker: Discovery Tracker Name": "DIS-8958",
-      "Answer Filed": "12/23/2025",
-      "Form A Served": "2/24/2026",
+      "_groupingLabel": "Marc Borden > MAT-25072168337",
+      "Discovery Tracker: Discovery Tracker Name": "DIS-9188",
+      "Answer Filed": "2/11/2026",
+      "Form A Served": "3/17/2026",
       "10 Day Letter Sent": "-",
       "Form C Received": "-"
     }

@@ -21,6 +21,7 @@ import {
   TIMING_ID,
   DISCOVERY_ID,
   EXPERTS_ID,
+  SERVICE_30DAY_ID,
 } from '../data/sfReportIds';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
@@ -88,6 +89,9 @@ export default function LDN() {
   const { data: openLit, loading: l9 } = useSalesforceReport<ReportSummaryResponse>({
     id: OPEN_LIT_ID, type: 'report', mode: 'full',
   });
+  const { data: service30Day, loading: l15 } = useSalesforceReport<ReportSummaryResponse>({
+    id: SERVICE_30DAY_ID, type: 'report', mode: 'full',
+  });
 
   // ── LCI data fetching (5 additional sources) ──
   const { data: resData, loading: l10 } = useSalesforceReport<ReportSummaryResponse>({
@@ -106,12 +110,12 @@ export default function LDN() {
     id: EXPERTS_ID, type: 'report',
   });
 
-  const loading = l1 || l2 || l3 || l4 || l5 || l6 || l7 || l8 || l9;
+  const loading = l1 || l2 || l3 || l4 || l5 || l6 || l7 || l8 || l9 || l15;
   const lciLoading = l10 || l11 || l12 || l13 || l14;
 
   const bundle: LdnReportBundle = useMemo(() => ({
-    complaints, service, answers, formA, formC, deps, tenDay, motions, openLit,
-  }), [complaints, service, answers, formA, formC, deps, tenDay, motions, openLit]);
+    complaints, service, answers, formA, formC, deps, tenDay, motions, openLit, service30Day,
+  }), [complaints, service, answers, formA, formC, deps, tenDay, motions, openLit, service30Day]);
 
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
   const scores = useMemo(() => computeAllLdnMetrics(bundle), [bundle]);

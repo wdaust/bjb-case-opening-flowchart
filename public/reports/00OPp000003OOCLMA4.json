@@ -5,15 +5,15 @@
   "grandTotals": [
     {
       "label": "Sum of Settlement/Verdict Amount",
-      "value": 607554158.69
+      "value": 607764158.69
     },
     {
       "label": "Sum of Net Attorney Fee",
-      "value": 250142935.21
+      "value": 250216674.85
     },
     {
       "label": "Record Count",
-      "value": 6873
+      "value": 6878
     }
   ],
   "groupings": [],

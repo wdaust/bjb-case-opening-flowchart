@@ -66,6 +66,7 @@ export interface LdnReportBundle {
   tenDay: ReportSummaryResponse | null;
   motions: ReportSummaryResponse | null;
   openLit: ReportSummaryResponse | null;
+  service30Day?: ReportSummaryResponse | null;
 }
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -279,7 +280,7 @@ export function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issu
   };
 }
 
-function computeService(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
+function computeService(rows: Row[], service30DayRows?: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   const total = rows.length;
   const matters = new Set(rows.map(r => String(r['Matter Name'] ?? ''))).size;
   const activeDefendants = rows.filter(r => r['Active Defendant?'] && r['Active Defendant?'] !== '-').length;
@@ -292,9 +293,32 @@ function computeService(rows: Row[]): { metrics: LdnStageMetrics; issues: Action
     { label: 'Has First Answer', value: hasFirstAnswer, rag: 'green' },
   ];
 
+  // Add service 30-day KPI cards when data is available
+  const svcDays: number[] = [];
+  if (service30DayRows && service30DayRows.length > 0) {
+    for (const r of service30DayRows) {
+      const raw = r['Days to Service'];
+      const num = typeof raw === 'number' ? raw : Number(raw);
+      if (!isNaN(num) && num >= 0) svcDays.push(num);
+    }
+    const avgDays = svcDays.length ? Math.round(svcDays.reduce((a, b) => a + b, 0) / svcDays.length) : 0;
+    const within30 = svcDays.filter(d => d <= 30).length;
+    const pct30 = svcDays.length ? Math.round((within30 / svcDays.length) * 100) : 100;
+    cards.push(
+      { label: 'Avg Days to Service', value: `${avgDays}d`, rag: avgDays <= 30 ? 'green' : avgDays <= 60 ? 'amber' : 'red' },
+      { label: '% ≤ 30 Days', value: `${pct30}%`, rag: pct30 >= 80 ? 'green' : pct30 >= 50 ? 'amber' : 'red' },
+    );
+  }
+
   const worstRag = rag(total);
-  // Service report has no usable date field for aging
-  const gauge: BulletGauge = { label: 'Service', count: total, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.service, noAgingData: true };
+
+  // Use service30Day data for gauge when available, otherwise fall back to noAgingData
+  let gauge: BulletGauge;
+  if (svcDays.length > 0) {
+    gauge = buildGauge('Service', svcDays, SLA_TARGETS.service);
+  } else {
+    gauge = { label: 'Service', count: total, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.service, noAgingData: true };
+  }
 
   const issues: ActionableIssue[] = rows.map(r => {
     const d = parseDate(r['Open Date'] as string);
@@ -307,6 +331,23 @@ function computeService(rows: Row[]): { metrics: LdnStageMetrics; issues: Action
       suggestedAction: 'Complete service or request extension',
     };
   });
+
+  // Add drill-down issues for rows where Days to Service > 30
+  if (service30DayRows) {
+    for (const r of service30DayRows) {
+      const raw = r['Days to Service'];
+      const num = typeof raw === 'number' ? raw : Number(raw);
+      if (!isNaN(num) && num > 30) {
+        issues.push({
+          stage: 'Service',
+          description: `${r['Display Name'] || 'Unknown'} — ${num} days to service`,
+          daysOverdue: num - 30,
+          priority: num >= 60 ? 'red' as RagColor : 'amber' as RagColor,
+          suggestedAction: 'Review service delay',
+        });
+      }
+    }
+  }
 
   return { metrics: { stage: 'service', label: STAGE_LABELS.service, cards, gauge, rag: worstRag }, issues };
 }
@@ -545,8 +586,14 @@ export function computeAllLdnMetrics(bundle: LdnReportBundle): LdnAttorneyScore[
     const depRows = filterRowsByAttorney(litDeps, lookup, attorney);
     const openLitRows = litOpenLit.filter(r => topAttorney(r._groupingLabel) === attorney);
 
+    // Filter service30Day rows by attorney via Display Name cross-ref
+    const svc30Rows = (bundle.service30Day?.detailRows ?? []).filter(r => {
+      const dn = String(r['Display Name'] ?? '');
+      return lookup.get(dn) === attorney;
+    });
+
     const c = computeComplaints(complaintRows);
-    const s = computeService(serviceRows);
+    const s = computeService(serviceRows, svc30Rows);
     const a = computeAnswers(answerRows);
     const fa = computeFormA(formARows);
     const fc = computeFormC(formCCrossRef, tenDayRows, motionRows);
@@ -617,6 +664,11 @@ export function computePortfolioGauges(bundle: LdnReportBundle): Record<StageNam
   }).filter((d): d is number => d != null);
 
   const serviceCount = (bundle.service?.detailRows ?? []).length;
+  const serviceDays = (bundle.service30Day?.detailRows ?? []).map(r => {
+    const raw = r['Days to Service'];
+    const num = typeof raw === 'number' ? raw : Number(raw);
+    return isNaN(num) ? null : num;
+  }).filter((d): d is number => d != null);
   const answerCount = (bundle.answers?.detailRows ?? []).length;
 
   const formADays = filterLitOnly(bundle.formA?.detailRows ?? []).map(r => {
@@ -646,7 +698,9 @@ export function computePortfolioGauges(bundle: LdnReportBundle): Record<StageNam
 
   return {
     complaints: buildGauge('Complaints', complaintDays, SLA_TARGETS.complaints),
-    service: { label: 'Service', count: serviceCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.service, noAgingData: true },
+    service: serviceDays.length > 0
+      ? buildGauge('Service', serviceDays, SLA_TARGETS.service)
+      : { label: 'Service', count: serviceCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.service, noAgingData: true },
     answers: { label: 'Answers', count: answerCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.answers, noAgingData: true },
     formA: buildGauge('Form A', formADays, SLA_TARGETS.formA),
     formC: buildGauge('Form C', formCDays, SLA_TARGETS.formC),
@@ -875,10 +929,11 @@ export function computePortfolioStages(bundle: LdnReportBundle): Record<StageNam
   const allMotions = bundle.motions?.detailRows ?? [];
   const allDeps = filterLitOnly(bundle.deps?.detailRows ?? []);
   const allOpenLit = filterLitOnly(bundle.openLit?.detailRows ?? []);
+  const allSvc30 = bundle.service30Day?.detailRows ?? [];
 
   return {
     complaints: computeComplaints(allComplaint).metrics,
-    service: computeService(allService).metrics,
+    service: computeService(allService, allSvc30).metrics,
     answers: computeAnswers(allAnswers).metrics,
     formA: computeFormA(allFormA).metrics,
     formC: computeFormC(allFormC, allTenDay, allMotions).metrics,
@@ -936,9 +991,10 @@ export function computePortfolioFromScores(scores: LdnAttorneyScore[], bundle: L
   const attyMotions = filterToAttorneys(bundle.motions?.detailRows ?? [], 'level2');
   const attyDeps = filterToAttorneys(filterLitOnly(bundle.deps?.detailRows ?? []), 'crossref');
   const attyOpenLit = filterToAttorneys(filterLitOnly(bundle.openLit?.detailRows ?? []), 'grouping');
+  const attySvc30 = filterToAttorneys(bundle.service30Day?.detailRows ?? [], 'crossref');
 
   const c = computeComplaints(attyComplaints);
-  const s = computeService(attyService);
+  const s = computeService(attyService, attySvc30);
   const a = computeAnswers(attyAnswers);
   const fa = computeFormA(attyFormA);
   const fc = computeFormC(attyFormC, attyTenDay, attyMotions);

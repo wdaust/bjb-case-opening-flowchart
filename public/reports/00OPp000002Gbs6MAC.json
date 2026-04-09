@@ -5,7 +5,7 @@
   "grandTotals": [
     {
       "label": "Record Count",
-      "value": 319
+      "value": 326
     }
   ],
   "groupings": [
@@ -15,7 +15,7 @@
       "aggregates": [
         {
           "label": "Record Count",
-          "value": 112
+          "value": 113
         }
       ]
     },
@@ -25,7 +25,7 @@
       "aggregates": [
         {
           "label": "Record Count",
-          "value": 100
+          "value": 101
         }
       ]
     },
@@ -45,7 +45,7 @@
       "aggregates": [
         {
           "label": "Record Count",
-          "value": 19
+          "value": 24
         }
       ]
     },
@@ -827,6 +827,13 @@
     },
     {
       "_groupingLabel": "January 2026",
+      "Matter: Matter Name": "MAT-25052166133",
+      "PI Status": "Litigation",
+      "Display Name": "Camiron Cole | 5/20/2025 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "January 2026",
       "Matter: Matter Name": "MAT-25102172336",
       "PI Status": "Litigation",
       "Display Name": "Vanessa Mathurin | 3/20/2024 | Automobile Accident",
@@ -1040,7 +1047,7 @@
       "Matter: Matter Name": "MAT-26011276464",
       "PI Status": "Litigation",
       "Display Name": "Kendra Savage | 12/29/2025 | Premises Liability",
-      "Stage": "Case Opening"
+      "Stage": "Discovery"
     },
     {
       "_groupingLabel": "February 2026",
@@ -1496,6 +1503,13 @@
       "PI Status": "Litigation",
       "Display Name": "Brittany Burkowski | 10/18/2024 | Automobile Accident",
       "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "February 2026",
+      "Matter: Matter Name": "MAT-25052266175",
+      "PI Status": "Litigation",
+      "Display Name": "Damian Murphy Greeley | 2/6/2024 | Premises Liability",
+      "Stage": "Package Out"
     },
     {
       "_groupingLabel": "February 2026",
@@ -2206,6 +2220,20 @@
     },
     {
       "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24112151886",
+      "PI Status": "Litigation",
+      "Display Name": "Kathina A. Anderson | 11/11/2024 | Automobile Accident",
+      "Stage": "Package Out"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24092649415",
+      "PI Status": "Litigation",
+      "Display Name": "Angel Miralda | 9/26/2024 | Automobile Accident",
+      "Stage": "Case Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
       "Matter: Matter Name": "MAT-24061245102",
       "PI Status": "Litigation",
       "Display Name": "Eduarda Machado | 6/9/2024 | Automobile Accident",
@@ -2230,6 +2258,13 @@
       "Matter: Matter Name": "MAT-25122675753",
       "PI Status": "Litigation",
       "Display Name": "Rolfy Espinal | 12/15/2025 | Premises Liability",
+      "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25042565184",
+      "PI Status": "Litigation",
+      "Display Name": "Syedia Watkins | 2/10/2025 | Premises Liability",
       "Stage": "Opening"
     },
     {
@@ -2287,6 +2322,20 @@
       "PI Status": "Litigation",
       "Display Name": "Victoria Boyer | Premises Liability",
       "Stage": "Opening"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-24110451202",
+      "PI Status": "Litigation",
+      "Display Name": "Scott Robert Wilson | 10/19/2024 | Automobile Accident",
+      "Stage": "Demand Prep"
+    },
+    {
+      "_groupingLabel": "April 2026",
+      "Matter: Matter Name": "MAT-25013154647",
+      "PI Status": "Litigation",
+      "Display Name": "Richard James Trammell | 1/7/2025 | Premises Liability",
+      "Stage": "Case Opening"
     },
     {
       "_groupingLabel": "June 2026",

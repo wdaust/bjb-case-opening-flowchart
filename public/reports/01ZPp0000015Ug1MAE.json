@@ -14,7 +14,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 1235
+              "value": 1238
             }
           ]
         }
@@ -33,7 +33,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 92
+              "value": 97
             }
           ]
         },
@@ -42,7 +42,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 377
+              "value": 411
             }
           ]
         },
@@ -51,7 +51,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 204
+              "value": 196
             }
           ]
         },
@@ -60,7 +60,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 169
+              "value": 156
             }
           ]
         },
@@ -69,7 +69,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 87
+              "value": 72
             }
           ]
         },
@@ -97,7 +97,7 @@
           "values": [
             {
               "label": "Sum of Case Rating Midpoint",
-              "value": 122910000
+              "value": 124642000
             }
           ]
         }
@@ -135,7 +135,7 @@
           "values": [
             {
               "label": "Unique Count of Matter Name",
-              "value": 3
+              "value": 5
             }
           ]
         }
@@ -154,7 +154,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 23
+              "value": 21
             }
           ]
         },
@@ -163,7 +163,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 17
+              "value": 12
             }
           ]
         },
@@ -172,7 +172,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 8
+              "value": 12
             }
           ]
         },
@@ -199,7 +199,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 17
+              "value": 16
             }
           ]
         }
@@ -232,7 +232,7 @@
           ]
         },
         {
-          "label": "Dep Overdue [Overdue 30-59 Days]",
+          "label": "Dep Overdue [Overdue 60-89 Days]",
           "values": [
             {
               "label": "Unique Count of Matter ID",
@@ -282,7 +282,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 432
+              "value": 439
             }
           ]
         }
@@ -302,11 +302,11 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 87
+              "value": 85
             },
             {
               "label": "Sum of Case Rating Midpoint",
-              "value": 13550500
+              "value": 13399500
             }
           ]
         },
@@ -315,7 +315,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 7
+              "value": 8
             },
             {
               "label": "Sum of Case Rating Midpoint",
@@ -328,11 +328,11 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 21
+              "value": 24
             },
             {
               "label": "Sum of Case Rating Midpoint",
-              "value": 4537500
+              "value": 5026000
             }
           ]
         },
@@ -341,11 +341,11 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 43
+              "value": 44
             },
             {
               "label": "Sum of Case Rating Midpoint",
-              "value": 8292000
+              "value": 8942500
             }
           ]
         }
@@ -364,7 +364,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 33
+              "value": 28
             }
           ]
         },
@@ -382,7 +382,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 14
+              "value": 15
             }
           ]
         },
@@ -391,7 +391,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 8
+              "value": 7
             }
           ]
         },
@@ -400,7 +400,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 12
+              "value": 10
             }
           ]
         },
@@ -409,7 +409,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 1
+              "value": 3
             }
           ]
         }
@@ -428,7 +428,7 @@
           "values": [
             {
               "label": "Record Count",
-              "value": 32
+              "value": 33
             }
           ]
         }
@@ -447,7 +447,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 11
+              "value": 13
             }
           ]
         },
@@ -456,7 +456,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 2
+              "value": 7
             }
           ]
         },
@@ -465,7 +465,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 24
+              "value": 22
             }
           ]
         },
@@ -474,7 +474,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 77
+              "value": 74
             }
           ]
         },
@@ -483,7 +483,7 @@
           "values": [
             {
               "label": "Unique Count of Matter ID",
-              "value": 25
+              "value": 26
             }
           ]
         }
@@ -502,7 +502,7 @@
           "values": [
             {
               "label": "Average Days Between Extensions",
-              "value": 80.07540173053152
+              "value": 80.30843373493975
             }
           ]
         }
@@ -521,7 +521,7 @@
           "values": [
             {
               "label": "Unique Count of Client Name",
-              "value": 109
+              "value": 116
             }
           ]
         }

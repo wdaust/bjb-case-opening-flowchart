@@ -9,6 +9,7 @@ import {
   OPEN_LIT_ID, RESOLUTIONS_ID,
   UNIT_GOALS_ID, PAST_DUE_SERVICE_ID, MISSING_ANS_SERVED_ID,
   FORM_C_10DAY_ID, NEED_FORM_C_MOTION_ID, ARB_MED_60_ID,
+  SERVICE_30DAY_ID,
 } from '../data/sfReportIds';
 
 // ─── KPI definitions ────────────────────────────────────────────────────────
@@ -32,8 +33,8 @@ const SCORECARD_KPIS: KpiDef[] = [
   { key: 'tod-days', label: 'TOD (Assigned → Resolution) Days', format: 'days', higherBetter: false, thresholds: [365, 730], status: 'yellow' },
   { key: 'days-to-complaint', label: 'Avg Days: Assignment → Complaint Filed', format: 'days', higherBetter: false, thresholds: [30, 60], status: 'green' },
   { key: 'filed-30-days', label: '% Filed ≤ 30 Days of Assignment', format: 'pct', higherBetter: true, thresholds: [80, 50], status: 'green' },
-  { key: 'days-to-service', label: 'Avg Days: Filed → Service Completed', format: 'days', higherBetter: false, thresholds: [30, 60], status: 'red' },
-  { key: 'service-30-days', label: '% Service Completed ≤ 30 Days of Filed', format: 'pct', higherBetter: true, thresholds: [80, 50], status: 'red' },
+  { key: 'days-to-service', label: 'Avg Days: Filed → Service Completed', format: 'days', higherBetter: false, thresholds: [30, 60], status: 'green' },
+  { key: 'service-30-days', label: '% Service Completed ≤ 30 Days of Filed', format: 'pct', higherBetter: true, thresholds: [80, 50], status: 'green' },
   { key: 'answers-missing', label: 'Missing Answers (#)', format: 'count', higherBetter: false, thresholds: [3, 8], status: 'green' },
   { key: 'defaults-timely', label: 'Defaults Entered Timely %', format: 'pct', higherBetter: true, status: 'red' },
   { key: 'plaintiff-disc', label: 'Plaintiff Discovery Served Timely %', format: 'pct', higherBetter: true, status: 'red' },
@@ -98,6 +99,7 @@ interface ReportBundle {
   motionReport: ReportSummaryResponse | null;
   arbMed: ReportSummaryResponse | null;
   resolutions: ReportSummaryResponse | null;
+  service30Day: ReportSummaryResponse | null;
 }
 
 function buildAttorneyList(bundle: ReportBundle): string[] {
@@ -175,9 +177,33 @@ function computeKpisForAttorney(attorney: string, b: ReportBundle): KpiValues {
   const missingG = b.missingAns?.groupings.find(g => g.label === attorney);
   kpis['answers-missing'] = getAgg(missingG, 'Record Count') ?? 0;
 
-  // days-to-service and service-30-days require data not available → null
-  kpis['days-to-service'] = null;
-  kpis['service-30-days'] = null;
+  // ── Days to Service from SERVICE_30DAY report ──
+  // Build Display Name → attorney lookup from Open Lit rows
+  const svcLookup = new Map<string, string>();
+  for (const row of (b.openLit?.detailRows ?? [])) {
+    const dn = String(row['Display Name'] ?? '');
+    if (dn) svcLookup.set(dn, topAttorney(row._groupingLabel));
+  }
+  const svc30Rows = (b.service30Day?.detailRows ?? []).filter(r => {
+    const dn = String(r['Display Name'] ?? '');
+    return svcLookup.get(dn) === attorney;
+  });
+  const daysToSvc: number[] = [];
+  let svcWithin30 = 0;
+  for (const row of svc30Rows) {
+    const raw = row['Days to Service'];
+    const num = typeof raw === 'number' ? raw : Number(raw);
+    if (!isNaN(num) && num >= 0) {
+      daysToSvc.push(num);
+      if (num <= 30) svcWithin30++;
+    }
+  }
+  kpis['days-to-service'] = daysToSvc.length
+    ? Math.round(daysToSvc.reduce((a, b) => a + b, 0) / daysToSvc.length)
+    : null;
+  kpis['service-30-days'] = daysToSvc.length > 0
+    ? Math.round((svcWithin30 / daysToSvc.length) * 100)
+    : null;
 
   // ── 10-Day Letters Needed count per attorney ──
   // Form C 10 Day report: grouped Team > Attorney > Matter (3 levels)
@@ -480,8 +506,10 @@ export default function LitScorecard() {
     useSalesforceReport<ReportSummaryResponse>({ id: ARB_MED_60_ID, type: 'report' });
   const { data: resData, loading: l9 } =
     useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report', mode: 'full' });
+  const { data: service30DayData, loading: l10 } =
+    useSalesforceReport<ReportSummaryResponse>({ id: SERVICE_30DAY_ID, type: 'report', mode: 'full' });
 
-  const loading = l1 || l2 || l4 || l5 || l6 || l7 || l8 || l9;
+  const loading = l1 || l2 || l4 || l5 || l6 || l7 || l8 || l9 || l10;
 
   const bundle: ReportBundle = useMemo(() => ({
     openLit: openLitData,
@@ -492,7 +520,8 @@ export default function LitScorecard() {
     motionReport: motionData,
     arbMed: arbMedData,
     resolutions: resData,
-  }), [openLitData, unitGoalsData, missingAnsData, pastDueData, formC10Data, motionData, arbMedData, resData]);
+    service30Day: service30DayData,
+  }), [openLitData, unitGoalsData, missingAnsData, pastDueData, formC10Data, motionData, arbMedData, resData, service30DayData]);
 
   const attorneys = useMemo(() => buildAttorneyList(bundle), [bundle]);
 

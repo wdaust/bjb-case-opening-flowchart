@@ -1,0 +1,1328 @@
+{
+  "dashboardId": "01ZPp0000013fsTMAQ",
+  "dashboardName": "LIT Disruptor Model",
+  "components": [
+    {
+      "title": "Monthly Unit Goals (Leaders)",
+      "chartType": "donut",
+      "columns": [
+        "Sum of Monthly Gross Settlements"
+      ],
+      "rows": [
+        {
+          "label": "Brian Lehrer",
+          "values": [
+            {
+              "label": "Sum of Monthly Gross Settlements",
+              "value": 400000
+            }
+          ]
+        },
+        {
+          "label": "Chris Bradley",
+          "values": [
+            {
+              "label": "Sum of Monthly Gross Settlements",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "label": "Christopher Karounos",
+          "values": [
+            {
+              "label": "Sum of Monthly Gross Settlements",
+              "value": 475000
+            }
+          ]
+        },
+        {
+          "label": "Christopher Leeds",
+          "values": [
+            {
+              "label": "Sum of Monthly Gross Settlements",
+              "value": 0
+            }
+          ]
+        },
+        {
+          "label": "David Rehe",
+          "values": [
+            {
+              "label": "Sum of Monthly Gross Settlements",
+              "value": 475000
+            }
+          ]
+        },
+        {
+          "label": "Eric Plantier",
+          "values": [
+            {
+              "label": "Sum of Monthly Gross Settlements",
+              "value": 0
+            }
+          ]
+        }
+      ],
+      "sourceReportId": "00O4V000009xEQfUAM"
+    },
+    {
+      "title": "Complaints Filed Monthly",
+      "chartType": "bar",
+      "columns": [
+        "Record Count"
+      ],
+      "rows": [
+        {
+          "label": "January 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 86
+            }
+          ]
+        },
+        {
+          "label": "February 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 74
+            }
+          ]
+        },
+        {
+          "label": "March 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 46
+            }
+          ]
+        },
+        {
+          "label": "April 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 67
+            }
+          ]
+        },
+        {
+          "label": "May 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 144
+            }
+          ]
+        },
+        {
+          "label": "June 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 66
+            }
+          ]
+        },
+        {
+          "label": "July 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 64
+            }
+          ]
+        },
+        {
+          "label": "August 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 71
+            }
+          ]
+        },
+        {
+          "label": "September 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 116
+            }
+          ]
+        },
+        {
+          "label": "October 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 143
+            }
+          ]
+        },
+        {
+          "label": "November 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 77
+            }
+          ]
+        },
+        {
+          "label": "December 2024",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 61
+            }
+          ]
+        },
+        {
+          "label": "January 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 65
+            }
+          ]
+        },
+        {
+          "label": "February 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 87
+            }
+          ]
+        },
+        {
+          "label": "March 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 171
+            }
+          ]
+        },
+        {
+          "label": "April 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 129
+            }
+          ]
+        },
+        {
+          "label": "May 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 130
+            }
+          ]
+        },
+        {
+          "label": "June 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 96
+            }
+          ]
+        },
+        {
+          "label": "July 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 58
+            }
+          ]
+        },
+        {
+          "label": "August 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 65
+            }
+          ]
+        },
+        {
+          "label": "September 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 80
+            }
+          ]
+        },
+        {
+          "label": "October 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 185
+            }
+          ]
+        },
+        {
+          "label": "November 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 105
+            }
+          ]
+        },
+        {
+          "label": "December 2025",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 116
+            }
+          ]
+        },
+        {
+          "label": "January 2026",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 108
+            }
+          ]
+        },
+        {
+          "label": "February 2026",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 94
+            }
+          ]
+        },
+        {
+          "label": "March 2026",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 14
+            }
+          ]
+        }
+      ],
+      "sourceReportId": "00OPp000002rR5lMAE"
+    },
+    {
+      "title": "PI Unit Goals & Profitability",
+      "chartType": "column",
+      "columns": [
+        "Sum of Adjusted Goal Amount"
+      ],
+      "rows": [
+        {
+          "label": "-",
+          "values": [
+            {
+              "label": "Sum of Adjusted Goal Amount",
+              "value": 62081377.02
+            }
+          ]
+        },
+        {
+          "label": "Brian Lehrer",
+          "values": [
+            {
+              "label": "Sum of Adjusted Goal Amount",
+              "value": 76285388.44
+            }
+          ]
+        },
+        {
+          "label": "George Saba",
+          "values": [
+            {
+              "label": "Sum of Adjusted Goal Amount",
+              "value": 8848201.62
+            }
+          ]
+        },
+        {
+          "label": "Lisa Lehrer",
+          "values": [
+            {
+              "label": "Sum of Adjusted Goal Amount",
+              "value": 72524450.31
+            }
+          ]
+        },
+        {
+          "label": "Melissa Perrotta Marinelli",
+          "values": [
+            {
+              "label": "Sum of Adjusted Goal Amount",
+              "value": 45393985.86
+            }
+          ]
+        }
+      ],
+      "sourceReportId": "00OPp000002UZ5fMAG"
+    },
+    {
+      "title": "Missing All Ans, no Default (Served Dt)",
+      "chartType": "donut",
+      "columns": [
+        "Record Count"
+      ],
+      "rows": [
+        {
+          "label": "Austin Qi",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Bruce Cantin",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "Christopher Karounos",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 7
+            }
+          ]
+        },
+        {
+          "label": "David Rehe",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "Eric Plantier",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "label": "George Saba",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 15
+            }
+          ]
+        },
+        {
+          "label": "Gregory Shaffer",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "Jason Richman",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 7
+            }
+          ]
+        },
+        {
+          "label": "Jason Zajdel",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 14
+            }
+          ]
+        },
+        {
+          "label": "Joel Moore",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "John VanDyken",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Lisa Lehrer",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 6
+            }
+          ]
+        },
+        {
+          "label": "Marc Borden",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "label": "Mark Grodberg",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "label": "Paul A Krauss",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "label": "Paul F Romano",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "label": "Raymond Carroll",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 9
+            }
+          ]
+        },
+        {
+          "label": "Robert Davant",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "label": "Stephen Mennella",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "label": "William Firth",
+          "values": [
+            {
+              "label": "Record Count",
+              "value": 4
+            }
+          ]
+        }
+      ],
+      "sourceReportId": "00OPp000002kk0HMAQ"
+    },
+    {
+      "title": "10-Day Letter Compliance",
+      "chartType": "donut",
+      "columns": [
+        "Average time to File"
+      ],
+      "rows": [
+        {
+          "label": "Stephen Mennella",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 153
+            }
+          ]
+        },
+        {
+          "label": "Raymond Carroll",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 161
+            }
+          ]
+        },
+        {
+          "label": "Robert Davant",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 185
+            }
+          ]
+        },
+        {
+          "label": "Brian Lehrer",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 236
+            }
+          ]
+        },
+        {
+          "label": "Jason Zajdel",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 239
+            }
+          ]
+        },
+        {
+          "label": "Gregory Shaffer",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 246
+            }
+          ]
+        },
+        {
+          "label": "Paul A Krauss",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 309
+            }
+          ]
+        },
+        {
+          "label": "David Rehe",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 310
+            }
+          ]
+        },
+        {
+          "label": "Andrew Nirchio",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 323
+            }
+          ]
+        },
+        {
+          "label": "Austin Qi",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 331
+            }
+          ]
+        },
+        {
+          "label": "Christopher Karounos",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 347
+            }
+          ]
+        },
+        {
+          "label": "Heath Murphy",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 348
+            }
+          ]
+        },
+        {
+          "label": "Paul F Romano",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 354
+            }
+          ]
+        },
+        {
+          "label": "George Saba",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 391
+            }
+          ]
+        },
+        {
+          "label": "Matthew Futerfas",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 404
+            }
+          ]
+        },
+        {
+          "label": "Eric Plantier",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 441
+            }
+          ]
+        },
+        {
+          "label": "Lisa Lehrer",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 442
+            }
+          ]
+        },
+        {
+          "label": "Marc Borden",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 446
+            }
+          ]
+        },
+        {
+          "label": "John VanDyken",
+          "values": [
+            {
+              "label": "Average time to File",
+              "value": 558
+            }
+          ]
+        }
+      ],
+      "sourceReportId": "00OPp000003GpEXMA0"
+    },
+    {
+      "title": "Arb and Mediation Matters next 60 Days",
+      "chartType": "column",
+      "columns": [
+        "Matters"
+      ],
+      "rows": [
+        {
+          "label": "Bianca Pagani",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Dan Jalil",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "John Carucci",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Melissa Perrotta Marinelli",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Ryan Veilleux",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Todd Greenwell",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Chris Bradley",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "George Saba",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "Mark Grodberg",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "Austin Qi",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "label": "Stephen Mennella",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "label": "Eric Plantier",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "label": "Joel Moore",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "label": "Gregory Shaffer",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "label": "John VanDyken",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "label": "Marc Borden",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "label": "Lisa Lehrer",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 6
+            }
+          ]
+        },
+        {
+          "label": "Paul F Romano",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 7
+            }
+          ]
+        },
+        {
+          "label": "David Rehe",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 8
+            }
+          ]
+        },
+        {
+          "label": "Paul A Krauss",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 9
+            }
+          ]
+        },
+        {
+          "label": "Christopher Karounos",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "label": "Matthew Futerfas",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "label": "Raymond Carroll",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 11
+            }
+          ]
+        },
+        {
+          "label": "Brian Lehrer",
+          "values": [
+            {
+              "label": "Matters",
+              "value": 24
+            }
+          ]
+        }
+      ],
+      "sourceReportId": "00O4V000009d6Z0UAI"
+    },
+    {
+      "title": "Avg Days from Assignment→Complaint Filed",
+      "chartType": "donut",
+      "columns": [
+        "Average Date Assigned to Team to Filed"
+      ],
+      "rows": [
+        {
+          "label": "Andrew Nirchio",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 10.5
+            }
+          ]
+        },
+        {
+          "label": "Austin Qi",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 16.5
+            }
+          ]
+        },
+        {
+          "label": "Brian Lehrer",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 11.125
+            }
+          ]
+        },
+        {
+          "label": "Bruce Cantin",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "label": "Christopher Karounos",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 36.05
+            }
+          ]
+        },
+        {
+          "label": "David Rehe",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 37.23529411764706
+            }
+          ]
+        },
+        {
+          "label": "Eric Plantier",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 15.277777777777779
+            }
+          ]
+        },
+        {
+          "label": "George Saba",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 39
+            }
+          ]
+        },
+        {
+          "label": "Gregory Shaffer",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 34.125
+            }
+          ]
+        },
+        {
+          "label": "Jason Richman",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 57.333333333333336
+            }
+          ]
+        },
+        {
+          "label": "Jason Zajdel",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 48
+            }
+          ]
+        },
+        {
+          "label": "Joel Moore",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 40.78378378378378
+            }
+          ]
+        },
+        {
+          "label": "John VanDyken",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 35.142857142857146
+            }
+          ]
+        },
+        {
+          "label": "Lisa Lehrer",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 19.05
+            }
+          ]
+        },
+        {
+          "label": "Marc Borden",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 25.90909090909091
+            }
+          ]
+        },
+        {
+          "label": "Mark Grodberg",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 25.8
+            }
+          ]
+        },
+        {
+          "label": "Matthew Futerfas",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 32.8125
+            }
+          ]
+        },
+        {
+          "label": "Melissa Perrotta Marinelli",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 18.142857142857142
+            }
+          ]
+        },
+        {
+          "label": "Paul A Krauss",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 16.235294117647058
+            }
+          ]
+        },
+        {
+          "label": "Paul F Romano",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 42.5625
+            }
+          ]
+        },
+        {
+          "label": "Raymond Carroll",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 14.225806451612904
+            }
+          ]
+        },
+        {
+          "label": "Ryan Veilleux",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 58.1875
+            }
+          ]
+        },
+        {
+          "label": "Stephen Mennella",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 32.958333333333336
+            }
+          ]
+        },
+        {
+          "label": "Todd Greenwell",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 30
+            }
+          ]
+        },
+        {
+          "label": "William Firth",
+          "values": [
+            {
+              "label": "Average Date Assigned to Team to Filed",
+              "value": 34.54545454545455
+            }
+          ]
+        }
+      ],
+      "sourceReportId": "00OPp000003H0GPMA0"
+    },
+    {
+      "title": "Past Due Service",
+      "chartType": "column",
+      "columns": [
+        "Matter Count"
+      ],
+      "rows": [
+        {
+          "label": "Brian Lehrer",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "Christopher Karounos",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Eric Plantier",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Gregory Shaffer",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "label": "Joel Moore",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "John VanDyken",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 2
+            }
+          ]
+        },
+        {
+          "label": "Lisa Lehrer",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "label": "Paul A Krauss",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 4
+            }
+          ]
+        },
+        {
+          "label": "Paul F Romano",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "label": "Raymond Carroll",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "label": "Stephen Mennella",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "label": "William Firth",
+          "values": [
+            {
+              "label": "Matter Count",
+              "value": 1
+            }
+          ]
+        }
+      ],
+      "sourceReportId": "00OPp000002liE9MAI"
+    }
+  ]
+}

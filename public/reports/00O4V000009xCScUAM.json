@@ -5,11 +5,11 @@
   "grandTotals": [
     {
       "label": "Sum of Annual Gross Settlements (LIT PI)",
-      "value": 35166827.53
+      "value": 35306827.53
     },
     {
       "label": "Sum of % Toward Annual Gross Goal",
-      "value": 1247
+      "value": 1250
     },
     {
       "label": "Sum of Annual Gross Goal",
@@ -17,11 +17,11 @@
     },
     {
       "label": "Sum of Annual Cases Settled (LIT PI)",
-      "value": 369
+      "value": 373
     },
     {
       "label": "Sum of Monthly Gross Goal w Pacing",
-      "value": 10363864.7
+      "value": 10354086.92
     }
   ],
   "groupings": [
@@ -191,7 +191,7 @@
         },
         {
           "label": "Sum of % Toward Annual Gross Goal",
-          "value": 15
+          "value": 16
         },
         {
           "label": "Sum of Annual Gross Goal",
@@ -203,7 +203,7 @@
         },
         {
           "label": "Sum of Monthly Gross Goal w Pacing",
-          "value": 282222.22
+          "value": 280777.78
         }
       ]
     },
@@ -343,7 +343,7 @@
       "aggregates": [
         {
           "label": "Sum of Annual Gross Settlements (LIT PI)",
-          "value": 1035000
+          "value": 1110000
         },
         {
           "label": "Sum of % Toward Annual Gross Goal",
@@ -355,7 +355,7 @@
         },
         {
           "label": "Sum of Annual Cases Settled (LIT PI)",
-          "value": 9
+          "value": 11
         },
         {
           "label": "Sum of Monthly Gross Goal w Pacing",
@@ -463,7 +463,7 @@
         },
         {
           "label": "Sum of Monthly Gross Goal w Pacing",
-          "value": 510000
+          "value": 504444.44
         }
       ]
     },
@@ -473,7 +473,7 @@
       "aggregates": [
         {
           "label": "Sum of Annual Gross Settlements (LIT PI)",
-          "value": 1535000
+          "value": 1580000
         },
         {
           "label": "Sum of % Toward Annual Gross Goal",
@@ -485,7 +485,7 @@
         },
         {
           "label": "Sum of Annual Cases Settled (LIT PI)",
-          "value": 18
+          "value": 19
         },
         {
           "label": "Sum of Monthly Gross Goal w Pacing",
@@ -499,11 +499,11 @@
       "aggregates": [
         {
           "label": "Sum of Annual Gross Settlements (LIT PI)",
-          "value": 1630000
+          "value": 1650000
         },
         {
           "label": "Sum of % Toward Annual Gross Goal",
-          "value": 33
+          "value": 34
         },
         {
           "label": "Sum of Annual Gross Goal",
@@ -511,7 +511,7 @@
         },
         {
           "label": "Sum of Annual Cases Settled (LIT PI)",
-          "value": 20
+          "value": 21
         },
         {
           "label": "Sum of Monthly Gross Goal w Pacing",
@@ -567,7 +567,7 @@
         },
         {
           "label": "Sum of Monthly Gross Goal w Pacing",
-          "value": 856209.89
+          "value": 853432.11
         }
       ]
     },
@@ -581,7 +581,7 @@
         },
         {
           "label": "Sum of % Toward Annual Gross Goal",
-          "value": 36
+          "value": 37
         },
         {
           "label": "Sum of Annual Gross Goal",
@@ -729,7 +729,7 @@
     {
       "_groupingLabel": "Christopher Karounos",
       "Annual Gross Settlements (LIT PI)": "$2,495,800.00",
-      "% Toward Annual Gross Goal": "36%",
+      "% Toward Annual Gross Goal": "37%",
       "Annual Gross Goal": "$6,700,000.00",
       "Annual Cases Settled (LIT PI)": "15",
       "Monthly Gross Goal w Pacing": "$558,333.33"
@@ -748,7 +748,7 @@
       "% Toward Annual Gross Goal": "23%",
       "Annual Gross Goal": "$9,960,389.00",
       "Annual Cases Settled (LIT PI)": "12",
-      "Monthly Gross Goal w Pacing": "$856,209.89"
+      "Monthly Gross Goal w Pacing": "$853,432.11"
     },
     {
       "_groupingLabel": "Joel Moore",
@@ -769,10 +769,10 @@
     {
       "_groupingLabel": "Ryan Veilleux",
       "Annual Gross Settlements (LIT PI)": "$473,000.00",
-      "% Toward Annual Gross Goal": "15%",
+      "% Toward Annual Gross Goal": "16%",
       "Annual Gross Goal": "$3,000,000.00",
       "Annual Cases Settled (LIT PI)": "10",
-      "Monthly Gross Goal w Pacing": "$282,222.22"
+      "Monthly Gross Goal w Pacing": "$280,777.78"
     },
     {
       "_groupingLabel": "Raymond Carroll",
@@ -824,10 +824,10 @@
     },
     {
       "_groupingLabel": "Marc Borden",
-      "Annual Gross Settlements (LIT PI)": "$1,035,000.00",
+      "Annual Gross Settlements (LIT PI)": "$1,110,000.00",
       "% Toward Annual Gross Goal": "16%",
       "Annual Gross Goal": "$6,500,000.00",
-      "Annual Cases Settled (LIT PI)": "9",
+      "Annual Cases Settled (LIT PI)": "11",
       "Monthly Gross Goal w Pacing": "$607,222.22"
     },
     {
@@ -856,18 +856,18 @@
     },
     {
       "_groupingLabel": "Melissa Perrotta Marinelli",
-      "Annual Gross Settlements (LIT PI)": "$1,630,000.00",
-      "% Toward Annual Gross Goal": "33%",
+      "Annual Gross Settlements (LIT PI)": "$1,650,000.00",
+      "% Toward Annual Gross Goal": "34%",
       "Annual Gross Goal": "$5,000,000.00",
-      "Annual Cases Settled (LIT PI)": "20",
+      "Annual Cases Settled (LIT PI)": "21",
       "Monthly Gross Goal w Pacing": "$416,666.67"
     },
     {
       "_groupingLabel": "Gregory Shaffer",
-      "Annual Gross Settlements (LIT PI)": "$1,535,000.00",
+      "Annual Gross Settlements (LIT PI)": "$1,580,000.00",
       "% Toward Annual Gross Goal": "26%",
       "Annual Gross Goal": "$6,000,000.00",
-      "Annual Cases Settled (LIT PI)": "18",
+      "Annual Cases Settled (LIT PI)": "19",
       "Monthly Gross Goal w Pacing": "$500,000.00"
     },
     {
@@ -876,7 +876,7 @@
       "% Toward Annual Gross Goal": "24%",
       "Annual Gross Goal": "$6,000,000.00",
       "Annual Cases Settled (LIT PI)": "18",
-      "Monthly Gross Goal w Pacing": "$510,000.00"
+      "Monthly Gross Goal w Pacing": "$504,444.44"
     }
   ]
 }

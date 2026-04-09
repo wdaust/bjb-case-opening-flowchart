@@ -23,3 +23,5 @@ export const MISSING_ANS_SERVED_ID  = '00OPp000002kk0HMAQ';
 export const FORM_C_10DAY_ID        = '00OPp000001jfxhMAA';
 export const NEED_FORM_C_MOTION_ID  = '00OPp000001n6q5MAA';
 export const ARB_MED_60_ID          = '00O4V000009d6Z0UAI';
+export const SERVICE_30DAY_ID       = '00OPp000003alDBMAY';
+export const SERVICE_DASH_ID        = '01ZPp0000013fsTMAQ';

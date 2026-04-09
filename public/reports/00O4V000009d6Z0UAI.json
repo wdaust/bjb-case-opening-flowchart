@@ -9,11 +9,11 @@
     },
     {
       "label": "Matters",
-      "value": 135
+      "value": 131
     },
     {
       "label": "Record Count",
-      "value": 135
+      "value": 131
     }
   ],
   "groupings": [
@@ -55,24 +55,6 @@
     },
     {
       "key": "2",
-      "label": "Bianca Pagani",
-      "aggregates": [
-        {
-          "label": "Sum of Total Matter Value",
-          "value": 0
-        },
-        {
-          "label": "Matters",
-          "value": 1
-        },
-        {
-          "label": "Record Count",
-          "value": 1
-        }
-      ]
-    },
-    {
-      "key": "3",
       "label": "Brian Lehrer",
       "aggregates": [
         {
@@ -81,16 +63,16 @@
         },
         {
           "label": "Matters",
-          "value": 29
+          "value": 27
         },
         {
           "label": "Record Count",
-          "value": 29
+          "value": 27
         }
       ]
     },
     {
-      "key": "4",
+      "key": "3",
       "label": "Christopher Karounos",
       "aggregates": [
         {
@@ -99,16 +81,16 @@
         },
         {
           "label": "Matters",
-          "value": 11
+          "value": 12
         },
         {
           "label": "Record Count",
-          "value": 11
+          "value": 12
         }
       ]
     },
     {
-      "key": "5",
+      "key": "4",
       "label": "David Rehe",
       "aggregates": [
         {
@@ -117,16 +99,16 @@
         },
         {
           "label": "Matters",
-          "value": 8
+          "value": 7
         },
         {
           "label": "Record Count",
-          "value": 8
+          "value": 7
         }
       ]
     },
     {
-      "key": "6",
+      "key": "5",
       "label": "Eric Plantier",
       "aggregates": [
         {
@@ -144,7 +126,7 @@
       ]
     },
     {
-      "key": "7",
+      "key": "6",
       "label": "George Saba",
       "aggregates": [
         {
@@ -153,16 +135,16 @@
         },
         {
           "label": "Matters",
-          "value": 2
+          "value": 1
         },
         {
           "label": "Record Count",
-          "value": 2
+          "value": 1
         }
       ]
     },
     {
-      "key": "8",
+      "key": "7",
       "label": "Gregory Shaffer",
       "aggregates": [
         {
@@ -180,7 +162,7 @@
       ]
     },
     {
-      "key": "9",
+      "key": "8",
       "label": "Joel Moore",
       "aggregates": [
         {
@@ -198,7 +180,7 @@
       ]
     },
     {
-      "key": "10",
+      "key": "9",
       "label": "John Carucci",
       "aggregates": [
         {
@@ -216,7 +198,7 @@
       ]
     },
     {
-      "key": "11",
+      "key": "10",
       "label": "John VanDyken",
       "aggregates": [
         {
@@ -234,7 +216,7 @@
       ]
     },
     {
-      "key": "12",
+      "key": "11",
       "label": "Lisa Lehrer",
       "aggregates": [
         {
@@ -252,7 +234,7 @@
       ]
     },
     {
-      "key": "13",
+      "key": "12",
       "label": "Marc Borden",
       "aggregates": [
         {
@@ -270,7 +252,7 @@
       ]
     },
     {
-      "key": "14",
+      "key": "13",
       "label": "Mark Grodberg",
       "aggregates": [
         {
@@ -288,7 +270,7 @@
       ]
     },
     {
-      "key": "15",
+      "key": "14",
       "label": "Matthew Futerfas",
       "aggregates": [
         {
@@ -306,7 +288,7 @@
       ]
     },
     {
-      "key": "16",
+      "key": "15",
       "label": "Melissa Perrotta Marinelli",
       "aggregates": [
         {
@@ -324,7 +306,7 @@
       ]
     },
     {
-      "key": "17",
+      "key": "16",
       "label": "Paul A Krauss",
       "aggregates": [
         {
@@ -342,7 +324,7 @@
       ]
     },
     {
-      "key": "18",
+      "key": "17",
       "label": "Paul F Romano",
       "aggregates": [
         {
@@ -360,7 +342,7 @@
       ]
     },
     {
-      "key": "19",
+      "key": "18",
       "label": "Raymond Carroll",
       "aggregates": [
         {
@@ -378,7 +360,7 @@
       ]
     },
     {
-      "key": "20",
+      "key": "19",
       "label": "Ryan Veilleux",
       "aggregates": [
         {
@@ -396,7 +378,7 @@
       ]
     },
     {
-      "key": "21",
+      "key": "20",
       "label": "Stephen Mennella",
       "aggregates": [
         {
@@ -414,7 +396,7 @@
       ]
     },
     {
-      "key": "22",
+      "key": "21",
       "label": "Todd Greenwell",
       "aggregates": [
         {
@@ -435,44 +417,184 @@
   "hasDetailRows": true,
   "detailRows": [
     {
-      "_groupingLabel": "Raymond Carroll > Arbitration / Settlement Conference",
-      "Client": "Christopher Reilly",
-      "Display Name": "Christopher Reilly | 5/9/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23051233162",
+      "_groupingLabel": "Ryan Veilleux > Case Opening",
+      "Client": "Emily Bretas Romano",
+      "Display Name": "Emily Bretas Romano | 12/29/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24022241894",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "7/16/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll > Arbitration / Settlement Conference",
-      "Client": "William Weightman",
-      "Display Name": "William Weightman | 6/9/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23061334066",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/17/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Brian Lehrer > Written Discovery",
-      "Client": "Pamela Coleman",
-      "Display Name": "Pamela Coleman | 8/24/2021 | Premises Liability",
-      "Matter: Matter Name": "MAT-21082520346",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/17/2026",
+      "Arbitration Date": "8/28/2026",
       "Matter Case Rating": "D - 26k-50k"
     },
     {
-      "_groupingLabel": "Brian Lehrer > Written Discovery",
-      "Client": "Zenolia L. Lima",
-      "Display Name": "Zenolia L. Lima | 8/28/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23082936420",
+      "_groupingLabel": "Christopher Karounos > Written Discovery",
+      "Client": "Constantine Vivian Jr.",
+      "Display Name": "Constantine Vivian Jr. | 11/28/2021 | Premise Liability",
+      "Matter: Matter Name": "MAT-23082536265",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "6/4/2026",
+      "Arbitration Date": "5/12/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Written Discovery",
+      "Client": "Estate of Lois Petrucelli",
+      "Display Name": "Estate of Lois Petrucelli | 10/28/2021 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23090636653",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/7/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Litigation Opening",
+      "Client": "William \"Liam\" Benson",
+      "Display Name": "William \"Liam\" Benson | 9/4/2021 | Business Law",
+      "Matter: Matter Name": "MAT-22113029474",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "4/21/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "Not Applicable (Settled with Friendly, Appeal, etc.)"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
+      "Client": "Chung S Kim",
+      "Display Name": "Chung S Kim | 7/4/2023 | Assault",
+      "Matter: Matter Name": "MAT-24100349692",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "9/2/2026",
       "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
+      "Client": "Harold Blake",
+      "Display Name": "Harold Blake | 9/21/2022 | Premises Liability",
+      "Matter: Matter Name": "MAT-22092627857",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/7/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
+      "Client": "Karla Barbosa",
+      "Display Name": "Karla Barbosa | 12/11/2020 | Premises Liability",
+      "Matter: Matter Name": "MAT-21031217261",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/16/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
+      "Client": "Maya N. Joseph",
+      "Display Name": "Maya N. Joseph | 12/2/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-24081647661",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/17/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
+      "Client": "Robert C Bittle Jr",
+      "Display Name": "Robert C Bittle Jr | 10/8/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23101337785",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "12/1/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
+      "Client": "Staci Bassignani",
+      "Display Name": "Staci Bassignani | 1/17/2024 | Premises Liability",
+      "Matter: Matter Name": "MAT-24011840787",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "7/9/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
+      "Client": "Tracy Houtsma",
+      "Display Name": "Tracy Houtsma | 7/30/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23081435908",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/25/2026",
+      "Matter Case Rating": "S - 501k-1m"
+    },
+    {
+      "_groupingLabel": "Gregory Shaffer > Settlement",
+      "Client": "Peter Sagan",
+      "Display Name": "Peter Sagan | 10/17/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22111029174",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "7/7/2026",
+      "Matter Case Rating": "F - 0-15k"
+    },
+    {
+      "_groupingLabel": "Gregory Shaffer > Settlement",
+      "Client": "Renato Batres",
+      "Display Name": "Renato Batres | 12/16/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22122929967",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/1/2026",
+      "Matter Case Rating": "E - 16k-25k"
+    },
+    {
+      "_groupingLabel": "John VanDyken > Deps / Med Exams / Narratives",
+      "Client": "Jonathan Cruz",
+      "Display Name": "Jonathan Cruz | 9/20/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22092327810",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/16/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "Matthew Futerfas > Deps / Med Exams / Narratives",
+      "Client": "Adriana Sanchez",
+      "Display Name": "Adriana Sanchez | 11/9/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22111629345",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/14/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Matthew Futerfas > Deps / Med Exams / Narratives",
+      "Client": "Alexandria Espinoza",
+      "Display Name": "Alexandria Espinoza | 2/19/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23022231128",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/28/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "Matthew Futerfas > Deps / Med Exams / Narratives",
+      "Client": "Jennifer Pratts",
+      "Display Name": "Jennifer Pratts | 12/20/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23122039839",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "8/11/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Matthew Futerfas > Deps / Med Exams / Narratives",
+      "Client": "Sherley Lacambra",
+      "Display Name": "Sherley Lacambra | 10/7/2020 | Automobile Accident",
+      "Matter: Matter Name": "MAT-21101421262",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/14/2026",
+      "Matter Case Rating": "A - 251k-500k"
     },
     {
       "_groupingLabel": "Brian Lehrer > Discovery",
@@ -546,16 +668,6 @@
     },
     {
       "_groupingLabel": "Brian Lehrer > Discovery",
-      "Client": "Ozzie Yahaya",
-      "Display Name": "Ozzie Yahaya | 6/10/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22062225901",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/9/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Brian Lehrer > Discovery",
       "Client": "Teresa Alvine",
       "Display Name": "Teresa Alvine | 12/21/2023 | Premises Liability",
       "Matter: Matter Name": "MAT-24011140553",
@@ -563,6 +675,26 @@
       "Mediation Date": "-",
       "Arbitration Date": "7/22/2026",
       "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Written Discovery",
+      "Client": "Pamela Coleman",
+      "Display Name": "Pamela Coleman | 8/24/2021 | Premises Liability",
+      "Matter: Matter Name": "MAT-21082520346",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "4/17/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Written Discovery",
+      "Client": "Zenolia L. Lima",
+      "Display Name": "Zenolia L. Lima | 8/28/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23082936420",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/4/2026",
+      "Matter Case Rating": "D - 26k-50k"
     },
     {
       "_groupingLabel": "Brian Lehrer > Arbitration / Settlement Conference",
@@ -655,334 +787,44 @@
       "Matter Case Rating": "B - 101k-250k"
     },
     {
-      "_groupingLabel": "George Saba > Demand Prep",
-      "Client": "Edward Haynes",
-      "Display Name": "Edward Haynes | 9/7/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24090948623",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "4/8/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "John Carucci > Discovery",
-      "Client": "Keith Stanwood",
-      "Display Name": "Keith Stanwood | 8/20/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25062167252",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "6/18/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "John Carucci > Discovery",
-      "Client": "Pamela Tyler",
-      "Display Name": "Pamela Tyler | 12/17/2019 | Premises Liability",
-      "Matter: Matter Name": "MAT-25031263448",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "5/14/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Joel Moore > Settled",
-      "Client": "Richard D. Seymour, Jr.",
-      "Display Name": "Richard D. Seymour, Jr. | 10/2/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24102150513",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "6/26/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "E - 16k-25k"
-    },
-    {
-      "_groupingLabel": "Bianca Pagani > Deps / Med Exams / Narratives",
-      "Client": "Madelin Alvarez",
-      "Display Name": "Madelin Alvarez | 7/18/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22072026458",
+      "_groupingLabel": "Lisa Lehrer > Written Discovery",
+      "Client": "Mushtaba Amini",
+      "Display Name": "Mushtaba Amini | 4/10/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23051233156",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "4/9/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "Matthew Futerfas > Deps / Med Exams / Narratives",
-      "Client": "Adriana Sanchez",
-      "Display Name": "Adriana Sanchez | 11/9/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22111629345",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/14/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Matthew Futerfas > Deps / Med Exams / Narratives",
-      "Client": "Alexandria Espinoza",
-      "Display Name": "Alexandria Espinoza | 2/19/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23022231128",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/28/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "Matthew Futerfas > Deps / Med Exams / Narratives",
-      "Client": "Jennifer Pratts",
-      "Display Name": "Jennifer Pratts | 12/20/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23122039839",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "8/11/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Matthew Futerfas > Deps / Med Exams / Narratives",
-      "Client": "Sherley Lacambra",
-      "Display Name": "Sherley Lacambra | 10/7/2020 | Automobile Accident",
-      "Matter: Matter Name": "MAT-21101421262",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/14/2026",
-      "Matter Case Rating": "A - 251k-500k"
-    },
-    {
-      "_groupingLabel": "Eric Plantier > Written Discovery",
-      "Client": "Christine Lee",
-      "Display Name": "Christine Lee | 3/12/2022 | Premises Liability",
-      "Matter: Matter Name": "MAT-22040424287",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/16/2026",
+      "Arbitration Date": "7/15/2026",
       "Matter Case Rating": "B - 101k-250k"
     },
     {
-      "_groupingLabel": "Eric Plantier > Written Discovery",
-      "Client": "Hipolito Ortiz",
-      "Display Name": "Hipolito Ortiz | 9/26/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22093028014",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/28/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "John VanDyken > Deps / Med Exams / Narratives",
-      "Client": "Jonathan Cruz",
-      "Display Name": "Jonathan Cruz | 9/20/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22092327810",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/16/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "Ryan Veilleux > Case Opening",
-      "Client": "Emily Bretas Romano",
-      "Display Name": "Emily Bretas Romano | 12/29/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24022241894",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "8/28/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "Andrew Nirchio > Package Out",
-      "Client": "Linda Dixon",
-      "Display Name": "Linda Dixon | 7/21/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24080747139",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "5/20/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Austin Qi > Discovery",
-      "Client": "Justin Massay",
-      "Display Name": "Justin Massay | 6/23/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22070626154",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/10/2026",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Melissa Perrotta Marinelli > Arbitration / Settlement Conference",
-      "Client": "Ernest Chisena",
-      "Display Name": "Ernest Chisena | 6/11/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22090827450",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/3/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "David Rehe > Discovery",
-      "Client": "Andrew Pompey",
-      "Display Name": "Andrew Pompey | 12/11/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23121439628",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "8/12/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "David Rehe > Discovery",
-      "Client": "Dessie Morrison",
-      "Display Name": "Dessie Morrison | 3/25/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23040532191",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/19/2026",
-      "Matter Case Rating": "E - 16k-25k"
-    },
-    {
-      "_groupingLabel": "David Rehe > Discovery",
-      "Client": "Jaquan Manning",
-      "Display Name": "Jaquan Manning | 2/23/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23022331189",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "7/22/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "David Rehe > Discovery",
-      "Client": "Jessica Aiken",
-      "Display Name": "Jessica Aiken | 4/27/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24043043862",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/11/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "David Rehe > Discovery",
-      "Client": "Juan Diaz",
-      "Display Name": "Juan Diaz | 12/24/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23010530164",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/25/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "David Rehe > Discovery",
-      "Client": "Miguel De Los Santos",
-      "Display Name": "Miguel De Los Santos | 2/27/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23031031603",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/30/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "David Rehe > Discovery",
-      "Client": "Nala Toussaint",
-      "Display Name": "Nala Toussaint | 12/24/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23120839385",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "7/9/2026",
-      "Matter Case Rating": "Not enough info"
-    },
-    {
-      "_groupingLabel": "Lisa Lehrer > Discovery",
-      "Client": "Paula Piech",
-      "Display Name": "Paula Piech | 7/10/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23121939761",
+      "_groupingLabel": "Lisa Lehrer > Written Discovery",
+      "Client": "Patrick Brennan",
+      "Display Name": "Patrick Brennan | 1/6/2024 | Assault",
+      "Matter: Matter Name": "MAT-24010840361",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
       "Arbitration Date": "5/6/2026",
-      "Matter Case Rating": "B - 101k-250k"
+      "Matter Case Rating": "C - 51k-100k"
     },
     {
-      "_groupingLabel": "Joel Moore > Litigation Review",
-      "Client": "Fred Graham",
-      "Display Name": "Fred Graham | 1/17/2025 | Heavy Trucking Incident",
-      "Matter: Matter Name": "MAT-25030363131",
+      "_groupingLabel": "Lisa Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Donnamarie Dufour",
+      "Display Name": "Donnamarie Dufour | 8/10/2024 | Premises Liability",
+      "Matter: Matter Name": "MAT-24082047822",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "5/14/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "E - 16k-25k"
+      "Mediation Date": "-",
+      "Arbitration Date": "5/15/2026",
+      "Matter Case Rating": "N - 1.1M - 2M"
     },
     {
-      "_groupingLabel": "Christopher Karounos > Discovery",
-      "Client": "Amour Zuniga",
-      "Display Name": "Amour Zuniga | 12/24/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25012454274",
+      "_groupingLabel": "Lisa Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Steven Carvatt",
+      "Display Name": "Steven Carvatt | 4/17/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23062034250",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "4/13/2026",
-      "Arbitration Date": "-",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/13/2026",
       "Matter Case Rating": "A - 251k-500k"
-    },
-    {
-      "_groupingLabel": "Joel Moore > Case Opening",
-      "Client": "Asya Hasan",
-      "Display Name": "Asya Hasan | 1/30/2025 | Premises Liability",
-      "Matter: Matter Name": "MAT-25022662961",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "8/17/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Joel Moore > Case Opening",
-      "Client": "Frankelis Polanco",
-      "Display Name": "Frankelis Polanco | 2/25/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25100671695",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "5/8/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "E - 16k-25k"
-    },
-    {
-      "_groupingLabel": "Christopher Karounos > Written Discovery",
-      "Client": "Constantine Vivian Jr.",
-      "Display Name": "Constantine Vivian Jr. | 11/28/2021 | Premise Liability",
-      "Matter: Matter Name": "MAT-23082536265",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/12/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Christopher Karounos > Written Discovery",
-      "Client": "Estate of Lois Petrucelli",
-      "Display Name": "Estate of Lois Petrucelli | 10/28/2021 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23090636653",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/7/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Paul F Romano > Discovery",
-      "Client": "Frank Redwood",
-      "Display Name": "Frank Redwood | 2/2/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24020741544",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "7/9/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "Paul F Romano > Discovery",
-      "Client": "Jose E. Jovel",
-      "Display Name": "Jose E. Jovel | 12/9/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24021941722",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/16/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Paul F Romano > Discovery",
-      "Client": "Marque Edwards",
-      "Display Name": "Marque Edwards | 2/27/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23022831331",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/30/2026",
-      "Matter Case Rating": "C - 51k-100k"
     },
     {
       "_groupingLabel": "Stephen Mennella > Case Opening",
@@ -995,24 +837,14 @@
       "Matter Case Rating": "E - 16k-25k"
     },
     {
-      "_groupingLabel": "Paul F Romano > Arbitration / Settlement Conference",
-      "Client": "Giancarlo Mosquera",
-      "Display Name": "Giancarlo Mosquera | 6/20/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22071426333",
+      "_groupingLabel": "Andrew Nirchio > Package Out",
+      "Client": "Linda Dixon",
+      "Display Name": "Linda Dixon | 7/21/2024 | Premises Liability",
+      "Matter: Matter Name": "MAT-24080747139",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/15/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Paul F Romano > Arbitration / Settlement Conference",
-      "Client": "Joseph Cantale",
-      "Display Name": "Joseph Cantale | 11/17/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23112939067",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/11/2026",
-      "Matter Case Rating": "B - 101k-250k"
+      "Mediation Date": "5/20/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "F - 0-15k"
     },
     {
       "_groupingLabel": "Stephen Mennella > Discovery",
@@ -1035,56 +867,6 @@
       "Matter Case Rating": "A - 251k-500k"
     },
     {
-      "_groupingLabel": "Paul A Krauss > Arbitration / Settlement Conference",
-      "Client": "Dana Devery",
-      "Display Name": "Dana Devery | 10/19/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23102438108",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/15/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Paul A Krauss > Arbitration / Settlement Conference",
-      "Client": "Tiffany Rose",
-      "Display Name": "Tiffany Rose | 12/11/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23121339561",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/23/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Todd Greenwell > Mediation",
-      "Client": "Maria Jovel",
-      "Display Name": "Maria Jovel | 12/6/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25012854474",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "4/17/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Todd Greenwell > Mediation",
-      "Client": "Robert Monroe Bartley",
-      "Display Name": "Robert Monroe Bartley | 2/18/2025 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25040464392",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "5/20/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "E - 16k-25k"
-    },
-    {
-      "_groupingLabel": "Todd Greenwell > Mediation",
-      "Client": "William Jackson",
-      "Display Name": "William Jackson | 1/11/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24121152595",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "6/3/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
       "_groupingLabel": "Paul A Krauss > Discovery",
       "Client": "Cynthia Perez",
       "Display Name": "Cynthia Perez | 9/10/2023 | Premises Liability",
@@ -1105,24 +887,54 @@
       "Matter Case Rating": "C - 51k-100k"
     },
     {
-      "_groupingLabel": "Gregory Shaffer > Deps / Med Exams / Narratives",
-      "Client": "Michael Argondizzo",
-      "Display Name": "Michael Argondizzo | 10/28/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23120539299",
+      "_groupingLabel": "Austin Qi > Discovery",
+      "Client": "Justin Massay",
+      "Display Name": "Justin Massay | 6/23/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22070626154",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "7/7/2026",
-      "Matter Case Rating": "D - 26k-50k"
+      "Arbitration Date": "6/10/2026",
+      "Matter Case Rating": "F - 0-15k"
     },
     {
-      "_groupingLabel": "Gregory Shaffer > Trial",
-      "Client": "Alberto Toro",
-      "Display Name": "Alberto Toro | 4/13/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23041432438",
+      "_groupingLabel": "Paul A Krauss > Arbitration / Settlement Conference",
+      "Client": "Dana Devery",
+      "Display Name": "Dana Devery | 10/19/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23102438108",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/15/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Paul A Krauss > Arbitration / Settlement Conference",
+      "Client": "Tiffany Rose",
+      "Display Name": "Tiffany Rose | 12/11/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23121339561",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "4/23/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Eric Plantier > Written Discovery",
+      "Client": "Christine Lee",
+      "Display Name": "Christine Lee | 3/12/2022 | Premises Liability",
+      "Matter: Matter Name": "MAT-22040424287",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
       "Arbitration Date": "4/16/2026",
       "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Eric Plantier > Written Discovery",
+      "Client": "Hipolito Ortiz",
+      "Display Name": "Hipolito Ortiz | 9/26/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22093028014",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/28/2026",
+      "Matter Case Rating": "C - 51k-100k"
     },
     {
       "_groupingLabel": "Marc Borden > Discovery",
@@ -1156,16 +968,6 @@
     },
     {
       "_groupingLabel": "Marc Borden > Discovery",
-      "Client": "Lissette Reyes",
-      "Display Name": "Lissette Reyes | 12/18/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23011630360",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/4/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Marc Borden > Discovery",
       "Client": "Sibel Basturk",
       "Display Name": "Sibel Basturk | 3/24/2023 | Automobile Accident",
       "Matter: Matter Name": "MAT-23032731876",
@@ -1175,174 +977,164 @@
       "Matter Case Rating": "D - 26k-50k"
     },
     {
-      "_groupingLabel": "Brian Lehrer > Trial",
-      "Client": "Kayleigh Byrne",
-      "Display Name": "Kayleigh Byrne | 2/25/2022 | Premises Liability",
-      "Matter: Matter Name": "MAT-22061725783",
+      "_groupingLabel": "John Carucci > Discovery",
+      "Client": "Keith Stanwood",
+      "Display Name": "Keith Stanwood | 8/20/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25062167252",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "4/13/2026",
+      "Mediation Date": "6/18/2026",
       "Arbitration Date": "-",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Mark Grodberg > Case Opening",
-      "Client": "Sammer Nasar",
-      "Display Name": "Sammer Nasar | 8/26/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24011140533",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/6/2026",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
-      "Client": "Brian Vicente",
-      "Display Name": "Brian Vicente | 11/21/2023 | Heavy Trucking Incident",
-      "Matter: Matter Name": "MAT-23120639306",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/16/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
-      "Client": "Fredy Adrian Larrosa-Riso",
-      "Display Name": "Fredy Adrian Larrosa-Riso | 11/28/2023 | Heavy Trucking Incident",
-      "Matter: Matter Name": "MAT-24012440955",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "7/7/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
-      "Client": "Kristen Hazen",
-      "Display Name": "Kristen Hazen | 3/13/2024 | Heavy Trucking Incident",
-      "Matter: Matter Name": "MAT-24041243306",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "4/28/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
-      "Client": "Maritza Olavarria",
-      "Display Name": "Maritza Olavarria | 12/8/2023 | Heavy Trucking Incident",
-      "Matter: Matter Name": "MAT-23121239518",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/4/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
-      "Client": "Provedensia Reyes",
-      "Display Name": "Provedensia Reyes | 8/7/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24080847293",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "9/16/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
-      "Client": "Thomas McMaster",
-      "Display Name": "Thomas McMaster | 2/24/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24022642015",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "6/9/2026",
-      "Arbitration Date": "7/9/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Bryce Choi",
-      "Display Name": "Bryce Choi | 5/17/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22052625338",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/9/2026",
       "Matter Case Rating": "D - 26k-50k"
     },
     {
-      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Derrick Lecque",
-      "Display Name": "Derrick Lecque | 9/17/2021 | Automobile Accident",
-      "Matter: Matter Name": "MAT-21110821817",
+      "_groupingLabel": "John Carucci > Discovery",
+      "Client": "Pamela Tyler",
+      "Display Name": "Pamela Tyler | 12/17/2019 | Premises Liability",
+      "Matter: Matter Name": "MAT-25031263448",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/30/2026",
-      "Matter Case Rating": "S - 501k-1m"
+      "Mediation Date": "5/14/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "F - 0-15k"
     },
     {
-      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Estate of Anthony Joseph Drury",
-      "Display Name": "Estate of Anthony Joseph Drury | 7/13/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24100349681",
+      "_groupingLabel": "Todd Greenwell > Mediation",
+      "Client": "Maria Jovel",
+      "Display Name": "Maria Jovel | 12/6/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25012854474",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "6/22/2026",
+      "Mediation Date": "4/17/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "F - 0-15k"
+    },
+    {
+      "_groupingLabel": "Todd Greenwell > Mediation",
+      "Client": "Robert Monroe Bartley",
+      "Display Name": "Robert Monroe Bartley | 2/18/2025 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25040464392",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "5/20/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "E - 16k-25k"
+    },
+    {
+      "_groupingLabel": "Todd Greenwell > Mediation",
+      "Client": "William Jackson",
+      "Display Name": "William Jackson | 1/11/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24121152595",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "6/3/2026",
       "Arbitration Date": "-",
       "Matter Case Rating": "B - 101k-250k"
     },
     {
-      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Ivan Castano",
-      "Display Name": "Ivan Castano | 1/18/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24011940834",
+      "_groupingLabel": "Raymond Carroll > Arbitration / Settlement Conference",
+      "Client": "Christopher Reilly",
+      "Display Name": "Christopher Reilly | 5/9/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23051233162",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "5/26/2026",
-      "Arbitration Date": "-",
+      "Mediation Date": "-",
+      "Arbitration Date": "7/16/2026",
       "Matter Case Rating": "B - 101k-250k"
     },
     {
-      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Jenniffer Urena",
-      "Display Name": "Jenniffer Urena | 6/29/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23071034877",
+      "_groupingLabel": "Raymond Carroll > Arbitration / Settlement Conference",
+      "Client": "William Weightman",
+      "Display Name": "William Weightman | 6/9/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23061334066",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "6/4/2026",
+      "Arbitration Date": "4/17/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Paul F Romano > Arbitration / Settlement Conference",
+      "Client": "Giancarlo Mosquera",
+      "Display Name": "Giancarlo Mosquera | 6/20/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22071426333",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "4/15/2026",
       "Matter Case Rating": "C - 51k-100k"
     },
     {
-      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Luis Lengerke",
-      "Display Name": "Luis Lengerke | 2/19/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24022041830",
+      "_groupingLabel": "Paul F Romano > Arbitration / Settlement Conference",
+      "Client": "Joseph Cantale",
+      "Display Name": "Joseph Cantale | 11/17/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23112939067",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "6/17/2026",
-      "Matter Case Rating": "A - 251k-500k"
-    },
-    {
-      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Nancy Hromchak",
-      "Display Name": "Nancy Hromchak | 1/29/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-24032042744",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/26/2026",
+      "Arbitration Date": "6/11/2026",
       "Matter Case Rating": "B - 101k-250k"
     },
     {
-      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Perickles Vasilaropoulos",
-      "Display Name": "Perickles Vasilaropoulos | 9/1/2021 | Automobile Accident",
-      "Matter: Matter Name": "MAT-21090920538",
+      "_groupingLabel": "Paul F Romano > Discovery",
+      "Client": "Frank Redwood",
+      "Display Name": "Frank Redwood | 2/2/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24020741544",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "7/9/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "Paul F Romano > Discovery",
+      "Client": "Jose E. Jovel",
+      "Display Name": "Jose E. Jovel | 12/9/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24021941722",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/16/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Paul F Romano > Discovery",
+      "Client": "Marque Edwards",
+      "Display Name": "Marque Edwards | 2/27/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23022831331",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
       "Arbitration Date": "4/30/2026",
-      "Matter Case Rating": "S - 501k-1m"
+      "Matter Case Rating": "C - 51k-100k"
     },
     {
-      "_groupingLabel": "George Saba > Arbitration / Settlement Conference",
-      "Client": "Evgueni St. Onge",
-      "Display Name": "Evgueni St. Onge | 5/8/2024 | Automobile Accident",
-      "Matter: Matter Name": "MAT-24050944134",
+      "_groupingLabel": "Joel Moore > Case Opening",
+      "Client": "Asya Hasan",
+      "Display Name": "Asya Hasan | 1/30/2025 | Premises Liability",
+      "Matter: Matter Name": "MAT-25022662961",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "8/17/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "F - 0-15k"
+    },
+    {
+      "_groupingLabel": "Joel Moore > Case Opening",
+      "Client": "Frankelis Polanco",
+      "Display Name": "Frankelis Polanco | 2/25/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25100671695",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "5/8/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "E - 16k-25k"
+    },
+    {
+      "_groupingLabel": "Joel Moore > Litigation Review",
+      "Client": "Fred Graham",
+      "Display Name": "Fred Graham | 1/17/2025 | Heavy Trucking Incident",
+      "Matter: Matter Name": "MAT-25030363131",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "5/14/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "E - 16k-25k"
+    },
+    {
+      "_groupingLabel": "Christopher Karounos > Settlement",
+      "Client": "Rynaill Beard",
+      "Display Name": "Rynaill Beard | 5/18/2024 | Premises Liability",
+      "Matter: Matter Name": "MAT-24052044362",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "4/13/2026",
-      "Matter Case Rating": "B - 101k-250k"
+      "Arbitration Date": "7/15/2026",
+      "Matter Case Rating": "D - 26k-50k"
     },
     {
       "_groupingLabel": "Matthew Futerfas > Case Opening",
@@ -1355,23 +1147,23 @@
       "Matter Case Rating": "E - 16k-25k"
     },
     {
-      "_groupingLabel": "Eric Plantier > Discovery",
-      "Client": "Penny Gilbert",
-      "Display Name": "Penny Gilbert | 5/16/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23051633232",
+      "_groupingLabel": "Christopher Karounos > Discovery",
+      "Client": "Amour Zuniga",
+      "Display Name": "Amour Zuniga | 12/24/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25012454274",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "4/30/2026",
-      "Matter Case Rating": "B - 101k-250k"
+      "Mediation Date": "4/13/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "A - 251k-500k"
     },
     {
-      "_groupingLabel": "Eric Plantier > Discovery",
-      "Client": "Samuel Baram",
-      "Display Name": "Samuel Baram | 11/19/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23120639334",
+      "_groupingLabel": "Gregory Shaffer > Deps / Med Exams / Narratives",
+      "Client": "Michael Argondizzo",
+      "Display Name": "Michael Argondizzo | 10/28/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23120539299",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "5/20/2026",
+      "Arbitration Date": "7/7/2026",
       "Matter Case Rating": "D - 26k-50k"
     },
     {
@@ -1393,6 +1185,16 @@
       "Mediation Date": "-",
       "Arbitration Date": "4/14/2026",
       "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Gregory Shaffer > Trial",
+      "Client": "Alberto Toro",
+      "Display Name": "Alberto Toro | 4/13/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23041432438",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "4/16/2026",
+      "Matter Case Rating": "B - 101k-250k"
     },
     {
       "_groupingLabel": "Matthew Futerfas > Discovery",
@@ -1465,194 +1267,114 @@
       "Matter Case Rating": "S - 501k-1m"
     },
     {
-      "_groupingLabel": "Lisa Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Donnamarie Dufour",
-      "Display Name": "Donnamarie Dufour | 8/10/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24082047822",
+      "_groupingLabel": "Brian Lehrer > Trial",
+      "Client": "Kayleigh Byrne",
+      "Display Name": "Kayleigh Byrne | 2/25/2022 | Premises Liability",
+      "Matter: Matter Name": "MAT-22061725783",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/15/2026",
-      "Matter Case Rating": "N - 1.1M - 2M"
-    },
-    {
-      "_groupingLabel": "Lisa Lehrer > Deps / Med Exams / Narratives",
-      "Client": "Steven Carvatt",
-      "Display Name": "Steven Carvatt | 4/17/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23062034250",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/13/2026",
-      "Matter Case Rating": "A - 251k-500k"
-    },
-    {
-      "_groupingLabel": "Lisa Lehrer > Written Discovery",
-      "Client": "Mushtaba Amini",
-      "Display Name": "Mushtaba Amini | 4/10/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23051233156",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "7/15/2026",
-      "Matter Case Rating": "B - 101k-250k"
-    },
-    {
-      "_groupingLabel": "Lisa Lehrer > Written Discovery",
-      "Client": "Patrick Brennan",
-      "Display Name": "Patrick Brennan | 1/6/2024 | Assault",
-      "Matter: Matter Name": "MAT-24010840361",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/6/2026",
+      "Mediation Date": "4/13/2026",
+      "Arbitration Date": "-",
       "Matter Case Rating": "C - 51k-100k"
     },
     {
-      "_groupingLabel": "David Rehe > Case Opening",
-      "Client": "Ahnaya Benjamin",
-      "Display Name": "Ahnaya Benjamin | 7/21/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23091136744",
+      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Derrick Lecque",
+      "Display Name": "Derrick Lecque | 9/17/2021 | Automobile Accident",
+      "Matter: Matter Name": "MAT-21110821817",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "4/9/2026",
-      "Matter Case Rating": "F - 0-15k"
+      "Arbitration Date": "4/30/2026",
+      "Matter Case Rating": "S - 501k-1m"
     },
     {
-      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
-      "Client": "Chung S Kim",
-      "Display Name": "Chung S Kim | 7/4/2023 | Assault",
-      "Matter: Matter Name": "MAT-24100349692",
+      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Estate of Anthony Joseph Drury",
+      "Display Name": "Estate of Anthony Joseph Drury | 7/13/2024 | Premises Liability",
+      "Matter: Matter Name": "MAT-24100349681",
       "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "9/2/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
-      "Client": "Harold Blake",
-      "Display Name": "Harold Blake | 9/21/2022 | Premises Liability",
-      "Matter: Matter Name": "MAT-22092627857",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/7/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
-      "Client": "Karla Barbosa",
-      "Display Name": "Karla Barbosa | 12/11/2020 | Premises Liability",
-      "Matter: Matter Name": "MAT-21031217261",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/16/2026",
+      "Mediation Date": "6/22/2026",
+      "Arbitration Date": "-",
       "Matter Case Rating": "B - 101k-250k"
     },
     {
-      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
-      "Client": "Maya N. Joseph",
-      "Display Name": "Maya N. Joseph | 12/2/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-24081647661",
+      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Ivan Castano",
+      "Display Name": "Ivan Castano | 1/18/2024 | Premises Liability",
+      "Matter: Matter Name": "MAT-24011940834",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "5/26/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Jenniffer Urena",
+      "Display Name": "Jenniffer Urena | 6/29/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23071034877",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/4/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Luis Lengerke",
+      "Display Name": "Luis Lengerke | 2/19/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24022041830",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
       "Arbitration Date": "6/17/2026",
-      "Matter Case Rating": "D - 26k-50k"
+      "Matter Case Rating": "A - 251k-500k"
     },
     {
-      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
-      "Client": "Robert C Bittle Jr",
-      "Display Name": "Robert C Bittle Jr | 10/8/2023 | Premises Liability",
-      "Matter: Matter Name": "MAT-23101337785",
+      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Nancy Hromchak",
+      "Display Name": "Nancy Hromchak | 1/29/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-24032042744",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "12/1/2026",
-      "Matter Case Rating": "D - 26k-50k"
+      "Arbitration Date": "5/26/2026",
+      "Matter Case Rating": "B - 101k-250k"
     },
     {
-      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
-      "Client": "Staci Bassignani",
-      "Display Name": "Staci Bassignani | 1/17/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24011840787",
+      "_groupingLabel": "Brian Lehrer > Deps / Med Exams / Narratives",
+      "Client": "Perickles Vasilaropoulos",
+      "Display Name": "Perickles Vasilaropoulos | 9/1/2021 | Automobile Accident",
+      "Matter: Matter Name": "MAT-21090920538",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "7/9/2026",
-      "Matter Case Rating": "C - 51k-100k"
-    },
-    {
-      "_groupingLabel": "Christopher Karounos > Deps / Med Exams / Narratives",
-      "Client": "Tracy Houtsma",
-      "Display Name": "Tracy Houtsma | 7/30/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23081435908",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "6/25/2026",
+      "Arbitration Date": "4/30/2026",
       "Matter Case Rating": "S - 501k-1m"
     },
     {
-      "_groupingLabel": "Paul F Romano > Written Discovery",
-      "Client": "David Sainz",
-      "Display Name": "David Sainz | 3/14/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-23040432141",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "4/24/2026",
-      "Arbitration Date": "1/29/2026",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Joel Moore > Discovery",
-      "Client": "Anthony Sisler",
-      "Display Name": "Anthony Sisler | 11/1/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25102772572",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "10/13/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "E - 16k-25k"
-    },
-    {
-      "_groupingLabel": "Joel Moore > Discovery",
-      "Client": "Jeannette Simmons",
-      "Display Name": "Jeannette Simmons | 4/4/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25102172317",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "5/20/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Joel Moore > Discovery",
-      "Client": "Lisa Cox",
-      "Display Name": "Lisa Cox | 8/11/2023 | Automobile Accident",
-      "Matter: Matter Name": "MAT-25100671690",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "6/19/2026",
-      "Arbitration Date": "-",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Christopher Karounos > Settlement",
-      "Client": "Rynaill Beard",
-      "Display Name": "Rynaill Beard | 5/18/2024 | Premises Liability",
-      "Matter: Matter Name": "MAT-24052044362",
+      "_groupingLabel": "Melissa Perrotta Marinelli > Arbitration / Settlement Conference",
+      "Client": "Ernest Chisena",
+      "Display Name": "Ernest Chisena | 6/11/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22090827450",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "7/15/2026",
-      "Matter Case Rating": "D - 26k-50k"
-    },
-    {
-      "_groupingLabel": "Paul F Romano > Deps / Med Exams / Narratives",
-      "Client": "Antonio Rivas",
-      "Display Name": "Antonio Rivas | 5/11/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22051325099",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/21/2026",
+      "Arbitration Date": "6/3/2026",
       "Matter Case Rating": "C - 51k-100k"
     },
     {
-      "_groupingLabel": "Paul F Romano > Deps / Med Exams / Narratives",
-      "Client": "Estate of Charisse Na'Kel Nelson-Bailey",
-      "Display Name": "Estate of Charisse Na'Kel Nelson-Bailey | 4/12/2024 | Heavy Trucking Incident",
-      "Matter: Matter Name": "MAT-24041543360",
+      "_groupingLabel": "George Saba > Arbitration / Settlement Conference",
+      "Client": "Evgueni St. Onge",
+      "Display Name": "Evgueni St. Onge | 5/8/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24050944134",
       "Total Matter Value": "$0.00",
       "Mediation Date": "-",
-      "Arbitration Date": "7/1/2026",
-      "Matter Case Rating": "S - 501k-1m"
+      "Arbitration Date": "4/13/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Discovery",
+      "Client": "Paula Piech",
+      "Display Name": "Paula Piech | 7/10/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23121939761",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/6/2026",
+      "Matter Case Rating": "B - 101k-250k"
     },
     {
       "_groupingLabel": "Stephen Mennella > Deps / Med Exams / Narratives",
@@ -1755,26 +1477,6 @@
       "Matter Case Rating": "D - 26k-50k"
     },
     {
-      "_groupingLabel": "Gregory Shaffer > Settlement",
-      "Client": "Peter Sagan",
-      "Display Name": "Peter Sagan | 10/17/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22111029174",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "7/7/2026",
-      "Matter Case Rating": "F - 0-15k"
-    },
-    {
-      "_groupingLabel": "Gregory Shaffer > Settlement",
-      "Client": "Renato Batres",
-      "Display Name": "Renato Batres | 12/16/2022 | Automobile Accident",
-      "Matter: Matter Name": "MAT-22122929967",
-      "Total Matter Value": "$0.00",
-      "Mediation Date": "-",
-      "Arbitration Date": "5/1/2026",
-      "Matter Case Rating": "E - 16k-25k"
-    },
-    {
       "_groupingLabel": "Marc Borden > Case Opening",
       "Client": "Daniel Williford",
       "Display Name": "Daniel Williford | 2/18/2024 | Premises Liability",
@@ -1783,6 +1485,246 @@
       "Mediation Date": "-",
       "Arbitration Date": "7/8/2026",
       "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Marc Borden > Settlement",
+      "Client": "Lissette Reyes",
+      "Display Name": "Lissette Reyes | 12/18/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23011630360",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/4/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Eric Plantier > Discovery",
+      "Client": "Penny Gilbert",
+      "Display Name": "Penny Gilbert | 5/16/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23051633232",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "4/30/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Eric Plantier > Discovery",
+      "Client": "Samuel Baram",
+      "Display Name": "Samuel Baram | 11/19/2023 | Premises Liability",
+      "Matter: Matter Name": "MAT-23120639334",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/20/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "David Rehe > Discovery",
+      "Client": "Andrew Pompey",
+      "Display Name": "Andrew Pompey | 12/11/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23121439628",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "8/12/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "David Rehe > Discovery",
+      "Client": "Dessie Morrison",
+      "Display Name": "Dessie Morrison | 3/25/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23040532191",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/19/2026",
+      "Matter Case Rating": "E - 16k-25k"
+    },
+    {
+      "_groupingLabel": "David Rehe > Discovery",
+      "Client": "Jaquan Manning",
+      "Display Name": "Jaquan Manning | 2/23/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23022331189",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "7/22/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "David Rehe > Discovery",
+      "Client": "Jessica Aiken",
+      "Display Name": "Jessica Aiken | 4/27/2024 | Premises Liability",
+      "Matter: Matter Name": "MAT-24043043862",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/11/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "David Rehe > Discovery",
+      "Client": "Juan Diaz",
+      "Display Name": "Juan Diaz | 12/24/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23010530164",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/25/2026",
+      "Matter Case Rating": "D - 26k-50k"
+    },
+    {
+      "_groupingLabel": "David Rehe > Discovery",
+      "Client": "Miguel De Los Santos",
+      "Display Name": "Miguel De Los Santos | 2/27/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23031031603",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "4/30/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "David Rehe > Discovery",
+      "Client": "Nala Toussaint",
+      "Display Name": "Nala Toussaint | 12/24/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23120839385",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "7/9/2026",
+      "Matter Case Rating": "Not enough info"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
+      "Client": "Brian Vicente",
+      "Display Name": "Brian Vicente | 11/21/2023 | Heavy Trucking Incident",
+      "Matter: Matter Name": "MAT-23120639306",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "4/16/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
+      "Client": "Fredy Adrian Larrosa-Riso",
+      "Display Name": "Fredy Adrian Larrosa-Riso | 11/28/2023 | Heavy Trucking Incident",
+      "Matter: Matter Name": "MAT-24012440955",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "7/7/2026",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
+      "Client": "Kristen Hazen",
+      "Display Name": "Kristen Hazen | 3/13/2024 | Heavy Trucking Incident",
+      "Matter: Matter Name": "MAT-24041243306",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "4/29/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "B - 101k-250k"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
+      "Client": "Maritza Olavarria",
+      "Display Name": "Maritza Olavarria | 12/8/2023 | Heavy Trucking Incident",
+      "Matter: Matter Name": "MAT-23121239518",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "6/4/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
+      "Client": "Provedensia Reyes",
+      "Display Name": "Provedensia Reyes | 8/7/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24080847293",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "9/16/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Raymond Carroll > Deps / Med Exams / Narratives",
+      "Client": "Thomas McMaster",
+      "Display Name": "Thomas McMaster | 2/24/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24022642015",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "6/9/2026",
+      "Arbitration Date": "7/9/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Paul F Romano > Deps / Med Exams / Narratives",
+      "Client": "Antonio Rivas",
+      "Display Name": "Antonio Rivas | 5/11/2022 | Automobile Accident",
+      "Matter: Matter Name": "MAT-22051325099",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/21/2026",
+      "Matter Case Rating": "C - 51k-100k"
+    },
+    {
+      "_groupingLabel": "Paul F Romano > Deps / Med Exams / Narratives",
+      "Client": "Estate of Charisse Na'Kel Nelson-Bailey",
+      "Display Name": "Estate of Charisse Na'Kel Nelson-Bailey | 4/12/2024 | Heavy Trucking Incident",
+      "Matter: Matter Name": "MAT-24041543360",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "7/1/2026",
+      "Matter Case Rating": "S - 501k-1m"
+    },
+    {
+      "_groupingLabel": "Joel Moore > Discovery",
+      "Client": "Anthony Sisler",
+      "Display Name": "Anthony Sisler | 11/1/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25102772572",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "10/13/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "E - 16k-25k"
+    },
+    {
+      "_groupingLabel": "Joel Moore > Discovery",
+      "Client": "Jeannette Simmons",
+      "Display Name": "Jeannette Simmons | 4/4/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25102172317",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "5/20/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "F - 0-15k"
+    },
+    {
+      "_groupingLabel": "Joel Moore > Discovery",
+      "Client": "Lisa Cox",
+      "Display Name": "Lisa Cox | 8/11/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-25100671690",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "6/19/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "F - 0-15k"
+    },
+    {
+      "_groupingLabel": "Paul F Romano > Written Discovery",
+      "Client": "David Sainz",
+      "Display Name": "David Sainz | 3/14/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-23040432141",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "4/24/2026",
+      "Arbitration Date": "1/29/2026",
+      "Matter Case Rating": "F - 0-15k"
+    },
+    {
+      "_groupingLabel": "Joel Moore > Settled",
+      "Client": "Richard D. Seymour, Jr.",
+      "Display Name": "Richard D. Seymour, Jr. | 10/2/2024 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24102150513",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "6/26/2026",
+      "Arbitration Date": "-",
+      "Matter Case Rating": "E - 16k-25k"
+    },
+    {
+      "_groupingLabel": "Mark Grodberg > Case Opening",
+      "Client": "Sammer Nasar",
+      "Display Name": "Sammer Nasar | 8/26/2023 | Automobile Accident",
+      "Matter: Matter Name": "MAT-24011140533",
+      "Total Matter Value": "$0.00",
+      "Mediation Date": "-",
+      "Arbitration Date": "5/6/2026",
+      "Matter Case Rating": "F - 0-15k"
     }
   ]
 }

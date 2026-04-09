@@ -32,6 +32,7 @@ REPORTS=(
   "00OPp000001jfxhMAA"   # Form C 10 Day Letters Needed
   "00OPp000001n6q5MAA"   # Need Form C Rcv'd Dt or Motion to Compel
   "00O4V000009d6Z0UAI"   # Arb and Mediation Matters next 60 Days
+  "00OPp000003alDBMAY"   # Service Completed ≤ 30 Days of Filed
 )
 # NOTE: Matters Universe (00OPp000003OaGjMAK) is skipped — the SF report was
 # reconfigured and no longer provides the stage-grouped Open/Closed aggregates
@@ -44,6 +45,7 @@ DASHBOARDS=(
   "01ZPp0000015Ug1MAE"   # States at a Glance
   "01ZPp0000015dGHMAY"   # NJ PI Timing
   "01ZPp000000l3NRMAY"   # (new) from SF Lightning
+  "01ZPp0000013fsTMAQ"   # (new) TBD — from SF Lightning
 )
 
 # Resolutions report needs special handling — it's TABULAR in SF
