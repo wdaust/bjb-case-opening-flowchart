@@ -1,4 +1,4 @@
-import type { BulletGauge } from '../../utils/ldnMetrics';
+import type { BulletGauge } from '../../data/metrics';
 
 interface Props {
   gauge: BulletGauge;

@@ -9,7 +9,7 @@ import {
 } from '../ui/dialog.tsx';
 import { DataTable } from '../dashboard/DataTable';
 import type { Column } from '../dashboard/DataTable';
-import type { DrillRow, DrillColumn } from '../../utils/ldnMetrics';
+import type { DrillRow, DrillColumn } from '../../data/metrics';
 
 interface Props {
   open: boolean;

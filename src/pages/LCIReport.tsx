@@ -20,7 +20,7 @@ import {
   getRedAmberMetrics,
   REAL_LAYER_DEFINITIONS,
   type LCIBand,
-} from '../data/lciEngineReal';
+} from '../data/metrics/lci';
 import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 
 import { RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID } from '../data/sfReportIds';

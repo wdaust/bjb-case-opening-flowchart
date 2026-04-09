@@ -8,8 +8,8 @@ import { InfoTooltip } from '../dashboard/InfoTooltip';
 import { DataTable } from '../dashboard/DataTable';
 import { StageBulletGauge } from './StageBulletGauge';
 import { CardDrillDown } from './CardDrillDown';
-import type { LdnStageMetrics, LdnAttorneyScore, StageName, RagColor, DrillRow } from '../../utils/ldnMetrics';
-import { STAGE_INFO, CARD_INFO, STAGE_DRILL_COLUMNS, CARD_FILTERS } from '../../utils/ldnMetrics';
+import type { LdnStageMetrics, LdnAttorneyScore, StageName, RagColor, DrillRow } from '../../data/metrics';
+import { STAGE_INFO, CARD_INFO, STAGE_DRILL_COLUMNS, CARD_FILTERS } from '../../data/metrics';
 import type { Column } from '../dashboard/DataTable';
 import { cn } from '../../utils/cn';
 

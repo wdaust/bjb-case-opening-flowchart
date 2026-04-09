@@ -5,23 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } fro
 import { HeroSection } from '../components/dashboard/HeroSection';
 import { HeroTitle } from '../components/dashboard/HeroTitle';
 
-import { useSalesforceReport } from '../hooks/useSalesforceReport';
-import {
-  COMPLAINTS_REPORT_ID,
-  PAST_DUE_SERVICE_ID,
-  MISSING_ANS_SERVED_ID,
-  FORM_A_REPORT_ID,
-  FORM_C_REPORT_ID,
-  DEP_REPORT_ID,
-  OPEN_LIT_ID,
-  RESOLUTIONS_ID,
-  STATS_ID,
-  TIMING_ID,
-  DISCOVERY_ID,
-  EXPERTS_ID,
-  SERVICE_30DAY_ID,
-} from '../data/sfReportIds';
-import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
+import { useLdnBundle } from '../data/queries/bundles';
 import {
   computeAllLdnMetrics,
   computeComplaints,
@@ -39,10 +23,10 @@ import {
   type StageName,
   type LdnStageMetrics,
   type DrillRow,
-  filterLitOnly,
+  filterLitOnlyRaw as filterLitOnly,
   buildFixedAttorneyLookup,
   topAttorney,
-} from '../utils/ldnMetrics';
+} from '../data/metrics';
 import { SectionHeader } from '../components/dashboard/SectionHeader';
 import { DashboardGrid } from '../components/dashboard/DashboardGrid';
 import { RiskPanel } from '../components/litprog/RiskPanel';
@@ -51,7 +35,7 @@ import { StageSection } from '../components/ldn/StageSection';
 import { AttorneyProfile } from '../components/ldn/AttorneyProfile';
 import { ScoreGauge } from '../components/scoring/ScoreGauge';
 import { LCIBadge } from '../components/dashboard/LCIBadge';
-import { computeRealLCI } from '../data/lciEngineReal';
+import { computeRealLCI } from '../data/metrics/lci';
 import { cn } from '../utils/cn';
 
 function bandBadgeClasses(band: string) {
@@ -69,51 +53,12 @@ export default function LDN() {
   const [caseTypeFilter, setCaseTypeFilter] = useState('');
   const [slaOverrides, setSlaOverrides] = useState<Record<StageName, number>>({ ...SLA_TARGETS });
 
-  // ── Data fetching (9 LDN reports) ──
-  const { data: complaints, loading: l1 } = useSalesforceReport<ReportSummaryResponse>({
-    id: COMPLAINTS_REPORT_ID, type: 'report', mode: 'full',
-  });
-  const { data: service, loading: l2 } = useSalesforceReport<ReportSummaryResponse>({
-    id: PAST_DUE_SERVICE_ID, type: 'report', mode: 'full',
-  });
-  const { data: answers, loading: l3 } = useSalesforceReport<ReportSummaryResponse>({
-    id: MISSING_ANS_SERVED_ID, type: 'report', mode: 'full',
-  });
-  const { data: formA, loading: l4 } = useSalesforceReport<ReportSummaryResponse>({
-    id: FORM_A_REPORT_ID, type: 'report', mode: 'full',
-  });
-  const { data: formC, loading: l5 } = useSalesforceReport<ReportSummaryResponse>({
-    id: FORM_C_REPORT_ID, type: 'report', mode: 'full',
-  });
-  const { data: deps, loading: l6 } = useSalesforceReport<ReportSummaryResponse>({
-    id: DEP_REPORT_ID, type: 'report', mode: 'full',
-  });
-  const { data: openLit, loading: l9 } = useSalesforceReport<ReportSummaryResponse>({
-    id: OPEN_LIT_ID, type: 'report', mode: 'full',
-  });
-  const { data: service30Day, loading: l15 } = useSalesforceReport<ReportSummaryResponse>({
-    id: SERVICE_30DAY_ID, type: 'report', mode: 'full',
-  });
-
-  // ── LCI data fetching (5 additional sources) ──
-  const { data: resData, loading: l10 } = useSalesforceReport<ReportSummaryResponse>({
-    id: RESOLUTIONS_ID, type: 'report',
-  });
-  const { data: statsData, loading: l11 } = useSalesforceReport<DashboardResponse>({
-    id: STATS_ID, type: 'dashboard',
-  });
-  const { data: timingData, loading: l12 } = useSalesforceReport<DashboardResponse>({
-    id: TIMING_ID, type: 'dashboard',
-  });
-  const { data: discData, loading: l13 } = useSalesforceReport<ReportSummaryResponse>({
-    id: DISCOVERY_ID, type: 'report',
-  });
-  const { data: expertsData, loading: l14 } = useSalesforceReport<ReportSummaryResponse>({
-    id: EXPERTS_ID, type: 'report',
-  });
-
-  const loading = l1 || l2 || l3 || l4 || l5 || l6 || l9 || l15;
-  const lciLoading = l10 || l11 || l12 || l13 || l14;
+  // ── Data fetching via TanStack Query (deduped, cached) ──
+  const {
+    complaints, service, answers, formA, formC, deps, openLit, service30Day,
+    resData, statsData, timingData, discData, expertsData,
+    loading, lciLoading,
+  } = useLdnBundle();
 
   const bundle: LdnReportBundle = useMemo(() => ({
     complaints, service, answers, formA, formC, deps, tenDay: null, motions: null, openLit, service30Day,

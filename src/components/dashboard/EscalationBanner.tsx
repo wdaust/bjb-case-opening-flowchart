@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { cn } from '../../utils/cn';
 import { AlertTriangle, ChevronDown, ChevronUp, ChevronRight } from 'lucide-react';
-import type { EscalationItem } from '../../data/lciEngineReal';
+import type { EscalationItem } from '../../data/metrics/lci';
 
 interface EscalationBannerProps {
   escalations: EscalationItem[];

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { cn } from '../../utils/cn';
 import { AlertTriangle, ChevronDown, ChevronUp, ChevronRight } from 'lucide-react';
-import type { AlertMetric } from '../../data/lciEngineReal';
+import type { AlertMetric } from '../../data/metrics/lci';
 
 interface MetricAlertBannerProps {
   alerts: AlertMetric[];

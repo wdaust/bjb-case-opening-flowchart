@@ -6,8 +6,8 @@ import { StageBulletGauge } from './StageBulletGauge';
 import { CardDrillDown } from './CardDrillDown';
 import { SectionHeader } from '../dashboard/SectionHeader';
 import { InfoTooltip } from '../dashboard/InfoTooltip';
-import type { LdnAttorneyScore, ActionableIssue, StageName, RagColor, LdnReportBundle, DrillRow } from '../../utils/ldnMetrics';
-import { STAGE_ORDER, STAGE_LABELS, STAGE_INFO, CARD_INFO, STAGE_DRILL_COLUMNS, CARD_FILTERS, topAttorney } from '../../utils/ldnMetrics';
+import type { LdnAttorneyScore, ActionableIssue, StageName, RagColor, LdnReportBundle, DrillRow } from '../../data/metrics';
+import { STAGE_ORDER, STAGE_LABELS, STAGE_INFO, CARD_INFO, STAGE_DRILL_COLUMNS, CARD_FILTERS, topAttorney } from '../../data/metrics';
 import type { Column } from '../dashboard/DataTable';
 import { cn } from '../../utils/cn';
 

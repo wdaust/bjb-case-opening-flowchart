@@ -10,11 +10,11 @@ import { HeroSection } from '../components/dashboard/HeroSection';
 import { HeroTitle } from '../components/dashboard/HeroTitle';
 import { HeroSummaryTicker } from '../components/dashboard/HeroSummaryTicker';
 import { ControlTowerSkeleton } from '../components/dashboard/ControlTowerSkeleton';
-import { useSalesforceReport } from '../hooks/useSalesforceReport';
+import { useControlTowerBundle } from '../data/queries/bundles';
 import { saveMetricSnapshots, useMetricHistory, detectAnomaly } from '../hooks/useMetricHistory';
 import { ScoreGauge } from '../components/scoring/ScoreGauge';
 import { LCIBadge } from '../components/dashboard/LCIBadge';
-import { computeRealLCI } from '../data/lciEngineReal';
+import { computeRealLCI } from '../data/metrics/lci';
 import { EscalationCards } from '../components/dashboard/EscalationCards';
 import { RefreshCw, Filter, ChevronDown } from 'lucide-react';
 import { InfoTooltip } from '../components/dashboard/InfoTooltip';
@@ -23,10 +23,9 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from 'recharts';
-import { fmt$, fmtNum, getDashMetric, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../utils/sfHelpers';
-import { OPEN_LIT_ID, RESOLUTIONS_ID, STATS_ID, TIMING_ID, DISCOVERY_ID, EXPERTS_ID, MISSING_ANS_REPORT_ID, COMPLAINTS_REPORT_ID, FORM_A_REPORT_ID, FORM_C_REPORT_ID, DEP_REPORT_ID } from '../data/sfReportIds';
-import { ESCALATION_FILTERS, countOverdue } from '../utils/escalationFilters';
-import { buildAttorneyLookup, filterRowsByAttorney } from '../utils/attorneyLookup';
+import { fmt$, fmtNum, getDashMetric, getDashRows, getTimingCompliance, compliancePct, complianceColor } from '../data/metrics/shared';
+import { ESCALATION_FILTERS, countOverdue } from '../data/metrics/escalations';
+import { buildAttorneyLookup, filterRowsByAttorney } from '../data/metrics/attorney';
 
 // ── Palette ───────────────────────────────────────────────────────────
 const GREEN = '#22c55e';
@@ -80,37 +79,14 @@ export default function ControlTower() {
     setIntroPlayed(true);
   };
 
-  // ── Load all 6 reports in parallel ────────────────────────────────
-  const { data: openLitData, loading: openLitLoading, lastFetched: openLitTs, refresh: refreshOpenLit } =
-    useSalesforceReport<ReportSummaryResponse>({ id: OPEN_LIT_ID, type: 'report' });
-  const { data: resData, loading: resLoading, lastFetched: resTs, refresh: refreshRes } =
-    useSalesforceReport<ReportSummaryResponse>({ id: RESOLUTIONS_ID, type: 'report' });
-  const { data: statsData, loading: statsLoading, lastFetched: statsTs, refresh: refreshStats } =
-    useSalesforceReport<DashboardResponse>({ id: STATS_ID, type: 'dashboard' });
-  const { data: timingData, loading: timingLoading, lastFetched: timingTs, refresh: refreshTiming } =
-    useSalesforceReport<DashboardResponse>({ id: TIMING_ID, type: 'dashboard' });
-  const { data: discData, loading: discLoading, lastFetched: discTs, refresh: refreshDisc } =
-    useSalesforceReport<ReportSummaryResponse>({ id: DISCOVERY_ID, type: 'report' });
-  const { data: expertsData, loading: expertsLoading, lastFetched: expertsTs, refresh: refreshExperts } =
-    useSalesforceReport<ReportSummaryResponse>({ id: EXPERTS_ID, type: 'report' });
-  const { data: missingAnsReport } =
-    useSalesforceReport<ReportSummaryResponse>({ id: MISSING_ANS_REPORT_ID, type: 'report', mode: 'full' });
-
-  // Source reports for escalation card counts (single source of truth)
-  const { data: complaintsReport } =
-    useSalesforceReport<ReportSummaryResponse>({ id: COMPLAINTS_REPORT_ID, type: 'report', mode: 'full' });
-  const { data: formAReport } =
-    useSalesforceReport<ReportSummaryResponse>({ id: FORM_A_REPORT_ID, type: 'report', mode: 'full' });
-  const { data: formCReport } =
-    useSalesforceReport<ReportSummaryResponse>({ id: FORM_C_REPORT_ID, type: 'report', mode: 'full' });
-  const { data: depReport } =
-    useSalesforceReport<ReportSummaryResponse>({ id: DEP_REPORT_ID, type: 'report', mode: 'full' });
-
-  // Open Lit detail rows for attorney cross-reference lookup
-  const { data: openLitFullData } =
-    useSalesforceReport<ReportSummaryResponse>({ id: OPEN_LIT_ID, type: 'report', mode: 'full' });
-
-  const allLoading = openLitLoading || resLoading || statsLoading || timingLoading || discLoading || expertsLoading;
+  // ── Load all reports via TanStack Query (deduped, cached) ──
+  const {
+    openLitData, openLitFullData, resData, statsData, timingData, discData, expertsData,
+    missingAnsReport, complaintsReport, formAReport, formCReport, depReport,
+    coreLoading: allLoading,
+    refreshOpenLit, refreshRes, refreshStats, refreshTiming, refreshDisc, refreshExperts,
+    openLitTs, resTs, statsTs, timingTs, discTs, expertsTs,
+  } = useControlTowerBundle();
 
   // ── Attorney filter ─────────────────────────────────────────────────
   const [selectedAttorney, setSelectedAttorney] = useState<string>('all');

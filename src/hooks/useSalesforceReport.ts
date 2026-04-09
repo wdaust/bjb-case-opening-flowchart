@@ -1,16 +1,13 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { SfApiResponse, ReportSummaryResponse, DashboardResponse, ReportType } from '../types/salesforce.ts';
-
-const API_BASE = import.meta.env.VITE_API_BASE ?? '/api';
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
-interface CacheEntry<T> {
-  data: T;
-  fetchedAt: string;
-  cachedAt: number;
-}
-
-const cache = new Map<string, CacheEntry<unknown>>();
+/**
+ * Legacy compatibility wrapper — delegates to TanStack Query under the hood.
+ * All existing useSalesforceReport() calls automatically get request dedup,
+ * shared cache, and stale-while-revalidate via the shared QueryClient.
+ *
+ * New code should use useQuery(reportQueries.xxx()) or bundle hooks directly.
+ */
+import { useQuery } from '@tanstack/react-query';
+import { reportQueries, dashboardQueries } from '../data/queries/reports';
+import type { ReportSummaryResponse, DashboardResponse, ReportType } from '../types/salesforce';
 
 interface UseSalesforceReportOptions {
   id: string;
@@ -28,97 +25,24 @@ interface UseSalesforceReportResult<T> {
 }
 
 export function useSalesforceReport<T = ReportSummaryResponse | DashboardResponse>(
-  opts: UseSalesforceReportOptions
+  opts: UseSalesforceReportOptions,
 ): UseSalesforceReportResult<T> {
   const { id, type, mode = 'summary', enabled = true } = opts;
-  const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [lastFetched, setLastFetched] = useState<string | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
 
-  const cacheKey = `${type}:${id}:${mode}`;
+  const queryOpts = type === 'dashboard'
+    ? dashboardQueries.byId(id)
+    : reportQueries.byId(id, mode);
 
-  const fetchData = useCallback(async (skipCache = false) => {
-    if (!id || !enabled) return;
+  const { data, isLoading, error, refetch, dataUpdatedAt } = useQuery({
+    ...queryOpts,
+    enabled: !!id && enabled,
+  });
 
-    if (!skipCache) {
-      const cached = cache.get(cacheKey) as CacheEntry<T> | undefined;
-      if (cached && Date.now() - cached.cachedAt < CACHE_TTL) {
-        setData(cached.data);
-        setLastFetched(cached.fetchedAt);
-        setError(null);
-        return;
-      }
-    }
-
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      let result: T | null = null;
-      let fetched: string | null = null;
-
-      // Try live Salesforce API first
-      try {
-        const endpoint = type === 'dashboard' ? 'get-dashboard' : 'get-report';
-        const params = new URLSearchParams({ id });
-        if (type === 'report') params.set('mode', mode);
-
-        const res = await fetch(`${API_BASE}/${endpoint}?${params}`, {
-          signal: controller.signal,
-        });
-
-        const json = await res.json() as SfApiResponse<T>;
-
-        if (!json.ok) {
-          throw new Error(json.error ?? `API error (${res.status})`);
-        }
-
-        result = json.data;
-        fetched = json.fetchedAt;
-      } catch (apiErr) {
-        if (apiErr instanceof DOMException && apiErr.name === 'AbortError') throw apiErr;
-
-        // Fall back to static JSON for reports and dashboards
-        const staticRes = await fetch(`${import.meta.env.BASE_URL}reports/${id}.json`, {
-          signal: controller.signal,
-        });
-        if (staticRes.ok) {
-          result = await staticRes.json() as T;
-          fetched = 'static export';
-        }
-
-        if (!result) throw apiErr;
-      }
-
-      const entry: CacheEntry<T> = {
-        data: result,
-        fetchedAt: fetched ?? new Date().toISOString(),
-        cachedAt: Date.now(),
-      };
-      cache.set(cacheKey, entry);
-
-      setData(result);
-      setLastFetched(fetched);
-    } catch (err) {
-      if (err instanceof DOMException && err.name === 'AbortError') return;
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
-    }
-  }, [id, type, mode, enabled, cacheKey]);
-
-  useEffect(() => {
-    fetchData();
-    return () => abortRef.current?.abort();
-  }, [fetchData]);
-
-  const refresh = useCallback(() => fetchData(true), [fetchData]);
-
-  return { data, loading, error, refresh, lastFetched };
+  return {
+    data: (data as T | undefined) ?? null,
+    loading: isLoading,
+    error: error ? (error instanceof Error ? error.message : 'Unknown error') : null,
+    refresh: () => { refetch(); },
+    lastFetched: dataUpdatedAt ? new Date(dataUpdatedAt).toISOString() : null,
+  };
 }

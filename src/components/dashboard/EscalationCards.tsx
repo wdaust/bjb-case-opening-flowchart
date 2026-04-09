@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { cn } from '../../utils/cn';
-import { fmtNum } from '../../utils/sfHelpers';
+import { fmtNum } from '../../data/metrics/shared';
 import { DashboardGrid } from './DashboardGrid';
 
 interface EscalationCardsProps {
