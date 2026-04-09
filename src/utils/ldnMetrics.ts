@@ -75,7 +75,7 @@ export const STAGE_LABELS: Record<StageName, string> = {
   complaints: 'Complaints',
   service: 'Service',
   answers: 'Answers',
-  formA: 'Form A',
+  formA: 'Form A Overdue',
   formC: 'Form C',
   depositions: 'Depositions',
   ded: 'DED',
@@ -400,10 +400,23 @@ function computeAnswers(rows: Row[]): { metrics: LdnStageMetrics; issues: Action
 
 function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
   // Use grouping-label buckets to correctly categorize rows
-  const overdueRows = rows.filter(r => formABucket(r).startsWith('Form A Overdue'));
+  // Overdue = SF bucket "Form A Overdue" AND Answer Date to Today >= 60 (SLA threshold)
+  const overdueRows = rows.filter(r => {
+    if (!formABucket(r).startsWith('Form A Overdue')) return false;
+    const v = r['Answer Date to Today'];
+    const num = typeof v === 'number' ? v : Number(v);
+    return !isNaN(num) && num >= 60;
+  });
+  // Approaching Due = "Days to Due Date" buckets + SF-overdue rows below our 60d SLA
   const approachingRows = rows.filter(r => {
     const b = formABucket(r);
-    return b.includes('Days to Due Date');
+    if (b.includes('Days to Due Date')) return true;
+    if (b.startsWith('Form A Overdue')) {
+      const v = r['Answer Date to Today'];
+      const num = typeof v === 'number' ? v : Number(v);
+      return !isNaN(num) && num < 60;
+    }
+    return false;
   });
   const atReviewRows = rows.filter(r => formABucket(r) === 'With Attorney for Review');
 
@@ -424,11 +437,11 @@ function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionab
     { label: 'Overdue', value: overdue, rag: overdue === 0 ? 'green' : overdue <= 5 ? 'amber' : 'red' },
     { label: 'Approaching Due', value: approaching, rag: approaching === 0 ? 'green' : approaching <= 10 ? 'amber' : 'red' },
     { label: 'At Attorney Review', value: atReview, rag: atReview === 0 ? 'green' : 'amber' },
-    { label: 'Avg Days Overdue', value: `${avgOverdue}d`, rag: avgOverdue < 30 ? 'green' : avgOverdue < 60 ? 'amber' : 'red' },
+    { label: 'Avg Days Overdue', value: `${avgOverdue}d`, rag: avgOverdue < 60 ? 'green' : avgOverdue < 90 ? 'amber' : 'red' },
   ];
 
   const worstRag = overdue > 5 ? 'red' : overdue > 0 ? 'amber' : 'green';
-  const gauge = buildGauge('Form A', overdueDaysArr, SLA_TARGETS.formA);
+  const gauge = buildGauge('Form A Overdue', overdueDaysArr, SLA_TARGETS.formA);
 
   const issues: ActionableIssue[] = overdueRows
     .filter(r => {
@@ -437,7 +450,7 @@ function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: Actionab
       return !isNaN(num) && num > 60;
     })
     .map(r => ({
-      stage: 'Form A',
+      stage: 'Form A Overdue',
       description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — Form A overdue`,
       daysOverdue: Number(r['Answer Date to Today']) || 0,
       priority: (Number(r['Answer Date to Today']) || 0) >= 90 ? 'red' as RagColor : 'amber' as RagColor,
@@ -729,7 +742,7 @@ export function computePortfolioGauges(bundle: LdnReportBundle): Record<StageNam
       ? buildGauge('Service', serviceDays, SLA_TARGETS.service)
       : { label: 'Service', count: serviceCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.service, noAgingData: true },
     answers: { label: 'Answers', count: answerCount, medianAge: 0, p90Age: 0, slaTarget: SLA_TARGETS.answers, noAgingData: true },
-    formA: buildGauge('Form A', formADays, SLA_TARGETS.formA),
+    formA: buildGauge('Form A Overdue', formADays, SLA_TARGETS.formA),
     formC: buildGauge('Form C', formCDays, SLA_TARGETS.formC),
     depositions: buildGauge('Depositions', depDays, SLA_TARGETS.depositions),
     ded: buildGauge('DED', dedDays, SLA_TARGETS.ded),
@@ -742,7 +755,7 @@ export const STAGE_INFO: Record<StageName, string> = {
   complaints: 'Tracks unfiled complaints from the date they were assigned to the litigation unit. SLA target is 14 days.',
   service: 'Monitors past-due service items across matters. No reliable aging field exists in this report.',
   answers: 'Tracks missing answers/responses from defendants. Answer Filed is typically empty since this is a missing-answers report.',
-  formA: 'Form A interrogatories — uses SF report status buckets (Overdue, Approaching Due, At Attorney Review) for accurate categorization.',
+  formA: 'Form A interrogatories — enforces a 60-day SLA: rows ≥60 days since answer are "Overdue"; SF-flagged overdue rows below 60 days are folded into "Approaching Due". Uses SF report status buckets for categorization.',
   formC: 'Form C document requests — uses SF report status buckets (Need Motion, Need 10-Day Letter, Pending Response, Within Time) from a single source report.',
   depositions: 'Outstanding depositions tracked from filing date. Monitors scheduling rate and 180-day overdue threshold.',
   ded: 'Discovery End Date tracking across the open litigation portfolio. Flags past-DED cases and those approaching within 30/60 days.',
@@ -863,10 +876,29 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     'Has Deposition': hasVal('Defendant Deposition'),
   },
   formA: {
-    'Overdue': (row) => formABucket(row).startsWith('Form A Overdue'),
-    'Approaching Due': (row) => formABucket(row).includes('Days to Due Date'),
+    'Overdue': (row) => {
+      if (!formABucket(row).startsWith('Form A Overdue')) return false;
+      const v = row['Answer Date to Today'];
+      const num = typeof v === 'number' ? v : Number(v);
+      return !isNaN(num) && num >= 60;
+    },
+    'Approaching Due': (row) => {
+      const b = formABucket(row);
+      if (b.includes('Days to Due Date')) return true;
+      if (b.startsWith('Form A Overdue')) {
+        const v = row['Answer Date to Today'];
+        const num = typeof v === 'number' ? v : Number(v);
+        return !isNaN(num) && num < 60;
+      }
+      return false;
+    },
     'At Attorney Review': (row) => formABucket(row) === 'With Attorney for Review',
-    'Avg Days Overdue': (row) => formABucket(row).startsWith('Form A Overdue'),
+    'Avg Days Overdue': (row) => {
+      if (!formABucket(row).startsWith('Form A Overdue')) return false;
+      const v = row['Answer Date to Today'];
+      const num = typeof v === 'number' ? v : Number(v);
+      return !isNaN(num) && num >= 60;
+    },
   },
   formC: {
     'Need Motion': (row) => formCBucket(row) === 'Need to File Motion',
@@ -922,8 +954,8 @@ export const CARD_INFO: Record<string, string> = {
   'Defendants Affected': 'Unique defendants with missing answers.',
   'Defaults Entered': 'Cases where a default judgment has been entered against a defendant.',
   'Has Deposition': 'Defendants who have a deposition on file.',
-  'Overdue': 'Form A rows in overdue status buckets (60-89, 90-119, 120+ days past answer).',
-  'Approaching Due': 'Form A rows within 0-30 days of the due date — not yet overdue.',
+  'Overdue': 'Form A rows ≥60 days since answer (SLA threshold).',
+  'Approaching Due': 'Rows approaching due date, plus items SF flags as overdue but under the 60-day SLA.',
   'At Attorney Review': 'Form A sent to attorney for review but not yet served.',
   'Avg Days Overdue': 'Average days since answer for overdue Form A rows only.',
   'Need Motion': 'Form C rows where a motion to compel is needed (from SF report bucket).',
