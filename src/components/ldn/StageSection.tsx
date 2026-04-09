@@ -20,6 +20,8 @@ interface Props {
   detailRows?: DrillRow[];
   complaintsMode?: 'unfiled' | 'all';
   onComplaintsModeChange?: (mode: 'unfiled' | 'all') => void;
+  slaOverride?: number;
+  onSlaChange?: (value: number) => void;
 }
 
 const RAG_DOT: Record<RagColor, string> = {
@@ -34,7 +36,7 @@ interface RankRow {
   [key: string]: unknown;
 }
 
-export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney, detailRows, complaintsMode, onComplaintsModeChange }: Props) {
+export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney, detailRows, complaintsMode, onComplaintsModeChange, slaOverride, onSlaChange }: Props) {
   const [expanded, setExpanded] = useState(false);
   const [drillDownCard, setDrillDownCard] = useState<string | null>(null);
 
@@ -90,15 +92,10 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
     return detailRows.filter(filterFn);
   }
 
-  const ragBorder =
-    stageMetrics.rag === 'red' ? 'border-red-500/30' :
-    stageMetrics.rag === 'amber' ? 'border-amber-500/30' :
-    'border-green-500/30';
-
   const drillColumns = STAGE_DRILL_COLUMNS[stageName] ?? [];
 
   return (
-    <section id={`stage-${stageName}`} className={cn('rounded-xl border p-5', ragBorder, 'bg-card/50')}>
+    <section id={`stage-${stageName}`} className={cn('rounded-xl border p-5', 'border-border', 'bg-card/50')}>
       <SectionHeader
         title={stageMetrics.label}
         info={STAGE_INFO[stageName]}
@@ -154,8 +151,6 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
             <StatCard
               label={c.label}
               value={c.value}
-              delta={c.rag}
-              deltaType={c.rag === 'green' ? 'positive' : c.rag === 'red' ? 'negative' : 'neutral'}
               onClick={detailRows ? () => setDrillDownCard(c.label) : undefined}
             />
           </div>
@@ -165,7 +160,25 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
       {/* Bullet gauge (hidden for answers — no usable aging data) */}
       {stageName !== 'answers' && (
         <div className="mt-4">
-          <StageBulletGauge gauge={stageMetrics.gauge} />
+          <div className="flex items-end gap-4">
+            <div className="flex-1">
+              <StageBulletGauge gauge={stageMetrics.gauge} slaOverride={slaOverride} />
+            </div>
+            {onSlaChange && slaOverride != null && (
+              <div className="flex items-center gap-1.5 pb-0.5 shrink-0">
+                <label className="text-[10px] text-muted-foreground whitespace-nowrap">SLA target</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={365}
+                  value={slaOverride}
+                  onChange={e => onSlaChange(Math.max(1, Number(e.target.value) || 1))}
+                  className="w-14 bg-white/5 border border-white/10 rounded px-1.5 py-0.5 text-xs text-foreground tabular-nums text-center"
+                />
+                <span className="text-[10px] text-muted-foreground">days</span>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

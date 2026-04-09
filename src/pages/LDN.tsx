@@ -29,6 +29,7 @@ import {
   buildAttorneyList,
   computeStageAggregatesFromLdn,
   STAGE_ORDER,
+  SLA_TARGETS,
   type LdnReportBundle,
   type StageName,
   type LdnStageMetrics,
@@ -58,6 +59,9 @@ export default function LDN() {
   const [selectedAttorney, setSelectedAttorney] = useState<string>('');
   const [expandedStage, setExpandedStage] = useState<StageName | null>(null);
   const [complaintsMode, setComplaintsMode] = useState<'unfiled' | 'all'>('unfiled');
+  const [stateFilter, setStateFilter] = useState('');
+  const [caseTypeFilter, setCaseTypeFilter] = useState('');
+  const [slaOverrides, setSlaOverrides] = useState<Record<StageName, number>>({ ...SLA_TARGETS });
 
   // ── Data fetching (9 LDN reports) ──
   const { data: complaints, loading: l1 } = useSalesforceReport<ReportSummaryResponse>({
@@ -235,16 +239,38 @@ export default function LDN() {
               );
             })()}
           </div>
-          <select
-            value={selectedAttorney}
-            onChange={e => setSelectedAttorney(e.target.value)}
-            className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm text-white backdrop-blur-sm max-w-xs"
-          >
-            <option value="" className="bg-[#111] text-white">All Attorneys</option>
-            {attorneys.map(a => (
-              <option key={a} value={a} className="bg-[#111] text-white">{a}</option>
-            ))}
-          </select>
+          <div className="flex items-center gap-2 flex-wrap">
+            <select
+              value={selectedAttorney}
+              onChange={e => setSelectedAttorney(e.target.value)}
+              className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm text-white backdrop-blur-sm max-w-xs"
+            >
+              <option value="" className="bg-[#111] text-white">All Attorneys</option>
+              {attorneys.map(a => (
+                <option key={a} value={a} className="bg-[#111] text-white">{a}</option>
+              ))}
+            </select>
+            <select
+              value={stateFilter}
+              onChange={e => setStateFilter(e.target.value)}
+              className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm text-white backdrop-blur-sm"
+            >
+              <option value="" className="bg-[#111] text-white">All States</option>
+              {['NJ', 'NY', 'PA', 'CT', 'FL'].map(s => (
+                <option key={s} value={s} className="bg-[#111] text-white">{s}</option>
+              ))}
+            </select>
+            <select
+              value={caseTypeFilter}
+              onChange={e => setCaseTypeFilter(e.target.value)}
+              className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-sm text-white backdrop-blur-sm"
+            >
+              <option value="" className="bg-[#111] text-white">All Case Types</option>
+              {['MVA', 'Premises', 'Trucking', 'Ride Share'].map(ct => (
+                <option key={ct} value={ct} className="bg-[#111] text-white">{ct}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </HeroSection>
 
@@ -332,23 +358,28 @@ export default function LDN() {
             </ResponsiveContainer>
           </section>
 
-          {/* 7 Stage Sections — with detail rows for drill-down */}
-          {STAGE_ORDER.map(sn => {
-            const detailRows = getStageDetailRows(bundle, sn, complaintsMode, scores, complaintLookup);
-            const metrics = sn === 'complaints' ? complaintMetrics : portfolioStages[sn];
-            return (
-              <StageSection
-                key={sn}
-                stageName={sn}
-                stageMetrics={metrics}
-                scores={scores}
-                onSelectAttorney={setSelectedAttorney}
-                detailRows={detailRows.rows}
-                complaintsMode={sn === 'complaints' ? complaintsMode : undefined}
-                onComplaintsModeChange={sn === 'complaints' ? setComplaintsMode : undefined}
-              />
-            );
-          })}
+          {/* LIT Deep Dive — 7 Stage Sections with detail rows for drill-down */}
+          <section className="space-y-6">
+            <SectionHeader title="LIT Deep Dive" subtitle="Stage-by-stage metrics with editable SLA targets" />
+            {STAGE_ORDER.map(sn => {
+              const detailRows = getStageDetailRows(bundle, sn, complaintsMode, scores, complaintLookup);
+              const metrics = sn === 'complaints' ? complaintMetrics : portfolioStages[sn];
+              return (
+                <StageSection
+                  key={sn}
+                  stageName={sn}
+                  stageMetrics={metrics}
+                  scores={scores}
+                  onSelectAttorney={setSelectedAttorney}
+                  detailRows={detailRows.rows}
+                  complaintsMode={sn === 'complaints' ? complaintsMode : undefined}
+                  onComplaintsModeChange={sn === 'complaints' ? setComplaintsMode : undefined}
+                  slaOverride={slaOverrides[sn]}
+                  onSlaChange={val => setSlaOverrides(prev => ({ ...prev, [sn]: val }))}
+                />
+              );
+            })}
+          </section>
         </>
       )}
     </div>

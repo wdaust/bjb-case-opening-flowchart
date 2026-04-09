@@ -83,7 +83,7 @@ export const STAGE_LABELS: Record<StageName, string> = {
 
 export const STAGE_ORDER: StageName[] = ['complaints', 'service', 'answers', 'formA', 'formC', 'depositions', 'ded'];
 
-const SLA_TARGETS: Record<StageName, number> = {
+export const SLA_TARGETS: Record<StageName, number> = {
   complaints: 14,
   service: 30,
   answers: 45,

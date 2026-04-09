@@ -2,11 +2,14 @@ import type { BulletGauge } from '../../utils/ldnMetrics';
 
 interface Props {
   gauge: BulletGauge;
+  slaOverride?: number;
   className?: string;
 }
 
 /** Bullet chart gauge: qualitative range bands, median bar, P90 tick, SLA dashed line. */
-export function StageBulletGauge({ gauge, className }: Props) {
+export function StageBulletGauge({ gauge, slaOverride, className }: Props) {
+  const sla = slaOverride ?? gauge.slaTarget;
+
   // When no aging data exists, show a compact message instead of misleading 0d values
   if (gauge.noAgingData) {
     return (
@@ -28,7 +31,7 @@ export function StageBulletGauge({ gauge, className }: Props) {
 
   const barH = 22;
   const chartH = 40;
-  const max = gauge.slaTarget * 2;
+  const max = sla * 2;
   const pct = (v: number) => `${Math.min((v / max) * 100, 100)}%`;
 
   return (
@@ -42,8 +45,8 @@ export function StageBulletGauge({ gauge, className }: Props) {
       <div className="relative w-full" style={{ height: chartH }}>
         {/* qualitative ranges */}
         <div className="absolute inset-0 flex rounded" style={{ top: (chartH - barH) / 2, height: barH }}>
-          <div className="rounded-l" style={{ width: pct(gauge.slaTarget * 0.8), background: 'rgba(34,197,94,0.18)' }} />
-          <div style={{ width: pct(gauge.slaTarget * 0.2), background: 'rgba(234,179,8,0.18)' }} />
+          <div className="rounded-l" style={{ width: pct(sla * 0.8), background: 'rgba(34,197,94,0.18)' }} />
+          <div style={{ width: pct(sla * 0.2), background: 'rgba(234,179,8,0.18)' }} />
           <div className="flex-1 rounded-r" style={{ background: 'rgba(239,68,68,0.18)' }} />
         </div>
 
@@ -74,7 +77,7 @@ export function StageBulletGauge({ gauge, className }: Props) {
         <div
           className="absolute border-l border-dashed border-foreground/50"
           style={{
-            left: pct(gauge.slaTarget),
+            left: pct(sla),
             top: (chartH - barH) / 2 - 4,
             height: barH + 8,
           }}
@@ -95,7 +98,7 @@ export function StageBulletGauge({ gauge, className }: Props) {
         </span>
         <span className="flex items-center gap-1 ml-auto">
           <span className="inline-block w-3 border-t border-dashed border-foreground/50" />
-          <span className="text-muted-foreground">SLA {gauge.slaTarget}d</span>
+          <span className="text-muted-foreground">SLA {sla}d</span>
         </span>
       </div>
     </div>
