@@ -153,6 +153,7 @@ export default function LDN() {
 
   const handleStageClick = (stage: StageName) => {
     setExpandedStage(prev => prev === stage ? null : stage);
+    document.getElementById(`stage-${stage}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const stageHealthData = useMemo(() =>

@@ -106,7 +106,7 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
   const drillColumns = STAGE_DRILL_COLUMNS[stageName] ?? [];
 
   return (
-    <section className={cn('rounded-xl border p-5', ragBorder, 'bg-card/50')}>
+    <section id={`stage-${stageName}`} className={cn('rounded-xl border p-5', ragBorder, 'bg-card/50')}>
       <SectionHeader
         title={stageMetrics.label}
         info={STAGE_INFO[stageName]}
