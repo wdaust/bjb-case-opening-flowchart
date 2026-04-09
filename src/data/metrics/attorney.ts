@@ -1,7 +1,7 @@
 /**
  * Attorney lookup and scoring — consolidated from attorneyLookup.ts + ldnMetrics.ts.
  */
-import { topAttorney, level2Attorney, filterLitOnlyRaw } from './shared';
+import { topAttorney, filterLitOnlyRaw } from './shared';
 import { computeComplaints } from './complaints';
 import { computeService } from './service';
 import { computeAnswers } from './answers';
@@ -11,7 +11,6 @@ import { computeDepositions } from './depositions';
 import { computeDED } from './ded';
 import type { StageName, LdnStageMetrics, LdnAttorneyScore, LdnReportBundle, LdnStageAggregate } from './types';
 import { STAGE_ORDER, STAGE_LABELS } from './types';
-import type { RagColor } from './shared';
 
 type Row = Record<string, unknown>;
 

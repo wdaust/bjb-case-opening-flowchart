@@ -1,5 +1,5 @@
 import type { RagColor, MetricCard, ActionableIssue, BulletGauge } from './shared';
-import { mean, buildGauge, rag, parseDate, daysSinceToday } from './shared';
+import { buildGauge, rag, parseDate, daysSinceToday } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;

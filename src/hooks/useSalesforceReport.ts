@@ -33,8 +33,9 @@ export function useSalesforceReport<T = ReportSummaryResponse | DashboardRespons
     ? dashboardQueries.byId(id)
     : reportQueries.byId(id, mode);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, isLoading, error, refetch, dataUpdatedAt } = useQuery({
-    ...queryOpts,
+    ...(queryOpts as any),
     enabled: !!id && enabled,
   });
 

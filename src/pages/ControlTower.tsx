@@ -18,7 +18,6 @@ import { computeRealLCI } from '../data/metrics/lci';
 import { EscalationCards } from '../components/dashboard/EscalationCards';
 import { RefreshCw, Filter, ChevronDown } from 'lucide-react';
 import { InfoTooltip } from '../components/dashboard/InfoTooltip';
-import type { ReportSummaryResponse, DashboardResponse } from '../types/salesforce';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell,

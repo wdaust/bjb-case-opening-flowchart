@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { sfDays, sfStr, sfDate } from './fields';
+import { sfDate } from './fields';
 
 export const ComplaintRowSchema = z.object({
   'Display Name': z.unknown(),

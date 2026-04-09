@@ -2,7 +2,7 @@
  * Complaint stage metrics — extracted from ldnMetrics.ts.
  * Accepts raw SF rows; uses clean property names where possible.
  */
-import type { RagColor, MetricCard, ActionableIssue, BulletGauge } from './shared';
+import type { RagColor, MetricCard, ActionableIssue } from './shared';
 import { mean, buildGauge, parseDate, daysSinceToday } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
