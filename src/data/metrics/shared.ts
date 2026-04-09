@@ -57,6 +57,16 @@ export function p90(arr: number[]): number {
   return percentile(sorted, 90);
 }
 
+export function minVal(arr: number[]): number { return arr.length ? Math.min(...arr) : 0; }
+export function maxVal(arr: number[]): number { return arr.length ? Math.max(...arr) : 0; }
+
+/** Count unique matters by a key field. Falls back to unique index for null keys. */
+export function uniqueMatterCount(rows: Array<Record<string, unknown>>, key = 'Display Name'): number {
+  const set = new Set<string>();
+  for (const r of rows) set.add(String(r[key] ?? `_u${set.size}`));
+  return set.size;
+}
+
 // ── RAG ──
 
 export function rag(overdue: number, thresholds: [number, number] = [1, 4]): RagColor {

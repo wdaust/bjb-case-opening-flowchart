@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const mainLinks = [
   { label: 'LDM', to: '/ldn' },
+  { label: 'Discovery Flow', to: '/discovery-flow' },
   { label: 'LIT Scorecard', to: '/lit-scorecard' },
   { label: 'MOS', to: '/performance-infrastructure/mos' },
 ];

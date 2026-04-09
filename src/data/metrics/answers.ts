@@ -1,13 +1,15 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { rag } from './shared';
+import { rag, uniqueMatterCount } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
 
 export function computeAnswers(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  const total = rows.length;
-  const defaults = rows.filter(r => r['Default Entered Date'] && r['Default Entered Date'] !== '-').length;
-  const activeDefendants = rows.filter(r => r['Active Defendant?'] && r['Active Defendant?'] !== '-').length;
+  const total = uniqueMatterCount(rows, 'Matter Name');
+  const defaultRows = rows.filter(r => r['Default Entered Date'] && r['Default Entered Date'] !== '-');
+  const defaults = uniqueMatterCount(defaultRows, 'Matter Name');
+  const activeDefRows = rows.filter(r => r['Active Defendant?'] && r['Active Defendant?'] !== '-');
+  const activeDefendants = uniqueMatterCount(activeDefRows, 'Matter Name');
 
   const cards: MetricCard[] = [
     { label: 'Missing Answers', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },

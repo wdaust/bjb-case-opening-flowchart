@@ -1,17 +1,22 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { mean, buildGauge, rag } from './shared';
+import { mean, buildGauge, rag, uniqueMatterCount } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
 
 export function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  const total = rows.length;
+  const total = uniqueMatterCount(rows);
   const daysArr = rows.map(r => {
     const v = r['Time from Filed Date'] ?? r['Time from Filed'];
     const num = typeof v === 'number' ? v : Number(v);
     return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
-  const overdue180 = daysArr.filter(d => d >= 180).length;
+  const overdue180Rows = rows.filter(r => {
+    const v = r['Time from Filed Date'] ?? r['Time from Filed'];
+    const num = typeof v === 'number' ? v : Number(v);
+    return !isNaN(num) && num >= 180;
+  });
+  const overdue180 = uniqueMatterCount(overdue180Rows);
   const notComplete = rows.filter(r => {
     const cd = r['Client Deposition'] ?? r['Client Depo Date'];
     return !cd || cd === '-';

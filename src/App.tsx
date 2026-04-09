@@ -76,6 +76,7 @@ import Insights from './pages/Insights.tsx';
 import OptimusStructure from './pages/OptimusStructure.tsx';
 import LDN from './pages/LDN.tsx';
 import BlockerReport from './pages/BlockerReport.tsx';
+import DiscoveryFlow from './pages/DiscoveryFlow.tsx';
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 
@@ -188,6 +189,7 @@ export default function App() {
             <Route path="optimus-structure" element={<OptimusStructure />} />
             <Route path="ldn" element={<LDN />} />
             <Route path="ldn/blockers" element={<BlockerReport />} />
+            <Route path="discovery-flow" element={<DiscoveryFlow />} />
             <Route path="mos-entry" element={<MosEntry />} />
           </Route>
         </Routes>

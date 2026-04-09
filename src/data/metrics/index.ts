@@ -35,5 +35,9 @@ export { ESCALATION_FILTERS, countOverdue } from './escalations';
 export { computeRealLCI, computeAttorneyMetrics, getRealEscalations, getRedAmberMetrics } from './lci';
 export type { LCIResult, LCIBand, LayerMetric, LayerScore, AttorneyLCIRow, AlertMetric, EscalationItem, RealLCIInput } from './lci';
 
+// Discovery Flow
+export { computeDiscoveryFlow } from './discoveryFlow';
+export type { DiscoveryFlowData, BlockedMatter, PipelineStage, SankeyData } from './discoveryFlow';
+
 // Card definitions
 export { CARD_FILTERS, CARD_INFO, STAGE_INFO, STAGE_DRILL_COLUMNS } from './cardDefs';

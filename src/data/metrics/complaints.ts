@@ -3,13 +3,13 @@
  * Accepts raw SF rows; uses clean property names where possible.
  */
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { mean, buildGauge, parseDate, daysSinceToday } from './shared';
+import { mean, buildGauge, parseDate, daysSinceToday, uniqueMatterCount } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
 
 export function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  const total = rows.length;
+  const total = uniqueMatterCount(rows);
   const daysArr = rows.map(r => {
     const v = r['Date Assigned to Team to Today'];
     const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
@@ -18,18 +18,20 @@ export function computeComplaints(rows: Row[]): { metrics: LdnStageMetrics; issu
     return d ? daysSinceToday(d) : null;
   }).filter((d): d is number => d != null);
 
-  const overdue = rows.filter(r => {
+  const overdueRows = rows.filter(r => {
     const v = r['Date Assigned to Team to Today'];
     const num = typeof v === 'number' ? v : (typeof v === 'string' ? Number(v) : NaN);
     if (!isNaN(num)) return num > 14;
     const d = parseDate(r['Date Assigned To Litigation Unit']);
     return d ? daysSinceToday(d) > 14 : false;
-  }).length;
+  });
+  const overdue = uniqueMatterCount(overdueRows);
 
-  const blockers = rows.filter(r => {
+  const blockerRows = rows.filter(r => {
     const b = r['Blocker to Filing Complaint'] ?? r['Blocker'];
     return b && b !== '-';
-  }).length;
+  });
+  const blockers = uniqueMatterCount(blockerRows);
 
   const avgDays = mean(daysArr);
 

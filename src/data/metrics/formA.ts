@@ -1,5 +1,5 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { mean, buildGauge, formABucket } from './shared';
+import { buildGauge, formABucket, uniqueMatterCount, median, minVal, maxVal } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
@@ -23,9 +23,9 @@ export function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: A
   });
   const atReviewRows = rows.filter(r => formABucket(String(r._groupingLabel ?? '')) === 'With Attorney for Review');
 
-  const overdue = overdueRows.length;
-  const approaching = approachingRows.length;
-  const atReview = atReviewRows.length;
+  const overdue = uniqueMatterCount(overdueRows);
+  const approaching = uniqueMatterCount(approachingRows);
+  const atReview = uniqueMatterCount(atReviewRows);
 
   const overdueDaysArr = overdueRows.map(r => {
     const v = r['Answer Date to Today'];
@@ -33,13 +33,17 @@ export function computeFormA(rows: Row[]): { metrics: LdnStageMetrics; issues: A
     return isNaN(num) ? null : num;
   }).filter((d): d is number => d != null);
 
-  const avgOverdue = mean(overdueDaysArr);
+  const medOverdue = median(overdueDaysArr);
 
   const cards: MetricCard[] = [
     { label: 'Overdue', value: overdue, rag: overdue === 0 ? 'green' : overdue <= 5 ? 'amber' : 'red' },
     { label: 'Approaching Due', value: approaching, rag: approaching === 0 ? 'green' : approaching <= 10 ? 'amber' : 'red' },
     { label: 'At Attorney Review', value: atReview, rag: atReview === 0 ? 'green' : 'amber' },
-    { label: 'Avg Days Overdue', value: `${avgOverdue}d`, rag: avgOverdue < 60 ? 'green' : avgOverdue < 90 ? 'amber' : 'red' },
+    { label: 'Days Overdue', value: `${medOverdue}d`, rag: medOverdue < 60 ? 'green' : medOverdue < 90 ? 'amber' : 'red',
+      subMetrics: [
+        { label: 'Min', value: `${minVal(overdueDaysArr)}d` },
+        { label: 'Max', value: `${maxVal(overdueDaysArr)}d` },
+      ] },
   ];
 
   const worstRag: RagColor = overdue > 5 ? 'red' : overdue > 0 ? 'amber' : 'green';

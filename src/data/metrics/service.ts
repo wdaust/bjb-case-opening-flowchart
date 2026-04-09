@@ -1,11 +1,11 @@
 import type { RagColor, MetricCard, ActionableIssue, BulletGauge } from './shared';
-import { buildGauge, rag, parseDate, daysSinceToday } from './shared';
+import { buildGauge, rag, parseDate, daysSinceToday, uniqueMatterCount, median, minVal, maxVal } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
 
 export function computeService(rows: Row[], service30DayRows?: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  const total = rows.length;
+  const total = uniqueMatterCount(rows, 'Matter Name');
   const cards: MetricCard[] = [
     { label: 'Past-Due Items', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
   ];
@@ -17,9 +17,13 @@ export function computeService(rows: Row[], service30DayRows?: Row[]): { metrics
       const num = typeof raw === 'number' ? raw : Number(raw);
       if (!isNaN(num) && num >= 0) svcDays.push(num);
     }
-    const avgDays = svcDays.length ? Math.round(svcDays.reduce((a, b) => a + b, 0) / svcDays.length) : 0;
+    const medDays = median(svcDays);
     cards.push(
-      { label: 'Avg Days to Service', value: `${avgDays}d`, rag: avgDays <= 30 ? 'green' : avgDays <= 60 ? 'amber' : 'red' },
+      { label: 'Days to Service', value: `${medDays}d`, rag: medDays <= 30 ? 'green' : medDays <= 60 ? 'amber' : 'red',
+        subMetrics: [
+          { label: 'Min', value: `${minVal(svcDays)}d` },
+          { label: 'Max', value: `${maxVal(svcDays)}d` },
+        ] },
     );
   }
 

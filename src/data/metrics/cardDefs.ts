@@ -30,7 +30,7 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
   },
   service: {
     'Past-Due Items': identity,
-    'Avg Days to Service': identity,
+    'Days to Service': identity,
     'Culpable Defendants Not Served': identity,
   },
   answers: {
@@ -56,7 +56,7 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
       return false;
     },
     'At Attorney Review': (row) => formABucket(String(row._groupingLabel ?? '')) === 'With Attorney for Review',
-    'Avg Days Overdue': (row) => {
+    'Days Overdue': (row) => {
       if (!formABucket(String(row._groupingLabel ?? '')).startsWith('Form A Overdue')) return false;
       const v = row['Answer Date to Today'];
       const num = typeof v === 'number' ? v : Number(v);
@@ -64,8 +64,21 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     },
   },
   formC: {
-    'Need Motion': (row) => formCBucket(String(row._groupingLabel ?? '')) === 'Need to File Motion',
-    'Need 10-Day Letter': (row) => formCBucket(String(row._groupingLabel ?? '')) === 'Need a 10-Day Letter',
+    'File Motion to Compel': (row) => {
+      const b = formCBucket(String(row._groupingLabel ?? ''));
+      const fa = row['Form A Served'];
+      return b === 'Need to File Motion' && fa != null && fa !== '' && fa !== '-';
+    },
+    'Send 10-Day Letter': (row) => {
+      const b = formCBucket(String(row._groupingLabel ?? ''));
+      const fa = row['Form A Served'];
+      return b === 'Need a 10-Day Letter' && fa != null && fa !== '' && fa !== '-';
+    },
+    'Awaiting Our Form A': (row) => {
+      const b = formCBucket(String(row._groupingLabel ?? ''));
+      const fa = row['Form A Served'];
+      return (b === 'Need to File Motion' || b === 'Need a 10-Day Letter') && (fa == null || fa === '' || fa === '-');
+    },
     'Pending Response': (row) => { const b = formCBucket(String(row._groupingLabel ?? '')); return b.startsWith('10-Day Letter Out') || b.startsWith('60 Days'); },
     'Within Time': (row) => formCBucket(String(row._groupingLabel ?? '')) === 'Within Time',
   },
@@ -103,42 +116,43 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
 };
 
 export const CARD_INFO: Record<string, string> = {
-  'Total Unfiled': 'Count of complaints assigned but not yet filed.',
-  'Overdue >14d': 'Complaints past the 14-day SLA target.',
-  'Avg Days Assigned': 'Average days since assignment to litigation unit.',
-  'Blockers': 'Cases with a documented blocker preventing filing. Sub-metrics show aging breakdown.',
-  'Past-Due Items': 'Service items that are past due for completion.',
-  'Avg Days to Service': 'Average number of days to complete service (from 30-day service report).',
-  'Culpable Defendants Not Served': 'Placeholder for v2.0 — culpable defendants not yet served.',
-  'Active Defendants': 'Defendants marked as active in the case.',
-  'Missing Answers': 'Defendants who have not filed an answer.',
-  'Defaults Entered': 'Cases where a default judgment has been entered against a defendant.',
-  'Overdue': 'Form A rows ≥60 days since answer (SLA threshold).',
-  'Approaching Due': 'Rows approaching due date, plus items SF flags as overdue but under the 60-day SLA.',
-  'At Attorney Review': 'Form A sent to attorney for review but not yet served.',
-  'Avg Days Overdue': 'Average days since answer for overdue Form A rows only.',
-  'Need Motion': 'Form C rows where a motion to compel is needed (from SF report bucket).',
-  'Need 10-Day Letter': 'Form C rows where a 10-day demand letter is needed (from SF report bucket).',
-  'Pending Response': 'Form C rows where a 10-day letter is out or 60-day deadline is approaching.',
-  'Within Time': 'Form C rows that are within the allowed time — no action needed.',
-  'Outstanding': 'Total outstanding depositions not yet completed.',
-  'Overdue 180+': 'Depositions more than 180 days from the filing date.',
-  'Avg Days from Filed': 'Average days since the case was filed.',
-  'Not Marked Complete': 'Depositions without a Client Deposition date — not yet marked complete.',
-  'At-Risk Cases': 'Cases with DED that is past, within 30 days, or within 60 days.',
-  'Past DED': 'Cases where the Discovery End Date has already passed.',
-  'Within 30d': 'Cases with DED approaching within 30 days.',
-  'No DED Set': 'Open litigation cases with no Discovery End Date set — a key management gap.',
+  'Total Unfiled': 'Unique matters assigned to the litigation team but not yet filed as complaints. Count is deduplicated by matter.',
+  'Overdue >14d': 'Matters where complaints have been sitting unfiled for more than 14 days — our internal SLA target.',
+  'Avg Days Assigned': 'Average days since a complaint was assigned to the team. Shows how long work has been waiting.',
+  'Blockers': 'Matters with a documented issue preventing complaint filing (e.g., missing records, pending authority). Aging breakdown shows how long each has been stuck.',
+  'Past-Due Items': 'Matters where service of process is past due. Each matter counted once regardless of number of defendants.',
+  'Days to Service': 'Median days to complete service after filing. Min and max show the full range — a single outlier won\'t skew the number.',
+  'Culpable Defendants Not Served': 'Coming in v2.0 — defendants identified as culpable but not yet served.',
+  'Active Defendants': 'Defendants currently marked as active in the case.',
+  'Missing Answers': 'Matters where one or more defendants have not filed an answer to our complaint.',
+  'Defaults Entered': 'Matters where a default judgment has been entered because a defendant failed to respond.',
+  'Overdue': 'Matters where our Form A interrogatories are 60+ days past due for service — above SLA threshold.',
+  'Approaching Due': 'Matters approaching their Form A due date, or flagged overdue by SF but still under our 60-day SLA.',
+  'At Attorney Review': 'Form A answers sent to an attorney for review but not yet served on the defendant.',
+  'Days Overdue': 'Median days overdue for Form A items past the 60-day SLA. Min and max show the full range.',
+  'File Motion to Compel': 'Defendants who received our Form A, owe us Form C, and ignored our 10-day demand letter. Next step: ask the court to order compliance (R. 4:23).',
+  'Send 10-Day Letter': 'Defendants who received our Form A and their Form C response is late. Next step: send a 10-day demand letter before we can move for a motion.',
+  'Awaiting Our Form A': 'Defendants we can\'t chase for Form C yet because we haven\'t served our interrogatories (Form A) first. Not considered late under court rules until we serve ours.',
+  'Pending Response': 'Defendants where a 10-day letter has been sent or the 60-day response window is still active. Waiting for their reply.',
+  'Within Time': 'Defendants whose Form C response is not yet due — no action needed.',
+  'Outstanding': 'Unique matters with depositions that haven\'t been completed yet.',
+  'Overdue 180+': 'Matters with depositions outstanding for more than 180 days from the filing date.',
+  'Avg Days from Filed': 'Average days since the case was filed for outstanding depositions.',
+  'Not Marked Complete': 'Depositions without a completion date recorded — may need follow-up to confirm status.',
+  'At-Risk Cases': 'Matters where the Discovery End Date (DED) has passed or is approaching within 60 days. Extensions must be filed promptly.',
+  'Past DED': 'Matters where the Discovery End Date has already passed. Extensions must be filed or discovery closed immediately.',
+  'Within 30d': 'Matters with DED approaching within 30 days — need immediate attention to request extensions if discovery isn\'t complete.',
+  'No DED Set': 'Open litigation matters with no Discovery End Date on file — a gap that prevents tracking discovery deadlines.',
 };
 
 export const STAGE_INFO: Record<StageName, string> = {
-  complaints: 'Tracks unfiled complaints from the date they were assigned to the litigation unit. SLA target is 14 days.',
-  service: 'Monitors past-due service items across matters. No reliable aging field exists in this report.',
-  answers: 'Tracks missing answers/responses from defendants. Answer Filed is typically empty since this is a missing-answers report.',
-  formA: 'Form A interrogatories — enforces a 60-day SLA: rows ≥60 days since answer are "Overdue"; SF-flagged overdue rows below 60 days are folded into "Approaching Due". Uses SF report status buckets for categorization.',
-  formC: 'Form C document requests — uses SF report status buckets (Need Motion, Need 10-Day Letter, Pending Response, Within Time) from a single source report.',
-  depositions: 'Outstanding depositions tracked from filing date. Monitors scheduling rate and 180-day overdue threshold.',
-  ded: 'Discovery End Date tracking across the open litigation portfolio. Flags past-DED cases and those approaching within 30/60 days.',
+  complaints: 'After a case is assigned to the litigation team, a complaint must be filed within 14 days. This stage tracks how many are still waiting and how long they\'ve been sitting.',
+  service: 'Once a complaint is filed, we must serve the defendant (deliver legal papers). This tracks matters where service is past due and how quickly we typically complete it.',
+  answers: 'After being served, defendants must file an answer. This tracks matters where answers are still missing and flags any defaults entered against non-responsive defendants.',
+  formA: 'Form A interrogatories are written questions we serve on defendants. Our SLA is 60 days from answer date. Counts are deduplicated by matter; the "Days Overdue" card shows median with min/max range.',
+  formC: 'Form C document requests follow NJ court rules: we can\'t demand the defendant\'s Form C until we\'ve served our Form A first. "Awaiting Our Form A" shows cases where the clock hasn\'t started. Only after Form A is served can we send a 10-day demand letter, then file a motion to compel.',
+  depositions: 'Depositions are sworn testimony taken before trial. This tracks outstanding depositions from filing date and flags any over 180 days old.',
+  ded: 'The Discovery End Date (DED) is the court-set deadline for completing all discovery. This tracks matters approaching or past their DED, plus cases missing a DED entirely.',
 };
 
 export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
