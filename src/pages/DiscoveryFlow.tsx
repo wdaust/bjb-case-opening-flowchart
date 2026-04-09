@@ -1,13 +1,21 @@
 import { useMemo, useState, useRef } from 'react';
 import { Loader2, AlertTriangle } from 'lucide-react';
-import { ResponsiveSankey } from '@nivo/sankey';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList,
+} from 'recharts';
 import { HeroSection } from '../components/dashboard/HeroSection';
 import { HeroTitle } from '../components/dashboard/HeroTitle';
 import { useLdnBundle } from '../data/queries/bundles';
 import { computeDiscoveryFlow, type BlockedMatter, type PipelineStage } from '../data/metrics/discoveryFlow';
-import type { LdnReportBundle } from '../data/metrics/types';
+import { computeCaseTimingStages, DEFAULT_THRESHOLDS } from '../data/metrics/caseTiming';
+import { STAGE_ORDER, STAGE_LABELS, SLA_TARGETS, type StageName, type LdnReportBundle } from '../data/metrics/types';
 import { cn } from '../utils/cn';
 
+/* ── colours ── */
+const GREEN = '#22c55e';
+const RED = '#ef4444';
+
+/* ── Summary stat card ── */
 function StatCard({ label, value, sub, tint }: { label: string; value: string | number; sub?: string; tint?: 'red' | 'amber' }) {
   return (
     <div className={cn(
@@ -22,6 +30,7 @@ function StatCard({ label, value, sub, tint }: { label: string; value: string | 
   );
 }
 
+/* ── Pipeline helpers (kept from original) ── */
 function MiniBar({ onTrack, stuck }: { onTrack: number; stuck: number }) {
   const total = onTrack + stuck;
   if (total === 0) return null;
@@ -39,7 +48,6 @@ function NeedsAttentionSection({ stages, onStageClick }: {
   onStageClick: (stage: string) => void;
 }) {
   if (stages.length === 0) return null;
-  // Sort by most stuck first
   const sorted = [...stages].sort((a, b) => b.stuck - a.stuck);
 
   return (
@@ -106,6 +114,7 @@ function OnTrackSection({ stages }: { stages: PipelineStage[] }) {
   );
 }
 
+/* ── Blocked table (unchanged) ── */
 function BlockedTable({ blocked, filter, onFilterChange, highlightStage }: {
   blocked: BlockedMatter[];
   filter: string;
@@ -213,6 +222,43 @@ function BlockedTable({ blocked, filter, onFilterChange, highlightStage }: {
   );
 }
 
+/* ── Custom bar-top label ── */
+function renderTopLabel(props: any) {
+  const { x, y, width, value } = props;
+  if (!value) return null;
+  return (
+    <text x={x + width / 2} y={y - 8} textAnchor="middle" fill="#fff" fontSize={13} fontWeight={600}>
+      {value}
+    </text>
+  );
+}
+
+/* ── Custom tooltip ── */
+function ChartTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  const d = payload[0]?.payload;
+  if (!d) return null;
+  const pct = d.total ? Math.round((d.onTime / d.total) * 100) : 0;
+  return (
+    <div className="bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2 text-xs shadow-lg">
+      <div className="text-white font-semibold mb-1">{label} — {d.total} cases</div>
+      <div className="flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
+        <span className="text-gray-300">On Time: {d.onTime} ({pct}%)</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
+        <span className="text-gray-300">Out of Spec: {d.outOfSpec}</span>
+      </div>
+      <div className="text-gray-500 mt-1">SLA: ≤{d.sla}d</div>
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════ */
+/*  Main component                                  */
+/* ════════════════════════════════════════════════ */
+
 export default function DiscoveryFlow() {
   const [blockerFilter, setBlockerFilter] = useState('');
   const [highlightStage, setHighlightStage] = useState<string | null>(null);
@@ -227,17 +273,56 @@ export default function DiscoveryFlow() {
     complaints, service, answers, formA, formC, deps, tenDay: null, motions: null, openLit, service30Day,
   }), [complaints, service, answers, formA, formC, deps, openLit, service30Day]);
 
-  const flow = useMemo(() => computeDiscoveryFlow(bundle), [bundle]);
+  /* Timing data — stacked bar chart source */
+  const timingStages = useMemo(() => computeCaseTimingStages(bundle, DEFAULT_THRESHOLDS), [bundle]);
 
+  const chartData = useMemo(() =>
+    timingStages.map(s => {
+      const onTime = s.green;
+      const outOfSpec = s.amber + s.red;
+      const total = s.total;
+      const onTimePct = total ? Math.round((onTime / total) * 100) : 0;
+      return {
+        stage: s.stage as StageName,
+        name: STAGE_LABELS[s.stage],
+        onTime,
+        outOfSpec,
+        total,
+        onTimePct,
+        sla: SLA_TARGETS[s.stage],
+      };
+    }),
+  [timingStages]);
+
+  /* Summary stats */
+  const summary = useMemo(() => {
+    let totalOnTime = 0, totalAll = 0;
+    let worstPct = 101, worstStage = '';
+    let atRisk = 0;
+
+    for (const d of chartData) {
+      totalOnTime += d.onTime;
+      totalAll += d.total;
+      if (d.onTimePct < worstPct) {
+        worstPct = d.onTimePct;
+        worstStage = d.name;
+      }
+      if (d.onTimePct < 75) atRisk++;
+    }
+
+    return {
+      overallPct: totalAll ? Math.round((totalOnTime / totalAll) * 100) : 0,
+      totalCases: totalAll,
+      atRisk,
+      worstStage: worstStage || 'N/A',
+      worstPct: worstPct > 100 ? 0 : worstPct,
+    };
+  }, [chartData]);
+
+  /* Pipeline data — needs attention / on track */
+  const flow = useMemo(() => computeDiscoveryFlow(bundle), [bundle]);
   const needsAttention = useMemo(() => flow.pipeline.filter(s => s.stuck > 0), [flow.pipeline]);
   const onTrack = useMemo(() => flow.pipeline.filter(s => s.stuck === 0), [flow.pipeline]);
-
-  const worstStage = useMemo(() => {
-    if (flow.pipeline.length === 0) return null;
-    return flow.pipeline.reduce((worst, s) => s.onTrackPct < worst.onTrackPct ? s : worst);
-  }, [flow.pipeline]);
-
-  const stuckPct = flow.totalOpen > 0 ? Math.round((flow.totalStuck / flow.totalOpen) * 100) : 0;
 
   const handleStageClick = (stage: string) => {
     setHighlightStage(prev => prev === stage ? null : stage);
@@ -255,63 +340,112 @@ export default function DiscoveryFlow() {
   return (
     <div className="p-6 max-w-[1400px] mx-auto space-y-6">
       <HeroSection>
-        <HeroTitle title="Discovery Flow" subtitle="Pipeline visualization of case progression through litigation stages" />
+        <HeroTitle title="Timing Compliance" subtitle="On-time vs out-of-spec case progression across litigation stages" />
       </HeroSection>
 
       {/* Summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Total Open Lit" value={flow.totalOpen.toLocaleString()} />
         <StatCard
-          label="Stuck Matters"
-          value={flow.totalStuck.toLocaleString()}
-          sub={`${stuckPct}% of portfolio`}
-          tint={stuckPct > 20 ? 'red' : undefined}
+          label="Overall On-Time"
+          value={`${summary.overallPct}%`}
+          tint={summary.overallPct < 50 ? 'red' : summary.overallPct < 70 ? 'amber' : undefined}
         />
-        <StatCard label="Median Days in Pipeline" value={`${flow.medianPipeDays}d`} />
+        <StatCard label="Total Cases Tracked" value={summary.totalCases.toLocaleString()} />
+        <StatCard
+          label="Stages At Risk"
+          value={summary.atRisk}
+          sub="< 75% on-time"
+          tint={summary.atRisk >= 3 ? 'red' : summary.atRisk >= 1 ? 'amber' : undefined}
+        />
         <StatCard
           label="Worst Stage"
-          value={worstStage?.stage ?? '—'}
-          sub={worstStage ? `${worstStage.onTrackPct}% on track` : undefined}
-          tint={worstStage && worstStage.onTrackPct < 40 ? 'red' : worstStage && worstStage.onTrackPct < 70 ? 'amber' : undefined}
+          value={summary.worstStage}
+          sub={`${summary.worstPct}% on-time`}
+          tint={summary.worstPct < 40 ? 'red' : summary.worstPct < 70 ? 'amber' : undefined}
         />
       </div>
 
-      {/* Sankey diagram */}
+      {/* Timing Standards strip */}
       <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4">
-        <h2 className="text-sm font-medium text-gray-400 mb-3">Case Flow by Stage</h2>
-        <div style={{ height: 350 }}>
-          {flow.sankey.links.length > 0 ? (
-            <ResponsiveSankey
-              data={flow.sankey}
-              margin={{ top: 20, right: 160, bottom: 20, left: 20 }}
-              align="justify"
-              colors={(node: { id: string; nodeColor?: string }) => node.nodeColor ?? '#666'}
-              nodeOpacity={1}
-              nodeHoverOthersOpacity={0.35}
-              nodeThickness={18}
-              nodeSpacing={24}
-              nodeBorderWidth={0}
-              nodeBorderRadius={3}
-              linkOpacity={0.4}
-              linkHoverOthersOpacity={0.1}
-              linkContract={3}
-              enableLinkGradient
-              labelPosition="outside"
-              labelOrientation="horizontal"
-              labelPadding={16}
-              labelTextColor={{ from: 'color', modifiers: [['brighter', 1]] }}
-              theme={{
-                text: { fill: '#999', fontSize: 12 },
-                tooltip: {
-                  container: { background: '#1a1a1a', color: '#fff', fontSize: 12, border: '1px solid #2a2a2a' },
-                },
-              }}
+        <h2 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-3">Timing Standards</h2>
+        <div className="flex flex-wrap gap-3">
+          {STAGE_ORDER.map(sn => {
+            const d = chartData.find(c => c.stage === sn);
+            const pct = d?.onTimePct ?? 0;
+            return (
+              <div key={sn} className="flex flex-col items-center gap-1.5 min-w-[100px]">
+                <span className="px-3 py-1 rounded-full bg-amber-900/40 text-amber-300 text-xs font-semibold">
+                  {STAGE_LABELS[sn]}
+                </span>
+                <span className="text-white text-sm font-bold">≤{SLA_TARGETS[sn]}d</span>
+                <span className={cn(
+                  'text-xs font-medium',
+                  pct >= 75 ? 'text-green-400' : pct >= 50 ? 'text-amber-400' : 'text-red-400',
+                )}>
+                  {pct}% on-time
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Stacked Bar Chart */}
+      <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-lg p-4">
+        <h2 className="text-sm font-medium text-gray-400 mb-3">Compliance by Stage</h2>
+        <ResponsiveContainer width="100%" height={380}>
+          <BarChart
+            data={chartData}
+            margin={{ top: 25, right: 20, bottom: 5, left: 10 }}
+            barCategoryGap="25%"
+          >
+            <XAxis
+              dataKey="name"
+              tick={{ fill: '#aaa', fontSize: 11 }}
+              axisLine={{ stroke: '#2a2a2a' }}
+              tickLine={false}
             />
-          ) : (
-            <div className="flex items-center justify-center h-full text-gray-500">
-              <AlertTriangle size={16} className="mr-2" /> No flow data available
+            <YAxis
+              tick={{ fill: '#666', fontSize: 11 }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+            <Bar dataKey="onTime" stackId="compliance" name="On Time" radius={[0, 0, 0, 0]}>
+              {chartData.map((_, i) => (
+                <Cell key={i} fill={GREEN} />
+              ))}
+            </Bar>
+            <Bar dataKey="outOfSpec" stackId="compliance" name="Out of Spec" radius={[4, 4, 0, 0]}>
+              {chartData.map((_, i) => (
+                <Cell key={i} fill={RED} />
+              ))}
+              <LabelList dataKey="total" content={renderTopLabel} />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+
+        {/* Bottom annotations per stage */}
+        <div className="flex flex-wrap justify-center gap-4 mt-2">
+          {chartData.map(d => (
+            <div key={d.stage} className="flex items-center gap-1.5 text-xs">
+              <span className={cn(
+                'inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-semibold',
+                d.onTimePct >= 75
+                  ? 'bg-green-950/50 text-green-400'
+                  : d.onTimePct >= 50
+                    ? 'bg-amber-950/50 text-amber-400'
+                    : 'bg-red-950/50 text-red-400',
+              )}>
+                {d.onTimePct}%
+              </span>
+              {d.outOfSpec > 0 && (
+                <span className="text-red-400">
+                  {d.outOfSpec} out of spec
+                </span>
+              )}
             </div>
-          )}
+          ))}
         </div>
       </div>
 

@@ -77,7 +77,7 @@ import OptimusStructure from './pages/OptimusStructure.tsx';
 import LDN from './pages/LDN.tsx';
 import BlockerReport from './pages/BlockerReport.tsx';
 import DiscoveryFlow from './pages/DiscoveryFlow.tsx';
-import CaseTiming from './pages/CaseTiming.tsx';
+// CaseTiming removed — absorbed into DiscoveryFlow
 
 const DARK_MODE_KEY = 'bjb-flowchart-dark';
 
@@ -193,7 +193,7 @@ export default function App() {
             <Route path="ldn" element={<Navigate to="/ldm" replace />} />
             <Route path="ldn/blockers" element={<Navigate to="/ldm/blockers" replace />} />
             <Route path="discovery-flow" element={<DiscoveryFlow />} />
-            <Route path="case-timing" element={<CaseTiming />} />
+            <Route path="case-timing" element={<Navigate to="/discovery-flow" replace />} />
             <Route path="mos-entry" element={<MosEntry />} />
           </Route>
         </Routes>

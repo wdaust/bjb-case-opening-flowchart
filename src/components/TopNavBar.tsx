@@ -22,7 +22,6 @@ const restrictedMoreLinks: { label: string; to: string; allowedUsers: string[] }
   { label: 'Reports', to: '/reports', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Litify Spec', to: '/specs', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'Optimus Structure', to: '/optimus-structure', allowedUsers: ['wdaust', 'jbillingsley'] },
-  { label: 'Case Timing', to: '/case-timing', allowedUsers: ['wdaust', 'jbillingsley'] },
   { label: 'LDM 2', to: '/control-tower', allowedUsers: ['wdaust', 'jbillingsley'] },
 ];
 
