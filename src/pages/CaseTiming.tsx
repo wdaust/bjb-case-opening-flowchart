@@ -21,6 +21,58 @@ import { cn } from '../utils/cn';
 
 const COLORS = { green: '#22c55e', amber: '#eab308', red: '#ef4444' } as const;
 
+/** Matter-level drill-down columns per stage (no defendant fields). */
+const DRILL_COLUMNS: Record<StageName, { key: string; label: string }[]> = {
+  complaints: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Matter Name', label: 'Matter' },
+    { key: 'Date Assigned to Team to Today', label: 'Days Assigned' },
+    { key: 'Complaint Filed Date', label: 'Filed Date' },
+    { key: 'Blocker to Filing Complaint', label: 'Blocker' },
+    { key: 'PI Status', label: 'PI Status' },
+  ],
+  service: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Matter: Matter Name', label: 'Matter' },
+    { key: 'Days to Service', label: 'Days to Service' },
+    { key: 'Complaint Filed Date', label: 'Filed Date' },
+    { key: 'Service complete date', label: 'Service Date' },
+  ],
+  answers: [
+    { key: 'Matter Name', label: 'Matter' },
+    { key: 'Client Name', label: 'Client' },
+    { key: 'Answer Filed', label: 'Answer Filed' },
+    { key: 'Answer Date to Today', label: 'Days Since Answer' },
+  ],
+  formA: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Answer Date to Today', label: 'Days Since Answer' },
+    { key: 'Form A Served', label: 'Form A Served' },
+    { key: 'Date Form A Sent to Attorney for Review', label: 'Sent to Review' },
+    { key: 'Active Stage', label: 'Stage' },
+  ],
+  formC: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Answer Date to Today', label: 'Days Since Answer' },
+    { key: 'Form C Received', label: 'Form C Received' },
+    { key: '10 Day Letter Sent', label: '10-Day Letter' },
+    { key: 'Date Motion Filed', label: 'Motion Filed' },
+  ],
+  depositions: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Answer Date to Today', label: 'Days from Answer' },
+    { key: 'Client Deposition', label: 'Client Depo' },
+    { key: 'Client Depo Date', label: 'Client Depo Date' },
+  ],
+  ded: [
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Matter Name', label: 'Matter' },
+    { key: 'Discovery End Date', label: 'DED' },
+    { key: 'Active Stage', label: 'Stage' },
+    { key: 'Case Type', label: 'Case Type' },
+  ],
+};
+
 function ThresholdInput({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) {
   const [draft, setDraft] = useState(String(value));
   const [focused, setFocused] = useState(false);
@@ -123,33 +175,31 @@ export default function CaseTiming() {
     };
   }, [stages]);
 
-  // Drill-down data
-  const drillData = useMemo((): { rows: DrillRow[]; columns: Column<DrillRow>[] } | null => {
+  // Drill-down data — uses curated matter-level columns per stage
+  const drillData = useMemo((): { rows: DrillRow[]; columns: Column<DrillRow>[]; keyField: string } | null => {
     if (!drill) return null;
     const stageResult = stages.find(s => s.stage === drill.stage);
     if (!stageResult) return null;
 
     const rowsKey = `${drill.bucket}Rows` as `${BucketKey}Rows`;
     const rows = stageResult[rowsKey];
-    if (!rows.length) return { rows: [], columns: [] };
+    if (!rows.length) return { rows: [], columns: [], keyField: 'Matter Name' };
 
-    // Derive columns from first row
-    const first = rows[0];
-    const skipKeys = new Set(['_groupingLabel', '_groupingKey']);
-    const columns: Column<DrillRow>[] = Object.keys(first)
-      .filter(k => !skipKeys.has(k))
-      .slice(0, 8)
-      .map(k => ({
-        key: k,
-        label: k,
-        render: (r: DrillRow) => {
-          const v = r[k];
-          if (v == null || v === '') return '-';
-          return String(v);
-        },
-      }));
+    const colDefs = DRILL_COLUMNS[drill.stage];
+    const columns: Column<DrillRow>[] = colDefs.map(c => ({
+      key: c.key,
+      label: c.label,
+      render: (r: DrillRow) => {
+        const v = r[c.key];
+        if (v == null || v === '') return '-';
+        return String(v);
+      },
+    }));
 
-    return { rows, columns };
+    // Use Display Name or Matter Name for React key
+    const keyField = rows[0]['Display Name'] ? 'Display Name' : 'Matter Name';
+
+    return { rows, columns, keyField };
   }, [drill, stages]);
 
   if (loading) {
@@ -374,7 +424,7 @@ export default function CaseTiming() {
             <DataTable
               data={drillData.rows}
               columns={drillData.columns}
-              keyField="Display Name"
+              keyField={drillData.keyField}
               maxRows={100}
             />
           ) : (

@@ -63,14 +63,7 @@ function getDedDays(row: DrillRow): number | null {
 }
 
 function getServiceDays(row: DrillRow): number | null {
-  // Try 'Days to Service' first, then 'Time from Filed Date', then 'Time from Filed'
-  let days = extractDays(row, 'Days to Service');
-  if (days !== null) return days;
-  days = extractDays(row, 'Time from Filed Date');
-  if (days !== null) return days;
-  days = extractDays(row, 'Time from Filed');
-  if (days !== null) return days;
-  return null;
+  return extractDays(row, 'Days to Service');
 }
 
 interface StageExtractor {
@@ -84,7 +77,7 @@ const STAGE_EXTRACTORS: Record<StageName, StageExtractor> = {
     getDays: (r) => extractDays(r, 'Date Assigned to Team to Today'),
   },
   service: {
-    getRows: (b) => (b.service?.detailRows ?? []) as DrillRow[],
+    getRows: (b) => (b.service30Day?.detailRows ?? []) as DrillRow[],
     getDays: getServiceDays,
   },
   answers: {
@@ -109,10 +102,12 @@ const STAGE_EXTRACTORS: Record<StageName, StageExtractor> = {
   },
 };
 
-/** Get a matter-level key from a row. Tries Matter Name first, then Display Name. */
+/** Get a matter-level key from a row. Tries Matter Name variants, then Display Name. */
 function matterKey(row: DrillRow): string {
-  const mn = row['Matter Name'];
-  if (typeof mn === 'string' && mn && mn !== '-') return mn;
+  for (const key of ['Matter Name', 'Matter: Matter Name']) {
+    const v = row[key];
+    if (typeof v === 'string' && v && v !== '-') return v;
+  }
   const dn = row['Display Name'];
   if (typeof dn === 'string' && dn && dn !== '-') return dn;
   // Fallback: use the row reference itself (no dedup possible)
