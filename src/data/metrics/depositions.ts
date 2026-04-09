@@ -1,46 +1,51 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { mean, buildGauge, rag, uniqueMatterCount } from './shared';
+import { buildGauge, rag, uniqueMatterCount } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
 
+/** Parse Answer Date to Today as a number of days */
+const answerDays = (r: Row): number => {
+  const v = r['Answer Date to Today'];
+  const num = typeof v === 'number' ? v : Number(v);
+  return isNaN(num) ? 0 : num;
+};
+
+const noDepo = (r: Row): boolean => {
+  const cd = r['Client Deposition'] ?? r['Client Depo Date'];
+  return !cd || cd === '-';
+};
+
 export function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  const total = uniqueMatterCount(rows);
-  const daysArr = rows.map(r => {
-    const v = r['Time from Filed Date'] ?? r['Time from Filed'];
-    const num = typeof v === 'number' ? v : Number(v);
-    return isNaN(num) ? null : num;
-  }).filter((d): d is number => d != null);
-  const overdue180Rows = rows.filter(r => {
-    const v = r['Time from Filed Date'] ?? r['Time from Filed'];
-    const num = typeof v === 'number' ? v : Number(v);
-    return !isNaN(num) && num >= 180;
-  });
-  const overdue180 = uniqueMatterCount(overdue180Rows);
-  const notComplete = rows.filter(r => {
-    const cd = r['Client Deposition'] ?? r['Client Depo Date'];
-    return !cd || cd === '-';
-  }).length;
+  // Use 120d from answer date as SLA (not filed date)
+  const daysArr = rows.map(r => answerDays(r)).filter(d => d > 0);
+
+  // Box 1: Undone 120d+ — depositions past 120 days from answer, not completed
+  const undone120Rows = rows.filter(r => noDepo(r) && answerDays(r) >= 120);
+  const undone120 = uniqueMatterCount(undone120Rows);
+
+  // Box 2: Completed Timely — disabled (no completed depo report)
+  // Box 3: Completed Untimely — disabled (no completed depo report)
+
+  // Box 4: Within Time — undone but under 120 days from answer (still on track)
+  const withinTimeRows = rows.filter(r => noDepo(r) && answerDays(r) < 120);
+  const withinTime = uniqueMatterCount(withinTimeRows);
 
   const cards: MetricCard[] = [
-    { label: 'Outstanding', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
-    { label: 'Overdue 180+', value: overdue180, rag: overdue180 === 0 ? 'green' : overdue180 <= 2 ? 'amber' : 'red' },
-    { label: 'Avg Days from Filed', value: `${mean(daysArr)}d`, rag: mean(daysArr) < 180 ? 'green' : 'red' },
-    { label: 'Not Marked Complete', value: notComplete, rag: notComplete === 0 ? 'green' : notComplete <= 5 ? 'amber' : 'red' },
+    { label: 'Undone 120d+', value: undone120, rag: undone120 === 0 ? 'green' : undone120 <= 3 ? 'amber' : 'red' },
+    { label: 'Completed Timely', value: '-', rag: 'green', disabled: true, badge: 'Needs Report' },
+    { label: 'Completed Untimely', value: '-', rag: 'green', disabled: true, badge: 'Needs Report' },
+    { label: 'Within Time', value: withinTime, rag: 'green' },
   ];
 
-  const worstRag = rag(overdue180, [1, 3]);
-  const gauge = buildGauge('Depositions', daysArr, SLA_TARGETS.depositions, total);
+  const worstRag = rag(undone120, [1, 3]);
+  const gauge = buildGauge('Depositions', daysArr, SLA_TARGETS.depositions, rows.length);
 
-  const issues: ActionableIssue[] = rows
-    .filter(r => {
-      const tf = r['Time from Filed Date'] ?? r['Time from Filed'];
-      return typeof tf === 'number' && tf >= 180;
-    })
+  const issues: ActionableIssue[] = undone120Rows
     .map(r => ({
       stage: 'Depositions',
-      description: `${r['Matter Name'] || 'Unknown'} — deposition overdue`,
-      daysOverdue: (r['Time from Filed Date'] ?? r['Time from Filed']) as number,
+      description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — deposition overdue (${answerDays(r)}d from answer)`,
+      daysOverdue: answerDays(r),
       priority: 'red' as RagColor,
       suggestedAction: 'Schedule deposition or file motion to compel',
     }));

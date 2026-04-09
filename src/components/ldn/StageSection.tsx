@@ -5,11 +5,12 @@ import { SectionHeader } from '../dashboard/SectionHeader';
 import { DashboardGrid } from '../dashboard/DashboardGrid';
 import { StatCard } from '../dashboard/StatCard';
 import { InfoTooltip } from '../dashboard/InfoTooltip';
+import { TimingTooltip } from './TimingTooltip';
 import { DataTable } from '../dashboard/DataTable';
 import { StageBulletGauge } from './StageBulletGauge';
 import { CardDrillDown } from './CardDrillDown';
 import type { LdnStageMetrics, LdnAttorneyScore, StageName, RagColor, DrillRow } from '../../data/metrics';
-import { STAGE_INFO, CARD_INFO, STAGE_DRILL_COLUMNS, CARD_FILTERS } from '../../data/metrics';
+import { STAGE_INFO, CARD_INFO, CARD_TIMING, STAGE_DRILL_COLUMNS, CARD_FILTERS } from '../../data/metrics';
 import type { Column } from '../dashboard/DataTable';
 import { cn } from '../../utils/cn';
 
@@ -184,9 +185,10 @@ export function StageSection({ stageMetrics, scores, stageName, onSelectAttorney
       <DashboardGrid cols={stageMetrics.cards.length <= 3 ? 3 : stageMetrics.cards.length <= 5 ? 5 : 4}>
         {stageMetrics.cards.map(c => (
           <div key={c.label} className={cn('relative', c.disabled && 'opacity-50 cursor-not-allowed')}>
-            {CARD_INFO[c.label] && (
-              <div className="absolute top-2 right-2 z-10">
-                <InfoTooltip text={CARD_INFO[c.label]} />
+            {(CARD_INFO[c.label] || CARD_TIMING[c.label]) && (
+              <div className="absolute top-2 right-2 z-10 flex items-center gap-1">
+                {CARD_TIMING[c.label] && <TimingTooltip timing={CARD_TIMING[c.label]} />}
+                {CARD_INFO[c.label] && <InfoTooltip text={CARD_INFO[c.label]} />}
               </div>
             )}
             {c.badge && (

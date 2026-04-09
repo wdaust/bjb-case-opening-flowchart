@@ -1,75 +1,86 @@
 import type { RagColor, MetricCard, ActionableIssue } from './shared';
-import { buildGauge, formCBucket, uniqueMatterCount } from './shared';
+import { buildGauge, parseDate, daysSinceToday, uniqueMatterCount } from './shared';
 import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 
 type Row = Record<string, unknown>;
+
+const noFormC = (r: Row) => {
+  const v = r['Form C Received'];
+  return v == null || v === '' || v === '-';
+};
 
 const hasFormAServed = (r: Row) => {
   const v = r['Form A Served'];
   return v != null && v !== '' && v !== '-';
 };
 
+const has10DayLetter = (r: Row) => {
+  const v = r['10 Day Letter Sent'];
+  return v != null && v !== '' && v !== '-';
+};
+
+const noMotionFiled = (r: Row) => {
+  const v = r['Date Motion Filed'];
+  return v == null || v === '' || v === '-';
+};
+
+const motionFiled = (r: Row) => {
+  const v = r['Date Motion Filed'];
+  return v != null && v !== '' && v !== '-';
+};
+
+/** Parse Answer Date to Today as a number of days */
+const answerDays = (r: Row): number => {
+  const v = r['Answer Date to Today'];
+  const num = typeof v === 'number' ? v : Number(v);
+  return isNaN(num) ? 0 : num;
+};
+
+/** Check if 10-day letter was sent 10+ days ago (letter expired) */
+const letterExpired = (r: Row): boolean => {
+  const d = parseDate(r['10 Day Letter Sent']);
+  if (!d) return false;
+  return daysSinceToday(d) >= 10;
+};
+
 export function computeFormC(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  // Rows SF says need motion or 10-day letter, but split by whether we've served Form A
-  const sfNeedMotionRows = rows.filter(r => formCBucket(String(r._groupingLabel ?? '')) === 'Need to File Motion');
-  const sfNeed10DayRows = rows.filter(r => formCBucket(String(r._groupingLabel ?? '')) === 'Need a 10-Day Letter');
+  // Box 1: Missing Form C (30d+) — answer filed 30+ days ago, no Form C received
+  const missingRows = rows.filter(r => noFormC(r) && answerDays(r) >= 30);
+  const missing = uniqueMatterCount(missingRows);
 
-  // Only actionable if Form A was served
-  const needMotionRows = sfNeedMotionRows.filter(hasFormAServed);
-  const need10DayRows = sfNeed10DayRows.filter(hasFormAServed);
+  // Box 2: Ready for Motion — Form A served, 10-day letter sent 10+ days ago, no motion filed
+  const readyMotionRows = rows.filter(r =>
+    noFormC(r) && hasFormAServed(r) && has10DayLetter(r) && letterExpired(r) && noMotionFiled(r),
+  );
+  const readyMotion = uniqueMatterCount(readyMotionRows);
 
-  // Not actionable yet — we haven't served Form A
-  const awaitingFormARows = [
-    ...sfNeedMotionRows.filter(r => !hasFormAServed(r)),
-    ...sfNeed10DayRows.filter(r => !hasFormAServed(r)),
-  ];
+  // Box 3: Motions Late — same criteria as Box 2 (all qualify but no motion filed yet)
+  // Once motions start being filed, this becomes: criteria met but motion still not filed
+  const motionsLate = readyMotion;
 
-  const pendingRows = rows.filter(r => {
-    const b = formCBucket(String(r._groupingLabel ?? ''));
-    return b.startsWith('10-Day Letter Out') || b.startsWith('60 Days');
-  });
-  const withinTimeRows = rows.filter(r => formCBucket(String(r._groupingLabel ?? '')) === 'Within Time');
+  // Box 4: Filed Timely — motions that have been filed
+  const filedRows = rows.filter(r => motionFiled(r));
+  const filed = uniqueMatterCount(filedRows);
 
-  const needMotion = uniqueMatterCount(needMotionRows);
-  const need10Day = uniqueMatterCount(need10DayRows);
-  const awaitingFormA = uniqueMatterCount(awaitingFormARows);
-  const pending = uniqueMatterCount(pendingRows);
-  const withinTime = uniqueMatterCount(withinTimeRows);
-
-  const overdueRows = [...needMotionRows, ...need10DayRows];
-  const daysArr = overdueRows.map(r => {
-    const v = r['Answer Date to Today'];
-    const num = typeof v === 'number' ? v : Number(v);
-    return isNaN(num) ? null : num;
-  }).filter((d): d is number => d != null);
+  const daysArr = missingRows.map(r => answerDays(r)).filter(d => d > 0);
 
   const cards: MetricCard[] = [
-    { label: 'File Motion to Compel', value: needMotion, rag: needMotion === 0 ? 'green' : needMotion <= 5 ? 'amber' : 'red' },
-    { label: 'Send 10-Day Letter', value: need10Day, rag: need10Day === 0 ? 'green' : 'amber' },
-    { label: 'Awaiting Our Form A', value: awaitingFormA, rag: awaitingFormA === 0 ? 'green' : 'amber' },
-    { label: 'Pending Response', value: pending, rag: 'green' },
-    { label: 'Within Time', value: withinTime, rag: 'green' },
+    { label: 'Missing Form C (30d+)', value: missing, rag: missing === 0 ? 'green' : missing <= 10 ? 'amber' : 'red' },
+    { label: 'Ready for Motion', value: readyMotion, rag: readyMotion === 0 ? 'green' : readyMotion <= 5 ? 'amber' : 'red' },
+    { label: 'Motions Late', value: motionsLate, rag: motionsLate === 0 ? 'green' : 'red' },
+    { label: 'Filed Timely', value: filed, rag: 'green' },
   ];
 
-  const worstRag: RagColor = needMotion > 5 ? 'red' : needMotion > 0 ? 'amber' : 'green';
+  const worstRag: RagColor = readyMotion > 5 ? 'red' : readyMotion > 0 ? 'amber' : 'green';
   const gauge = buildGauge('Form C', daysArr, SLA_TARGETS.formC);
 
-  const issues: ActionableIssue[] = [
-    ...needMotionRows.map(r => ({
-      stage: 'Form C',
-      description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — needs motion to compel`,
-      daysOverdue: Number(r['Answer Date to Today']) || 0,
-      priority: 'red' as RagColor,
-      suggestedAction: 'File motion to compel Form C',
-    })),
-    ...need10DayRows.map(r => ({
-      stage: 'Form C',
-      description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — needs 10-day letter`,
-      daysOverdue: Number(r['Answer Date to Today']) || 0,
-      priority: 'amber' as RagColor,
-      suggestedAction: 'Send 10-day demand letter',
-    })),
-  ];
+  const issues: ActionableIssue[] = readyMotionRows.map(r => ({
+    stage: 'Form C',
+    description: `${r['Matter Name'] || r['Display Name'] || 'Unknown'} — ready for motion to compel`,
+    daysOverdue: answerDays(r),
+    priority: 'red' as RagColor,
+    suggestedAction: 'File motion to compel Form C (R. 4:23-1)',
+  }));
 
   return { metrics: { stage: 'formC', label: STAGE_LABELS.formC, cards, gauge, rag: worstRag }, issues };
 }
