@@ -71,6 +71,97 @@ export function generateWeeks(count: number): string[] {
 const CURRENT_WEEK = getWeekKey(new Date());
 const DEFAULT_WEEK_COUNT = 17;
 
+// ─── Mini Dashboard ─────────────────────────────────────────────────────────
+
+function MiniDash({ meeting, weeklyData }: { meeting: MeetingDef; weeklyData: WeeklyData }) {
+  const [open, setOpen] = useState(true);
+
+  const { kpiGreen, kpiRed, kpiNoData, rockGreen, rockRed, rockNoData } = useMemo(() => {
+    let kpiGreen = 0, kpiRed = 0, kpiNoData = 0;
+    let rockGreen = 0, rockRed = 0, rockNoData = 0;
+    for (const m of meeting.metrics) {
+      if (m.isSection) continue;
+      const val = weeklyData[`${meeting.id}:${m.uid}:${CURRENT_WEEK}`] ?? '';
+      const result = evaluateKpi(val, m.kpi, m.kpiType, m.kpiDirection, m.isRock);
+      if (m.isRock) {
+        if (result === 'green') rockGreen++;
+        else if (result === 'red') rockRed++;
+        else rockNoData++;
+      } else {
+        if (result === 'green') kpiGreen++;
+        else if (result === 'red') kpiRed++;
+        else kpiNoData++;
+      }
+    }
+    return { kpiGreen, kpiRed, kpiNoData, rockGreen, rockRed, rockNoData };
+  }, [meeting, weeklyData]);
+
+  const kpiTotal = kpiGreen + kpiRed + kpiNoData;
+  const rockTotal = rockGreen + rockRed + rockNoData;
+  const allGreen = kpiGreen + rockGreen;
+  const allRed = kpiRed + rockRed;
+  const allNoData = kpiNoData + rockNoData;
+  const allTotal = allGreen + allRed + allNoData;
+
+  if (allTotal === 0) return null;
+
+  const pctGreen = allTotal ? (allGreen / allTotal) * 100 : 0;
+  const pctRed = allTotal ? (allRed / allTotal) * 100 : 0;
+
+  return (
+    <div className="border border-border/50 rounded-lg bg-card/30">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-2 w-full px-3 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+      >
+        {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        <span className="font-medium">Weekly Pulse</span>
+        {!open && (
+          <span className="ml-auto flex items-center gap-2">
+            <span className="text-emerald-400">{allGreen} hit</span>
+            <span className="text-red-400">{allRed} miss</span>
+            {allNoData > 0 && <span className="text-muted-foreground">{allNoData} no data</span>}
+          </span>
+        )}
+      </button>
+      {open && (
+        <div className="px-3 pb-3 space-y-2">
+          <div className="flex items-center gap-4 text-xs">
+            {kpiTotal > 0 && (
+              <span className="flex items-center gap-1.5">
+                <CheckCircle size={12} className="text-emerald-400" />
+                <span className="text-muted-foreground">KPIs:</span>
+                <span className="text-emerald-400 font-medium">{kpiGreen}</span>
+                <span className="text-muted-foreground">/</span>
+                <span>{kpiTotal} hitting target</span>
+              </span>
+            )}
+            {rockTotal > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Target size={12} className="text-amber-400" />
+                <span className="text-muted-foreground">Rocks:</span>
+                <span className="text-emerald-400 font-medium">{rockGreen}</span>
+                <span className="text-muted-foreground">/</span>
+                <span>{rockTotal} on track</span>
+              </span>
+            )}
+            {allNoData > 0 && (
+              <span className="text-muted-foreground">
+                {allNoData} no data
+              </span>
+            )}
+          </div>
+          {/* Proportion bar */}
+          <div className="h-1.5 rounded-full bg-muted/30 overflow-hidden flex">
+            {pctGreen > 0 && <div className="bg-emerald-500 transition-all" style={{ width: `${pctGreen}%` }} />}
+            {pctRed > 0 && <div className="bg-red-500 transition-all" style={{ width: `${pctRed}%` }} />}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 type WeekConfig = { weekCount: number; hiddenWeeks: string[] };
 
 // ─── Merge-on-save hook ─────────────────────────────────────────────────────
@@ -618,8 +709,30 @@ export default function MOS() {
         const oldIdx = m.metrics.findIndex(x => x.uid === activeId);
         const newIdx = m.metrics.findIndex(x => x.uid === overId);
         if (oldIdx === -1 || newIdx === -1) return m;
-        const reordered = arrayMove(m.metrics, oldIdx, newIdx).map((x, i) => ({ ...x, order: i }));
-        return { ...m, metrics: reordered };
+
+        const draggedItem = m.metrics[oldIdx];
+
+        let reordered: typeof m.metrics;
+        if (draggedItem.isSection) {
+          // Collect the section header + all its child items
+          let endIdx = oldIdx + 1;
+          while (endIdx < m.metrics.length && !m.metrics[endIdx].isSection) {
+            endIdx++;
+          }
+          const block = m.metrics.slice(oldIdx, endIdx);
+          const rest = [...m.metrics.slice(0, oldIdx), ...m.metrics.slice(endIdx)];
+
+          // Find where to insert in the remaining array
+          let insertIdx = rest.findIndex(x => x.uid === overId);
+          if (insertIdx === -1) insertIdx = rest.length;
+          if (newIdx > oldIdx) insertIdx++;
+
+          reordered = [...rest.slice(0, insertIdx), ...block, ...rest.slice(insertIdx)];
+        } else {
+          reordered = arrayMove(m.metrics, oldIdx, newIdx);
+        }
+
+        return { ...m, metrics: reordered.map((x, i) => ({ ...x, order: i })) };
       });
       saveMetricDefs(updated);
       return updated;
@@ -951,6 +1064,8 @@ export default function MOS() {
             <h2 className="text-base font-semibold text-white">{activeMeeting.title}</h2>
             <p className="text-xs text-muted-foreground mt-0.5">{activeMeeting.subtitle}</p>
           </div>
+
+          <MiniDash meeting={activeMeeting} weeklyData={weeklyData} />
 
           <ScorecardTable
             meeting={activeMeeting}

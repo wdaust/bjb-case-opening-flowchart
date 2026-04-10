@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -32,6 +32,7 @@ import { ScoreGauge } from '../components/scoring/ScoreGauge';
 import { LCIBadge } from '../components/dashboard/LCIBadge';
 import { computeRealLCI } from '../data/metrics/lci';
 import { cn } from '../utils/cn';
+import { OptimusIntro } from '../components/OptimusIntro';
 
 function bandBadgeClasses(band: string) {
   if (band === 'green') return 'bg-green-500/20 text-green-400';
@@ -41,6 +42,13 @@ function bandBadgeClasses(band: string) {
 
 export default function LDN() {
   const navigate = useNavigate();
+  const [introPlayed, setIntroPlayed] = useState(
+    () => sessionStorage.getItem('ldm-intro-played') === 'true',
+  );
+  const handleIntroComplete = useCallback(() => {
+    sessionStorage.setItem('ldm-intro-played', 'true');
+    setIntroPlayed(true);
+  }, []);
   const [selectedAttorney, setSelectedAttorney] = useState<string>('');
   const [expandedStage, setExpandedStage] = useState<StageName | null>(null);
   const [complaintsMode, setComplaintsMode] = useState<'excludeBlockers' | 'includeBlockers'>('excludeBlockers');
@@ -143,6 +151,10 @@ export default function LDN() {
       }]),
     ) as Record<string, { stage: string; label: string; primary: number; overdue: number; subMetrics: Record<string, number>; pctTimely: number; rag: 'green' | 'amber' | 'red' }>,
   })), [scores]);
+
+  if (!introPlayed) {
+    return <OptimusIntro title="LITIGATION DEEP METRICS" onComplete={handleIntroComplete} />;
+  }
 
   if (loading) {
     return (

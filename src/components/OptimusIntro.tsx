@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-const TITLE = 'OPTIMUS CONTROL TOWER';
+const DEFAULT_TITLE = 'OPTIMUS CONTROL TOWER';
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*!?<>{}[]=/|~';
 const RESOLVE_INTERVAL = 60; // ms per character resolve
 const SCRAMBLE_INTERVAL = 40; // ms between scramble visual updates
@@ -9,9 +9,10 @@ const FADE_DURATION = 600;
 
 interface OptimusIntroProps {
   onComplete: () => void;
+  title?: string;
 }
 
-export function OptimusIntro({ onComplete }: OptimusIntroProps) {
+export function OptimusIntro({ onComplete, title = DEFAULT_TITLE }: OptimusIntroProps) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
@@ -29,10 +30,10 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
     const container = canvasRef.current;
     if (!container) return;
     const spans: HTMLSpanElement[] = [];
-    for (let i = 0; i < TITLE.length; i++) {
+    for (let i = 0; i < title.length; i++) {
       const span = document.createElement('span');
       span.style.display = 'inline-block';
-      if (TITLE[i] === ' ') {
+      if (title[i] === ' ') {
         span.style.minWidth = '0.35em';
         span.textContent = ' ';
       } else {
@@ -54,11 +55,11 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
         // Resolve one letter
         if (ts - lastResolve >= RESOLVE_INTERVAL) {
           // Skip spaces
-          while (resolved < TITLE.length && TITLE[resolved] === ' ') {
+          while (resolved < title.length && title[resolved] === ' ') {
             resolved++;
           }
-          if (resolved < TITLE.length) {
-            spans[resolved].textContent = TITLE[resolved];
+          if (resolved < title.length) {
+            spans[resolved].textContent = title[resolved];
             spans[resolved].style.opacity = '1';
             spans[resolved].style.textShadow = '0 0 30px #00d4ff, 0 0 60px #00d4ffaa, 0 0 80px #00d4ff55';
             // Clear glow on previous
@@ -68,9 +69,9 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
             resolved++;
             lastResolve = ts;
           }
-          if (resolved >= TITLE.length) {
+          if (resolved >= title.length) {
             // Clear last glow
-            spans[TITLE.length - 1].style.textShadow = '';
+            spans[title.length - 1].style.textShadow = '';
             currentPhase = 'shimmer';
             setPhase('shimmer');
             phaseStart = ts;
@@ -79,8 +80,8 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
 
         // Scramble unresolved chars (throttled)
         if (ts - lastScramble >= SCRAMBLE_INTERVAL) {
-          for (let i = resolved; i < TITLE.length; i++) {
-            if (TITLE[i] === ' ') continue;
+          for (let i = resolved; i < title.length; i++) {
+            if (title[i] === ' ') continue;
             spans[i].textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
           }
           lastScramble = ts;
@@ -110,7 +111,7 @@ export function OptimusIntro({ onComplete }: OptimusIntroProps) {
       cancelAnimationFrame(raf);
       container.innerHTML = '';
     };
-  }, []);
+  }, [title]);
 
   return (
     <div
