@@ -79,7 +79,7 @@ export function getStageDetailRows(
     case 'formC':
       return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[])) };
     case 'depositions':
-      return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[])) };
+      return { rows: dedupeByMatter(filterByGrouping(filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[])) };
     case 'ded':
       return { rows: dedupeByMatter(filterByGrouping(filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[])) };
   }
