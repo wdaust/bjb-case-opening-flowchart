@@ -53,6 +53,7 @@ export type DrillRow = Record<string, unknown>;
 export interface DrillColumn {
   key: string;
   label: string;
+  render?: (row: Record<string, unknown>) => string | number;
 }
 
 export const STAGE_LABELS: Record<StageName, string> = {

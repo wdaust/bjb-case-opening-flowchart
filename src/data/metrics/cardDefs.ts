@@ -272,12 +272,21 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
     { key: 'Default Entered Date', label: 'Default Date' },
     { key: 'Active Defendant?', label: 'Active?' },
     { key: 'Defendant Deposition', label: 'Deposition' },
+    { key: '_daysSinceService', label: 'Days Since Service', render: (row) => {
+      const d = parseDate(row['Service Date Complete']);
+      return d ? daysSinceToday(d) : '';
+    }},
   ],
   formA: [
     { key: 'Display Name', label: 'Display Name' },
     { key: 'Defendant (Party Name)', label: 'Defendant' },
     { key: 'Answer Filed', label: 'Answer Filed' },
     { key: 'Answer Date to Today', label: 'Days Since Answer' },
+    { key: '_daysPastSla', label: 'Days Past SLA', render: (row) => {
+      const v = row['Answer Date to Today'];
+      const num = typeof v === 'number' ? v : Number(v);
+      return isNaN(num) ? '' : num - 60;
+    }},
     { key: 'Date Form A Sent to Attorney for Review', label: 'Sent to Review' },
     { key: 'Form A Served', label: 'Served' },
     { key: 'Active Stage', label: 'Stage' },
@@ -286,6 +295,11 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
     { key: 'Display Name', label: 'Display Name' },
     { key: 'Defendant (Party Name)', label: 'Defendant' },
     { key: 'Answer Date to Today', label: 'Days Since Answer' },
+    { key: '_daysPastSla', label: 'Days Past SLA', render: (row) => {
+      const v = row['Answer Date to Today'];
+      const num = typeof v === 'number' ? v : Number(v);
+      return isNaN(num) ? '' : num - 60;
+    }},
     { key: 'Form A Served', label: 'Form A Served' },
     { key: 'Form C Received', label: 'Form C Received' },
     { key: '10 Day Letter Sent', label: '10-Day Letter' },
@@ -296,6 +310,11 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
     { key: 'Defendant (Party Name)', label: 'Defendant' },
     { key: 'Answer Filed', label: 'Answer Filed' },
     { key: 'Answer Date to Today', label: 'Days from Answer' },
+    { key: '_daysPastSla', label: 'Days Past SLA', render: (row) => {
+      const v = row['Answer Date to Today'];
+      const num = typeof v === 'number' ? v : Number(v);
+      return isNaN(num) ? '' : num - 120;
+    }},
     { key: 'Client Deposition', label: 'Client Depo' },
     { key: 'Active Stage', label: 'Stage' },
   ],
@@ -305,6 +324,10 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
     { key: 'Case Type', label: 'Case Type' },
     { key: 'Active Stage', label: 'Stage' },
     { key: 'Discovery End Date', label: 'DED' },
+    { key: '_daysToDed', label: 'Days to DED', render: (row) => {
+      const d = parseDate(row['Discovery End Date']);
+      return d ? daysFromToday(d) : '';
+    }},
     { key: 'Age in Litigation', label: 'Age (Lit)' },
     { key: 'Statute of Limitations', label: 'SOL' },
     { key: 'Matter State', label: 'State' },

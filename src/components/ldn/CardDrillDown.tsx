@@ -37,6 +37,11 @@ export function CardDrillDown({ open, onClose, title, rows, columns }: Props) {
     key: c.key,
     label: c.label,
     render: (row: DrillRow) => {
+      if (c.render) {
+        const computed = c.render(row);
+        if (computed == null || computed === '') return <span className="text-muted-foreground">-</span>;
+        return <span>{String(computed)}</span>;
+      }
       const v = row[c.key];
       if (v == null || v === '') return <span className="text-muted-foreground">-</span>;
       return <span>{String(v)}</span>;
