@@ -79,7 +79,8 @@ export function getStageDetailRows(
     case 'formC':
       return { rows: dedupeByMatter(filterByCrossref(filterLitOnly(bundle.formC?.detailRows ?? []) as DrillRow[])) };
     case 'depositions':
-      return { rows: dedupeByMatter(filterByGrouping(filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[])) };
+      // Dep report groups by overdue bucket (not attorney), so skip attorney filter
+      return { rows: dedupeByMatter(filterLitOnly(bundle.deps?.detailRows ?? []) as DrillRow[]) };
     case 'ded':
       return { rows: dedupeByMatter(filterByGrouping(filterLitOnly(bundle.openLit?.detailRows ?? []) as DrillRow[])) };
   }
