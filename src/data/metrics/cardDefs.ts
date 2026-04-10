@@ -249,7 +249,7 @@ export const STAGE_INFO: Record<StageName, string> = {
 export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
   complaints: [
     { key: 'Display Name', label: 'Display Name' },
-    { key: 'Matter Name', label: 'Matter Name' },
+    { key: 'Matter: Matter Name', label: 'Matter Name' },
     { key: 'Date Assigned to Team to Today', label: 'Days Assigned' },
     { key: 'Date Assigned To Litigation Unit', label: 'Assigned Date' },
     { key: 'Complaint Filed Date', label: 'Filed Date' },
@@ -267,7 +267,7 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
   answers: [
     { key: 'Matter Name', label: 'Matter Name' },
     { key: 'Client Name', label: 'Client' },
-    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Defendant (Party Name)', label: 'Defendant' },
     { key: 'Answer Filed', label: 'Answer Filed' },
     { key: 'Default Entered Date', label: 'Default Date' },
     { key: 'Active Defendant?', label: 'Active?' },
@@ -275,7 +275,7 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
   ],
   formA: [
     { key: 'Display Name', label: 'Display Name' },
-    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Defendant (Party Name)', label: 'Defendant' },
     { key: 'Answer Filed', label: 'Answer Filed' },
     { key: 'Answer Date to Today', label: 'Days Since Answer' },
     { key: 'Date Form A Sent to Attorney for Review', label: 'Sent to Review' },
@@ -284,7 +284,7 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
   ],
   formC: [
     { key: 'Display Name', label: 'Display Name' },
-    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Defendant (Party Name)', label: 'Defendant' },
     { key: 'Answer Date to Today', label: 'Days Since Answer' },
     { key: 'Form A Served', label: 'Form A Served' },
     { key: 'Form C Received', label: 'Form C Received' },
@@ -293,7 +293,7 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
   ],
   depositions: [
     { key: 'Display Name', label: 'Display Name' },
-    { key: 'Defendant', label: 'Defendant' },
+    { key: 'Defendant (Party Name)', label: 'Defendant' },
     { key: 'Answer Filed', label: 'Answer Filed' },
     { key: 'Answer Date to Today', label: 'Days from Answer' },
     { key: 'Client Deposition', label: 'Client Depo' },
@@ -301,7 +301,7 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
   ],
   ded: [
     { key: 'Display Name', label: 'Display Name' },
-    { key: 'Matter Name', label: 'Matter Name' },
+    { key: 'Matter: Matter Name', label: 'Matter Name' },
     { key: 'Case Type', label: 'Case Type' },
     { key: 'Active Stage', label: 'Stage' },
     { key: 'Discovery End Date', label: 'DED' },
