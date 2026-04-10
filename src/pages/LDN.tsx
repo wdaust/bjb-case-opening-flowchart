@@ -301,7 +301,7 @@ export default function LDN() {
             />
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={stageHealthData} layout="vertical" margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
-                <XAxis type="number" allowDecimals={false} tick={{ fill: '#888', fontSize: 12 }} />
+                <XAxis type="number" allowDecimals={false} domain={[0, 'dataMax']} tick={{ fill: '#888', fontSize: 12 }} />
                 <YAxis type="category" dataKey="name" width={100} tick={{ fill: '#ccc', fontSize: 12 }} />
                 <Tooltip
                   contentStyle={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: 8, fontSize: 12 }}
