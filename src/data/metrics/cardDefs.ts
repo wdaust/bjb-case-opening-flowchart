@@ -257,13 +257,12 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
     { key: 'PI Status', label: 'PI Status' },
   ],
   service: [
-    { key: 'Matter Name', label: 'Matter Name' },
-    { key: 'Client Name', label: 'Client' },
-    { key: 'Defendant', label: 'Defendant' },
-    { key: 'Case Type', label: 'Case Type' },
-    { key: 'Active Defendant?', label: 'Active?' },
+    { key: 'Matter: Matter Name', label: 'Matter Name' },
+    { key: 'Display Name', label: 'Display Name' },
+    { key: 'Complaint Filed Date', label: 'Complaint Filed' },
     { key: 'Service complete date', label: 'Service Date' },
-    { key: 'Default Entered Date', label: 'Default Date' },
+    { key: 'Age in Litigation', label: 'Age (days)' },
+    { key: 'Total Liability Limits', label: 'Liability Limits' },
   ],
   answers: [
     { key: 'Matter Name', label: 'Matter Name' },

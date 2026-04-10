@@ -5,7 +5,7 @@ import { SLA_TARGETS, STAGE_LABELS, type LdnStageMetrics } from './types';
 type Row = Record<string, unknown>;
 
 export function computeService(rows: Row[], service30DayRows?: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  const total = uniqueMatterCount(rows, 'Matter Name');
+  const total = uniqueMatterCount(rows, 'Matter: Matter Name');
   const cards: MetricCard[] = [
     { label: 'Past-Due Items', value: total, rag: total === 0 ? 'green' : total <= 3 ? 'amber' : 'red' },
   ];
@@ -42,7 +42,7 @@ export function computeService(rows: Row[], service30DayRows?: Row[]): { metrics
     const days = d ? daysSinceToday(d) : 0;
     return {
       stage: 'Service',
-      description: `${r['Matter Name'] || 'Unknown'} — past-due service`,
+      description: `${r['Matter: Matter Name'] || r['Display Name'] || 'Unknown'} — past-due service`,
       daysOverdue: days,
       priority: (days >= 60 ? 'red' : 'amber') as RagColor,
       suggestedAction: 'Complete service or request extension',
