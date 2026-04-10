@@ -108,54 +108,63 @@ function MiniDash({ meeting, weeklyData }: { meeting: MeetingDef; weeklyData: We
   const pctGreen = allTotal ? (allGreen / allTotal) * 100 : 0;
   const pctRed = allTotal ? (allRed / allTotal) * 100 : 0;
 
+  const cards: { label: string; value: number; total: number; color: string; icon: typeof CheckCircle }[] = [];
+  if (kpiTotal > 0) {
+    cards.push({ label: 'KPIs Hitting Target', value: kpiGreen, total: kpiTotal, color: 'emerald', icon: CheckCircle });
+    cards.push({ label: 'KPIs Missing Target', value: kpiRed, total: kpiTotal, color: 'red', icon: AlertCircle });
+  }
+  if (rockTotal > 0) {
+    cards.push({ label: 'Rocks On Track', value: rockGreen, total: rockTotal, color: 'emerald', icon: Target });
+    cards.push({ label: 'Rocks Off Track', value: rockRed, total: rockTotal, color: 'red', icon: AlertCircle });
+  }
+
   return (
-    <div className="border border-border/50 rounded-lg bg-card/30">
+    <div>
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-2 w-full px-3 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-2 mb-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
       >
         {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
         <span className="font-medium">Weekly Pulse</span>
         {!open && (
-          <span className="ml-auto flex items-center gap-2">
+          <span className="ml-2 flex items-center gap-3">
             <span className="text-emerald-400">{allGreen} hit</span>
             <span className="text-red-400">{allRed} miss</span>
-            {allNoData > 0 && <span className="text-muted-foreground">{allNoData} no data</span>}
+            {allNoData > 0 && <span>{allNoData} no data</span>}
           </span>
         )}
       </button>
       {open && (
-        <div className="px-3 pb-3 space-y-2">
-          <div className="flex items-center gap-4 text-xs">
-            {kpiTotal > 0 && (
-              <span className="flex items-center gap-1.5">
-                <CheckCircle size={12} className="text-emerald-400" />
-                <span className="text-muted-foreground">KPIs:</span>
-                <span className="text-emerald-400 font-medium">{kpiGreen}</span>
-                <span className="text-muted-foreground">/</span>
-                <span>{kpiTotal} hitting target</span>
-              </span>
-            )}
-            {rockTotal > 0 && (
-              <span className="flex items-center gap-1.5">
-                <Target size={12} className="text-amber-400" />
-                <span className="text-muted-foreground">Rocks:</span>
-                <span className="text-emerald-400 font-medium">{rockGreen}</span>
-                <span className="text-muted-foreground">/</span>
-                <span>{rockTotal} on track</span>
-              </span>
-            )}
-            {allNoData > 0 && (
-              <span className="text-muted-foreground">
-                {allNoData} no data
-              </span>
-            )}
-          </div>
-          {/* Proportion bar */}
-          <div className="h-1.5 rounded-full bg-muted/30 overflow-hidden flex">
-            {pctGreen > 0 && <div className="bg-emerald-500 transition-all" style={{ width: `${pctGreen}%` }} />}
-            {pctRed > 0 && <div className="bg-red-500 transition-all" style={{ width: `${pctRed}%` }} />}
-          </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {cards.map(c => {
+            const pct = c.total ? Math.round((c.value / c.total) * 100) : 0;
+            const Icon = c.icon;
+            return (
+              <div key={c.label} className="border border-border/50 rounded-lg bg-card/40 p-4 space-y-2">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Icon size={14} className={c.color === 'emerald' ? 'text-emerald-400' : 'text-red-400'} />
+                  {c.label}
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className={cn("text-2xl font-bold", c.color === 'emerald' ? 'text-emerald-400' : 'text-red-400')}>
+                    {c.value}
+                  </span>
+                  <span className="text-sm text-muted-foreground">/ {c.total}</span>
+                </div>
+                <div className="h-1.5 rounded-full bg-muted/30 overflow-hidden">
+                  <div
+                    className={cn("h-full rounded-full transition-all", c.color === 'emerald' ? 'bg-emerald-500' : 'bg-red-500')}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+          {allNoData > 0 && (
+            <div className="border border-border/30 rounded-lg bg-card/20 p-4 space-y-2 col-span-2 sm:col-span-4">
+              <div className="text-xs text-muted-foreground">{allNoData} metric{allNoData !== 1 ? 's' : ''} with no data this week</div>
+            </div>
+          )}
         </div>
       )}
     </div>
