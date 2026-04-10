@@ -7,7 +7,6 @@ import { HeroSection } from '../components/dashboard/HeroSection';
 import { HeroTitle } from '../components/dashboard/HeroTitle';
 import { useLdnBundle } from '../data/queries/bundles';
 import { computeDiscoveryFlow, type BlockedMatter, type PipelineStage } from '../data/metrics/discoveryFlow';
-import { computeCaseTimingStages, DEFAULT_THRESHOLDS } from '../data/metrics/caseTiming';
 import { STAGE_ORDER, STAGE_LABELS, SLA_TARGETS, type StageName, type LdnReportBundle } from '../data/metrics/types';
 import { cn } from '../utils/cn';
 
@@ -273,36 +272,33 @@ export default function DiscoveryFlow() {
     complaints, service, answers, formA, formC, deps, tenDay: null, motions: null, openLit, service30Day,
   }), [complaints, service, answers, formA, formC, deps, openLit, service30Day]);
 
-  /* Timing data — stacked bar chart source */
-  const timingStages = useMemo(() => computeCaseTimingStages(bundle, DEFAULT_THRESHOLDS), [bundle]);
+  /* Pipeline data — single source of truth for chart + pipeline sections */
+  const flow = useMemo(() => computeDiscoveryFlow(bundle), [bundle]);
 
+  /* Chart data — built from pipeline (full active inventory per stage) */
   const chartData = useMemo(() =>
-    timingStages.map(s => {
-      const onTime = s.green;
-      const outOfSpec = s.amber + s.red;
-      const total = s.total;
-      const onTimePct = total ? Math.round((onTime / total) * 100) : 0;
-      return {
-        stage: s.stage as StageName,
-        name: STAGE_LABELS[s.stage],
-        onTime,
-        outOfSpec,
-        total,
-        onTimePct,
-        sla: SLA_TARGETS[s.stage],
-      };
-    }),
-  [timingStages]);
+    flow.pipeline
+      .filter((s): s is PipelineStage & { stageKey: StageName } => s.stageKey !== 'complete')
+      .map(s => {
+        const onTime = s.count - s.stuck;
+        return {
+          stage: s.stageKey,
+          name: STAGE_LABELS[s.stageKey],
+          onTime,
+          outOfSpec: s.stuck,
+          total: s.count,
+          onTimePct: s.onTrackPct,
+          sla: SLA_TARGETS[s.stageKey],
+        };
+      }),
+  [flow.pipeline]);
 
-  /* Summary stats */
+  /* Summary stats — derived from pipeline totals */
   const summary = useMemo(() => {
-    let totalOnTime = 0, totalAll = 0;
     let worstPct = 101, worstStage = '';
     let atRisk = 0;
 
     for (const d of chartData) {
-      totalOnTime += d.onTime;
-      totalAll += d.total;
       if (d.onTimePct < worstPct) {
         worstPct = d.onTimePct;
         worstStage = d.name;
@@ -310,17 +306,17 @@ export default function DiscoveryFlow() {
       if (d.onTimePct < 75) atRisk++;
     }
 
+    const totalOnTime = flow.totalOpen - flow.totalStuck;
+    const overallPct = flow.totalOpen ? Math.round((totalOnTime / flow.totalOpen) * 100) : 0;
+
     return {
-      overallPct: totalAll ? Math.round((totalOnTime / totalAll) * 100) : 0,
-      totalCases: totalAll,
+      overallPct,
+      totalCases: flow.totalOpen,
       atRisk,
       worstStage: worstStage || 'N/A',
       worstPct: worstPct > 100 ? 0 : worstPct,
     };
-  }, [chartData]);
-
-  /* Pipeline data — needs attention / on track */
-  const flow = useMemo(() => computeDiscoveryFlow(bundle), [bundle]);
+  }, [chartData, flow.totalOpen, flow.totalStuck]);
   const needsAttention = useMemo(() => flow.pipeline.filter(s => s.stuck > 0), [flow.pipeline]);
   const onTrack = useMemo(() => flow.pipeline.filter(s => s.stuck === 0), [flow.pipeline]);
 
