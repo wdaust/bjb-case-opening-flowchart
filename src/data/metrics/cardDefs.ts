@@ -125,10 +125,10 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
     'Filed Timely': hasVal('Date Motion Filed'),
   },
   depositions: {
-    'Undone 120d+': (row) => {
+    'Undone 180+': (row) => {
       const cd = row['Client Deposition'] ?? row['Client Depo Date'];
       const noDepo = !cd || cd === '' || cd === '-';
-      return noDepo && answerDaysNum(row) >= 120;
+      return noDepo && answerDaysNum(row) >= 180;
     },
     'Completed Timely': () => false, // disabled — no report
     'Completed Untimely': () => false, // disabled — no report
@@ -182,9 +182,9 @@ export const CARD_INFO: Record<string, string> = {
   'Motions Late': 'Cases where motion criteria have been met but no motion has been filed. Currently mirrors "Ready for Motion" until motions start being filed.',
   'Filed Timely': 'Motions to compel that have been filed. Will populate as the team begins filing motions.',
   // Depositions (new)
-  'Undone 120d+': 'Depositions not completed and 120+ days past the answer date — past our SLA. The answer date (not filed date) starts the clock per NJ rules.',
-  'Completed Timely': 'Depositions completed within the 120-day SLA from answer. Needs a "completed depositions" report in the SF bundle to populate.',
-  'Completed Untimely': 'Depositions completed but after the 120-day SLA from answer. Needs a "completed depositions" report to populate.',
+  'Undone 180+': 'Depositions not completed and 180+ days past the answer date — past our SLA. The answer date (not filed date) starts the clock per NJ rules.',
+  'Completed Timely': 'Depositions completed within the 180-day SLA from answer. Needs a "completed depositions" report in the SF bundle to populate.',
+  'Completed Untimely': 'Depositions completed but after the 180-day SLA from answer. Needs a "completed depositions" report to populate.',
   // DED (new)
   'Active Open Cases': 'Active open litigation matters with a Discovery End Date set. Baseline count for tracking DED compliance.',
   'Avg Days Past DED': 'Average number of days past the Discovery End Date for matters whose DED has expired.',
@@ -219,12 +219,12 @@ export const CARD_TIMING: Record<string, string> = {
   'Filed Timely':
     'Day 0: Answer filed\n\u2192 Prerequisites met\n\u2192 Motion to compel filed\n\u2713 Completed',
   // Depositions
-  'Undone 120d+':
-    'Day 0: Answer filed\nDay 120: Deposition SLA expires\n\u2192 Counts depositions 120+ days past answer, not completed',
+  'Undone 180+':
+    'Day 0: Answer filed\nDay 180: Deposition SLA expires\n\u2192 Counts depositions 180+ days past answer, not completed',
   'Completed Timely':
-    'Day 0: Answer filed\nDay \u2264120: Deposition completed\n\u2713 Within SLA',
+    'Day 0: Answer filed\nDay \u2264180: Deposition completed\n\u2713 Within SLA',
   'Completed Untimely':
-    'Day 0: Answer filed\nDay >120: Deposition completed late\n\u2717 Past SLA',
+    'Day 0: Answer filed\nDay >180: Deposition completed late\n\u2717 Past SLA',
   // DED
   'Active Open Cases':
     'Active open litigation matters with DED set\n\u2192 All discovery must complete by this date\n\u2192 Baseline count for DED compliance tracking',
@@ -242,7 +242,7 @@ export const STAGE_INFO: Record<StageName, string> = {
   answers: 'After being served, defendants must file an answer within 35 days. This tracks untimely answers, timely defaults, and problem cases where neither has happened by day 40.',
   formA: 'Form A interrogatories are written questions we serve on defendants. Our SLA is 60 days from answer date. Counts are deduplicated by matter; the "Days Overdue" card shows median with min/max range.',
   formC: 'Form C follows the NJ discovery process (R. 4:17-4): after our Form A is served, the defendant owes Form C answers within 60 days. If overdue, we send a 10-day demand letter (R. 4:23-1), then file a motion to compel. Cards track each step of this process.',
-  depositions: 'Plaintiff depositions are sworn testimony taken before trial. SLA is 120 days from the answer date (not filed date). Tracks outstanding depositions and flags those past due.',
+  depositions: 'Plaintiff depositions are sworn testimony taken before trial. SLA is 180 days from the answer date (not filed date). Tracks outstanding depositions and flags those past due.',
   ded: 'The Discovery End Date (DED) is the court-set deadline for completing all discovery. Tracks how many matters have a DED, how far past it they are, and flags 90+ and 180+ day outliers.',
 };
 
@@ -313,7 +313,7 @@ export const STAGE_DRILL_COLUMNS: Record<StageName, DrillColumn[]> = {
     { key: '_daysPastSla', label: 'Days Past SLA', render: (row) => {
       const v = row['Answer Date to Today'];
       const num = typeof v === 'number' ? v : Number(v);
-      return isNaN(num) ? '' : num - 120;
+      return isNaN(num) ? '' : num - 180;
     }},
     { key: 'Client Deposition', label: 'Client Depo' },
     { key: 'Active Stage', label: 'Stage' },

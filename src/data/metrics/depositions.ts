@@ -17,28 +17,28 @@ const noDepo = (r: Row): boolean => {
 };
 
 export function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; issues: ActionableIssue[] } {
-  // Use 120d from answer date as SLA (not filed date)
+  // Use 180d from answer date as SLA (not filed date)
   const daysArr = rows.map(r => answerDays(r)).filter(d => d > 0);
 
-  // Box 1: Undone 120d+ — depositions past 120 days from answer, not completed
-  const undone120Rows = rows.filter(r => noDepo(r) && answerDays(r) >= 120);
+  // Box 1: Undone 180+ — depositions past 180 days from answer, not completed
+  const undone180Rows = rows.filter(r => noDepo(r) && answerDays(r) >= 180);
 
   // Box 2: Completed Timely — disabled (no completed depo report)
   // Box 3: Completed Untimely — disabled (no completed depo report)
 
-  const undone120Count = uniqueMatterCount(undone120Rows);
+  const undone180Count = uniqueMatterCount(undone180Rows);
 
   const cards: MetricCard[] = [
-    { label: 'Undone 120d+', value: undone120Count, rag: undone120Count === 0 ? 'green' : undone120Count <= 3 ? 'amber' : 'red' },
+    { label: 'Undone 180+', value: undone180Count, rag: undone180Count === 0 ? 'green' : undone180Count <= 3 ? 'amber' : 'red' },
     { label: 'Completed Timely', value: '-', rag: 'green', disabled: true, badge: 'Needs Report' },
     { label: 'Completed Untimely', value: '-', rag: 'green', disabled: true, badge: 'Needs Report' },
   ];
 
-  const worstRag = rag(undone120Count, [1, 3]);
+  const worstRag = rag(undone180Count, [1, 3]);
   const gauge = buildGauge('Depositions', daysArr, SLA_TARGETS.depositions, uniqueMatterCount(rows));
 
   const seenDepo = new Set<string>();
-  const issues: ActionableIssue[] = undone120Rows.reduce<ActionableIssue[]>((acc, r) => {
+  const issues: ActionableIssue[] = undone180Rows.reduce<ActionableIssue[]>((acc, r) => {
     const matter = String(r['Matter Name'] || r['Display Name'] || 'Unknown');
     if (seenDepo.has(matter)) return acc;
     seenDepo.add(matter);
