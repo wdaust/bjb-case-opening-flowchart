@@ -20,8 +20,11 @@ export function computeDepositions(rows: Row[]): { metrics: LdnStageMetrics; iss
   // Use 180d from answer date as SLA (not filed date)
   const daysArr = rows.map(r => answerDays(r)).filter(d => d > 0);
 
-  // Box 1: Undone 180+ — depositions past 180 days from answer, not completed
-  const undone180Rows = rows.filter(r => noDepo(r) && answerDays(r) >= 180);
+  // Box 1: Undone 180+ — use SF's "Overdue 180+ Days" grouping bucket
+  const undone180Rows = rows.filter(r => {
+    const label = String(r['_groupingLabel'] ?? '');
+    return label.includes('Overdue 180+');
+  });
 
   // Box 2: Completed Timely — disabled (no completed depo report)
   // Box 3: Completed Untimely — disabled (no completed depo report)

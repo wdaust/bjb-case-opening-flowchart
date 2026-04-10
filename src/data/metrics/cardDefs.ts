@@ -126,9 +126,8 @@ export const CARD_FILTERS: Record<StageName, Record<string, CardFilterFn>> = {
   },
   depositions: {
     'Undone 180+': (row) => {
-      const cd = row['Client Deposition'] ?? row['Client Depo Date'];
-      const noDepo = !cd || cd === '' || cd === '-';
-      return noDepo && answerDaysNum(row) >= 180;
+      const label = String(row['_groupingLabel'] ?? '');
+      return label.includes('Overdue 180+');
     },
     'Completed Timely': () => false, // disabled — no report
     'Completed Untimely': () => false, // disabled — no report
