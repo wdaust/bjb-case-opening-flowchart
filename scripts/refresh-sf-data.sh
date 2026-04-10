@@ -112,5 +112,28 @@ for id in "${DASHBOARDS[@]}"; do
 done
 
 echo ""
+
+# ── Post-refresh validation ────────────────────────────────────────────
+MISSING=0
+echo "🔍 Validating output files..."
+for id in "${REPORTS[@]}" "$OPEN_LIT_ID" "$RESOLUTIONS_ID"; do
+  if [ ! -s "$OUT_DIR/$id.json" ]; then
+    echo "  ❌ MISSING or EMPTY: $OUT_DIR/$id.json"
+    MISSING=$((MISSING + 1))
+  fi
+done
+for id in "${DASHBOARDS[@]}"; do
+  if [ ! -s "$OUT_DIR/$id.json" ]; then
+    echo "  ❌ MISSING or EMPTY: $OUT_DIR/$id.json"
+    MISSING=$((MISSING + 1))
+  fi
+done
+
+if [ "$MISSING" -gt 0 ]; then
+  echo ""
+  echo "⚠️  $MISSING file(s) missing or empty — check for fetch errors above"
+  exit 1
+fi
+
 echo "✅ All reports refreshed → $OUT_DIR/"
 echo "   $(date '+%Y-%m-%d %H:%M:%S')"

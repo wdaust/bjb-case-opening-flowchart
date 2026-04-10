@@ -1,0 +1,357 @@
+{
+  "reportId": "00OPp000003LtB3MAK",
+  "reportName": "No Service 35+ Days (NJ)",
+  "format": "SUMMARY",
+  "grandTotals": [
+    {
+      "label": "Average Age in Litigation",
+      "value": 73.36363636363636
+    },
+    {
+      "label": "Sum of Total Liability Limits",
+      "value": 13275002
+    },
+    {
+      "label": "Record Count",
+      "value": 33
+    }
+  ],
+  "groupings": [
+    {
+      "key": "0",
+      "label": "Brian Lehrer",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 87.54545454545455
+        },
+        {
+          "label": "Sum of Total Liability Limits",
+          "value": 7375002
+        },
+        {
+          "label": "Record Count",
+          "value": 11
+        }
+      ]
+    },
+    {
+      "key": "1",
+      "label": "Lisa Lehrer",
+      "aggregates": [
+        {
+          "label": "Average Age in Litigation",
+          "value": 66.27272727272727
+        },
+        {
+          "label": "Sum of Total Liability Limits",
+          "value": 5900000
+        },
+        {
+          "label": "Record Count",
+          "value": 22
+        }
+      ]
+    }
+  ],
+  "hasDetailRows": true,
+  "detailRows": [
+    {
+      "_groupingLabel": "Brian Lehrer > Brian Lehrer",
+      "Matter: Matter Name": "MAT-25062667449",
+      "Display Name": "Portia Kissel | 6/18/2025 | Automobile Accident",
+      "Complaint Filed Date": "1/26/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "73",
+      "Total Liability Limits": "$100,000.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Brian Lehrer",
+      "Matter: Matter Name": "MAT-23042432634",
+      "Display Name": "Sarah Kishk | 3/15/2023 | Automobile Accident",
+      "Complaint Filed Date": "3/7/2025",
+      "Service complete date": "-",
+      "Age in Litigation": "398",
+      "Total Liability Limits": "$25,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Paul F Romano",
+      "Matter: Matter Name": "MAT-25060266522",
+      "Display Name": "Brandon Holmes | 5/29/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/2/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "66",
+      "Total Liability Limits": "$750,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Paul F Romano",
+      "Matter: Matter Name": "MAT-25040964474",
+      "Display Name": "Gail Bonilla | 4/6/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/20/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "48",
+      "Total Liability Limits": "$100,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Paul F Romano",
+      "Matter: Matter Name": "MAT-24082348002",
+      "Display Name": "Rigaudin Sanon | 8/22/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/20/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "48",
+      "Total Liability Limits": "$25,000.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > David Rehe",
+      "Matter: Matter Name": "MAT-25050865628",
+      "Display Name": "Yordanys Lazcano-Oquendo | 4/28/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/27/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "41",
+      "Total Liability Limits": "$1.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > David Rehe",
+      "Matter: Matter Name": "MAT-24081247321",
+      "Display Name": "Ayo Prisca Kolade | 8/10/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/20/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "48",
+      "Total Liability Limits": "$250,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Raymond Carroll",
+      "Matter: Matter Name": "MAT-25091470644",
+      "Display Name": "Venus Cruz | 9/12/2025 | Heavy Trucking Incident",
+      "Complaint Filed Date": "12/30/2025",
+      "Service complete date": "-",
+      "Age in Litigation": "100",
+      "Total Liability Limits": "$1,000,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Raymond Carroll",
+      "Matter: Matter Name": "MAT-25042565181",
+      "Display Name": "Gregory H. Aiken | 4/11/2025 | Heavy Trucking Incident",
+      "Complaint Filed Date": "12/10/2025",
+      "Service complete date": "-",
+      "Age in Litigation": "120",
+      "Total Liability Limits": "$1,000,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Raymond Carroll",
+      "Matter: Matter Name": "MAT-24110851458",
+      "Display Name": "Daniel Santos Garcia | 7/18/2024 | Heavy Trucking Incident",
+      "Complaint Filed Date": "2/20/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "48",
+      "Total Liability Limits": "$1,000,000.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Gregory Shaffer",
+      "Matter: Matter Name": "MAT-24062645465",
+      "Display Name": "Ciro Soca | 6/20/2024 | Automobile Accident",
+      "Complaint Filed Date": "3/3/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "37",
+      "Total Liability Limits": "$100,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Eric Plantier",
+      "Matter: Matter Name": "MAT-25071868302",
+      "Display Name": "Kasie Thomas | 7/7/2025 | Automobile Accident",
+      "Complaint Filed Date": "1/30/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "69",
+      "Total Liability Limits": "$1,000,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Eric Plantier",
+      "Matter: Matter Name": "MAT-25033164132",
+      "Display Name": "Juan David Cabrera Lavao | 3/24/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/3/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "65",
+      "Total Liability Limits": "$100,000.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > John VanDyken",
+      "Matter: Matter Name": "MAT-25092971310",
+      "Display Name": "Richard Davis | 9/27/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/20/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "48",
+      "Total Liability Limits": "$500,000.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > John VanDyken",
+      "Matter: Matter Name": "MAT-25080769148",
+      "Display Name": "Minh Pham | 8/4/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/16/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "52",
+      "Total Liability Limits": "$100,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Lisa Lehrer",
+      "Matter: Matter Name": "MAT-25120174356",
+      "Display Name": "Allyson C. Koch | 11/24/2025 | Automobile Accident",
+      "Complaint Filed Date": "1/30/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "69",
+      "Total Liability Limits": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Lisa Lehrer",
+      "Matter: Matter Name": "MAT-25091770773",
+      "Display Name": "Christina Auricchio | 3/11/2025 | Animal Incident",
+      "Complaint Filed Date": "10/17/2025",
+      "Service complete date": "-",
+      "Age in Litigation": "174",
+      "Total Liability Limits": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Lisa Lehrer",
+      "Matter: Matter Name": "MAT-25041164552",
+      "Display Name": "Juan Sebastian Rincon Ramirez | 4/9/2025 | Automobile Accident",
+      "Complaint Filed Date": "1/30/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "69",
+      "Total Liability Limits": "$500,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Lisa Lehrer",
+      "Matter: Matter Name": "MAT-25012154129",
+      "Display Name": "Aileen Flores | 12/3/2024 | Automobile Accident",
+      "Complaint Filed Date": "1/26/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "73",
+      "Total Liability Limits": "$25,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Lisa Lehrer",
+      "Matter: Matter Name": "MAT-24072646560",
+      "Display Name": "Luis Alberto Castillo Sala | 7/13/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/27/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "41",
+      "Total Liability Limits": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Lisa Lehrer",
+      "Matter: Matter Name": "MAT-24070245638",
+      "Display Name": "Madelyn Kim | 7/1/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/24/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "44",
+      "Total Liability Limits": "$25,000.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Matthew Futerfas",
+      "Matter: Matter Name": "MAT-25050965660",
+      "Display Name": "Stacey Borders | 5/8/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/20/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "48",
+      "Total Liability Limits": "$5,000,000.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Matthew Futerfas",
+      "Matter: Matter Name": "MAT-24080847277",
+      "Display Name": "Moneffa Edwards Charles | 8/6/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/20/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "48",
+      "Total Liability Limits": "$300,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Austin Qi",
+      "Matter: Matter Name": "MAT-25091670725",
+      "Display Name": "Harold Serrano-Rueda | 9/15/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/17/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "51",
+      "Total Liability Limits": "$100,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Austin Qi",
+      "Matter: Matter Name": "MAT-24081347408",
+      "Display Name": "Diana Lorena Bueno | 6/24/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/2/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "66",
+      "Total Liability Limits": "$50,000.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Paul A Krauss",
+      "Matter: Matter Name": "MAT-25062467364",
+      "Display Name": "Omolade Olowa | 3/29/2025 | Automobile Accident",
+      "Complaint Filed Date": "12/4/2025",
+      "Service complete date": "-",
+      "Age in Litigation": "126",
+      "Total Liability Limits": "$1.00"
+    },
+    {
+      "_groupingLabel": "Brian Lehrer > Paul A Krauss",
+      "Matter: Matter Name": "MAT-24072246301",
+      "Display Name": "Dmeriah Cuavers | 6/12/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/24/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "44",
+      "Total Liability Limits": "$1,000,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Christopher Karounos",
+      "Matter: Matter Name": "MAT-25081269285",
+      "Display Name": "Edineide Batista-DaSilva | 7/13/2025 | Automobile Accident",
+      "Complaint Filed Date": "2/20/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "48",
+      "Total Liability Limits": "$100,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Christopher Karounos",
+      "Matter: Matter Name": "MAT-24102550851",
+      "Display Name": "Anthony Bruno | 8/30/2024 | Automobile Accident",
+      "Complaint Filed Date": "1/29/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "70",
+      "Total Liability Limits": "$25,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Christopher Karounos",
+      "Matter: Matter Name": "MAT-24102250544",
+      "Display Name": "Sophia Lazo | 10/7/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/16/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "52",
+      "Total Liability Limits": "$50,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Christopher Karounos",
+      "Matter: Matter Name": "MAT-24072946642",
+      "Display Name": "El-Habib Bouali | 7/29/2024 | Automobile Accident",
+      "Complaint Filed Date": "2/3/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "65",
+      "Total Liability Limits": "$25,000.00"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Andrew Nirchio",
+      "Matter: Matter Name": "MAT-24082848128",
+      "Display Name": "Anwar Smith | 8/21/2024 | Automobile Accident",
+      "Complaint Filed Date": "3/4/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "36",
+      "Total Liability Limits": "-"
+    },
+    {
+      "_groupingLabel": "Lisa Lehrer > Andrew Nirchio",
+      "Matter: Matter Name": "MAT-24081547561",
+      "Display Name": "Dina Arthur | 6/28/2024 | Automobile Accident",
+      "Complaint Filed Date": "3/4/2026",
+      "Service complete date": "-",
+      "Age in Litigation": "36",
+      "Total Liability Limits": "$25,000.00"
+    }
+  ]
+}
