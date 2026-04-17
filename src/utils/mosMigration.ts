@@ -2,14 +2,18 @@ import { loadGenericSection, saveGenericSection } from './db.ts';
 import type { MeetingDef, MosMetricDefsData } from '../types/mos.ts';
 import { MEETINGS } from '../data/mosMeetings.ts';
 
+/** Bump this to force a re-seed from hardcoded MEETINGS data. */
+const SEED_VERSION = 3;
+
 /**
- * One-time migration: seeds mos-metric-defs from hardcoded MEETINGS,
- * and re-keys existing mos-kpi-scorecard data from index-based → UID-based keys.
+ * Version-gated migration: seeds mos-metric-defs from hardcoded MEETINGS.
+ * When SEED_VERSION exceeds the stored version, all metric defs and weekly
+ * cell data are wiped and re-seeded from the latest hardcoded data.
  */
 export async function ensureMosMigration(): Promise<MeetingDef[]> {
-  // Check if already migrated
+  // Check if already at current version
   const existing = await loadGenericSection<MosMetricDefsData>('mos-metric-defs');
-  if (existing?.migrated) {
+  if (existing?.version && existing.version >= SEED_VERSION) {
     return existing.meetings;
   }
 
@@ -30,36 +34,14 @@ export async function ensureMosMigration(): Promise<MeetingDef[]> {
     })),
   }));
 
-  // Re-key existing scorecard data from index-based to UID-based
-  const oldData = await loadGenericSection<Record<string, string>>('mos-kpi-scorecard');
-  if (oldData && Object.keys(oldData).length > 0) {
-    const newData: Record<string, string> = {};
-    for (const [key, value] of Object.entries(oldData)) {
-      // Old format: meetingId:metricIndex:weekKey
-      const parts = key.split(':');
-      if (parts.length !== 3) {
-        // Keep unknown keys as-is
-        newData[key] = value;
-        continue;
-      }
-      const [meetingId, indexStr, weekKey] = parts;
-      const metricIndex = parseInt(indexStr, 10);
-      const meeting = meetings.find(m => m.id === meetingId);
-      if (meeting && !isNaN(metricIndex) && metricIndex < meeting.metrics.length) {
-        const uid = meeting.metrics[metricIndex].uid;
-        newData[`${meetingId}:${uid}:${weekKey}`] = value;
-      } else {
-        // Keep unmatched keys
-        newData[key] = value;
-      }
-    }
-    await saveGenericSection('mos-kpi-scorecard', newData);
-  }
+  // Fresh start — clear all weekly cell data
+  await saveGenericSection('mos-kpi-scorecard', {});
 
-  // Save migrated metric defs
+  // Save migrated metric defs with version
   await saveGenericSection<MosMetricDefsData>('mos-metric-defs', {
     meetings,
     migrated: true,
+    version: SEED_VERSION,
   });
 
   return meetings;

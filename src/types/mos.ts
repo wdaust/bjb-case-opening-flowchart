@@ -31,6 +31,7 @@ export interface Contributor {
 export interface MosMetricDefsData {
   meetings: MeetingDef[];
   migrated: boolean;
+  version?: number;
 }
 
 export interface MosContributorsData {
