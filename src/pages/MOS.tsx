@@ -191,16 +191,22 @@ function useMergeOnSave(
   const inFlightRef = useRef(false);
   const dataRef = useRef(data);
   dataRef.current = data;
+  // Every save iteration is appended to this promise chain. Rapid blurs can
+  // no longer run load→merge→save concurrently and clobber each other.
+  const saveChainRef = useRef<Promise<void>>(Promise.resolve());
+  const statusTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [status, setStatus] = useState<SyncStatus>('');
 
-  // Perform a merge-and-save right now. Safe to call repeatedly — no-op if
-  // there are no changed keys.
-  const doSave = useCallback(async () => {
+  // One save iteration. Reads `changedKeys` fresh at run time so chained
+  // iterations pick up any keystrokes that happened after the previous
+  // iteration started.
+  const doSaveBody = useCallback(async () => {
     if (changedKeys.current.size === 0) return;
     const keysToSave = new Set(changedKeys.current);
     changedKeys.current.clear();
     inFlightRef.current = true;
     setStatus('saving');
+    let ok = false;
     try {
       const current = (await loadGenericSection<WeeklyData>(sectionId)) ?? {};
       for (const key of keysToSave) {
@@ -208,15 +214,35 @@ function useMergeOnSave(
           current[key] = dataRef.current[key];
         }
       }
-      const ok = await saveGenericSection(sectionId, current);
-      setStatus(ok ? 'saved' : 'error');
-      if (ok) setTimeout(() => setStatus(''), 2000);
+      ok = await saveGenericSection(sectionId, current);
     } catch {
-      setStatus('error');
+      ok = false;
     } finally {
       inFlightRef.current = false;
     }
+    clearTimeout(statusTimerRef.current);
+    if (ok) {
+      setStatus('saved');
+      statusTimerRef.current = setTimeout(() => setStatus(''), 2000);
+    } else {
+      // Put the keys back so the next debounce or blur retries them.
+      for (const k of keysToSave) changedKeys.current.add(k);
+      setStatus('error');
+      // Don't leave 'Save failed' up forever — clear after a moment.
+      statusTimerRef.current = setTimeout(() => setStatus(''), 5000);
+    }
   }, [sectionId, changedKeys]);
+
+  // Serialize every save through one promise chain.
+  const doSave = useCallback((): Promise<void> => {
+    const next = saveChainRef.current.then(() => doSaveBody()).catch(() => {});
+    saveChainRef.current = next;
+    return next;
+  }, [doSaveBody]);
+
+  // Ref so the unmount effect can call the latest doSave without re-running.
+  const doSaveRef = useRef(doSave);
+  doSaveRef.current = doSave;
 
   // Cancel any pending debounce and save immediately. Called from onBlur.
   const flush = useCallback(() => {
@@ -227,9 +253,9 @@ function useMergeOnSave(
     void doSave();
   }, [doSave]);
 
-  // Debounced autosave on data change. 400ms is short enough that typical
+  // Debounced autosave on data change. 400ms is short enough that a typical
   // refresh-after-typing doesn't beat the save, but long enough to batch
-  // keystrokes in a single cell.
+  // keystrokes inside a single cell.
   useEffect(() => {
     if (!enabled || changedKeys.current.size === 0) return;
     clearTimeout(timerRef.current);
@@ -241,9 +267,23 @@ function useMergeOnSave(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(data), sectionId, enabled]);
 
-  // Guard against hard refresh / tab close with unsaved or in-flight work.
-  // We can't reliably complete an async fetch during teardown, so the only
-  // real safeguard is to warn the user before they leave.
+  // Flush on unmount (covers SPA soft-navigation). The fetch started here
+  // will complete even after React tears the component down; any setState
+  // that lands post-unmount is a silent no-op.
+  useEffect(() => {
+    return () => {
+      if (timerRef.current !== undefined) {
+        clearTimeout(timerRef.current);
+        timerRef.current = undefined;
+      }
+      if (changedKeys.current.size > 0) {
+        void doSaveRef.current();
+      }
+      clearTimeout(statusTimerRef.current);
+    };
+  }, [changedKeys]);
+
+  // Warn before hard refresh / tab close when work is unsaved or in flight.
   useEffect(() => {
     const handler = (e: BeforeUnloadEvent) => {
       if (
