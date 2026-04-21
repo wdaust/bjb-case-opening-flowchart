@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { SectionHeader } from '../components/dashboard/SectionHeader.tsx';
 import { initDb, loadGenericSection, saveGenericSection } from '../utils/db.ts';
-import { ensureMosMigration } from '../utils/mosMigration.ts';
+import { ensureMosMigration, SEED_VERSION } from '../utils/mosMigration.ts';
 import { useAuth } from '../contexts/AuthContext.tsx';
 import { cn } from '../utils/cn.ts';
 import type { MeetingDef, MetricDef, MosMetricDefsData, MosContributorsData } from '../types/mos.ts';
@@ -785,9 +785,14 @@ export default function MOS() {
   const saveMetricDefs = useCallback((updated: MeetingDef[]) => {
     clearTimeout(metricSaveTimerRef.current);
     metricSaveTimerRef.current = setTimeout(async () => {
+      // CRITICAL: must include `version`. Without it, ensureMosMigration on
+      // next load sees version as undefined → triggers re-migration → wipes
+      // `mos-kpi-scorecard` to {} (see mosMigration.ts line 38). That was
+      // silently destroying every week of user-entered data on every edit.
       await saveGenericSection<MosMetricDefsData>('mos-metric-defs', {
         meetings: updated,
         migrated: true,
+        version: SEED_VERSION,
       });
     }, 800);
   }, []);

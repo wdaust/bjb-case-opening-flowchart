@@ -3,6 +3,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '../ui/dialog.tsx';
 import { saveGenericSection } from '../../utils/db.ts';
+import { SEED_VERSION } from '../../utils/mosMigration.ts';
 import { cn } from '../../utils/cn.ts';
 import type { MeetingDef, MetricDef, MosMetricDefsData, KpiType, KpiDirection } from '../../types/mos.ts';
 import {
@@ -101,9 +102,11 @@ export function MetricEditor({
     const updated = meetings.map(m =>
       m.id === editTab ? { ...m, metrics: localMetrics.map((lm, i) => ({ ...lm, order: i })) } : m
     );
+    // Must include `version` — see saveMetricDefs in MOS.tsx for why.
     const ok = await saveGenericSection<MosMetricDefsData>('mos-metric-defs', {
       meetings: updated,
       migrated: true,
+      version: SEED_VERSION,
     });
     setSaving(false);
     if (ok) {
