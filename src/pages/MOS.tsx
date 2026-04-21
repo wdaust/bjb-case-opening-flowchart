@@ -68,7 +68,13 @@ export function generateWeeks(count: number): string[] {
   return weeks;
 }
 
-const CURRENT_WEEK = getWeekKey(new Date());
+// We report on last week's data each Monday, so the scorecard highlights
+// last week's column — not the in-progress current week.
+const HIGHLIGHTED_WEEK = (() => {
+  const d = new Date();
+  d.setDate(d.getDate() - 7);
+  return getWeekKey(d);
+})();
 const DEFAULT_WEEK_COUNT = 17;
 
 // ─── Mini Dashboard ─────────────────────────────────────────────────────────
@@ -81,7 +87,7 @@ function MiniDash({ meeting, weeklyData }: { meeting: MeetingDef; weeklyData: We
     let rockGreen = 0, rockRed = 0, rockNoData = 0;
     for (const m of meeting.metrics) {
       if (m.isSection) continue;
-      const val = weeklyData[`${meeting.id}:${m.uid}:${CURRENT_WEEK}`] ?? '';
+      const val = weeklyData[`${meeting.id}:${m.uid}:${HIGHLIGHTED_WEEK}`] ?? '';
       const result = evaluateKpi(val, m.kpi, m.kpiType, m.kpiDirection, m.isRock);
       if (m.isRock) {
         if (result === 'green') rockGreen++;
@@ -180,36 +186,81 @@ function useMergeOnSave(
   data: WeeklyData,
   changedKeys: React.MutableRefObject<Set<string>>,
   enabled: boolean,
-) {
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+): { status: SyncStatus; flush: () => void } {
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const inFlightRef = useRef(false);
+  const dataRef = useRef(data);
+  dataRef.current = data;
   const [status, setStatus] = useState<SyncStatus>('');
 
+  // Perform a merge-and-save right now. Safe to call repeatedly — no-op if
+  // there are no changed keys.
+  const doSave = useCallback(async () => {
+    if (changedKeys.current.size === 0) return;
+    const keysToSave = new Set(changedKeys.current);
+    changedKeys.current.clear();
+    inFlightRef.current = true;
+    setStatus('saving');
+    try {
+      const current = (await loadGenericSection<WeeklyData>(sectionId)) ?? {};
+      for (const key of keysToSave) {
+        if (dataRef.current[key] !== undefined) {
+          current[key] = dataRef.current[key];
+        }
+      }
+      const ok = await saveGenericSection(sectionId, current);
+      setStatus(ok ? 'saved' : 'error');
+      if (ok) setTimeout(() => setStatus(''), 2000);
+    } catch {
+      setStatus('error');
+    } finally {
+      inFlightRef.current = false;
+    }
+  }, [sectionId, changedKeys]);
+
+  // Cancel any pending debounce and save immediately. Called from onBlur.
+  const flush = useCallback(() => {
+    if (timerRef.current !== undefined) {
+      clearTimeout(timerRef.current);
+      timerRef.current = undefined;
+    }
+    void doSave();
+  }, [doSave]);
+
+  // Debounced autosave on data change. 400ms is short enough that typical
+  // refresh-after-typing doesn't beat the save, but long enough to batch
+  // keystrokes in a single cell.
   useEffect(() => {
     if (!enabled || changedKeys.current.size === 0) return;
-    setStatus('saving');
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(async () => {
-      const keysToSave = new Set(changedKeys.current);
-      changedKeys.current.clear();
-      try {
-        const current = await loadGenericSection<WeeklyData>(sectionId) ?? {};
-        for (const key of keysToSave) {
-          if (data[key] !== undefined) {
-            current[key] = data[key];
-          }
-        }
-        const ok = await saveGenericSection(sectionId, current);
-        setStatus(ok ? 'saved' : 'error');
-        if (ok) setTimeout(() => setStatus(''), 2000);
-      } catch {
-        setStatus('error');
-      }
-    }, 1200);
+    timerRef.current = setTimeout(() => {
+      timerRef.current = undefined;
+      void doSave();
+    }, 400);
     return () => clearTimeout(timerRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(data), sectionId, enabled]);
 
-  return status;
+  // Guard against hard refresh / tab close with unsaved or in-flight work.
+  // We can't reliably complete an async fetch during teardown, so the only
+  // real safeguard is to warn the user before they leave.
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (
+        changedKeys.current.size > 0 ||
+        inFlightRef.current ||
+        timerRef.current !== undefined
+      ) {
+        e.preventDefault();
+        // Required for some legacy browsers.
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [changedKeys]);
+
+  return { status, flush };
 }
 
 // ─── Sortable row ───────────────────────────────────────────────────────────
@@ -264,6 +315,7 @@ export function ScorecardTable({
   meeting,
   weeklyData,
   onCellChange,
+  onCellBlur,
   isAdmin,
   onMetricUpdate,
   onDeleteMetric,
@@ -278,6 +330,7 @@ export function ScorecardTable({
   meeting: MeetingDef;
   weeklyData: WeeklyData;
   onCellChange: (key: string, value: string) => void;
+  onCellBlur?: () => void;
   isAdmin: boolean;
   onMetricUpdate: (uid: string, field: keyof MetricDef, value: string | boolean | number | undefined) => void;
   onDeleteMetric: (uid: string) => void;
@@ -337,7 +390,7 @@ export function ScorecardTable({
                 key={w}
                 className={cn(
                   "text-center py-2 px-2 font-medium whitespace-nowrap min-w-[80px]",
-                  w === CURRENT_WEEK ? "text-primary bg-primary/5" : "text-muted-foreground",
+                  w === HIGHLIGHTED_WEEK ? "text-primary bg-primary/5" : "text-muted-foreground",
                 )}
               >
                 {getWeekLabel(w)}
@@ -501,7 +554,7 @@ export function ScorecardTable({
                           key={w}
                           className={cn(
                             "py-0.5 px-0.5",
-                            w === CURRENT_WEEK && "bg-primary/5",
+                            w === HIGHLIGHTED_WEEK && "bg-primary/5",
                             evaluation === 'green' && "bg-green-500/10",
                             evaluation === 'red' && "bg-red-500/10",
                           )}
@@ -510,6 +563,7 @@ export function ScorecardTable({
                             <select
                               value={val}
                               onChange={e => onCellChange(cellKey(w), e.target.value)}
+                              onBlur={onCellBlur}
                               className={cn(
                                 "w-full text-center text-xs py-1 px-0.5 rounded bg-transparent border border-transparent",
                                 "focus:border-primary/40 focus:bg-primary/5 focus:outline-none transition-colors",
@@ -528,6 +582,7 @@ export function ScorecardTable({
                               type="text"
                               value={val}
                               onChange={e => onCellChange(cellKey(w), e.target.value)}
+                              onBlur={onCellBlur}
                               className={cn(
                                 "w-full text-center text-xs py-1 px-1 rounded bg-transparent border border-transparent",
                                 "focus:border-primary/40 focus:bg-primary/5 focus:outline-none transition-colors",
@@ -598,7 +653,9 @@ export default function MOS() {
   const changedKeysRef = useRef<Set<string>>(new Set());
   const metricSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const weekConfigSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const syncStatus = useMergeOnSave('mos-kpi-scorecard', weeklyData, changedKeysRef, loaded);
+  const { status: syncStatus, flush: flushWeeklySave } = useMergeOnSave(
+    'mos-kpi-scorecard', weeklyData, changedKeysRef, loaded,
+  );
 
   const weeks = useMemo(() => generateWeeks(weekCount), [weekCount]);
 
@@ -965,10 +1022,10 @@ export default function MOS() {
                             className="rounded border-border"
                           />
                           <span className={cn(
-                            w === CURRENT_WEEK && "text-primary font-medium",
+                            w === HIGHLIGHTED_WEEK && "text-primary font-medium",
                           )}>
                             {getWeekLabel(w)}
-                            {w === CURRENT_WEEK && " (current)"}
+                            {w === HIGHLIGHTED_WEEK && " (last week)"}
                           </span>
                         </label>
                       ))}
@@ -1080,6 +1137,7 @@ export default function MOS() {
             meeting={activeMeeting}
             weeklyData={weeklyData}
             onCellChange={handleCellChange}
+            onCellBlur={flushWeeklySave}
             isAdmin={isAdmin}
             onMetricUpdate={handleMetricUpdate}
             onDeleteMetric={handleDeleteMetric}
